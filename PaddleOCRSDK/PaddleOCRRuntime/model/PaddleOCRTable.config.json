@@ -1,0 +1,13 @@
+{
+    "use_gpu": false,
+    "gpu_id": 0,
+    "gpu_mem": 4000,
+    "cpu_threads": 10,
+    "cpu_mem": 4000,
+    "enable_mkldnn": true,
+    "det": true,
+    "rec": true,
+    "cls": false,
+    "merge_empty_cell": true,
+    "table_batch_num": 1
+}

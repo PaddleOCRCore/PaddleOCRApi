@@ -22,7 +22,6 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12
 
 依赖库列表参考：
 
-<img src="https://gitee.com/corallite/PaddleOCRWebApi/raw/master/PaddleOCRCore/PaddleOCRRuntime/lib.jpg" width="633px;" />
 
 ## 调用参数说明
 | 参数名称                     | 默认值 | 值说明                                                                                   |
@@ -93,19 +92,7 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 
 欢迎加入QQ群475159576交流,或者添加QQ：2380243976,若您喜欢本项目，请点击免费的star
 
-<img src="https://gitee.com/corallite/PaddleOCRWebApi/raw/master/PaddleOCRSDK/PaddleOCRRuntime/qq.png" width="382px;" />
-
-## 捐助
-
-如果这个项目对您有所帮助，请扫下方二维码打赏一杯咖啡。
-
-<img src="https://gitee.com/corallite/PaddleOCRWebApi/raw/master/PaddleOCRSDK/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
-
-#### v1.1.0 `2024.1.16` 
-- 调整OCR识别参数，增加内存自动回收及智能指针管理。
-- 增加基于paddle_inference2.6.2和paddle_inference3.0的PaddleOCR.dll,可根据需要自行替换。
-- 增加C++/GO语言使用Demo
-#### v1.0 `2024.11.28`
+#### v1.0 `2025.1.22`
 - 初版发行"# PaddleOCRApi" 
