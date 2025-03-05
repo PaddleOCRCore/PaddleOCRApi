@@ -31,13 +31,15 @@ namespace OCRCoreService.Controllers
     public class OCRServiceController : ActionBase
     {
         private readonly ILogger<OCRServiceController> _logger;
+        private readonly OCREngine _ocrEngine;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logger"></param>
-        public OCRServiceController(ILogger<OCRServiceController> logger)
+        public OCRServiceController(ILogger<OCRServiceController> logger, OCREngine ocrEngine)
         {
             _logger = logger;
+            _ocrEngine = ocrEngine;
         }
         /// <summary>
         /// 
@@ -55,7 +57,7 @@ namespace OCRCoreService.Controllers
         /// <returns></returns>
         [HttpPost]
         //[TypeFilter(typeof(WebApiActionAttribute))]
-        public ActionResult GetIdCard([FromServices] IWebHostEnvironment env, [FromServices] IOCREngine engine, [FromBody] RequestOcr request)
+        public ActionResult GetIdCard([FromServices] IWebHostEnvironment env, [FromBody] RequestOcr request)
         {
             string result = "";
             if (string.IsNullOrEmpty(request.Base64String))
@@ -72,17 +74,17 @@ namespace OCRCoreService.Controllers
                 System.IO.Directory.CreateDirectory(fileDir);
             }
             //OCRResult ocrResult = engine.ocrEngine.DetectText(ImageBeauty.Base64StringToImage(request.Base64String));
-            OCRResult ocrResult = engine.ocrEngine.DetectTextBase64(request.Base64String);            
+            OCRResult ocrResult = _ocrEngine.OcrService.DetectBase64(request.Base64String);            
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (var item in ocrResult.TextBlocks)
+            foreach (var item in ocrResult.WordsResult)
             {
-                if (!string.IsNullOrEmpty(item.Text))
+                if (!string.IsNullOrEmpty(item.Words))
                 {
                     //if (stringBuilder.Length > 0)
                     //{
                     //    stringBuilder.Append(Environment.NewLine);
                     //}
-                    stringBuilder.Append(item.Text);
+                    stringBuilder.Append(item.Words);
             }
             }
             result=stringBuilder.ToString();
@@ -164,26 +166,26 @@ namespace OCRCoreService.Controllers
         /// <returns></returns>
         [HttpPost]
         //[TypeFilter(typeof(WebApiActionAttribute))]
-        public ActionResult GetOCRText([FromServices] IWebHostEnvironment env, [FromServices] IOCREngine engine, [FromBody] RequestOcr request)
+        public ActionResult GetOCRText([FromServices] IWebHostEnvironment env, [FromBody] RequestOcr request)
         {
             string result = "";
             if (string.IsNullOrEmpty(request.Base64String))
             {
                 return (BadResult("识别失败:图片不存在！"));
             }
-            OCRResult ocrResult = engine.ocrEngine.DetectTextBase64(request.Base64String);
+            OCRResult ocrResult = _ocrEngine.OcrService.DetectBase64(request.Base64String);
             if (request.ResultType.Equals("text", StringComparison.OrdinalIgnoreCase))
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                foreach (var item in ocrResult.TextBlocks)
+                foreach (var item in ocrResult.WordsResult)
                 {
-                    if (!string.IsNullOrEmpty(item.Text))
+                    if (!string.IsNullOrEmpty(item.Words))
                     {
                         if (stringBuilder.Length > 0)
                         {
                             stringBuilder.Append(Environment.NewLine);
                         }
-                        stringBuilder.Append(item.Text);
+                        stringBuilder.Append(item.Words);
                     }
                 }
                 result = stringBuilder.ToString();
@@ -193,24 +195,6 @@ namespace OCRCoreService.Controllers
                 result = ocrResult.JsonText;
             }
             return OKResult(result);
-        }
-        #endregion
-
-        #region 通用表格识别
-        /// <summary>
-        /// 通用表格识别
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        //[TypeFilter(typeof(WebApiActionAttribute))]
-        public ActionResult GetOCRTable([FromServices] IWebHostEnvironment env, [FromServices] IOCREngine engine, [FromBody] RequestOcr request)
-        {
-            if (string.IsNullOrEmpty(request.Base64String))
-            {
-                return (BadResult("识别失败:图片不存在！"));
-            }
-            string ocrResult = engine.tableEngine.TableDetectBase64(request.Base64String);
-            return OKResult(ocrResult);
         }
         #endregion
     }

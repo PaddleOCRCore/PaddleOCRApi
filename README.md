@@ -18,7 +18,7 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12
 
 2、进QQ群475159576，下载群文件的PaddleOCRLib.zip，解压后放到编译的根目录中
 
-3、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需接gitee说明安装对应环境)
+3、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需接说明安装对应环境)
 
 依赖库列表参考：
 
@@ -92,7 +92,16 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 
 欢迎加入QQ群475159576交流,或者添加QQ：2380243976,若您喜欢本项目，请点击免费的star
 
+<img src="./PaddleOCRSDK/PaddleOCRRuntime/qq.png" width="382px;" />
+
+## 捐助
+
+如果这个项目对您有所帮助，请扫下方二维码打赏一杯咖啡。
+
+<img src="./PaddleOCRSDK/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
+#### v1.0.1 `2025.3.5`
+- 优化paddleocr.dll，提高识别速度"
 #### v1.0 `2025.1.22`
-- 初版发行"# PaddleOCRApi" 
+- 初版发行: PaddleOCRApi"

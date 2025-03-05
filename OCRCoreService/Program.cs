@@ -15,12 +15,13 @@
 
 using OCRCoreService.Authorization;
 using OCRCoreService;
-using OCRCoreService.Services;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using NLog.Web;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using PaddleOCRSDK;
+using OCRCoreService.Services;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -33,7 +34,8 @@ try
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     //检测模型依赖注入
-    builder.Services.AddSingleton<IOCREngine, OCREngine>();
+    builder.Services.AddSingleton<IOCRService, OCRService>();
+    builder.Services.AddSingleton<OCREngine>();
 
     // 网页显示中文
     builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));

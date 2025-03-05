@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaddleOCRSDK", "PaddleOCRSDK\PaddleOCRSDK.csproj", "{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OCRCoreService", "OCRCoreService\OCRCoreService.csproj", "{6119DC15-BFEC-4B5C-8158-4F56D1D96F31}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{485D3CE3-B927-45EB-BFA3-540D7CE7D601}"
@@ -12,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp", "Demo\WinFormsApp\WinFormsApp.csproj", "{8B3E3FD3-4197-4B27-8BCF-5477E0005F9E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PaddleOCRCpp", "Demo\CPP\PaddleOCRCpp.vcxproj", "{708753C9-B623-4CA0-BEEE-BCD71D067A31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaddleOCRSDK", "PaddleOCRSDK\PaddleOCRSDK.csproj", "{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,18 +23,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Debug|Any CPU.Build.0 = Debug|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Debug|x64.ActiveCfg = Debug|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Debug|x64.Build.0 = Debug|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Debug|x86.ActiveCfg = Debug|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Debug|x86.Build.0 = Debug|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Release|Any CPU.ActiveCfg = Release|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Release|Any CPU.Build.0 = Release|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Release|x64.ActiveCfg = Release|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Release|x64.Build.0 = Release|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Release|x86.ActiveCfg = Release|x64
-		{C7FE3C2E-0469-48AB-84C4-C90B5AC5562D}.Release|x86.Build.0 = Release|x64
 		{6119DC15-BFEC-4B5C-8158-4F56D1D96F31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6119DC15-BFEC-4B5C-8158-4F56D1D96F31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6119DC15-BFEC-4B5C-8158-4F56D1D96F31}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -71,6 +59,18 @@ Global
 		{708753C9-B623-4CA0-BEEE-BCD71D067A31}.Release|x64.Build.0 = Release|x64
 		{708753C9-B623-4CA0-BEEE-BCD71D067A31}.Release|x86.ActiveCfg = Release|Win32
 		{708753C9-B623-4CA0-BEEE-BCD71D067A31}.Release|x86.Build.0 = Release|Win32
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Debug|x64.Build.0 = Debug|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Debug|x86.Build.0 = Debug|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|x64.ActiveCfg = Release|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|x64.Build.0 = Release|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|x86.ActiveCfg = Release|Any CPU
+		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,12 +12,67 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace PaddleOCRSDK
 {
+    public enum EnumParaType
+    {
+        /// <summary>
+        /// 实体参数类型
+        /// </summary>
+        Class,
+        /// <summary>
+        /// Json类型
+        /// </summary>
+        Json,
+        /// <summary>
+        /// 表格识别实体参数类型
+        /// </summary>
+        TableClass,
+        /// <summary>
+        /// 表格识别Json类型
+        /// </summary>
+        TableJson,
+    }
+    public class InitParamater
+    {
+        /// <summary>
+        /// det_infer模型路径
+        /// </summary>
+        public string det_infer { get; set; }
+        /// <summary>
+        /// cls_infer模型路径
+        /// </summary>
+        public string cls_infer { get; set; }
+        /// <summary>
+        /// rec_infer模型路径
+        /// </summary>
+        public string rec_infer { get; set; }
+        /// <summary>
+        /// ppocr_keys.txt文件名全路径
+        /// </summary>
+        public string keyFile { get; set; }
+        /// <summary>
+        /// 参数类型
+        /// </summary>
+        public EnumParaType paraType { get; set; }
+        /// <summary>
+        /// 参数列表
+        /// </summary>
+        public OCRParameter ocrpara { get; set; }
+        /// <summary>
+        /// 参数列表
+        /// </summary>
+        public TableParameter tablepara { get; set; }
+        /// <summary>
+        /// json字符串
+        /// </summary>
+        public string json { get; set; }
+    }
     /// <summary>
     /// OCR识别参数，OCRParameter类的属性定义顺序不可随便更改，与PdddleOCR.dll传入参数保持一致
     /// 参数调用参考github文档https://github.com/PaddlePaddle/PaddleOCR/blob/main/deploy/cpp_infer/readme_ch.md
@@ -42,12 +97,13 @@ namespace PaddleOCRSDK
         [field: MarshalAs(UnmanagedType.I1)]
         public bool cls { get; set; } = false;
         #endregion
+
         #region 通用参数设置
         /// <summary>
         /// 是否使用GPU
         /// </summary>
-        [field: MarshalAs(UnmanagedType.I1)] 
-		public bool use_gpu { get; set; } = true;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_gpu { get; set; } = true;
         /// <summary>
         /// GPU id，使用GPU时有效
         /// </summary>
@@ -75,8 +131,8 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 是否使用mkldnn库
         /// </summary>
-        [field:MarshalAs(UnmanagedType.I1)]
-		public bool enable_mkldnn { get; set; } =true;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool enable_mkldnn { get; set; } = true;
         #endregion
 
         #region 检测模型设置
@@ -99,19 +155,19 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 是否在输出映射上使用膨胀
         /// </summary>
-        [field: MarshalAs(UnmanagedType.I1)] 
-		public bool use_dilation { get; set; } = false;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_dilation { get; set; } = false;
         /// <summary>
         /// true:使用多边形框计算bbox score，false:使用矩形框计算。矩形框计算速度更快，多边形框对弯曲文本区域计算更准确。
         /// </summary>
-        [field: MarshalAs(UnmanagedType.I1)]	
-		public bool det_db_score_mode { get; set; } = true;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool det_db_score_mode { get; set; } = true;
         /// <summary>
         /// 是否对结果进行可视化，为false时，预测结果会保存在output文件夹下和输入图像同名的图像上。
         /// </summary>
 
-        [field: MarshalAs(UnmanagedType.I1)] 
-		public bool visualize { get; set; } = false;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool visualize { get; set; } = false;
 
         #endregion
 
@@ -120,8 +176,8 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 是否使用方向分类器
         /// </summary>
-        [field: MarshalAs(UnmanagedType.I1)] 
-		public bool use_angle_cls { get; set; } = false;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_angle_cls { get; set; } = false;
         /// <summary>
         /// 方向分类器的得分阈值
         /// </summary>
@@ -146,12 +202,33 @@ namespace PaddleOCRSDK
         /// 识别模型输入图像宽度
         /// </summary>
         public int rec_img_w { get; set; } = 320;
-		#endregion
+        #endregion
     }
     /// <summary>
-    /// OCR可修改参数
+    /// OCR表格识别模型参数
     /// </summary>
-    [StructLayout(LayoutKind.Sequential,Pack =1)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class TableParameter : OCRParameter
+    {
+        /// <summary>
+        /// 表格识别模型输入图像长边大小，最终图像大小为（table_max_len，table_max_len）,默认488
+        /// </summary>
+        public int table_max_len { get; set; } = 488;
+        /// <summary>
+        /// 是否合并空单元格
+        /// </summary>
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool merge_empty_cell { get; set; } = true;
+        /// <summary>
+        /// 批量识别数量
+        /// </summary>
+        public int table_batch_num { get; set; } = 1;
+
+    }
+    /// <summary>
+    /// OCR动态可修改参数
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class SyncParameter
     {
         /// <summary>
@@ -183,5 +260,3 @@ namespace PaddleOCRSDK
 
     }
 }
-
-

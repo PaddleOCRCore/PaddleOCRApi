@@ -15,9 +15,7 @@
 
 using Newtonsoft.Json;
 using PaddleOCRSDK;
-using System;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -28,21 +26,26 @@ namespace WinFormsApp
     public partial class MainForm : Form
     {
         StringBuilder message = new StringBuilder();
-        PaddleOCRCore ocrEngine;
-        PaddleTableCore structureEngine;
+        private readonly IOCRService ocrService;
         public MainForm()
         {
             InitializeComponent();
+            ocrService = OCREngine.ocrService;
         }
 
         private void buttonInit_Click(object sender, EventArgs e)
         {
             try
             {
-                IOCREngine engine = new OCREngine();
-                ocrEngine = engine.GetOCREngine();
-                structureEngine = engine.GetTableEngine();
-                message.Append("初始化成功！\r\n");
+                string initmsg= OCREngine.GetOCREngine();
+                if (string.IsNullOrEmpty(initmsg))
+                {
+                    message.Append("初始化成功！\r\n");
+                }
+                else
+                {
+                    message.Append($"{initmsg}\r\n");
+                }
                 textBoxResult.Text = message.ToString();
             }
             catch (Exception ex)
@@ -71,15 +74,15 @@ namespace WinFormsApp
                     //string filePath = Path.Combine(AppContext.BaseDirectory, "inference", "1231.jpeg");
                     //message.Append(filePath);
                     textBoxResult.Text = message.ToString();
-                    OCRResult ocrResult = ocrEngine.DetectText(filePath);
+                    OCRResult ocrResult = ocrService.Detect(filePath);
                     StringBuilder stringBuilder = new StringBuilder();
-                    foreach (var item in ocrResult.TextBlocks)
+                    foreach (var item in ocrResult.WordsResult)
                     {
                         //if (stringBuilder.Length > 0)
                         //{
                         //    stringBuilder.Append(Environment.NewLine);
                         //}
-                        stringBuilder.Append(item.Text);
+                        stringBuilder.Append(item.Words);
                     }
                     result = stringBuilder.ToString();
                     string id_card_side = "front";

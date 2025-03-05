@@ -12,44 +12,45 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace PaddleOCRSDK
-{ 
-   /// <summary>
-   /// 模型配置对象，文件放到model目录下
-   /// </summary>
-    public  class OCRModelConfig
+{
+    public interface IOCRService
     {
         /// <summary>
-        /// det_infer模型路径
+        /// 初如化OCR
         /// </summary>
-        public string det_infer { get; set; }
-        /// <summary>
-        /// cls_infer模型路径
-        /// </summary>
-        public string cls_infer { get; set; }
-        /// <summary>
-        /// rec_infer模型路径
-        /// </summary>
-        public string rec_infer { get; set; }
-        /// <summary>
-        /// ppocr_keys.txt文件名全路径
-        /// </summary>
-        public string keys { get; set; }
-    }
+        /// <param name="para"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        bool Init(InitParamater para);
 
-    /// <summary>
-    /// 表格模型配置对象
-    /// </summary>
-    public class TableModelConfig : OCRModelConfig
-    {
         /// <summary>
-        /// table_model_dir模型路径
+        /// 对图像文件进行文本识别
         /// </summary>
-        public string table_model_dir { get; set; }
+        /// <param name="imagefile">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        OCRResult Detect(string imagefile);
+
         /// <summary>
-        /// 表格识别字典
+        /// 对图像文件进行文本识别
         /// </summary>
-        public string table_char_dict_path { get; set; }
+        /// <param name="imagebyte">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        OCRResult Detect(byte[] imagebyte);
+        /// <summary>
+        /// 对base64图像进行识别
+        /// </summary>
+        /// <param name="base64"></param>
+        /// <returns></returns>
+        OCRResult DetectBase64(string base64);
+        /// <summary>
+        /// 获取错误原因
+        /// </summary>
+        /// <returns></returns>
+        string GetError();
     }
 }

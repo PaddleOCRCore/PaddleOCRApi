@@ -23,6 +23,12 @@ paddle_inference.dll
 /demo/WinFormsApp/obj
 /demo/CPP/log
 /demo/CPP/x64
+/PaddleOCRCore/bin/Debug
+/PaddleOCRCore/bin/Release
+/PaddleOCRCore/bin
+/PaddleOCRCore/obj/Debug
+/PaddleOCRCore/obj/Release
+/PaddleOCRCore/obj
 /PaddleOCRSDK/bin/Debug
 /PaddleOCRSDK/bin/Release
 /PaddleOCRSDK/bin

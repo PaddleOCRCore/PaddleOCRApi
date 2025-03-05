@@ -1,61 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFrameworks>
-		net8.0
-    </TargetFrameworks>
-	   <PackageTags>OCR;Paddle;AI;CV;PaddleOCR;character recognition;NET;Csharp;</PackageTags>
-	  <IsPublishable>False</IsPublishable>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-	  <Authors>jack</Authors>
-    <Copyright>Core</Copyright>
-    <Company>Core</Company>
-	  <Description></Description>
-    <PackageProjectUrl></PackageProjectUrl>
-    <RepositoryUrl></RepositoryUrl>
-	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-	  <AssemblyVersion>4.2.0</AssemblyVersion>
-	  <FileVersion>4.2.0</FileVersion>
-	  <Version>1.0.0</Version>
-	  <Platforms>x64</Platforms>
-	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <ProduceReferenceAssemblies>true</ProduceReferenceAssemblies>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|anyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|x64'">
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-  <ItemGroup>
-		 <None Include="$(SolutionDir)PaddleOCRSDK\PaddleOCRRuntime\**">
-			<Pack>true</Pack>
-			<PackageCopyToOutput>true</PackageCopyToOutput>
-			<PackagePath>build\PaddleOCRLib</PackagePath>
-		</None>
-		 <Compile Remove="PaddleOCRSDK\**" />
-		 <EmbeddedResource Remove="PaddleOCRSDK\**" />
-		 <None Remove="PaddleOCRSDK\**" />
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	<PackageReference Include="System.Drawing.Common" Version="8.0.4" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="PaddleOCRRuntime\inference\PaddleOCRStructure.config.json">
-      <PackagePath>build\PaddleOCRLib</PackagePath>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-      <Pack>true</Pack>
-    </None>
-    <None Update="PaddleOCRRuntime\发布说明.txt">
-      <PackagePath>build\PaddleOCRLib</PackagePath>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
-	
+
 </Project>

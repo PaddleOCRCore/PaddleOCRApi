@@ -24,4 +24,4 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 2、进QQ群475159576，下载群文件的PaddleOCRLib.zip，解压后放到编译的根目录中
 
 3、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需按paddle_inference要求安装对应环境)
-4、进群可免费下载支持Linux的so识别库
+4、部分依赖文件因超出上传限制，可进群免费下载。

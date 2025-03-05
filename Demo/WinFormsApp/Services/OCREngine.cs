@@ -20,14 +20,14 @@ namespace WinFormsApp.Services
     /// <summary>
     /// OCR引擎依赖注入
     /// </summary>
-    public class OCREngine : IOCREngine
+    public class OCREngine
     {
+        private static readonly Lazy<IOCRService> _ocrService = new Lazy<IOCRService>(() => new OCRService());
+        public static IOCRService ocrService => _ocrService.Value;
+
         private static string det_infer = "ch_PP-OCRv4_det_infer";
         private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
         private static string rec_infer = "ch_PP-OCRv4_rec_infer";
-        //private static string det_infer = "ch_PP-OCRv4_det_server_infer";
-        //private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
-        //private static string rec_infer = "ch_PP-OCRv4_rec_server_infer";
         private static string keys = "ppocr_keys.txt";
         private static bool use_gpu = false;
         private static bool enable_mkldnn = true;
@@ -36,22 +36,21 @@ namespace WinFormsApp.Services
         /// 初始化OCR引擎
         /// </summary>
         /// <returns></returns>
-        public PaddleOCRCore GetOCREngine()
+        public static string GetOCREngine()
         {
-            //自带轻量版中英文模型V4模型
-            OCRModelConfig config = new OCRModelConfig();
-            string root = CoreOCRBase.GetModelPath();
-            string modelPathroot = Path.Combine(root, "model");
-            config.det_infer = Path.Combine(modelPathroot, det_infer);
-            config.cls_infer = Path.Combine(modelPathroot, cls_infer);
-            config.rec_infer = Path.Combine(modelPathroot, rec_infer);
-            config.keys = Path.Combine(modelPathroot, keys);
+            InitParamater para = new InitParamater();
+            string root = AppDomain.CurrentDomain.BaseDirectory;
+            string modelPathroot = Path.Combine(root, "models");
+            para.det_infer = Path.Combine(modelPathroot, det_infer);
+            para.cls_infer = Path.Combine(modelPathroot, cls_infer);
+            para.rec_infer = Path.Combine(modelPathroot, rec_infer);
+            para.keyFile = Path.Combine(modelPathroot, keys);
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
-            oCRParameter.cpu_threads = cpu_threads;
+            oCRParameter.gpu_mem = 4000;
             oCRParameter.cpu_mem = 4000;
-            oCRParameter.visualize = false;
+            oCRParameter.cpu_threads = cpu_threads;
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.cls = false;
             oCRParameter.det = true;
@@ -62,50 +61,21 @@ namespace WinFormsApp.Services
             oCRParameter.rec_img_w = 320;
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.use_tensorrt = false;//使用GPU预测时，是否启动tensorrt，默认false
-
+            oCRParameter.visualize = true;
+            para.ocrpara = oCRParameter;
+            para.paraType = EnumParaType.Class;
             //string ocrJson = "{\"use_gpu\": true,\"gpu_id\": 0,\"gpu_mem\": 4000,\"enable_mkldnn\": true,\"rec_img_h\": 48,\"rec_img_w\": 320,\"cls\":false,\"det\":true,\"use_angle_cls\":false}";
             //初始化通用文字引擎
-            return new PaddleOCRCore(config, oCRParameter);
-        }
-
-        /// <summary>
-        /// 初始化Structure引擎
-        /// </summary>
-        /// <returns></returns>
-        public PaddleTableCore GetTableEngine()
-        {
-            //自带轻量版中英文模型V4模型
-            TableModelConfig config = new TableModelConfig();
-            string root = CoreOCRBase.GetModelPath();
-            string modelPathroot = Path.Combine(root, "model");
-            config.det_infer = Path.Combine(modelPathroot, det_infer);
-            config.cls_infer = Path.Combine(modelPathroot, cls_infer);
-            config.rec_infer = Path.Combine(modelPathroot, rec_infer);
-            config.keys = Path.Combine(modelPathroot, keys);
-            config.table_model_dir = Path.Combine(modelPathroot, "ch_ppstructure_mobile_v2.0_SLANet_infer");
-            config.table_char_dict_path = Path.Combine(modelPathroot, "table_structure_dict_ch.txt");
-
-            TableParameter oCRParameter = new TableParameter();
-            //oCRParameter.use_gpu = use_gpu;
-            oCRParameter.cpu_threads = cpu_threads;
-            oCRParameter.visualize = false;
-            oCRParameter.enable_mkldnn = enable_mkldnn;
-            //oCRParameter.cls = true;
-            //oCRParameter.det = true;
-            //oCRParameter.use_angle_cls = true;
-            oCRParameter.det_db_score_mode = true;
-            oCRParameter.max_side_len = 960;
-            oCRParameter.rec_img_h = 48;
-            oCRParameter.rec_img_w = 320;
-            oCRParameter.det_db_thresh = 0.3f;
-            oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.table_max_len = 488;
-            oCRParameter.merge_empty_cell = true;
-            oCRParameter.table_batch_num = 1;
-            //string ocrJson = "{\"use_gpu\": true,\"gpu_id\": 0,\"gpu_mem\": 4000,\"enable_mkldnn\": true,\"rec_img_h\": 48,\"rec_img_w\": 320,\"cls\":false,\"det\":true,\"use_angle_cls\":false}";
-            //初始化表格识别引擎
-            return new PaddleTableCore(config, oCRParameter);
+            string msg = "初始化成功";
+            try
+            {
+                ocrService.Init(para);
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+            }
+            return msg;
         }
     }
 }
