@@ -1,6 +1,6 @@
 ### 离线OCR组件 支持.net/C++/java/Python/Go语言开发
 ## 项目介绍
-基于百度飞桨PaddleOCR文字识别封装的动态链接库，可实现在.net/C++/java/Python/Go等语言中调用，支持CPU/GPU模式，详见WinForm及C++调用Demo
+免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持.net/C++/java/Python/Go语言开发， 基于百度飞桨PaddleOCR封装的C++动态链接库，可用于.net/C++/java/Python/Go等语言中调用，支持paddle_inference2.6.2及3.0推理库。
 喜欢的请给本项目点一个免费的Star
 
 ## 运行环境
@@ -102,6 +102,6 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 
 ## 更新日志
 #### v1.0.1 `2025.3.5`
-- 优化paddleocr.dll，提高识别速度"
+- 优化paddleocr.dll，提高识别速度
 #### v1.0 `2025.1.22`
-- 初版发行: PaddleOCRApi"
+- 初版发行: PaddleOCRApi
