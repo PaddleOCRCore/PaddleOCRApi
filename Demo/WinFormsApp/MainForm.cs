@@ -13,12 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
 using PaddleOCRSDK;
 using System.Diagnostics;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using WinFormsApp.Services;
 
 namespace WinFormsApp
@@ -27,26 +24,59 @@ namespace WinFormsApp
     {
         StringBuilder message = new StringBuilder();
         private readonly IOCRService ocrService;
+        public static bool use_gpu = true;//是否使用GPU
+        public static int gpu_id = 0;//GPUId
+        public static int cpu_threads = 30; //CPU预测时的线程数
+        public static string RecFilepath="";
         public MainForm()
         {
             InitializeComponent();
             ocrService = OCREngine.ocrService;
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                comboBoxuse_gpu.SelectedIndex = 0;
+                RecFilepath = Path.Combine(Application.StartupPath, "output");
+                if (!Directory.Exists(RecFilepath))
+                {
+                    Directory.CreateDirectory(RecFilepath);
+                }
+            }
+            catch (Exception ex)
+            {
+                message.Append(ex.Message);
+                textBoxResult.Text = message.ToString();
+            }
         }
 
         private void buttonInit_Click(object sender, EventArgs e)
         {
             try
             {
-                string initmsg= OCREngine.GetOCREngine();
-                if (string.IsNullOrEmpty(initmsg))
+                LogMessage("正在初始化,请稍后...");
+                //使用 Task 进行异步操作
+                Task.Run(async () =>
                 {
-                    message.Append("初始化成功！\r\n");
-                }
-                else
-                {
-                    message.Append($"{initmsg}\r\n");
-                }
-                textBoxResult.Text = message.ToString();
+                    OCREngine.use_gpu = use_gpu;
+                    OCREngine.gpu_id = gpu_id;
+                    OCREngine.cpu_threads = cpu_threads;
+                    string initmsg = OCREngine.GetOCREngine();
+                    if (string.IsNullOrEmpty(initmsg))
+                    {
+                        LogMessage("初始化成功！");
+                    }
+                    else
+                    {
+                        LogMessage(initmsg);
+                    }
+                    await Task.CompletedTask;
+                }).Wait();
+                this.buttonInit.Enabled = false;
+                this.comboBoxuse_gpu.Enabled = false;
+                this.numDowngpu_id.Enabled = false;
+                this.numDowncpu_threads.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -54,12 +84,13 @@ namespace WinFormsApp
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonRec_Click(object sender, EventArgs e)
         {
             try
             {
                 message = new StringBuilder();
                 string result = "";
+                string recFileName = "";
                 OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
                 OpenFileDialog1.Filter = "所有文件(*.jpg)|*.*|jpg(*.jpg)|*.png|png(*.png)|*.png|bmp(*.bmp)|*.bmp|jpeg(*.jpeg)|*.jpeg";
                 OpenFileDialog1.Multiselect = false;
@@ -70,101 +101,35 @@ namespace WinFormsApp
                     message.Append($"开始时间: {startTime:yyyy-MM-dd HH:mm:ss.fff}");
                     message.Append(Environment.NewLine);
                     stopwatch.Start();
-                    string filePath = OpenFileDialog1.FileName;
-                    //string filePath = Path.Combine(AppContext.BaseDirectory, "inference", "1231.jpeg");
-                    //message.Append(filePath);
+                    string filePath = Path.GetFullPath(OpenFileDialog1.FileName);
+                    recFileName = Path.Combine(RecFilepath, Path.GetFileName(OpenFileDialog1.FileName));
                     textBoxResult.Text = message.ToString();
                     OCRResult ocrResult = ocrService.Detect(filePath);
                     StringBuilder stringBuilder = new StringBuilder();
                     foreach (var item in ocrResult.WordsResult)
                     {
-                        //if (stringBuilder.Length > 0)
-                        //{
-                        //    stringBuilder.Append(Environment.NewLine);
-                        //}
+                        if (stringBuilder.Length > 0)
+                        {
+                            stringBuilder.Append(Environment.NewLine);
+                        }
                         stringBuilder.Append(item.Words);
                     }
                     result = stringBuilder.ToString();
-                    string id_card_side = "front";
-                    if (id_card_side.Equals("front"))
-                    {
-                        var jsonResult = new
-                        {
-                            姓名 = "",
-                            性别 = "",
-                            民族 = "",
-                            出生 = "",
-                            住址 = "",
-                            公民身份号码 = "",
-                            text = ""
-                        };
-                        // 定义正则表达式
-                        Regex regex = new Regex(@"姓名(?<name>[^\s]+)性别(?<gender>[男女])民族(?<nation>.+?)出生(?<birth>.+?)住址(?<address>.+?)公民身份(?<zheng>.+?)号码(?<id>\d{18})");
-                        // 执行匹配
-                        Match match = regex.Match(result);
-                        if (match.Success)
-                        {
-                            // 提取信息
-                            string name = match.Groups["name"].Value;
-                            string gender = match.Groups["gender"].Value;
-                            string nation = match.Groups["nation"].Value;
-                            string birth = match.Groups["birth"].Value;
-                            string address = match.Groups["address"].Value;
-                            string idNumber = match.Groups["id"].Value;
-                            // 构建JSON对象
-                            jsonResult = new
-                            {
-                                姓名 = name,
-                                性别 = gender,
-                                民族 = nation,
-                                出生 = birth,
-                                住址 = address,
-                                公民身份号码 = idNumber,
-                                text = result
-                            };
-                            result = JsonConvert.SerializeObject(jsonResult, Formatting.Indented);
-                        }
-                    }
-                    else if (id_card_side.Equals("back"))
-                    {
-                        var jsonResult = new
-                        {
-                            签发机关 = "",
-                            有效期限 = "",
-                            text = ""
-                        };
-                        // 定义正则表达式
-                        Regex regex = new Regex(@"签发机关(?<issuingAuthority>.+?)有效期限(?<validityPeriod>.+)$");
-
-                        // 执行匹配
-                        Match match = regex.Match(result);
-                        if (match.Success)
-                        {
-                            // 提取信息
-                            string issuingAuthority = match.Groups["issuingAuthority"].Value;
-                            string validityPeriod = match.Groups["validityPeriod"].Value;
-                            // 构建JSON对象
-                            jsonResult = new
-                            {
-                                签发机关 = issuingAuthority,
-                                有效期限 = validityPeriod,
-                                text = result
-                            };
-                            result = JsonConvert.SerializeObject(jsonResult, Formatting.Indented);
-                        }
-                    }
-                    message.Append(result);
-                    message.Append(Environment.NewLine);
                     stopwatch.Stop();
                     var endTime = DateTime.Now;
                     message.Append($"结束时间: {endTime:yyyy-MM-dd HH:mm:ss.fff}");
                     message.Append(Environment.NewLine);
                     message.Append($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
                     message.Append(Environment.NewLine);
+                    message.Append(result);
+                    message.Append(Environment.NewLine);
                     message.Append($"输出json: {ocrResult.JsonText}");
+
                 }
                 OpenFileDialog1.Dispose();
                 textBoxResult.Text = message.ToString();
+                pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
+
             }
             catch (Exception ex)
             {
@@ -173,17 +138,6 @@ namespace WinFormsApp
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                message.Append(ex.Message);
-                textBoxResult.Text = message.ToString();
-            }
-        }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -194,31 +148,63 @@ namespace WinFormsApp
             if (DialogResult.OK == OpenFileDialog1.ShowDialog())
             {
                 string filePath = OpenFileDialog1.FileName;
-                string base64 = GetBase64FromImage(filePath);
+                string base64 = ImageTools.GetBase64FromImage(filePath);
                 textBoxResult.Text = base64;
             }
             OpenFileDialog1.Dispose();
         }
-        #region 图片路径转Base64
-        public static string GetBase64FromImage(string strPath)
+
+        private void comboBoxuse_gpu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strbaser64 = "";
-            try
+            switch (this.comboBoxuse_gpu.SelectedIndex)
             {
-                using (BinaryReader reader = new BinaryReader(File.Open(strPath, FileMode.Open)))
-                {
-                    FileInfo fi = new FileInfo(strPath);
-                    byte[] bytes = reader.ReadBytes((int)fi.Length);
-                    using (MemoryStream ms = new MemoryStream(bytes))
-                    {
-                        strbaser64 = Convert.ToBase64String(bytes);
-                        return strbaser64;
-                    }
-                }
+                case 0:
+                    use_gpu = false;
+                    break;
+                case 1:
+                    use_gpu = true;
+                    break;
+                default:
+                    use_gpu = false;
+                    break;
             }
-            catch (Exception)
+        }
+
+        private void numDowngpu_id_ValueChanged(object sender, EventArgs e)
+        {
+            if (this.numDowngpu_id.Value > 0)
             {
-                return strbaser64;
+                gpu_id = Convert.ToInt32(this.numDowngpu_id.Value);
+            }
+        }
+
+        private void numDowncpu_threads_ValueChanged(object sender, EventArgs e)
+        {
+            if (this.numDowncpu_threads.Value > 0)
+            {
+                cpu_threads = Convert.ToInt32(this.numDowncpu_threads.Value);
+            }
+        }
+
+        #region LogMessage
+        public void LogMessage(string infoValue)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    textBoxResult.AppendText(infoValue);
+                    textBoxResult.AppendText(Environment.NewLine);
+                    textBoxResult.SelectionStart = textBoxResult.Text.Length;
+                    textBoxResult.ScrollToCaret();
+                }));
+            }
+            else
+            {
+                textBoxResult.AppendText(infoValue);
+                textBoxResult.AppendText(Environment.NewLine);
+                textBoxResult.SelectionStart = textBoxResult.Text.Length;
+                textBoxResult.ScrollToCaret();
             }
         }
         #endregion

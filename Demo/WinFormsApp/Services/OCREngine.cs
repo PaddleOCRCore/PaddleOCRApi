@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using PaddleOCRSDK;
 
 namespace WinFormsApp.Services
@@ -25,13 +26,14 @@ namespace WinFormsApp.Services
         private static readonly Lazy<IOCRService> _ocrService = new Lazy<IOCRService>(() => new OCRService());
         public static IOCRService ocrService => _ocrService.Value;
 
-        private static string det_infer = "ch_PP-OCRv4_det_infer";
+        private static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
         private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
-        private static string rec_infer = "ch_PP-OCRv4_rec_infer";
+        private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
         private static string keys = "ppocr_keys.txt";
-        private static bool use_gpu = false;
+        public static bool use_gpu = true;//是否使用GPU
+        public static int gpu_id = 0;//GPUId
         private static bool enable_mkldnn = true;
-        private static int cpu_threads = 30; //CPU预测时的线程数
+        public static int cpu_threads = 30; //CPU预测时的线程数
         /// <summary>
         /// 初始化OCR引擎
         /// </summary>
@@ -40,7 +42,7 @@ namespace WinFormsApp.Services
         {
             InitParamater para = new InitParamater();
             string root = AppDomain.CurrentDomain.BaseDirectory;
-            string modelPathroot = Path.Combine(root, "models");
+            string modelPathroot = Path.Combine(root, "models");//存放模型的目录，不允许修改
             para.det_infer = Path.Combine(modelPathroot, det_infer);
             para.cls_infer = Path.Combine(modelPathroot, cls_infer);
             para.rec_infer = Path.Combine(modelPathroot, rec_infer);
@@ -48,6 +50,8 @@ namespace WinFormsApp.Services
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
+            oCRParameter.use_tensorrt = true;// 使用GPU预测时，是否启动tensorrt
+            oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = 4000;
             oCRParameter.cpu_mem = 4000;
             oCRParameter.cpu_threads = cpu_threads;
