@@ -16,6 +16,7 @@
 using PaddleOCRSDK;
 using System.Diagnostics;
 using System.Text;
+using System.Windows.Forms;
 using WinFormsApp.Services;
 
 namespace WinFormsApp
@@ -24,10 +25,13 @@ namespace WinFormsApp
     {
         StringBuilder message = new StringBuilder();
         private readonly IOCRService ocrService;
-        public static bool use_gpu = true;//是否使用GPU
+        public static bool use_gpu = false;//是否使用GPU
         public static int gpu_id = 0;//GPUId
         public static int cpu_threads = 30; //CPU预测时的线程数
-        public static string RecFilepath="";
+        public static int cpu_mem = 4000;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
+        public static string RecFilepath = "";
+        public static bool outPutJson = false;//是否输出JSON
+        public static int recCount = 1; //OCR识别时同一张图片模拟调用接口次数
         public MainForm()
         {
             InitializeComponent();
@@ -38,6 +42,7 @@ namespace WinFormsApp
             try
             {
                 comboBoxuse_gpu.SelectedIndex = 0;
+                comboBoxJson.SelectedIndex = 0;
                 RecFilepath = Path.Combine(Application.StartupPath, "output");
                 if (!Directory.Exists(RecFilepath))
                 {
@@ -53,11 +58,11 @@ namespace WinFormsApp
 
         private void buttonInit_Click(object sender, EventArgs e)
         {
-            try
+            LogMessage($"{DateTime.Now:HH:mm:ss.fff}:正在初始化,请稍后...");
+            //使用 Task 进行异步操作
+            Task.Run(async () =>
             {
-                LogMessage("正在初始化,请稍后...");
-                //使用 Task 进行异步操作
-                Task.Run(async () =>
+                try
                 {
                     OCREngine.use_gpu = use_gpu;
                     OCREngine.gpu_id = gpu_id;
@@ -65,76 +70,86 @@ namespace WinFormsApp
                     string initmsg = OCREngine.GetOCREngine();
                     if (string.IsNullOrEmpty(initmsg))
                     {
-                        LogMessage("初始化成功！");
+                        LogMessage($"{DateTime.Now:HH:mm:ss.fff}:初始化成功！");
                     }
                     else
                     {
-                        LogMessage(initmsg);
+                        LogMessage($"{DateTime.Now:HH:mm:ss.fff}:{initmsg}");
                     }
-                    await Task.CompletedTask;
-                }).Wait();
-                this.buttonInit.Enabled = false;
-                this.comboBoxuse_gpu.Enabled = false;
-                this.numDowngpu_id.Enabled = false;
-                this.numDowncpu_threads.Enabled = false;
-            }
-            catch (Exception ex)
+                }
+                catch (Exception ex)
+                {
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR初始化失败:{ex.Message}");
+                }
+                await Task.CompletedTask;
+            }).Wait();
+        }
+        private async Task<string> RecOCR(string filePath)
+        {
+            string result = "";
+            var stopwatch = new Stopwatch();
+            var startTime = DateTime.Now;
+            LogMessage($"Image: {filePath}");
+            LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
+            stopwatch.Start();
+            OCRResult ocrResult = ocrService.Detect(filePath);
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var item in ocrResult.WordsResult)
             {
-                MessageBox.Show(ex.Message);
+                if (stringBuilder.Length > 0)
+                {
+                    stringBuilder.Append(Environment.NewLine);
+                }
+                stringBuilder.Append(item.Words);
             }
+            result = stringBuilder.ToString();
+            var endTime = DateTime.Now;
+            LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
+            LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+            LogMessage(result);
+            if (outPutJson)
+                LogMessage($"输出json: {ocrResult.JsonText}");
+            await Task.CompletedTask;
+            return result;
         }
 
         private void buttonRec_Click(object sender, EventArgs e)
         {
             try
             {
+                textBoxResult.Text = "";
                 message = new StringBuilder();
                 string result = "";
                 string recFileName = "";
                 OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
                 OpenFileDialog1.Filter = "所有文件(*.jpg)|*.*|jpg(*.jpg)|*.png|png(*.png)|*.png|bmp(*.bmp)|*.bmp|jpeg(*.jpeg)|*.jpeg";
-                OpenFileDialog1.Multiselect = false;
+                OpenFileDialog1.Multiselect = true;
                 if (DialogResult.OK == OpenFileDialog1.ShowDialog())
                 {
-                    var stopwatch = new Stopwatch();
-                    var startTime = DateTime.Now;
-                    message.Append($"开始时间: {startTime:yyyy-MM-dd HH:mm:ss.fff}");
-                    message.Append(Environment.NewLine);
-                    stopwatch.Start();
-                    string filePath = Path.GetFullPath(OpenFileDialog1.FileName);
-                    recFileName = Path.Combine(RecFilepath, Path.GetFileName(OpenFileDialog1.FileName));
-                    textBoxResult.Text = message.ToString();
-                    OCRResult ocrResult = ocrService.Detect(filePath);
-                    StringBuilder stringBuilder = new StringBuilder();
-                    foreach (var item in ocrResult.WordsResult)
+                    if (OpenFileDialog1.FileNames.Count() > 1)
                     {
-                        if (stringBuilder.Length > 0)
-                        {
-                            stringBuilder.Append(Environment.NewLine);
-                        }
-                        stringBuilder.Append(item.Words);
+                        LogMessage($"启用多线程识别时，总用时计算开始时间为同一时间");
                     }
-                    result = stringBuilder.ToString();
-                    stopwatch.Stop();
-                    var endTime = DateTime.Now;
-                    message.Append($"结束时间: {endTime:yyyy-MM-dd HH:mm:ss.fff}");
-                    message.Append(Environment.NewLine);
-                    message.Append($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
-                    message.Append(Environment.NewLine);
-                    message.Append(result);
-                    message.Append(Environment.NewLine);
-                    message.Append($"输出json: {ocrResult.JsonText}");
-
+                    for (int i = 0; i < recCount; i++)//模拟循环OCR识别
+                    {
+                        foreach (var regfile in OpenFileDialog1.FileNames)
+                        {
+                            Task.Run(async () =>
+                            {
+                                string filePath = Path.GetFullPath(regfile);
+                                recFileName = Path.Combine(RecFilepath, Path.GetFileName(regfile));
+                                result = await RecOCR(filePath);
+                                pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
+                            });
+                        }
+                    }
                 }
                 OpenFileDialog1.Dispose();
-                textBoxResult.Text = message.ToString();
-                pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
 
             }
             catch (Exception ex)
             {
-                message.Append(ex.Message);
-                textBoxResult.Text = message.ToString();
+                LogMessage(ex.Message);
             }
         }
 
@@ -163,6 +178,7 @@ namespace WinFormsApp
                     break;
                 case 1:
                     use_gpu = true;
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference，解压后将paddle\\lib目录下的common.dll和paddle_inference.dll复制到程序运行文件夹！");
                     break;
                 default:
                     use_gpu = false;
@@ -184,6 +200,34 @@ namespace WinFormsApp
             {
                 cpu_threads = Convert.ToInt32(this.numDowncpu_threads.Value);
             }
+        }
+        private void numericUpDowncpu_mem_ValueChanged(object sender, EventArgs e)
+        {
+            if (numericUpDowncpu_mem.Value > 0)
+                cpu_mem = Convert.ToInt32(numericUpDowncpu_mem.Value);
+        }
+
+        private void numericUpDownThread_ValueChanged(object sender, EventArgs e)
+        {
+            if (numericUpDownThread.Value > 0)
+                recCount = Convert.ToInt32(numericUpDownThread.Value);            
+        }
+
+        private void comboBoxJson_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (this.comboBoxJson.SelectedIndex)
+            {
+                case 0:
+                    outPutJson = false;
+                    break;
+                case 1:
+                    outPutJson = true;
+                    break;
+                default:
+                    outPutJson = false;
+                    break;
+            }
+
         }
 
         #region LogMessage

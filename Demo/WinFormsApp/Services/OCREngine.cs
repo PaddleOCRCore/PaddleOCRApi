@@ -31,6 +31,7 @@ namespace WinFormsApp.Services
         private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
         private static string keys = "ppocr_keys.txt";
         public static bool use_gpu = true;//是否使用GPU
+        public static int cpu_mem = 4000;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
         public static int gpu_id = 0;//GPUId
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
@@ -53,7 +54,7 @@ namespace WinFormsApp.Services
             oCRParameter.use_tensorrt = true;// 使用GPU预测时，是否启动tensorrt
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = 4000;
-            oCRParameter.cpu_mem = 4000;
+            oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.cls = false;

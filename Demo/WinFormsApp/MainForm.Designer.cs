@@ -33,6 +33,12 @@
             textBoxResult = new TextBox();
             button2 = new Button();
             groupBox1 = new GroupBox();
+            numericUpDowncpu_mem = new NumericUpDown();
+            label6 = new Label();
+            numericUpDownThread = new NumericUpDown();
+            label5 = new Label();
+            label4 = new Label();
+            comboBoxJson = new ComboBox();
             numDowncpu_threads = new NumericUpDown();
             label3 = new Label();
             numDowngpu_id = new NumericUpDown();
@@ -42,6 +48,8 @@
             pictureBoxImg = new PictureBox();
             groupBox2 = new GroupBox();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
@@ -50,7 +58,7 @@
             // 
             // buttonInit
             // 
-            buttonInit.Location = new Point(486, 15);
+            buttonInit.Location = new Point(622, 28);
             buttonInit.Name = "buttonInit";
             buttonInit.Size = new Size(120, 36);
             buttonInit.TabIndex = 0;
@@ -60,7 +68,7 @@
             // 
             // buttonRec
             // 
-            buttonRec.Location = new Point(612, 15);
+            buttonRec.Location = new Point(786, 28);
             buttonRec.Name = "buttonRec";
             buttonRec.Size = new Size(120, 36);
             buttonRec.TabIndex = 1;
@@ -71,16 +79,16 @@
             // textBoxResult
             // 
             textBoxResult.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            textBoxResult.Location = new Point(534, 94);
+            textBoxResult.Location = new Point(534, 104);
             textBoxResult.Multiline = true;
             textBoxResult.Name = "textBoxResult";
             textBoxResult.ScrollBars = ScrollBars.Both;
-            textBoxResult.Size = new Size(547, 586);
+            textBoxResult.Size = new Size(547, 576);
             textBoxResult.TabIndex = 2;
             // 
             // button2
             // 
-            button2.Location = new Point(949, 17);
+            button2.Location = new Point(943, 28);
             button2.Name = "button2";
             button2.Size = new Size(120, 36);
             button2.TabIndex = 3;
@@ -91,6 +99,12 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(numericUpDowncpu_mem);
+            groupBox1.Controls.Add(label6);
+            groupBox1.Controls.Add(numericUpDownThread);
+            groupBox1.Controls.Add(label5);
+            groupBox1.Controls.Add(label4);
+            groupBox1.Controls.Add(comboBoxJson);
             groupBox1.Controls.Add(numDowncpu_threads);
             groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(numDowngpu_id);
@@ -102,14 +116,75 @@
             groupBox1.Controls.Add(buttonRec);
             groupBox1.Location = new Point(12, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1069, 66);
+            groupBox1.Size = new Size(1069, 86);
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "功能选项";
             // 
+            // numericUpDowncpu_mem
+            // 
+            numericUpDowncpu_mem.Location = new Point(545, 55);
+            numericUpDowncpu_mem.Maximum = new decimal(new int[] { 8000, 0, 0, 0 });
+            numericUpDowncpu_mem.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numericUpDowncpu_mem.Name = "numericUpDowncpu_mem";
+            numericUpDowncpu_mem.Size = new Size(55, 23);
+            numericUpDowncpu_mem.TabIndex = 15;
+            numericUpDowncpu_mem.Value = new decimal(new int[] { 4000, 0, 0, 0 });
+            numericUpDowncpu_mem.ValueChanged += numericUpDowncpu_mem_ValueChanged;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(419, 57);
+            label6.Name = "label6";
+            label6.Size = new Size(120, 17);
+            label6.TabIndex = 14;
+            label6.Text = "内存占用上限(MB)：";
+            label6.TextAlign = ContentAlignment.TopRight;
+            label6.UseWaitCursor = true;
+            // 
+            // numericUpDownThread
+            // 
+            numericUpDownThread.Location = new Point(333, 54);
+            numericUpDownThread.Name = "numericUpDownThread";
+            numericUpDownThread.Size = new Size(80, 23);
+            numericUpDownThread.TabIndex = 13;
+            numericUpDownThread.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDownThread.ValueChanged += numericUpDownThread_ValueChanged;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(235, 56);
+            label5.Name = "label5";
+            label5.Size = new Size(92, 17);
+            label5.TabIndex = 12;
+            label5.Text = "模拟并发线程：";
+            label5.TextAlign = ContentAlignment.TopRight;
+            label5.UseWaitCursor = true;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(10, 57);
+            label4.Name = "label4";
+            label4.Size = new Size(76, 17);
+            label4.TabIndex = 11;
+            label4.Text = "输出JSON：";
+            // 
+            // comboBoxJson
+            // 
+            comboBoxJson.FormattingEnabled = true;
+            comboBoxJson.Items.AddRange(new object[] { "只输出文字", "输出文字+JSON" });
+            comboBoxJson.Location = new Point(92, 53);
+            comboBoxJson.Name = "comboBoxJson";
+            comboBoxJson.Size = new Size(129, 25);
+            comboBoxJson.TabIndex = 10;
+            comboBoxJson.SelectedIndexChanged += comboBoxJson_SelectedIndexChanged;
+            // 
             // numDowncpu_threads
             // 
-            numDowncpu_threads.Location = new Point(419, 22);
+            numDowncpu_threads.Location = new Point(545, 22);
             numDowncpu_threads.Name = "numDowncpu_threads";
             numDowncpu_threads.Size = new Size(55, 23);
             numDowncpu_threads.TabIndex = 9;
@@ -119,7 +194,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(333, 24);
+            label3.Location = new Point(459, 28);
             label3.Name = "label3";
             label3.Size = new Size(80, 17);
             label3.TabIndex = 8;
@@ -129,16 +204,16 @@
             // 
             // numDowngpu_id
             // 
-            numDowngpu_id.Location = new Point(271, 22);
+            numDowngpu_id.Location = new Point(333, 23);
             numDowngpu_id.Name = "numDowngpu_id";
-            numDowngpu_id.Size = new Size(54, 23);
+            numDowngpu_id.Size = new Size(80, 23);
             numDowngpu_id.TabIndex = 7;
             numDowngpu_id.ValueChanged += numDowngpu_id_ValueChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(202, 27);
+            label2.Location = new Point(264, 26);
             label2.Name = "label2";
             label2.Size = new Size(63, 17);
             label2.TabIndex = 6;
@@ -160,7 +235,7 @@
             comboBoxuse_gpu.Items.AddRange(new object[] { "使用CPU", "使用GPU" });
             comboBoxuse_gpu.Location = new Point(92, 22);
             comboBoxuse_gpu.Name = "comboBoxuse_gpu";
-            comboBoxuse_gpu.Size = new Size(101, 25);
+            comboBoxuse_gpu.Size = new Size(129, 25);
             comboBoxuse_gpu.TabIndex = 4;
             comboBoxuse_gpu.SelectedIndexChanged += comboBoxuse_gpu_SelectedIndexChanged;
             // 
@@ -169,7 +244,7 @@
             pictureBoxImg.Dock = DockStyle.Fill;
             pictureBoxImg.Location = new Point(3, 19);
             pictureBoxImg.Name = "pictureBoxImg";
-            pictureBoxImg.Size = new Size(510, 574);
+            pictureBoxImg.Size = new Size(510, 554);
             pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxImg.TabIndex = 5;
             pictureBoxImg.TabStop = false;
@@ -178,9 +253,9 @@
             // 
             groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             groupBox2.Controls.Add(pictureBoxImg);
-            groupBox2.Location = new Point(12, 84);
+            groupBox2.Location = new Point(12, 104);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(516, 596);
+            groupBox2.Size = new Size(516, 576);
             groupBox2.TabIndex = 6;
             groupBox2.TabStop = false;
             groupBox2.Text = "图片";
@@ -195,10 +270,12 @@
             Controls.Add(textBoxResult);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PaddleOCR识别Demo";
+            Text = "PaddleOCR识别Demo--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
             Load += MainForm_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDownThread).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
@@ -222,5 +299,11 @@
         private Label label3;
         private PictureBox pictureBoxImg;
         private GroupBox groupBox2;
+        private Label label4;
+        private ComboBox comboBoxJson;
+        private NumericUpDown numericUpDownThread;
+        private Label label5;
+        private NumericUpDown numericUpDowncpu_mem;
+        private Label label6;
     }
 }

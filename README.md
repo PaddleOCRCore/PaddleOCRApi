@@ -1,6 +1,6 @@
 ### 离线OCR组件 支持.net/C++/java/Python/Go语言开发
 ## 项目介绍
-免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持.net/C++/java/Python/Go语言开发， 基于百度飞桨PaddleOCR封装的C++动态链接库，可用于.net/C++/java/Python/Go等语言中调用，支持paddle_inference2.6.2及3.0推理库。
+免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持.net/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，可用于.net/C++/java/Python/Go等语言中调用，支持paddle_inference2.6.2及3.0推理库。
 喜欢的请给本项目点一个免费的Star
 
 ## 运行环境
@@ -19,6 +19,10 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12
 2、进QQ群475159576，下载群文件的PaddleOCRLib.zip，解压后放到编译的根目录中
 
 3、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需接说明安装对应环境)
+
+Demo预览：
+
+<img src="./PaddleOCRSDK/PaddleOCRRuntime/ocrDemo.jpg" width="600px;" />
 
 依赖库列表参考：
 
@@ -101,6 +105,9 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 <img src="./PaddleOCRSDK/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
+#### v1.0.2 `2025.3.23`
+- 优化paddleocr.dll，增加多线程队列支持，增加内存达到上限自动回收
+- WinFormDemo功能强化，增加初始化选项，增加多图选择及模拟并发测试
 #### v1.0.1 `2025.3.5`
 - 优化paddleocr.dll，提高识别速度
 #### v1.0 `2025.1.22`
