@@ -22,7 +22,7 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12
 
 Demo预览：
 
-<img src="./PaddleOCRSDK/PaddleOCRRuntime/ocrDemo.jpg" width="600px;" />
+<img src="./PaddleOCRSDK/PaddleOCRRuntime/ocrDemo.jpg" width="800px;" />
 
 依赖库列表参考：
 
