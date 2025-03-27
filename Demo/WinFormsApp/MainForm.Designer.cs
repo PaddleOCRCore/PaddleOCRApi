@@ -125,11 +125,9 @@
             // 
             numericUpDowncpu_mem.Location = new Point(545, 55);
             numericUpDowncpu_mem.Maximum = new decimal(new int[] { 8000, 0, 0, 0 });
-            numericUpDowncpu_mem.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
             numericUpDowncpu_mem.Name = "numericUpDowncpu_mem";
             numericUpDowncpu_mem.Size = new Size(55, 23);
             numericUpDowncpu_mem.TabIndex = 15;
-            numericUpDowncpu_mem.Value = new decimal(new int[] { 4000, 0, 0, 0 });
             numericUpDowncpu_mem.ValueChanged += numericUpDowncpu_mem_ValueChanged;
             // 
             // label6
@@ -159,7 +157,7 @@
             label5.Name = "label5";
             label5.Size = new Size(92, 17);
             label5.TabIndex = 12;
-            label5.Text = "模拟并发线程：";
+            label5.Text = "模拟循环识别：";
             label5.TextAlign = ContentAlignment.TopRight;
             label5.UseWaitCursor = true;
             // 

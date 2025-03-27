@@ -34,7 +34,7 @@ struct OCRParameter
 	int gpu_mem = 4000;   //使用GPU时内存 
 	bool use_tensorrt = false; //使用GPU预测时，是否启动tensorrt
 
-	int cpu_mem = 2000; //CPU内存占用上限，单位MB。-1表示不限制
+	int cpu_mem = 0; //CPU内存占用上限，单位MB。-1表示不限制
 	int cpu_threads = 10; //CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快，默认10
 	bool enable_mkldnn = true; //是否使用mkldnn库
 
@@ -45,7 +45,7 @@ struct OCRParameter
 	float det_db_unclip_ratio = 1.6f; //表示文本框的紧致程度，越小则文本框更靠近文本
 	bool use_dilation = false; //是否在输出映射上使用膨胀
 	bool det_db_score_mode = true; //true:使用多边形框计算bbox score，false:使用矩形框计算。矩形框计算速度更快，多边形框对弯曲文本区域计算更准确。
-	bool visualize = false; //是否对结果进行可视化，为false时，预测结果会保存在output文件夹下和输入图像同名的图像上。
+	bool visualize = false; //是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的图像上。
 
 	// 方向分类器相关
 	bool use_angle_cls = false;//是否使用方向分类器
@@ -53,7 +53,7 @@ struct OCRParameter
 	int cls_batch_num = 1; //方向分类器批量识别数量
 
 	// 识别模型相关
-	int rec_batch_num = 6; //文字识别模型批量识别数量
+	int rec_batch_num = 10; //文字识别模型批量识别数量
 	int rec_img_h = 48; // 识别模型输入图像高度
 	int rec_img_w = 320;//识别模型输入图像宽度
 };

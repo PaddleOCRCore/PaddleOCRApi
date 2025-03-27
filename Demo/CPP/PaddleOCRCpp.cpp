@@ -63,9 +63,9 @@ int main()
     string keys(path);
     keys += "/models/ppocr_keys.txt";
     OCRParameter parameter;
-    parameter.use_gpu = false;
-    parameter.cpu_threads = 30;
-    parameter.cpu_mem = 4000;
+    parameter.use_gpu = false;//是否使用GPU
+    parameter.cpu_threads = 30;//CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快，默认10
+    parameter.cpu_mem = 0;//CPU内存占用上限，单位MB。 - 1表示不限制
     parameter.enable_mkldnn = true;
     parameter.cls = false;
     parameter.det = true;
@@ -74,7 +74,7 @@ int main()
     parameter.max_side_len = 960;
     parameter.rec_img_h = 48;
     parameter.rec_img_w = 320;
-    parameter.visualize = true;
+    parameter.visualize = false;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的图像上。
 
     string imagespath(path);
     imagespath += "\\images";//请将图片放至此目录
@@ -86,13 +86,15 @@ int main()
         const_cast<char*>(rec_infer.c_str()), const_cast<char*>(keys.c_str()), parameter);
     for (const auto image : images) 
     {
-        cout << "images:" << image << endl;
-        auto	starttime = chrono::steady_clock::now();
-        string cstr = ConvertWStringToString(Detect(const_cast<char*>(image.c_str())));
-        auto	endtime = chrono::steady_clock::now();
-        auto duration = chrono::duration_cast<chrono::milliseconds>(endtime - starttime);
-        std::cout << "Detect:" << duration.count() << "ms" << endl;
-        cout << cstr << endl;
+        for (int i = 0; i < 1; i++) {//模拟单张图片循环识别
+            cout << "images:" << image << endl;
+            auto	starttime = chrono::steady_clock::now();
+            string cstr = ConvertWStringToString(Detect(const_cast<char*>(image.c_str())));
+            auto	endtime = chrono::steady_clock::now();
+            auto duration = chrono::duration_cast<chrono::milliseconds>(endtime - starttime);
+            std::cout << "Detect:" << duration.count() << "ms" << endl;
+            cout << cstr << endl;
+        }
     }
     try
     {

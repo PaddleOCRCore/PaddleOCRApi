@@ -23,7 +23,7 @@ init_func(
     ctypes.c_char_p((root_dir + "\\models\\ch_ppocr_mobile_v2.0_cls_infer").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\ch_PP-OCRv4_rec_infer").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\ppocr_keys.txt").encode('utf-8')),
-    ctypes.c_char_p(b'{"use_gpu": false,"cpu_math_library_num_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 4000,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":false,"det":true,"use_angle_cls":false}')
+    ctypes.c_char_p(b'{"use_gpu": false,"cpu_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 0,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":false,"det":true,"use_angle_cls":false}')
 )
 
 # 设置返回结果格式

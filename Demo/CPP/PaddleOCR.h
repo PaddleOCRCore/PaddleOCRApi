@@ -20,7 +20,22 @@
 #pragma once
 
 extern "C" {
+    /// <summary>
+    /// 是否生成日志
+    /// </summary>
+    /// <param name="useLog"></param>
+    /// <returns></returns>
+    __declspec(dllimport) void __stdcall EnableLog(bool useLog);
+    /// <summary>
+    /// 是否使用单字节编码
+    /// </summary>
+    /// <param name="useANSI"></param>
     __declspec(dllimport) void __stdcall EnableANSIResult(bool useANSI);
+
+    /// <summary>
+    /// 是否使用json格式返回结果，默认true
+    /// </summary>
+    /// <param name="useANSI"></param>
     __declspec(dllimport) void __stdcall EnableJsonResult(bool enable);
     __declspec(dllimport) bool __stdcall Init(const char* det_infer,
         const char* cls_infer,

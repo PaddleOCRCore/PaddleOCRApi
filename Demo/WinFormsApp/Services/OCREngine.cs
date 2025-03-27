@@ -30,8 +30,8 @@ namespace WinFormsApp.Services
         private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
         private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
         private static string keys = "ppocr_keys.txt";
-        public static bool use_gpu = true;//是否使用GPU
-        public static int cpu_mem = 4000;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
+        public static bool use_gpu = false;//是否使用GPU
+        public static int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
         public static int gpu_id = 0;//GPUId
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
@@ -51,11 +51,11 @@ namespace WinFormsApp.Services
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = true;// 使用GPU预测时，是否启动tensorrt
+            oCRParameter.use_tensorrt = true;
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = 4000;
             oCRParameter.cpu_mem = cpu_mem;
-            oCRParameter.cpu_threads = cpu_threads;
+            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.cls = false;
             oCRParameter.det = true;
@@ -67,6 +67,7 @@ namespace WinFormsApp.Services
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
             oCRParameter.visualize = true;
+
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.Class;
             //string ocrJson = "{\"use_gpu\": true,\"gpu_id\": 0,\"gpu_mem\": 4000,\"enable_mkldnn\": true,\"rec_img_h\": 48,\"rec_img_w\": 320,\"cls\":false,\"det\":true,\"use_angle_cls\":false}";

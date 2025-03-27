@@ -103,7 +103,7 @@ namespace PaddleOCRSDK
         /// 是否使用GPU
         /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
-        public bool use_gpu { get; set; } = true;
+        public bool use_gpu { get; set; } = false;
         /// <summary>
         /// GPU id，使用GPU时有效
         /// </summary>

@@ -62,9 +62,9 @@ namespace PaddleOCRSDK
 
                 return ret;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new OCRException($"初始化失败: {GetError()}");
+                throw new OCRException($"初始化失败: {ex.Message}");
             }
         }
         /// <summary>

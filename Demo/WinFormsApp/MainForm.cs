@@ -84,7 +84,7 @@ namespace WinFormsApp
                 await Task.CompletedTask;
             }).Wait();
         }
-        private async Task<string> RecOCR(string filePath)
+        private string RecOCR(string filePath)
         {
             string result = "";
             var stopwatch = new Stopwatch();
@@ -109,7 +109,6 @@ namespace WinFormsApp
             LogMessage(result);
             if (outPutJson)
                 LogMessage($"输出json: {ocrResult.JsonText}");
-            await Task.CompletedTask;
             return result;
         }
 
@@ -126,23 +125,16 @@ namespace WinFormsApp
                 OpenFileDialog1.Multiselect = true;
                 if (DialogResult.OK == OpenFileDialog1.ShowDialog())
                 {
-                    if (OpenFileDialog1.FileNames.Count() > 1)
-                    {
-                        LogMessage($"启用多线程识别时，总用时计算开始时间为同一时间");
-                    }
                     for (int i = 0; i < recCount; i++)//模拟循环OCR识别
                     {
                         foreach (var regfile in OpenFileDialog1.FileNames)
                         {
-                            Task.Run(async () =>
-                            {
-                                string filePath = Path.GetFullPath(regfile);
-                                recFileName = Path.Combine(RecFilepath, Path.GetFileName(regfile));
-                                result = await RecOCR(filePath);
-                                pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
-                            });
+                            string filePath = Path.GetFullPath(regfile);
+                            recFileName = Path.Combine(RecFilepath, Path.GetFileName(regfile));
+                            result = RecOCR(filePath);
                         }
                     }
+                    pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
                 }
                 OpenFileDialog1.Dispose();
 

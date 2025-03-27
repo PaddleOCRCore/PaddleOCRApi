@@ -23,6 +23,22 @@ namespace PaddleOCRSDK
     internal class OCRSDK
     {
         internal const string dllFileName = "PaddleOCR.dll";
+
+        /// <summary>
+        /// 是否生成日志
+        /// </summary>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern void EnableLog(bool useLog);
+        /// <summary>
+        /// 是否使用单字节编码
+        /// </summary>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern void EnableANSIResult(bool useANSI);
+        /// <summary>
+        /// 是否使用json格式返回结果，默认true
+        /// </summary>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern void EnableJsonResult(bool enable);
         /// <summary>
         /// 获取错误提示
         /// </summary>
