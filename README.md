@@ -10,19 +10,23 @@
 
 - paddle_inference2.6.2版本推理库下载
 
-- CPU版本，解压后将paddle\lib目录下的common.dll和paddle_inference.dll复制到程序运行文件夹
+- CPU版本(PaddleOCRRuntime_x64已包含)：
 https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mkl-vs2019/paddle_inference.zip
 
 - GPU版本，解压后将paddle\lib目录下的common.dll和paddle_inference.dll复制到程序运行文件夹
 https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12.0_cudnn8.9.1_trt8.6.1.6_mkl_avx_vs2019/paddle_inference.zip
 
-2、进QQ群475159576，下载群文件的PaddleOCRLib.zip，解压后放到编译的根目录中
+2、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需接说明安装对应环境)
 
-3、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需接说明安装对应环境)
+3、.net引用
+
+<PackageReference Include="PaddleOCRSDK" Version="1.0.3" />
+
+<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
 
 Demo预览：
 
-<img src="./PaddleOCRSDK/PaddleOCRRuntime/ocrDemo.jpg" width="800px;" />
+<img src="./Demo/PaddleOCRRuntime/ocrDemo.jpg" width="800px;" />
 
 依赖库列表参考：
 
@@ -96,13 +100,13 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 
 欢迎加入QQ群475159576交流,或者添加QQ：2380243976,若您喜欢本项目，请点击免费的star
 
-<img src="./PaddleOCRSDK/PaddleOCRRuntime/qq.png" width="382px;" />
+<img src="./Demo/PaddleOCRRuntime/qq.png" width="382px;" />
 
 ## 捐助
 
 如果这个项目对您有所帮助，请扫下方二维码打赏一杯咖啡。
 
-<img src="./PaddleOCRSDK/PaddleOCRRuntime/donate.jpg" width="382px;" />
+<img src="./Demo/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
 #### v1.0.2 `2025.3.23`
