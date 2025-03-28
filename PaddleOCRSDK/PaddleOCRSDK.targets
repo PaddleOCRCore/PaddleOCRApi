@@ -1,0 +1,36 @@
+<Project>
+	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\*.*">
+			<Link>models\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\ch_PP-OCRv4_det_infer\*.*">
+			<Link>models\ch_PP-OCRv4_det_infer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\ch_PP-OCRv4_rec_infer\*.*">
+			<Link>models\ch_PP-OCRv4_rec_infer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\ch_ppocr_mobile_v2.0_cls_infer\*.*">
+			<Link>models\ch_ppocr_mobile_v2.0_cls_infer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\ch_ppstructure_mobile_v2.0_SLANet_infer\*.*">
+			<Link>models\ch_ppstructure_mobile_v2.0_SLANet_infer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
+	</ItemGroup>
+  <Target Name="CopyPaddleModels" AfterTargets="Build">
+      <Message Text="Copy PaddleOCR models and C++ dynamic link library" Importance="high" />
+  </Target>
+</Project>
