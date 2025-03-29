@@ -149,6 +149,30 @@ namespace PaddleOCRSDK
             return lastErr;
         }
         /// <summary>
+        /// 是否生成日志，默认为true
+        /// </summary>
+        /// <param name="useLog"></param>
+        public void EnableLog(bool useLog)
+        {
+            OCRSDK.EnableLog(useLog);
+        }
+        /// <summary>
+        /// 是否使用单字节编码，默认为false
+        /// </summary>
+        /// <param name="useANSI"></param>
+        public void EnableANSIResult(bool useANSI)
+        {
+            OCRSDK.EnableANSIResult(useANSI);
+        }
+        /// <summary>
+        /// 是否使用json格式返回结果，默认true
+        /// </summary>
+        /// <param name="enableJson"></param>
+        public void EnableJsonResult(bool enableJson)
+        {
+            OCRSDK.EnableJsonResult(enableJson);
+        }
+        /// <summary>
         /// Json反序列化
         /// </summary>
         /// <typeparam name="T">反序列化的目标类型</typeparam>

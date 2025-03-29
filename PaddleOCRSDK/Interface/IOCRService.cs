@@ -52,5 +52,20 @@ namespace PaddleOCRSDK
         /// </summary>
         /// <returns></returns>
         string GetError();
+        /// <summary>
+        /// 是否生成日志，默认为true
+        /// </summary>
+        /// <param name="useLog"></param>
+        void EnableLog(bool useLog);
+        /// <summary>
+        /// 是否使用单字节编码，默认为false
+        /// </summary>
+        /// <param name="useANSI"></param>
+        void EnableANSIResult(bool useANSI);
+        /// <summary>
+        /// 是否使用json格式返回结果，默认true
+        /// </summary>
+        /// <param name="enableJson"></param>
+        void EnableJsonResult(bool enableJson);
     }
 }

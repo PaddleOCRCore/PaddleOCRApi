@@ -1,9 +1,9 @@
-### 离线OCR组件 支持.net/C++/java/Python/Go语言开发
-## 项目介绍
+# 离线OCR组件 支持.net/C++/java/Python/Go语言开发
+## 一、简介
 免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持.net/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，可用于.net/C++/java/Python/Go等语言中调用，支持paddle_inference2.6.2及3.0推理库。
 喜欢的请给本项目点一个免费的Star
 
-## 运行环境
+## 二、运行环境
 项目运行环境为VS2022+.net8.0：
 
 1、默认[paddle_inference2.6.2](https://www.paddlepaddle.org.cn/inference/v2.6/guides/install/download_lib.html#windows)版本CPU版本推理库，其它推理库请手动下载
@@ -18,20 +18,24 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12
 
 2、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需接说明安装对应环境)
 
-3、.net引用
+3、.net引用(支持netstandard2.0;net45;net461;net47;net48;net6.0;net7.0;net8.0;net9.0)
 
-<PackageReference Include="PaddleOCRSDK" Version="1.0.3" />
+`<PackageReference Include="PaddleOCRSDK" Version="1.0.3" />`
 
-<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
+`<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />`
 
-Demo预览：
+PaddleOCRRuntime_x64支持Python、Go、C++等环境
+
+### [WebApi接口文档](./OCRCoreService/README.md)
+
+### WinFormDemo预览：
 
 <img src="./Demo/PaddleOCRRuntime/ocrDemo.jpg" width="800px;" />
 
 依赖库列表参考：
 
 
-## 调用参数说明
+## 三、调用参数说明
 | 参数名称                     | 默认值 | 值说明                                                                                   |
 | ---------------------------- | ------ | ---------------------------------------------------------------------------------------- |
 | det_model_dir                | -      | 检测模型inference model地址                                                              |
@@ -72,7 +76,7 @@ Demo预览：
 | merge_empty_cell             | true   | 是否合并空单元格                                                                         |
 | table_batch_num              | 1      | table_batch_num                                                                          |
 
-## GPU版本环境
+## 四、GPU环境切换
 具体CUDA版本请参考您使用的paddle_inference版本要求
 
 - [编译的OpenCV版本为4.7](https://github.com/opencv/opencv/releases)
@@ -109,10 +113,13 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 <img src="./Demo/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
-#### v1.0.2 `2025.3.23`
+### v1.0.4 `2025.3.29`
+- 优化paddleocr.dll，增加日志输出开关，OCR识别提速
+- WebApi接口优化，增加OCR初始化及参数设置
+### v1.0.2 `2025.3.23`
 - 优化paddleocr.dll，增加多线程队列支持，增加内存达到上限自动回收
 - WinFormDemo功能强化，增加初始化选项，增加多图选择及模拟并发测试
-#### v1.0.1 `2025.3.5`
-- 优化paddleocr.dll，提高识别速度
-#### v1.0 `2025.1.22`
+### v1.0.1 `2025.3.5`
+- 优化paddleocr.dll，提高识别速度，增加智能指针
+### v1.0 `2025.1.22`
 - 初版发行: PaddleOCRApi
