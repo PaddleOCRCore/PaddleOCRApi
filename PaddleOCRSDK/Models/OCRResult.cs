@@ -20,6 +20,9 @@ using System.Text;
 
 namespace PaddleOCRSDK
 {
+    /// <summary>
+    /// 文字识别结果
+    /// </summary>
     public class OCRResult
     {
         /// <summary>

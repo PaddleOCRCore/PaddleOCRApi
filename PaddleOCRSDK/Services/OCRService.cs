@@ -14,10 +14,8 @@
 // limitations under the License.
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace PaddleOCRSDK
@@ -30,6 +28,113 @@ namespace PaddleOCRSDK
     }
     public class OCRService:IOCRService
     {
+        /// <summary>
+        /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
+        /// </summary>
+        /// <param name="modelsPath"></param>
+        /// <returns></returns>
+        public string InitDefaultOCREngine(string modelsPath)
+        {
+            string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
+            string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
+            string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
+            string keys = "ppocr_keys.txt";
+            bool use_gpu = false;//是否使用GPU
+            int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
+            int gpu_id = 0;//GPUId
+            bool enable_mkldnn = true;
+            int cpu_threads = 30; //CPU预测时的线程数
+            InitParamater para = new InitParamater();
+            para.det_infer = Path.Combine(modelsPath, det_infer);
+            para.cls_infer = Path.Combine(modelsPath, cls_infer);
+            para.rec_infer = Path.Combine(modelsPath, rec_infer);
+            para.keyFile = Path.Combine(modelsPath, keys);
+
+            OCRParameter oCRParameter = new OCRParameter();
+            oCRParameter.use_gpu = use_gpu;
+            oCRParameter.use_tensorrt = true;
+            oCRParameter.gpu_id = gpu_id;
+            oCRParameter.gpu_mem = 4000;
+            oCRParameter.cpu_mem = cpu_mem;
+            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
+            oCRParameter.enable_mkldnn = enable_mkldnn;
+            oCRParameter.cls = false;
+            oCRParameter.det = true;
+            oCRParameter.use_angle_cls = false;
+            oCRParameter.det_db_score_mode = true;
+            oCRParameter.max_side_len = 960;
+            oCRParameter.rec_img_h = 48;
+            oCRParameter.rec_img_w = 320;
+            oCRParameter.det_db_thresh = 0.3f;
+            oCRParameter.det_db_box_thresh = 0.618f;
+            oCRParameter.visualize = true;
+            para.ocrpara = oCRParameter;
+            para.paraType = EnumParaType.Class;
+            string msg = "文本识别初始化成功";
+            try
+            {
+                Init(para);
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+            }
+            return msg;
+        }
+        /// <summary>
+        /// 初始化表格识别引擎默认V4模型，使用CPU及mkldnn
+        /// </summary>
+        /// <param name="modelsPath"></param>
+        /// <returns></returns>
+        public string InitDefaultTableEngine(string modelsPath)
+        {
+            string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
+            string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
+            string keys = "ppocr_keys.txt";
+            string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
+            string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
+            bool use_gpu = false;//是否使用GPU
+            int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
+            int gpu_id = 0;//GPUId
+            bool enable_mkldnn = true;
+            int cpu_threads = 30; //CPU预测时的线程数
+            InitParamater para = new InitParamater();
+            para.det_infer = Path.Combine(modelsPath, det_infer);
+            para.rec_infer = Path.Combine(modelsPath, rec_infer);
+            para.keyFile = Path.Combine(modelsPath, keys);
+            para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
+            para.table_dict_path = Path.Combine(modelsPath, table_dict_path);
+            TableParameter oCRParameter = new TableParameter();
+            oCRParameter.use_gpu = use_gpu;
+            oCRParameter.use_tensorrt = true;
+            oCRParameter.gpu_id = gpu_id;
+            oCRParameter.gpu_mem = 4000;
+            oCRParameter.cpu_mem = cpu_mem;
+            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
+            oCRParameter.enable_mkldnn = enable_mkldnn;
+            oCRParameter.cls = false;
+            oCRParameter.det = true;
+            oCRParameter.use_angle_cls = false;
+            oCRParameter.det_db_score_mode = true;
+            oCRParameter.max_side_len = 960;
+            oCRParameter.rec_img_h = 48;
+            oCRParameter.rec_img_w = 320;
+            oCRParameter.det_db_thresh = 0.3f;
+            oCRParameter.det_db_box_thresh = 0.618f;
+            oCRParameter.visualize = true;
+            para.tablepara = oCRParameter;
+            para.paraType = EnumParaType.TableClass;
+            string msg = "表格识别初始化成功";
+            try
+            {
+                Init(para);
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+            }
+            return msg;
+        }
         /// <summary>
         /// 初始化OCR引擎
         /// </summary>
@@ -48,6 +153,14 @@ namespace PaddleOCRSDK
                 else if (para.paraType == EnumParaType.Json)
                 {
                     ret = OCRSDK.Initjson(para.det_infer, para.cls_infer, para.rec_infer, para.keyFile, para.json);
+                }
+                else if (para.paraType == EnumParaType.TableClass)
+                {
+                    ret = OCRSDK.InitTable(para.det_infer, para.rec_infer, para.keyFile, para.table_model_dir,para.table_dict_path, para.tablepara);
+                }
+                else if (para.paraType == EnumParaType.TableJson)
+                {
+                    ret = OCRSDK.InitTablejson(para.det_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.json);
                 }
                 else
                 {
@@ -126,6 +239,67 @@ namespace PaddleOCRSDK
             }
             return result;
         }
+        /// <summary>
+        /// 对图像文件进行表格识别
+        /// </summary>
+        /// <param name="imagefile">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        public string DetectTable(string imagefile)
+        {
+            var ptrResult = OCRSDK.DetectTable(imagefile);
+            return GetTableResult(ptrResult);
+        }
+        /// <summary>
+        /// 对图像文件进行表格识别
+        /// </summary>
+        /// <param name="imagebyte">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        public string DetectTableByte(byte[] imagebyte)
+        {
+            var ptrResult = OCRSDK.DetectByte(imagebyte, imagebyte.LongLength);
+            return GetTableResult(ptrResult);
+        }
+        /// <summary>
+        /// 对图像文件进行表格识别
+        /// </summary>
+        /// <param name="imagebyte">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        public string DetectTableBase64(string base64)
+        {
+            var ptrResult = OCRSDK.DetectBase64(base64);
+            return GetTableResult(ptrResult);
+        }
+
+        private string GetTableResult(IntPtr ptrResult)
+        {
+            string result = string.Empty;
+            if (ptrResult == IntPtr.Zero)
+            {
+                var lastErr = GetError();
+                if (!string.IsNullOrEmpty(lastErr))
+                {
+                    throw new OCRException("OCR内部错误：" + lastErr);
+                }
+                return result;
+            }
+            try
+            {
+                result = Marshal.PtrToStringUni(ptrResult);
+            }
+            catch (Exception ex)
+            {
+                throw new OCRException("OCR表格识别失败:" + ex.Message);
+            }
+            finally
+            {
+                if (ptrResult != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(ptrResult);
+                }
+            }
+            return result;
+        }
+
         /// <summary>
         /// 获取错误原因
         /// </summary>

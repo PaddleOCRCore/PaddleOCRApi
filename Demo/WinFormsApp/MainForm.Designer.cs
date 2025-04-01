@@ -31,8 +31,9 @@
             buttonInit = new Button();
             buttonRec = new Button();
             textBoxResult = new TextBox();
-            button2 = new Button();
+            buttonGetBase64 = new Button();
             groupBox1 = new GroupBox();
+            buttonDownModels = new Button();
             numericUpDowncpu_mem = new NumericUpDown();
             label6 = new Label();
             numericUpDownThread = new NumericUpDown();
@@ -47,6 +48,7 @@
             comboBoxuse_gpu = new ComboBox();
             pictureBoxImg = new PictureBox();
             groupBox2 = new GroupBox();
+            buttonRecTable = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
@@ -58,9 +60,9 @@
             // 
             // buttonInit
             // 
-            buttonInit.Location = new Point(622, 28);
+            buttonInit.Location = new Point(606, 23);
             buttonInit.Name = "buttonInit";
-            buttonInit.Size = new Size(120, 36);
+            buttonInit.Size = new Size(87, 60);
             buttonInit.TabIndex = 0;
             buttonInit.Text = "初始化OCR";
             buttonInit.UseVisualStyleBackColor = true;
@@ -68,37 +70,40 @@
             // 
             // buttonRec
             // 
-            buttonRec.Location = new Point(786, 28);
+            buttonRec.Enabled = false;
+            buttonRec.Location = new Point(748, 22);
             buttonRec.Name = "buttonRec";
-            buttonRec.Size = new Size(120, 36);
+            buttonRec.Size = new Size(120, 28);
             buttonRec.TabIndex = 1;
-            buttonRec.Text = "OCR识别";
+            buttonRec.Text = "OCR文本识别";
             buttonRec.UseVisualStyleBackColor = true;
             buttonRec.Click += buttonRec_Click;
             // 
             // textBoxResult
             // 
             textBoxResult.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            textBoxResult.Location = new Point(534, 104);
+            textBoxResult.Location = new Point(534, 116);
             textBoxResult.Multiline = true;
             textBoxResult.Name = "textBoxResult";
             textBoxResult.ScrollBars = ScrollBars.Both;
-            textBoxResult.Size = new Size(547, 576);
+            textBoxResult.Size = new Size(547, 564);
             textBoxResult.TabIndex = 2;
             // 
-            // button2
+            // buttonGetBase64
             // 
-            button2.Location = new Point(943, 28);
-            button2.Name = "button2";
-            button2.Size = new Size(120, 36);
-            button2.TabIndex = 3;
-            button2.Text = "获取图片Base64";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            buttonGetBase64.Location = new Point(919, 22);
+            buttonGetBase64.Name = "buttonGetBase64";
+            buttonGetBase64.Size = new Size(120, 28);
+            buttonGetBase64.TabIndex = 3;
+            buttonGetBase64.Text = "获取图片Base64";
+            buttonGetBase64.UseVisualStyleBackColor = true;
+            buttonGetBase64.Click += buttonGetBase64_Click;
             // 
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(buttonRecTable);
+            groupBox1.Controls.Add(buttonDownModels);
             groupBox1.Controls.Add(numericUpDowncpu_mem);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(numericUpDownThread);
@@ -111,19 +116,29 @@
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(comboBoxuse_gpu);
-            groupBox1.Controls.Add(button2);
+            groupBox1.Controls.Add(buttonGetBase64);
             groupBox1.Controls.Add(buttonInit);
             groupBox1.Controls.Add(buttonRec);
             groupBox1.Location = new Point(12, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1069, 86);
+            groupBox1.Size = new Size(1069, 98);
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "功能选项";
             // 
+            // buttonDownModels
+            // 
+            buttonDownModels.Location = new Point(919, 54);
+            buttonDownModels.Name = "buttonDownModels";
+            buttonDownModels.Size = new Size(120, 28);
+            buttonDownModels.TabIndex = 16;
+            buttonDownModels.Text = "下载OCR模型";
+            buttonDownModels.UseVisualStyleBackColor = true;
+            buttonDownModels.Click += buttonDownModels_Click;
+            // 
             // numericUpDowncpu_mem
             // 
-            numericUpDowncpu_mem.Location = new Point(545, 55);
+            numericUpDowncpu_mem.Location = new Point(545, 60);
             numericUpDowncpu_mem.Maximum = new decimal(new int[] { 8000, 0, 0, 0 });
             numericUpDowncpu_mem.Name = "numericUpDowncpu_mem";
             numericUpDowncpu_mem.Size = new Size(55, 23);
@@ -133,7 +148,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(419, 57);
+            label6.Location = new Point(419, 62);
             label6.Name = "label6";
             label6.Size = new Size(120, 17);
             label6.TabIndex = 14;
@@ -143,7 +158,7 @@
             // 
             // numericUpDownThread
             // 
-            numericUpDownThread.Location = new Point(333, 54);
+            numericUpDownThread.Location = new Point(333, 59);
             numericUpDownThread.Name = "numericUpDownThread";
             numericUpDownThread.Size = new Size(80, 23);
             numericUpDownThread.TabIndex = 13;
@@ -153,7 +168,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(235, 56);
+            label5.Location = new Point(235, 61);
             label5.Name = "label5";
             label5.Size = new Size(92, 17);
             label5.TabIndex = 12;
@@ -164,7 +179,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(10, 57);
+            label4.Location = new Point(10, 62);
             label4.Name = "label4";
             label4.Size = new Size(76, 17);
             label4.TabIndex = 11;
@@ -174,7 +189,7 @@
             // 
             comboBoxJson.FormattingEnabled = true;
             comboBoxJson.Items.AddRange(new object[] { "只输出文字", "输出文字+JSON" });
-            comboBoxJson.Location = new Point(92, 53);
+            comboBoxJson.Location = new Point(92, 58);
             comboBoxJson.Name = "comboBoxJson";
             comboBoxJson.Size = new Size(129, 25);
             comboBoxJson.TabIndex = 10;
@@ -182,7 +197,7 @@
             // 
             // numDowncpu_threads
             // 
-            numDowncpu_threads.Location = new Point(545, 22);
+            numDowncpu_threads.Location = new Point(545, 27);
             numDowncpu_threads.Name = "numDowncpu_threads";
             numDowncpu_threads.Size = new Size(55, 23);
             numDowncpu_threads.TabIndex = 9;
@@ -192,7 +207,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(459, 28);
+            label3.Location = new Point(459, 33);
             label3.Name = "label3";
             label3.Size = new Size(80, 17);
             label3.TabIndex = 8;
@@ -202,7 +217,7 @@
             // 
             // numDowngpu_id
             // 
-            numDowngpu_id.Location = new Point(333, 23);
+            numDowngpu_id.Location = new Point(333, 28);
             numDowngpu_id.Name = "numDowngpu_id";
             numDowngpu_id.Size = new Size(80, 23);
             numDowngpu_id.TabIndex = 7;
@@ -211,7 +226,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(264, 26);
+            label2.Location = new Point(264, 31);
             label2.Name = "label2";
             label2.Size = new Size(63, 17);
             label2.TabIndex = 6;
@@ -221,7 +236,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(17, 26);
+            label1.Location = new Point(17, 31);
             label1.Name = "label1";
             label1.Size = new Size(69, 17);
             label1.TabIndex = 5;
@@ -231,7 +246,7 @@
             // 
             comboBoxuse_gpu.FormattingEnabled = true;
             comboBoxuse_gpu.Items.AddRange(new object[] { "使用CPU", "使用GPU" });
-            comboBoxuse_gpu.Location = new Point(92, 22);
+            comboBoxuse_gpu.Location = new Point(92, 27);
             comboBoxuse_gpu.Name = "comboBoxuse_gpu";
             comboBoxuse_gpu.Size = new Size(129, 25);
             comboBoxuse_gpu.TabIndex = 4;
@@ -242,7 +257,7 @@
             pictureBoxImg.Dock = DockStyle.Fill;
             pictureBoxImg.Location = new Point(3, 19);
             pictureBoxImg.Name = "pictureBoxImg";
-            pictureBoxImg.Size = new Size(510, 554);
+            pictureBoxImg.Size = new Size(510, 542);
             pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxImg.TabIndex = 5;
             pictureBoxImg.TabStop = false;
@@ -251,12 +266,23 @@
             // 
             groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             groupBox2.Controls.Add(pictureBoxImg);
-            groupBox2.Location = new Point(12, 104);
+            groupBox2.Location = new Point(12, 116);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(516, 576);
+            groupBox2.Size = new Size(516, 564);
             groupBox2.TabIndex = 6;
             groupBox2.TabStop = false;
             groupBox2.Text = "图片";
+            // 
+            // buttonRecTable
+            // 
+            buttonRecTable.Enabled = false;
+            buttonRecTable.Location = new Point(748, 55);
+            buttonRecTable.Name = "buttonRecTable";
+            buttonRecTable.Size = new Size(120, 28);
+            buttonRecTable.TabIndex = 17;
+            buttonRecTable.Text = "OCR表格识别";
+            buttonRecTable.UseVisualStyleBackColor = true;
+            buttonRecTable.Click += buttonRecTable_Click;
             // 
             // MainForm
             // 
@@ -287,7 +313,7 @@
         private Button buttonInit;
         private Button buttonRec;
         private TextBox textBoxResult;
-        private Button button2;
+        private Button buttonGetBase64;
         private GroupBox groupBox1;
         private Label label1;
         private ComboBox comboBoxuse_gpu;
@@ -303,5 +329,7 @@
         private Label label5;
         private NumericUpDown numericUpDowncpu_mem;
         private Label label6;
+        private Button buttonDownModels;
+        private Button buttonRecTable;
     }
 }

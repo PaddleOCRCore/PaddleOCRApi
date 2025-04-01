@@ -53,6 +53,14 @@ namespace PaddleOCRSDK
         /// </summary>
         public string rec_infer { get; set; }
         /// <summary>
+        /// 表格识别模型inference model地址
+        /// </summary>
+        public string table_model_dir { get; set; }
+        /// <summary>
+        /// 表格识别字典文件
+        /// </summary>
+        public string table_dict_path { get; set; }
+        /// <summary>
         /// ppocr_keys.txt文件名全路径
         /// </summary>
         public string keyFile { get; set; }

@@ -21,6 +21,18 @@ namespace PaddleOCRSDK
     public interface IOCRService
     {
         /// <summary>
+        /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
+        /// </summary>
+        /// <param name="modelsPath"></param>
+        /// <returns>返回初始化结果</returns>
+        string InitDefaultOCREngine(string modelsPath);
+        /// <summary>
+        /// 初始化表格识别引擎默认V4模型，使用CPU及mkldnn
+        /// </summary>
+        /// <param name="modelsPath"></param>
+        /// <returns></returns>
+        string InitDefaultTableEngine(string modelsPath);
+        /// <summary>
         /// 初如化OCR
         /// </summary>
         /// <param name="para"></param>
@@ -67,5 +79,23 @@ namespace PaddleOCRSDK
         /// </summary>
         /// <param name="enableJson"></param>
         void EnableJsonResult(bool enableJson);
+        /// <summary>
+        /// 对图像文件进行表格识别
+        /// </summary>
+        /// <param name="imagefile">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        string DetectTable(string imagefile);
+        /// <summary>
+        /// 对图像文件进行表格识别
+        /// </summary>
+        /// <param name="imagebyte">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        string DetectTableByte(byte[] imagebyte);
+        /// <summary>
+        /// 对图像文件进行表格识别
+        /// </summary>
+        /// <param name="imagebyte">图像文件</param>
+        /// <returns>OCR识别结果</returns>
+        string DetectTableBase64(string base64);
     }
 }

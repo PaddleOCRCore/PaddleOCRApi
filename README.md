@@ -1,4 +1,4 @@
-# 离线OCR组件 支持.net/C++/java/Python/Go语言开发
+# PaddleOCRSDK离线OCR组件 支持.net/C++/java/Python/Go语言开发
 ## 一、简介
 免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持.net/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，可用于.net/C++/java/Python/Go等语言中调用，支持paddle_inference2.6.2及3.0推理库。
 喜欢的请给本项目点一个免费的Star
@@ -20,7 +20,7 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12
 
 3、.net引用(支持netstandard2.0;net45;net461;net47;net48;net6.0;net7.0;net8.0;net9.0)
 
-`<PackageReference Include="PaddleOCRSDK" Version="1.0.4" />`
+`<PackageReference Include="PaddleOCRSDK" Version="1.0.5" />`
 
 `<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />`
 
@@ -113,6 +113,8 @@ https://paddle-inference-lib.bj.bcebos.com/3.0.0-beta2/cxx_c/Windows/GPU/x86-64_
 <img src="./Demo/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
+### v1.0.5 `2025.4.1`
+- 优化paddleocr.dll接口，Demo增加表格识别功能
 ### v1.0.4 `2025.3.29`
 - 优化paddleocr.dll，增加日志输出开关，OCR识别提速
 - WebApi接口优化，增加OCR初始化及参数设置

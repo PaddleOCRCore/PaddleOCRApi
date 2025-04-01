@@ -15,8 +15,11 @@
 
 using PaddleOCRSDK;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using WinFormsApp.Services;
 
 namespace WinFormsApp
@@ -58,31 +61,51 @@ namespace WinFormsApp
 
         private void buttonInit_Click(object sender, EventArgs e)
         {
-            LogMessage($"{DateTime.Now:HH:mm:ss.fff}:正在初始化,请稍后...");
-            //使用 Task 进行异步操作
-            Task.Run(async () =>
+            //LogMessage($"{DateTime.Now:HH:mm:ss.fff}:正在初始化,请稍后...");
+            try
             {
-                try
+                OCREngine.use_gpu = use_gpu;
+                OCREngine.gpu_id = gpu_id;
+                OCREngine.cpu_threads = cpu_threads;
+                string initmsg = OCREngine.GetOCREngine();
+                if (string.IsNullOrEmpty(initmsg))
                 {
-                    OCREngine.use_gpu = use_gpu;
-                    OCREngine.gpu_id = gpu_id;
-                    OCREngine.cpu_threads = cpu_threads;
-                    string initmsg = OCREngine.GetOCREngine();
-                    if (string.IsNullOrEmpty(initmsg))
-                    {
-                        LogMessage($"{DateTime.Now:HH:mm:ss.fff}:初始化成功！");
-                    }
-                    else
-                    {
-                        LogMessage($"{DateTime.Now:HH:mm:ss.fff}:{initmsg}");
-                    }
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:文本识别初始化成功！");
                 }
-                catch (Exception ex)
+                else
                 {
-                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR初始化失败:{ex.Message}");
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:{initmsg}");
                 }
-                await Task.CompletedTask;
-            }).Wait();
+                if (initmsg.IndexOf("初始化成功") >= 0)
+                {
+                    this.buttonRec.Enabled = true;
+                }
+                else
+                {
+                    this.buttonRec.Enabled = false;
+                }
+                initmsg = OCREngine.GetOCRTableEngine();
+                if (string.IsNullOrEmpty(initmsg))
+                {
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:表格识别初始化成功！");
+                }
+                else
+                {
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:{initmsg}");
+                }
+                if (initmsg.IndexOf("初始化成功") >= 0)
+                {
+                    this.buttonRecTable.Enabled = true;
+                }
+                else
+                {
+                    this.buttonRecTable.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR初始化失败:{ex.Message}");
+            }
         }
         private string RecOCR(string filePath)
         {
@@ -145,8 +168,97 @@ namespace WinFormsApp
             }
         }
 
+        private string RecOCRTable(string filePath)
+        {
+            var stopwatch = new Stopwatch();
+            var startTime = DateTime.Now;
+            LogMessage($"Image: {filePath}");
+            LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
+            stopwatch.Start();
+            string ocrResult = ocrService.DetectTable(filePath);
+            string css = "<style>table{ border-spacing: 0;} td { border: 1px solid black;}</style>";
+            ocrResult = ocrResult.Replace("<html>", "<html>" + css);
+            // 定义输出文件夹和文件名
+            string outputFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output");
+            string htmlfile = Path.Combine(outputFolder, $"{Path.GetFileNameWithoutExtension(filePath)}.html");
 
-        private void button2_Click(object sender, EventArgs e)
+            // 确保输出文件夹存在
+            if (!Directory.Exists(outputFolder))
+            {
+                Directory.CreateDirectory(outputFolder);
+            }
+            using (StreamWriter sw = new StreamWriter(htmlfile, false, System.Text.Encoding.GetEncoding("utf-8")))
+            {
+                sw.Write(ocrResult);
+            }
+            try
+            {
+                // 使用默认的浏览器打开HTML文件
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = htmlfile,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine($"无法打开HTML文件：{ex.Message}");
+                LogMessage($"无法打开HTML文件：{ex.Message}");
+            }
+
+            var endTime = DateTime.Now;
+            LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
+            LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+            LogMessage(ocrResult);
+            return ocrResult;
+        }
+        private void buttonRecTable_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                textBoxResult.Text = "";
+                message = new StringBuilder();
+                string result = "";
+                OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
+                OpenFileDialog1.Filter = "所有文件(*.jpg)|*.*|jpg(*.jpg)|*.png|png(*.png)|*.png|bmp(*.bmp)|*.bmp|jpeg(*.jpeg)|*.jpeg";
+                OpenFileDialog1.Multiselect = false;
+                if (DialogResult.OK == OpenFileDialog1.ShowDialog())
+                {
+                    foreach (var regfile in OpenFileDialog1.FileNames)
+                    {
+                        string filePath = Path.GetFullPath(regfile);
+                        result = RecOCRTable(filePath);
+                        pictureBoxImg.Image = ImageTools.LoadImage(filePath);
+                    }
+                }
+                OpenFileDialog1.Dispose();
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage(ex.Message);
+            }
+        }
+
+        private void buttonDownModels_Click(object sender, EventArgs e)
+        {
+            // 定义要打开的 URL
+            string url = "https://paddlepaddle.github.io/PaddleOCR/latest/ppocr/model_list.html";
+            try
+            {
+                Process.Start(new ProcessStartInfo(url)
+                {
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"无法打开网页：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void buttonGetBase64_Click(object sender, EventArgs e)
         {
             message = new StringBuilder();
             OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
@@ -202,7 +314,7 @@ namespace WinFormsApp
         private void numericUpDownThread_ValueChanged(object sender, EventArgs e)
         {
             if (numericUpDownThread.Value > 0)
-                recCount = Convert.ToInt32(numericUpDownThread.Value);            
+                recCount = Convert.ToInt32(numericUpDownThread.Value);
         }
 
         private void comboBoxJson_SelectedIndexChanged(object sender, EventArgs e)
@@ -243,6 +355,7 @@ namespace WinFormsApp
                 textBoxResult.ScrollToCaret();
             }
         }
+
         #endregion
     }
 }

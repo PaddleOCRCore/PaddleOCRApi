@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	<Version>1.0.4</Version>
+	<Version>1.0.5</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -12,6 +12,11 @@
 			<PackageCopyToOutput>true</PackageCopyToOutput>
 			<PackagePath>build\PaddleOCR</PackagePath>
 		</None>
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="OCRModels\**" />
+	  <EmbeddedResource Remove="OCRModels\**" />
+	  <None Remove="OCRModels\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="$(SolutionDir)PaddleOCRSDK\PaddleOCRSDK.targets">
