@@ -35,7 +35,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     //检测模型依赖注入
     builder.Services.AddSingleton<IOCRService, OCRService>();
-    //builder.Services.AddSingleton<OCREngine>();
+    builder.Services.AddSingleton<OCREngine>();
 
     // 网页显示中文
     builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));

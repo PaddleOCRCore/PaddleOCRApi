@@ -59,6 +59,7 @@ namespace WinFormsApp.Services
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
+            oCRParameter.rec_batch_num = 10;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
@@ -108,6 +109,7 @@ namespace WinFormsApp.Services
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
+            oCRParameter.rec_batch_num = 10;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;

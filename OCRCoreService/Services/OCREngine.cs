@@ -66,6 +66,7 @@ namespace OCRCoreService.Services
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
+            oCRParameter.rec_batch_num = 6;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
@@ -75,7 +76,7 @@ namespace OCRCoreService.Services
             oCRParameter.rec_img_w = 320;
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.visualize = true;
+            oCRParameter.visualize = false;
 
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.Class;
@@ -115,6 +116,7 @@ namespace OCRCoreService.Services
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
+            oCRParameter.rec_batch_num = 6;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
@@ -124,7 +126,7 @@ namespace OCRCoreService.Services
             oCRParameter.rec_img_w = 320;
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.visualize = true;
+            oCRParameter.visualize = false;
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.TableClass;
             string msg = "初始化成功";

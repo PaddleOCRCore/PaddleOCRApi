@@ -31,27 +31,17 @@ namespace OCRCoreService.Controllers
     [Route("[controller]/[action]")]
     public class OCRServiceController : ActionBase
     {
-        private readonly ILogger<OCRServiceController> _logger;
-        private readonly IOCRService _ocrEngine;
-
-        private static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
-        private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
-        private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
-        private static string keys = "ppocr_keys.txt";
-        public static bool use_gpu = false;//是否使用GPU
-        public static int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
-        public static int gpu_id = 0;//GPUId
-        private static bool enable_mkldnn = true;
-        public static int cpu_threads = 30; //CPU预测时的线程数
+        private readonly ILogger<OCRServiceController> logger;
+        private readonly OCREngine ocrEngine;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logger"></param>
-        public OCRServiceController(ILogger<OCRServiceController> logger, IOCRService ocrEngine)
+        /// <param name="_logger"></param>
+        /// <param name="_ocrEngine"></param>
+        public OCRServiceController(ILogger<OCRServiceController> _logger, OCREngine _ocrEngine)
         {
-            _logger = logger;
-            _ocrEngine = ocrEngine;
-            InitOCREngine();
+            logger = _logger;
+            ocrEngine = _ocrEngine;
         }
         /// <summary>
         /// 
@@ -61,54 +51,6 @@ namespace OCRCoreService.Controllers
         public ActionResult Get()
         {
             return OKResult("接口已正式启用，仅支持64位模式");
-        }
-        /// <summary>
-        /// 初始化OCR引擎
-        /// </summary>
-        /// <returns></returns>
-        private string InitOCREngine()
-        {
-            InitParamater para = new InitParamater();
-            string root = AppDomain.CurrentDomain.BaseDirectory;
-            string modelPathroot = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            para.det_infer = Path.Combine(modelPathroot, det_infer);
-            para.cls_infer = Path.Combine(modelPathroot, cls_infer);
-            para.rec_infer = Path.Combine(modelPathroot, rec_infer);
-            para.keyFile = Path.Combine(modelPathroot, keys);
-
-            OCRParameter oCRParameter = new OCRParameter();
-            oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = false;
-            oCRParameter.gpu_id = gpu_id;
-            oCRParameter.gpu_mem = 4000;
-            oCRParameter.cpu_mem = cpu_mem;
-            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
-            oCRParameter.enable_mkldnn = enable_mkldnn;
-            oCRParameter.cls = false;
-            oCRParameter.det = true;
-            oCRParameter.use_angle_cls = false;
-            oCRParameter.det_db_score_mode = true;
-            oCRParameter.max_side_len = 960;
-            oCRParameter.rec_img_h = 48;
-            oCRParameter.rec_img_w = 320;
-            oCRParameter.det_db_thresh = 0.3f;
-            oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.visualize = true;
-
-            para.ocrpara = oCRParameter;
-            para.paraType = EnumParaType.Class;
-            //string ocrJson = "{\"use_gpu\": true,\"gpu_id\": 0,\"gpu_mem\": 4000,\"enable_mkldnn\": true,\"rec_img_h\": 48,\"rec_img_w\": 320,\"cls\":false,\"det\":true,\"use_angle_cls\":false}";
-            //初始化通用文字引擎
-            string msg = "初始化成功";
-            try
-            {
-                _ocrEngine.Init(para);
-            }
-            catch (Exception ex)
-            {
-                msg = ex.Message;
-            }
-            return msg;
         }
         #region 身份证识别
         /// <summary>
@@ -134,7 +76,7 @@ namespace OCRCoreService.Controllers
                 System.IO.Directory.CreateDirectory(fileDir);
             }
             //OCRResult ocrResult = engine.ocrEngine.DetectText(ImageBeauty.Base64StringToImage(request.Base64String));
-            OCRResult ocrResult = _ocrEngine.DetectBase64(request.Base64String);            
+            OCRResult ocrResult = ocrEngine.OcrService.DetectBase64(request.Base64String);            
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var item in ocrResult.WordsResult)
             {
@@ -144,10 +86,31 @@ namespace OCRCoreService.Controllers
                     //{
                     //    stringBuilder.Append(Environment.NewLine);
                     //}
+                    if (item.Words.Contains("性别"))
+                    {
+                        stringBuilder.Append(",");
+                    }
+                    else if (item.Words.Contains("民族"))
+                    {
+                        stringBuilder.Append(",");
+                    }
+                    else if (item.Words.Contains("出生"))
+                    {
+                        stringBuilder.Append(",");
+                    }
+                    else if (item.Words.Contains("住址"))
+                    {
+                        stringBuilder.Append(",");
+                    }
+                    else if (item.Words.Contains("号码"))
+                    {
+                        stringBuilder.Append(",");
+                    }
                     stringBuilder.Append(item.Words);
             }
             }
             result=stringBuilder.ToString();
+            logger.LogTrace(result);
             if (request.id_card_side.Equals("front"))
             {
                 var jsonResult = new
@@ -161,7 +124,7 @@ namespace OCRCoreService.Controllers
                     text = ""
                 };
                 // 定义正则表达式
-                Regex regex = new Regex(@"姓名(?<name>[^\s]+)性别(?<gender>[男女])民族(?<nation>.+?)出生(?<birth>.+?)住址(?<address>.+?)公民身份号码(?<id>\d{18})");
+                Regex regex = new Regex(@"姓名(?<name>[^\s]+),性别(?<gender>[男女]),民族(?<nation>.+?),出生(?<birth>.+?),住址(?<address>.+?),公民身份号码(?<idNumber>\d{17}[\dXx])");
 
                 // 执行匹配
                 Match match = regex.Match(result);
@@ -173,7 +136,7 @@ namespace OCRCoreService.Controllers
                     string nation = match.Groups["nation"].Value;
                     string birth = match.Groups["birth"].Value;
                     string address = match.Groups["address"].Value;
-                    string idNumber = match.Groups["id"].Value;
+                    string idNumber = match.Groups["idNumber"].Value;
                     // 构建JSON对象
                     jsonResult = new
                     {
@@ -185,6 +148,20 @@ namespace OCRCoreService.Controllers
                         公民身份号码 = idNumber,
                         text = result
                     };
+                    logger.LogTrace($"身份证头像面匹配成功:{jsonResult.ToString()}");
+                }
+                else
+                {
+                    jsonResult = new
+                    {
+                        姓名 = "",
+                        性别 = "",
+                        民族 = "",
+                        出生 = "",
+                        住址 = "",
+                        公民身份号码 = "",
+                        text = result
+                    };
                 }
                 return OKResult(jsonResult);
             }
@@ -194,7 +171,7 @@ namespace OCRCoreService.Controllers
                 {
                     签发机关 = "",
                     有效期限 = "",
-                    text= ""
+                    text= result
                 };
                 // 定义正则表达式
                 Regex regex = new Regex(@"签发机关(?<issuingAuthority>.+?)有效期限(?<validityPeriod>.+)$");
@@ -213,6 +190,7 @@ namespace OCRCoreService.Controllers
                         有效期限 = validityPeriod,
                         text = result
                     };
+                    logger.LogTrace($"身份证国徽面匹配成功:{jsonResult.ToString()}");
                 }
                 return OKResult(jsonResult);
             }
@@ -234,7 +212,7 @@ namespace OCRCoreService.Controllers
                 return (BadResult("识别失败:图片不存在！"));
             }
 
-            OCRResult ocrResult = _ocrEngine.DetectBase64(request.Base64String);
+            OCRResult ocrResult = ocrEngine.OcrService.DetectBase64(request.Base64String);
             if (request.ResultType.Equals("text", StringComparison.OrdinalIgnoreCase))
             {
                 StringBuilder stringBuilder = new StringBuilder();
