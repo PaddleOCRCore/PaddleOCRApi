@@ -25,24 +25,26 @@ namespace OCRCoreService.Services
     public class OCREngine
     {
         private readonly IOCRService _ocrService;
+        private readonly OCRConfig _ocrConfig;
         public IOCRService OcrService => _ocrService;
 
-        public OCREngine(IOCRService ocrService)
+        public OCREngine(IOCRService ocrService, OCRConfig ocrConfig)
         {
             _ocrService = ocrService;
             GetOCREngine();
+            _ocrConfig = ocrConfig;
         }
-        private static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
-        private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
-        private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
-        private static string keys = "ppocr_keys.txt";
-        private static string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
-        private static string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
-        public static bool use_gpu = false;//是否使用GPU
-        public static int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
-        public static int gpu_id = 0;//GPUId
-        private static bool enable_mkldnn = true;
-        public static int cpu_threads = 30; //CPU预测时的线程数
+        //private static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
+        //private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
+        //private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
+        //private static string keys = "ppocr_keys.txt";
+        //private static string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
+        //private static string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
+        //public static bool use_gpu = false;//是否使用GPU
+        //public static int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
+        //public static int gpu_id = 0;//GPUId
+        //private static bool enable_mkldnn = true;
+        //public static int cpu_threads = 30; //CPU预测时的线程数
         /// <summary>
         /// 初始化OCR引擎
         /// </summary>
@@ -51,22 +53,23 @@ namespace OCRCoreService.Services
         {
             //自带轻量版中英文模型V4模型
             InitParamater para=new InitParamater();
-            string root = AppDomain.CurrentDomain.BaseDirectory;
+            //string root = AppDomain.CurrentDomain.BaseDirectory;
+            string root = AppContext.BaseDirectory;
             string modelPathroot = Path.Combine(root, "models");
-            para.det_infer = Path.Combine(modelPathroot, det_infer);
-            para.cls_infer = Path.Combine(modelPathroot, cls_infer);
-            para.rec_infer = Path.Combine(modelPathroot, rec_infer);
-            para.keyFile = Path.Combine(modelPathroot, keys);
+            para.det_infer = Path.Combine(modelPathroot, _ocrConfig.det_infer);
+            para.cls_infer = Path.Combine(modelPathroot, _ocrConfig.cls_infer);
+            para.rec_infer = Path.Combine(modelPathroot, _ocrConfig.rec_infer);
+            para.keyFile = Path.Combine(modelPathroot, _ocrConfig.keyFile);
 
             OCRParameter oCRParameter = new OCRParameter();
-            oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = true;
-            oCRParameter.gpu_id = gpu_id;
+            oCRParameter.use_gpu = _ocrConfig.use_gpu;
+            oCRParameter.use_tensorrt = false;
+            oCRParameter.gpu_id = _ocrConfig.gpu_id;
             oCRParameter.gpu_mem = 4000;
-            oCRParameter.cpu_mem = cpu_mem;
-            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
-            oCRParameter.enable_mkldnn = enable_mkldnn;
-            oCRParameter.rec_batch_num = 6;
+            oCRParameter.cpu_mem = _ocrConfig.cpu_mem;
+            oCRParameter.cpu_threads = _ocrConfig.cpu_threads;//提升CPU速度，优化此参数
+            oCRParameter.enable_mkldnn = _ocrConfig.enable_mkldnn;
+            oCRParameter.rec_batch_num = 7;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
@@ -98,25 +101,26 @@ namespace OCRCoreService.Services
         /// </summary>
         /// <param name="modelsPath"></param>
         /// <returns></returns>
-        public string GetOCRTableEngine(string modelsPath)
+        public string GetOCRTableEngine()
         {
             InitParamater para = new InitParamater();
-            string root = AppDomain.CurrentDomain.BaseDirectory;
-            string modelPathroot = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            para.det_infer = Path.Combine(modelPathroot, det_infer);
-            para.rec_infer = Path.Combine(modelPathroot, rec_infer);
-            para.keyFile = Path.Combine(modelPathroot, keys);
-            para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
-            para.table_dict_path = Path.Combine(modelsPath, table_dict_path);
+            //string root = AppDomain.CurrentDomain.BaseDirectory;
+            string root = AppContext.BaseDirectory;
+            string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
+            para.det_infer = Path.Combine(modelsPath, _ocrConfig.det_infer);
+            para.rec_infer = Path.Combine(modelsPath, _ocrConfig.rec_infer);
+            para.keyFile = Path.Combine(modelsPath, _ocrConfig.keyFile);
+            para.table_model_dir = Path.Combine(modelsPath, _ocrConfig.table_model_dir);
+            para.table_dict_path = Path.Combine(modelsPath, _ocrConfig.table_dict_path);
             TableParameter oCRParameter = new TableParameter();
-            oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = true;
-            oCRParameter.gpu_id = gpu_id;
-            oCRParameter.gpu_mem = 4000;
-            oCRParameter.cpu_mem = cpu_mem;
-            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
-            oCRParameter.enable_mkldnn = enable_mkldnn;
-            oCRParameter.rec_batch_num = 6;
+            oCRParameter.use_gpu = _ocrConfig.use_gpu;
+            oCRParameter.use_tensorrt = false;
+            oCRParameter.gpu_id = _ocrConfig.gpu_id;
+            oCRParameter.gpu_mem = _ocrConfig.gpu_mem;
+            oCRParameter.cpu_mem = _ocrConfig.cpu_mem;
+            oCRParameter.cpu_threads = _ocrConfig.cpu_threads;//提升CPU速度，优化此参数
+            oCRParameter.enable_mkldnn = _ocrConfig.enable_mkldnn;
+            oCRParameter.rec_batch_num = 7;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;

@@ -15,6 +15,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace OCRCoreService
 {
@@ -96,5 +97,60 @@ namespace OCRCoreService
         /// 返回类型
         /// </summary>
         public string ResultType { get; set; } = "text";
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class OCRConfig
+    {
+        /// <summary>
+        /// det_infer模型路径
+        /// </summary>
+        public string det_infer { get; set; }
+        /// <summary>
+        /// cls_infer模型路径
+        /// </summary>
+        public string cls_infer { get; set; }
+        /// <summary>
+        /// rec_infer模型路径
+        /// </summary>
+        public string rec_infer { get; set; }
+        /// <summary>
+        /// ppocr_keys.txt文件名全路径
+        /// </summary>
+        public string keyFile { get; set; }
+        /// <summary>
+        /// 表格识别模型inference model地址
+        /// </summary>
+        public string table_model_dir { get; set; }
+        /// <summary>
+        /// 表格识别字典文件
+        /// </summary>
+        public string table_dict_path { get; set; }
+        /// <summary>
+        /// 是否使用GPU
+        /// </summary>
+        public bool use_gpu { get; set; } = false;
+        /// <summary>
+        /// 是否使用mkldnn库
+        /// </summary>
+        public bool enable_mkldnn { get; set; } = true;
+        /// <summary>
+        /// GPU id，使用GPU时有效
+        /// </summary>
+        public int gpu_id { get; set; } = 0;
+        /// <summary>
+        /// 使用GPU时内存
+        /// </summary>
+        public int gpu_mem { get; set; } = 4000;
+        /// <summary>
+        /// CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
+        /// </summary>
+        public int cpu_mem { get; set; } = 0;
+        /// <summary>
+        /// CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快
+        /// </summary>
+        public int cpu_threads { get; set; } = 30;
     }
 }

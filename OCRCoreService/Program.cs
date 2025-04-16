@@ -33,6 +33,8 @@ try
     //builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
+    var ocrConfig = builder.Configuration.GetSection("OCRConfig").Get<OCRConfig>();
+    if (ocrConfig != null) builder.Services.AddSingleton(ocrConfig);
     //检测模型依赖注入
     builder.Services.AddSingleton<IOCRService, OCRService>();
     builder.Services.AddSingleton<OCREngine>();

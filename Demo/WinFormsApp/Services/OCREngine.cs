@@ -53,13 +53,13 @@ namespace WinFormsApp.Services
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = true;
+            oCRParameter.use_tensorrt = false;
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = 4000;
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
-            oCRParameter.rec_batch_num = 10;
+            oCRParameter.rec_batch_num = 7;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
@@ -103,13 +103,13 @@ namespace WinFormsApp.Services
             para.table_dict_path = Path.Combine(modelsPath, table_dict_path);
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = true;
+            oCRParameter.use_tensorrt = false;
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = 4000;
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
-            oCRParameter.rec_batch_num = 10;
+            oCRParameter.rec_batch_num = 7;
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
