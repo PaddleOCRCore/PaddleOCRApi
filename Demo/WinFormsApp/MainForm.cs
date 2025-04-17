@@ -283,7 +283,16 @@ namespace WinFormsApp
                     break;
                 case 1:
                     use_gpu = true;
-                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference，解压后将paddle\\lib目录下的common.dll和paddle_inference.dll复制到程序运行文件夹！");
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference解压" + Environment.NewLine); 
+                    sb.Append($"解压后将以下dll文件复制到程序运行文件夹中：" + Environment.NewLine);
+                    sb.Append($"paddle\\lib目录下的common.dll和paddle_inference.dll" + Environment.NewLine);
+                    sb.Append($"third_party\\install\\mkldnn\\lib目录下的mkldnn.dll" + Environment.NewLine);
+                    sb.Append($"third_party\\install\\mklml\\lib目录下的libiomp5md.dll和mklml.dll" + Environment.NewLine);
+                    sb.Append($"安装指定版本的CUDA以及CUDNN" + Environment.NewLine);
+                    sb.Append($"复制对应的CUDNN中的cudnn64_8.dll(CUDNN8的文件名)或cudnn64_9.dll(CUDNN9的文件名)到程序运行文件夹中" + Environment.NewLine);
+                    sb.Append($"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin\\cudnn64_8.dll" + Environment.NewLine);
+                    LogMessage(sb.ToString());
                     break;
                 default:
                     use_gpu = false;
