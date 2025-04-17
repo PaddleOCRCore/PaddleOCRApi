@@ -31,8 +31,8 @@ namespace OCRCoreService.Services
         public OCREngine(IOCRService ocrService, OCRConfig ocrConfig)
         {
             _ocrService = ocrService;
-            GetOCREngine();
             _ocrConfig = ocrConfig;
+            GetOCREngine();
         }
         //private static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
         //private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型

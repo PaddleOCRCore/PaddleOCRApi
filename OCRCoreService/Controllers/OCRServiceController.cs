@@ -211,8 +211,8 @@ namespace OCRCoreService.Controllers
             {
                 return (BadResult("识别失败:图片不存在！"));
             }
-
             OCRResult ocrResult = ocrEngine.OcrService.DetectBase64(request.Base64String);
+            logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
             if (request.ResultType.Equals("text", StringComparison.OrdinalIgnoreCase))
             {
                 StringBuilder stringBuilder = new StringBuilder();
