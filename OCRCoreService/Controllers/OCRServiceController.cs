@@ -59,7 +59,7 @@ namespace OCRCoreService.Controllers
         /// <returns></returns>
         [HttpPost]
         //[TypeFilter(typeof(WebApiActionAttribute))]
-        public ActionResult GetIdCard([FromServices] IWebHostEnvironment env, [FromBody] RequestOcr request)
+        public ActionResult GetIdCard([FromServices] IWebHostEnvironment env, [FromBody] RequestIdOcr request)
         {
             string result = "";
             if (string.IsNullOrEmpty(request.Base64String))

@@ -1,6 +1,14 @@
-# PaddleOCRSDK离线OCR组件 支持.net/C++/java/Python/Go语言开发
+[<img src="https://img.shields.io/badge/Language-简体中文-red.svg">](README.md)
+# PaddleOCRSDK离线OCR组件 支持C#/C++/java/Python/Go语言开发
+<p align="center">
+    <a href="https://discord.gg/z9xaRVjdbD"><img src="https://img.shields.io/badge/Chat-on%20discord-7289da.svg?sanitize=true" alt="Chat"></a>
+    <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
+    <a href="https://github.com/PaddleOCRCore/PaddleOCRApi/releases"><img src="https://img.shields.io/github/v/release/PaddleOCRCore/PaddleOCRApi?color=ffa"></a>
+    <a href=""><img src="https://img.shields.io/badge/os-linux%2C%20win%2C%20mac-pink.svg"></a>
+    <a href="https://github.com/PaddleOCRCore/PaddleOCRApi/stargazers"><img src="https://img.shields.io/github/stars/PaddleOCRCore/PaddleOCRApi?color=ccf"></a>
+</p>
 ## 一、简介
-免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持.net/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，可用于.net/C++/java/Python/Go等语言中调用，支持paddle_inference2.6.2及3.0推理库。
+免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，可用于C#/C++/java/Python/Go等语言中调用，支持paddle_inference2.6.2及3.0推理库。
 喜欢的请给本项目点一个免费的Star
 
 ## 二、运行环境
@@ -137,3 +145,11 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 - 优化paddleocr.dll，提高识别速度，增加智能指针
 ### v1.0 `2025.1.22`
 - 初版发行: PaddleOCRApi
+
+## ⭐️ Star
+
+[![Star History Chart](https://api.star-history.com/svg?repos=PaddleOCRCore/PaddleOCRApi&type=Date)](https://star-history.com/#PaddleOCRCore/PaddleOCRApi&Date)
+
+## 📄 许可证书
+
+本项目的发布受 [Apache License Version 2.0](./LICENSE) 许可认证, 欢迎大家使用和贡献。

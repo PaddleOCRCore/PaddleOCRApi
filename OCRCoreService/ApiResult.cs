@@ -83,7 +83,7 @@ namespace OCRCoreService
     /// <summary>
     /// 
     /// </summary>
-    public class RequestOcr
+    public class RequestIdOcr
     {
         /// <summary>
         /// 图片Base64字符串
@@ -93,6 +93,17 @@ namespace OCRCoreService
         /// front：身份证含照片的一面；back：身份证带国徽的一面。
         /// </summary>
         public string id_card_side { get; set; } = "front";
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RequestOcr
+    {
+        /// <summary>
+        /// 图片Base64字符串
+        /// </summary>
+        public string Base64String { get; set; }
         /// <summary>
         /// 返回类型
         /// </summary>
