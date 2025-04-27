@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
+using System.Reflection;
 
 
 namespace OCRCoreService
@@ -25,8 +26,9 @@ namespace OCRCoreService
                     Version = "v1",
                     Title = "WebAPI接口"
                 });
-                //Set the comments path for the swagger json and ui.  
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, "OCRCoreService.xml");
+                // 启用XML注释（需生成XML文档）
+                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 //options.IncludeXmlComments(xmlPath);
             });
         }

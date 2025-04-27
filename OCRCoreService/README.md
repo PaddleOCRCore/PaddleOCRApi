@@ -5,15 +5,9 @@
 ## 运行环境
 项目运行环境为.net8.0：
 
-1、使用IIS：服务器环境推荐，建议操作系统Windows Server2016以上，
-安装IIS及.net8环境，下载地址：
-https://dotnet.microsoft.com/zh-cn/download/dotnet/8.0，找到 ASP.NET Core
-运行时 8.0.14，点击Windows平台 Hosting Bundle 下载：
-https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-8.0.14-windows-hosting-bundle-installer
-
-2、独立运行服务：建议操作系统Win10以上64位，安装.NET桌面运行时 8.0.14：
+独立运行服务：建议操作系统Win10以上64位，安装.NET桌面运行时 8.0.14：
 https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-8.0.14-windows-x64-installer，然后点击 OCRCoreService.exe 运行，默
-认端口5000，浏览器打开 http://localhost:5000 提示服务正在运行即正常。
+认端口5000，浏览器打开 http://localhost:5000 提示服务正在运行即正常，也可以打开http://localhost:5000/swagger/index.html在线查看接口。
 
 ## 请求与响应协议
 接口采用Post请求，具体依所访问接口定义为准。

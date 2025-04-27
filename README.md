@@ -33,6 +33,7 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mk
 PaddleOCRRuntime_x64支持Python、Go、C++等环境
 
 ### [WebApi接口文档](./OCRCoreService/README.md)
+WebApi部署后可供前端调用。
 
 ### WinFormDemo预览：
 

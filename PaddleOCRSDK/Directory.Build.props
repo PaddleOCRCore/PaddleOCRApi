@@ -6,7 +6,7 @@
 		<RepositoryUrl>https://github.com/PaddleOCRCore/PaddleOCRApi</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Authors>PaddleOCRCore</Authors>
-		<Description>离线OCR组件,支持CPU/GPU,基于百度飞桨PaddleOCR封装的C++动态链接库，可用于.net/C++/java/Python/Go等语言中调用</Description>
+		<Description>离线OCR组件,支持CPU/GPU,基于百度飞桨PaddleOCR封装的C++动态链接库，可用于C#/C++/java/Python/Go等语言中调用</Description>
 		<PackageTags>OCR,PaddleOCR,.NET,Paddle</PackageTags>
 		<Title>PaddleOCRSDK</Title>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

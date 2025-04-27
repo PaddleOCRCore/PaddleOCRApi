@@ -20,6 +20,8 @@ using System.Text;
 using PaddleOCRSDK;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace OCRCoreService.Controllers
 {
@@ -232,6 +234,46 @@ namespace OCRCoreService.Controllers
             else
             {
                 result = ocrResult.JsonText;
+            }
+            return OKResult(result);
+        }
+        #endregion
+
+
+        #region 通用文字识别
+        /// <summary>
+        /// 通用文字识别
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        //[TypeFilter(typeof(WebApiActionAttribute))]
+        public ActionResult GetOCRFile(IFormFile request)
+        {
+            string result = "";
+            if (request.Length==0)
+            {
+                return (BadResult("识别失败:图片不存在！"));
+            }
+            using (MemoryStream ms = new MemoryStream())
+            {
+                request.CopyToAsync(ms);
+                var imageByte = ms.ToArray();
+                logger.LogTrace($"获取到图片:{imageByte.ToString()}");
+                OCRResult ocrResult = ocrEngine.OcrService.Detect(imageByte);
+                logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
+                StringBuilder stringBuilder = new StringBuilder();
+                foreach (var item in ocrResult.WordsResult)
+                {
+                    if (!string.IsNullOrEmpty(item.Words))
+                    {
+                        if (stringBuilder.Length > 0)
+                        {
+                            stringBuilder.Append(Environment.NewLine);
+                        }
+                        stringBuilder.Append(item.Words);
+                    }
+                }
+                result = stringBuilder.ToString();
             }
             return OKResult(result);
         }

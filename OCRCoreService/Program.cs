@@ -53,7 +53,6 @@ try
     });
     builder.Services.AddSwagger();
 
-
     var app = builder.Build();
 
     var fordwardedHeaderOptions = new ForwardedHeadersOptions
