@@ -32,11 +32,17 @@ namespace WinFormsApp.Services
         private static string keys = "ppocr_keys.txt";
         private static string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
         private static string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
+        private static bool enable_mkldnn = true;
+        public static int cpu_threads = 30; //CPU预测时的线程数
+        private static bool visualize = true;
+
         public static bool use_gpu = false;//是否使用GPU
         public static int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
         public static int gpu_id = 0;//GPUId
-        private static bool enable_mkldnn = true;
-        public static int cpu_threads = 30; //CPU预测时的线程数
+        public static int gpu_mem = 4000;//GPU显存上限
+        public static bool use_cls = true;//是否执行文字方向分类
+        public static bool use_angle_cls = true;//是否使用方向分类器
+
         /// <summary>
         /// 初始化OCR引擎
         /// </summary>
@@ -55,21 +61,21 @@ namespace WinFormsApp.Services
             oCRParameter.use_gpu = use_gpu;
             oCRParameter.use_tensorrt = false;
             oCRParameter.gpu_id = gpu_id;
-            oCRParameter.gpu_mem = 4000;
+            oCRParameter.gpu_mem = gpu_mem;
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.rec_batch_num = 7;
-            oCRParameter.cls = false;
+            oCRParameter.cls = use_cls;
             oCRParameter.det = true;
-            oCRParameter.use_angle_cls = false;
+            oCRParameter.use_angle_cls = use_angle_cls;
             oCRParameter.det_db_score_mode = true;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
             oCRParameter.rec_img_w = 320;
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.visualize = true;
+            oCRParameter.visualize = visualize;
 
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.Class;
@@ -105,21 +111,21 @@ namespace WinFormsApp.Services
             oCRParameter.use_gpu = use_gpu;
             oCRParameter.use_tensorrt = false;
             oCRParameter.gpu_id = gpu_id;
-            oCRParameter.gpu_mem = 4000;
+            oCRParameter.gpu_mem = gpu_mem;
             oCRParameter.cpu_mem = cpu_mem;
             oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.rec_batch_num = 7;
-            oCRParameter.cls = false;
+            oCRParameter.cls = use_cls;
             oCRParameter.det = true;
-            oCRParameter.use_angle_cls = false;
+            oCRParameter.use_angle_cls = use_angle_cls;
             oCRParameter.det_db_score_mode = true;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
             oCRParameter.rec_img_w = 320;
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.visualize = true;
+            oCRParameter.visualize = visualize;
             para.tablepara = oCRParameter;
             para.paraType = EnumParaType.TableClass;
             string msg = "表格识别初始化成功";
