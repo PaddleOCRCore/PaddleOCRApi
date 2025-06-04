@@ -26,8 +26,8 @@ namespace WinFormsApp.Services
         private static readonly Lazy<IOCRService> _ocrService = new Lazy<IOCRService>(() => new OCRService());
         public static IOCRService ocrService => _ocrService.Value;
 
-        private static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
-        private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
+        public static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
+        public static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
         private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
         private static string keys = "ppocr_keys.txt";
         private static string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference

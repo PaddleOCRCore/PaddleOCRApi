@@ -19,6 +19,16 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Visible>false</Visible>
 		</None>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\PP-OCRv5_mobile_det_infer\*.*">
+			<Link>models\PP-OCRv5_mobile_det_infer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
+		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\PP-OCRv5_mobile_rec_infer\*.*">
+			<Link>models\PP-OCRv5_mobile_rec_infer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Visible>false</Visible>
+		</None>
 		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\models\ch_ppocr_mobile_v2.0_cls_infer\*.*">
 			<Link>models\ch_ppocr_mobile_v2.0_cls_infer\%(RecursiveDir)%(Filename)%(Extension)</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

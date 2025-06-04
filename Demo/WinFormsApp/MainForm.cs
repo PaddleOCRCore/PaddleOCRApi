@@ -36,6 +36,7 @@ namespace WinFormsApp
         public static string RecFilepath = "";
         public static bool outPutJson = false;//是否输出JSON
         public static int recCount = 1; //OCR识别时同一张图片模拟调用接口次数
+        public static int model_type = 0;//模型类型：0是V5，1是V4
         public MainForm()
         {
             InitializeComponent();
@@ -47,6 +48,7 @@ namespace WinFormsApp
             {
                 comboBoxuse_gpu.SelectedIndex = 0;
                 comboBoxJson.SelectedIndex = 0;
+                comboBoxModel.SelectedIndex = 0;
                 RecFilepath = Path.Combine(Application.StartupPath, "output");
                 if (!Directory.Exists(RecFilepath))
                 {
@@ -68,6 +70,16 @@ namespace WinFormsApp
                 OCREngine.use_gpu = use_gpu;
                 OCREngine.gpu_id = gpu_id;
                 OCREngine.cpu_threads = cpu_threads;
+                if (model_type == 0)
+                {
+                    OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";//OCR V5检测模型
+                    OCREngine.rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR V5识别模型
+                }
+                else
+                {
+                    OCREngine.det_infer = "ch_PP-OCRv4_det_infer";//OCR V4检测模型
+                    OCREngine.rec_infer = "ch_PP-OCRv4_rec_infer";//OCR V4识别模型
+                }
                 string initmsg = OCREngine.GetOCREngine();
                 if (string.IsNullOrEmpty(initmsg))
                 {
@@ -284,7 +296,7 @@ namespace WinFormsApp
                 case 1:
                     use_gpu = true;
                     StringBuilder sb = new StringBuilder();
-                    sb.Append($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference解压" + Environment.NewLine); 
+                    sb.Append($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference解压" + Environment.NewLine);
                     sb.Append($"解压后将以下dll文件复制到程序运行文件夹中：" + Environment.NewLine);
                     sb.Append($"paddle\\lib目录下的common.dll和paddle_inference.dll" + Environment.NewLine);
                     sb.Append($"third_party\\install\\mkldnn\\lib目录下的mkldnn.dll" + Environment.NewLine);
@@ -367,5 +379,10 @@ namespace WinFormsApp
         }
 
         #endregion
+
+        private void comboBoxModel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            model_type=comboBoxModel.SelectedIndex;
+        }
     }
 }

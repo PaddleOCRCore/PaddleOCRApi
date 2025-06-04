@@ -33,6 +33,9 @@
             textBoxResult = new TextBox();
             buttonGetBase64 = new Button();
             groupBox1 = new GroupBox();
+            label7 = new Label();
+            comboBoxModel = new ComboBox();
+            buttonRecTable = new Button();
             buttonDownModels = new Button();
             numericUpDowncpu_mem = new NumericUpDown();
             label6 = new Label();
@@ -48,7 +51,6 @@
             comboBoxuse_gpu = new ComboBox();
             pictureBoxImg = new PictureBox();
             groupBox2 = new GroupBox();
-            buttonRecTable = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
@@ -82,11 +84,11 @@
             // textBoxResult
             // 
             textBoxResult.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            textBoxResult.Location = new Point(534, 116);
+            textBoxResult.Location = new Point(534, 143);
             textBoxResult.Multiline = true;
             textBoxResult.Name = "textBoxResult";
             textBoxResult.ScrollBars = ScrollBars.Both;
-            textBoxResult.Size = new Size(547, 564);
+            textBoxResult.Size = new Size(547, 537);
             textBoxResult.TabIndex = 2;
             // 
             // buttonGetBase64
@@ -102,6 +104,8 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(label7);
+            groupBox1.Controls.Add(comboBoxModel);
             groupBox1.Controls.Add(buttonRecTable);
             groupBox1.Controls.Add(buttonDownModels);
             groupBox1.Controls.Add(numericUpDowncpu_mem);
@@ -121,10 +125,40 @@
             groupBox1.Controls.Add(buttonRec);
             groupBox1.Location = new Point(12, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1069, 98);
+            groupBox1.Size = new Size(1069, 125);
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "功能选项";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(18, 92);
+            label7.Name = "label7";
+            label7.Size = new Size(68, 17);
+            label7.TabIndex = 19;
+            label7.Text = "模型方案：";
+            // 
+            // comboBoxModel
+            // 
+            comboBoxModel.FormattingEnabled = true;
+            comboBoxModel.Items.AddRange(new object[] { "PP-OCRv5_mobile", "ch_PP-OCRv4" });
+            comboBoxModel.Location = new Point(92, 89);
+            comboBoxModel.Name = "comboBoxModel";
+            comboBoxModel.Size = new Size(321, 25);
+            comboBoxModel.TabIndex = 18;
+            comboBoxModel.SelectedIndexChanged += comboBoxModel_SelectedIndexChanged;
+            // 
+            // buttonRecTable
+            // 
+            buttonRecTable.Enabled = false;
+            buttonRecTable.Location = new Point(748, 55);
+            buttonRecTable.Name = "buttonRecTable";
+            buttonRecTable.Size = new Size(120, 28);
+            buttonRecTable.TabIndex = 17;
+            buttonRecTable.Text = "OCR表格识别";
+            buttonRecTable.UseVisualStyleBackColor = true;
+            buttonRecTable.Click += buttonRecTable_Click;
             // 
             // buttonDownModels
             // 
@@ -257,7 +291,7 @@
             pictureBoxImg.Dock = DockStyle.Fill;
             pictureBoxImg.Location = new Point(3, 19);
             pictureBoxImg.Name = "pictureBoxImg";
-            pictureBoxImg.Size = new Size(510, 542);
+            pictureBoxImg.Size = new Size(510, 515);
             pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxImg.TabIndex = 5;
             pictureBoxImg.TabStop = false;
@@ -266,23 +300,12 @@
             // 
             groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             groupBox2.Controls.Add(pictureBoxImg);
-            groupBox2.Location = new Point(12, 116);
+            groupBox2.Location = new Point(12, 143);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(516, 564);
+            groupBox2.Size = new Size(516, 537);
             groupBox2.TabIndex = 6;
             groupBox2.TabStop = false;
             groupBox2.Text = "图片";
-            // 
-            // buttonRecTable
-            // 
-            buttonRecTable.Enabled = false;
-            buttonRecTable.Location = new Point(748, 55);
-            buttonRecTable.Name = "buttonRecTable";
-            buttonRecTable.Size = new Size(120, 28);
-            buttonRecTable.TabIndex = 17;
-            buttonRecTable.Text = "OCR表格识别";
-            buttonRecTable.UseVisualStyleBackColor = true;
-            buttonRecTable.Click += buttonRecTable_Click;
             // 
             // MainForm
             // 
@@ -294,7 +317,7 @@
             Controls.Add(textBoxResult);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PaddleOCR识别Demo--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
+            Text = "PaddleOCR识别Demo V2.0.0--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
             Load += MainForm_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
@@ -331,5 +354,7 @@
         private Label label6;
         private Button buttonDownModels;
         private Button buttonRecTable;
+        private Label label7;
+        private ComboBox comboBoxModel;
     }
 }
