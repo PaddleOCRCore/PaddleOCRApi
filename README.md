@@ -28,7 +28,7 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mk
 
 3、.net引用(支持netstandard2.0;net45;net461;net47;net48;net6.0;net7.0;net8.0;net9.0)
 
-`<PackageReference Include="PaddleOCRSDK" Version="2.0.0" />`
+`<PackageReference Include="PaddleOCRSDK" Version="2.0.2" />`PaddleOCRSDK2.0.2兼容PaddleOCRRuntime_x64 v1.0.5版本
 
 `<PackageReference Include="PaddleOCRRuntime_x64" Version="2.0.0" />`
 
