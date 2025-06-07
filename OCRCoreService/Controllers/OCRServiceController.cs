@@ -246,7 +246,6 @@ namespace OCRCoreService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        //[TypeFilter(typeof(WebApiActionAttribute))]
         public ActionResult GetOCRFile(IFormFile request)
         {
             string result = "";

@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using WinFormsApp.Services;
+using WinFormsApp.Utils;
 
 namespace WinFormsApp
 {
@@ -256,13 +257,16 @@ namespace WinFormsApp
         private void buttonDownModels_Click(object sender, EventArgs e)
         {
             // 定义要打开的 URL
-            string url = "https://paddlepaddle.github.io/PaddleOCR/latest/ppocr/model_list.html";
+            string urlV4 = "https://gitee.com/paddlepaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/models_list.md";
+            string urlV5 = "https://gitee.com/paddlepaddle/PaddleOCR/blob/release/3.0/docs/version3.x/model_list.md";
             try
             {
-                Process.Start(new ProcessStartInfo(url)
-                {
-                    UseShellExecute = true
-                });
+                //Process.Start(new ProcessStartInfo(urlV4)
+                //{
+                //    UseShellExecute = true
+                //});
+                LogMessage($"PP-OCRv4模型下载地址：{urlV4}");
+                LogMessage($"PP-OCRv5模型下载地址：{urlV5}");
             }
             catch (Exception ex)
             {
@@ -270,20 +274,50 @@ namespace WinFormsApp
             }
         }
 
-
         private void buttonGetBase64_Click(object sender, EventArgs e)
         {
-            message = new StringBuilder();
-            OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
-            OpenFileDialog1.Filter = "所有文件(*.jpg)|*.*|jpg(*.jpg)|*.png|png(*.png)|*.png|bmp(*.bmp)|*.bmp|jpeg(*.jpeg)|*.jpeg";
-            OpenFileDialog1.Multiselect = false;
-            if (DialogResult.OK == OpenFileDialog1.ShowDialog())
+            try
             {
-                string filePath = OpenFileDialog1.FileName;
-                string base64 = ImageTools.GetBase64FromImage(filePath);
-                textBoxResult.Text = base64;
+                OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
+                OpenFileDialog1.Filter = "所有文件(*.jpg)|*.*|jpg(*.jpg)|*.png|png(*.png)|*.png|bmp(*.bmp)|*.bmp|jpeg(*.jpeg)|*.jpeg";
+                OpenFileDialog1.Multiselect = false;
+                if (DialogResult.OK == OpenFileDialog1.ShowDialog())
+                {
+                    string filePath = OpenFileDialog1.FileName;
+                    string base64 = ImageTools.GetBase64FromImage(filePath);
+                    textBoxResult.Text = base64;
+                }
+                OpenFileDialog1.Dispose();
             }
-            OpenFileDialog1.Dispose();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"图片格式异常：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonPostFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(this.textBoxApiAddress.Text.Trim()))
+                {
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:WebApi地址不能为空！");
+                }
+                OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
+                OpenFileDialog1.Filter = "所有文件(*.jpg)|*.*|jpg(*.jpg)|*.png|png(*.png)|*.png|bmp(*.bmp)|*.bmp|jpeg(*.jpeg)|*.jpeg";
+                OpenFileDialog1.Multiselect = false;
+                if (DialogResult.OK == OpenFileDialog1.ShowDialog())
+                {
+                    string filePath = OpenFileDialog1.FileName;
+                    textBoxResult.Text = HttpHelper.PostFile(this.textBoxApiAddress.Text.Trim(),filePath);
+                }
+                OpenFileDialog1.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"调用接口异常：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
 
         private void comboBoxuse_gpu_SelectedIndexChanged(object sender, EventArgs e)
@@ -382,7 +416,7 @@ namespace WinFormsApp
 
         private void comboBoxModel_SelectedIndexChanged(object sender, EventArgs e)
         {
-            model_type=comboBoxModel.SelectedIndex;
+            model_type = comboBoxModel.SelectedIndex;
         }
     }
 }

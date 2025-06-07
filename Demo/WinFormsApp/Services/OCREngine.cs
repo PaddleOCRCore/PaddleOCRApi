@@ -34,7 +34,7 @@ namespace WinFormsApp.Services
         private static string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
-        private static bool visualize = true;
+        private static bool visualize = true;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。
 
         public static bool use_gpu = false;//是否使用GPU
         public static int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
@@ -84,6 +84,7 @@ namespace WinFormsApp.Services
             string msg = "文本识别初始化成功";
             try
             {
+                ocrService.EnableLog(false);//关闭Log日志
                 ocrService.Init(para);
             }
             catch (Exception ex)

@@ -124,7 +124,10 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 - [cuda下载](https://developer.nvidia.com/cuda-12-0-0-download-archive)
 - [cudnn下载](https://developer.nvidia.cn/rdp/cudnn-archive)
 - [TensorRT下载](https://developer.nvidia.com/nvidia-tensorrt-download)
-- [OCR识别官方模型库下载](https://gitee.com/paddlepaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/models_list.md)
+
+
+- [PP-OCRv4模型下载地址](https://gitee.com/paddlepaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/models_list.md)
+- [PP-OCRv5模型下载地址](https://gitee.com/paddlepaddle/PaddleOCR/blob/release/3.0/docs/version3.x/model_list.md)
 
 ## 开发交流群
 

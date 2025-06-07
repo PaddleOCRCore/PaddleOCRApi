@@ -171,7 +171,7 @@ namespace PaddleOCRSDK
         [field: MarshalAs(UnmanagedType.I1)]
         public bool det_db_score_mode { get; set; } = true;
         /// <summary>
-        /// 是否对结果进行可视化，为false时，预测结果会保存在output文件夹下和输入图像同名的图像上。
+        /// 是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。
         /// </summary>
 
         [field: MarshalAs(UnmanagedType.I1)]

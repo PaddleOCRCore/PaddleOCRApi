@@ -33,6 +33,9 @@
             textBoxResult = new TextBox();
             buttonGetBase64 = new Button();
             groupBox1 = new GroupBox();
+            buttonPostFile = new Button();
+            textBoxApiAddress = new TextBox();
+            label8 = new Label();
             label7 = new Label();
             comboBoxModel = new ComboBox();
             buttonRecTable = new Button();
@@ -104,6 +107,9 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(buttonPostFile);
+            groupBox1.Controls.Add(textBoxApiAddress);
+            groupBox1.Controls.Add(label8);
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(comboBoxModel);
             groupBox1.Controls.Add(buttonRecTable);
@@ -129,6 +135,35 @@
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "功能选项";
+            // 
+            // buttonPostFile
+            // 
+            buttonPostFile.Location = new Point(874, 87);
+            buttonPostFile.Name = "buttonPostFile";
+            buttonPostFile.Size = new Size(165, 28);
+            buttonPostFile.TabIndex = 22;
+            buttonPostFile.Text = "API接口测试";
+            buttonPostFile.UseVisualStyleBackColor = true;
+            buttonPostFile.Click += buttonPostFile_Click;
+            // 
+            // textBoxApiAddress
+            // 
+            textBoxApiAddress.Location = new Point(545, 89);
+            textBoxApiAddress.Name = "textBoxApiAddress";
+            textBoxApiAddress.Size = new Size(323, 23);
+            textBoxApiAddress.TabIndex = 21;
+            textBoxApiAddress.Text = "http://localhost:5000/OCRService/GetOCRFile";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(419, 92);
+            label8.Name = "label8";
+            label8.Size = new Size(114, 17);
+            label8.TabIndex = 20;
+            label8.Text = "WebApi接口地址：";
+            label8.TextAlign = ContentAlignment.TopRight;
+            label8.UseWaitCursor = true;
             // 
             // label7
             // 
@@ -356,5 +391,8 @@
         private Button buttonRecTable;
         private Label label7;
         private ComboBox comboBoxModel;
+        private Label label8;
+        private TextBox textBoxApiAddress;
+        private Button buttonPostFile;
     }
 }
