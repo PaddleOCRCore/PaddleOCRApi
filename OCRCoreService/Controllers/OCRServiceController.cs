@@ -201,7 +201,7 @@ namespace OCRCoreService.Controllers
 
         #region 通用文字识别
         /// <summary>
-        /// 通用文字识别
+        /// 通用文字识别，上传图片Base64编码
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -242,7 +242,7 @@ namespace OCRCoreService.Controllers
 
         #region 通用文字识别
         /// <summary>
-        /// 通用文字识别
+        /// 通用文字识别，直接上传图片即可，无需保存图片
         /// </summary>
         /// <returns></returns>
         [HttpPost]

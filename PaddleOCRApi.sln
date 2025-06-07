@@ -13,6 +13,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PaddleOCRCpp", "Demo\CPP\Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaddleOCRSDK", "PaddleOCRSDK\PaddleOCRSDK.csproj", "{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{BB893EE8-0181-4694-8288-41DADBBAC75D}"
+	ProjectSection(SolutionItems) = preProject
+		Doc\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf = Doc\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

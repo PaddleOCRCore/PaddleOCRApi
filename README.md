@@ -9,7 +9,7 @@
 </p>
 
 ## 一、简介
-免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，支持paddle_inference2.6.2及3.0推理库。
+免费离线OCR组件,支持CPU/GPU，免费使用CPU普通版、CPU加速版，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，支持paddle_inference2.6.2及3.0推理库。
 喜欢的请给本项目点一个免费的Star
 
 支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4/V3模型
@@ -90,7 +90,7 @@ WebApi部署后可供前端调用。
 ## 四、GPU环境配置说明
 ### paddle_inference2.6.2版本GPU推理库下载及配置
 
-默认PaddleOCR.dll用于[paddle_inference2.6.2](https://www.paddlepaddle.org.cn/inference/v2.6/guides/install/download_lib.html#windows)版本推理库，
+下载地址：[paddle_inference2.6.2](https://www.paddlepaddle.org.cn/inference/v2.6/guides/install/download_lib.html#windows)版本推理库，
 - https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12.0_cudnn8.9.1_trt8.6.1.6_mkl_avx_vs2019/paddle_inference.zip
 
 解压后将以下dll文件复制到程序运行文件夹中：
@@ -106,10 +106,10 @@ WebApi部署后可供前端调用。
 
 - paddle_inference3.0版本推理库下载
 
-- CPU版本
+- CPU版本(WebApi模式CPU加速不可用，请关闭enable_mkldnn)
 3.0.0正式版本：https://paddle-inference-lib.bj.bcebos.com/3.0.0/cxx_c/Windows/CPU/x86-64_avx-mkl-vs2019/paddle_inference.zip
 
-- GPU版本
+- GPU版本--官方推理库暂时不可用
 3.0.0正式版本：https://paddle-inference-lib.bj.bcebos.com/3.0.0/cxx_c/Windows/GPU/x86-64_cuda12.6_cudnn9.5.1_trt10.5.0.18_mkl_avx_vs2019/paddle_inference.zip
 
 paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
@@ -128,7 +128,7 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 
 ## 开发交流群
 
-欢迎加入QQ群475159576交流,或者添加QQ：2380243976,若您喜欢本项目，请点击免费的star
+欢迎加入QQ群475159576交流,或者添加QQ：2380243976,若您喜欢本项目，请点击免费的Star
 
 <img src="./Demo/PaddleOCRRuntime/qq.png" width="382px;" />
 

@@ -98,6 +98,7 @@ namespace OCRCoreService.Services
         }
         /// <summary>
         /// 初始化表格识别引擎默认V4模型，使用CPU及mkldnn
+        /// Api接口未使用，若使用可将此加到OCREngine中
         /// </summary>
         /// <param name="modelsPath"></param>
         /// <returns></returns>

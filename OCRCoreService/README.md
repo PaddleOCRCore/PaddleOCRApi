@@ -5,9 +5,29 @@
 ## 运行环境
 项目运行环境为.net8.0：
 
-独立运行服务：建议操作系统Win10以上64位，安装.NET桌面运行时 8.0.14：
-https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-8.0.14-windows-x64-installer，然后点击 OCRCoreService.exe 运行，默
-认端口5000，浏览器打开 http://localhost:5000 提示服务正在运行即正常，也可以打开http://localhost:5000/swagger/index.html在线查看接口。
+1、使用IIS：服务器环境推荐，建议操作系统Windows Server2016 Data Center，
+安装IIS，及.net8 环境，下载地址：
+https://dotnet.microsoft.com/zh-cn/download/dotnet/8.0，找到ASP.NET Core
+运行时 8.0.14，点击Windows 平台Hosting Bundle 下载：
+https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-8.0.14-win
+dows-hosting-bundle-installer
+2、独立运行服务：建议操作系统Win10 以上64 位，
+安装ASP.NET Core 运行时 8.0.14：
+https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-as
+pnetcore-8.0.14-windows-x64-installer
+安装.NET 桌面运行时 8.0.14：
+https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-d
+esktop-8.0.14-windows-x64-installer
+创建一个批处理文件：StartOCRApi.bat，输入以下内容：
+@echo off
+set CURRENT_DIR=%~dp0
+echo StartingOCRCoreService.dll..
+dotnet "%CURRENT_DIR%OCRCoreService.dll" --urls http://*:5000
+pause
+并将批处理发送至桌面快捷方式
+双击批处理文件StartOCRApi.bat，启动服务，默认端口5000(批处理中可修改)，浏览器打开http://localhost:5000 提示服务正在运行即正常。
+
+### 修改Web.Config 配置文件，将hostingModel="inprocess"改为hostingModel=" OutOfProcess "
 
 ## 请求与响应协议
 接口采用Post请求，具体依所访问接口定义为准。
@@ -31,6 +51,12 @@ https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-8.0
 | errorMessage|  调用接口返回的说明| 
 
 ## 接口清单
+
+|序号| 类型| 接口地址| 接口名称| 创建日期| 最后发布日期| 备注|
+| -- | --- |-------- | ------- |---------| ------------|-----|
+|1| OCR| /OCRService/GetOCRText| 图片OCR识别| 2025/03/28| 2025/03/28| 上传Base64|
+|2| OCR| /OCRService/GetOCRFile| 图片OCR识别| 2025/04/27| 2025/04/27| 上传图片|
+
 图片OCR识别：/OCRService/GetOCRText 
 
 提交方式：POST
