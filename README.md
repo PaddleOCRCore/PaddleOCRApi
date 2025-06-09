@@ -28,11 +28,15 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mk
 
 3、.net引用(支持netstandard2.0;net45;net461;net47;net48;net6.0;net7.0;net8.0;net9.0)
 
-`<PackageReference Include="PaddleOCRSDK" Version="2.0.2" />`PaddleOCRSDK2.0.2兼容PaddleOCRRuntime_x64 v1.0.5版本
+`<PackageReference Include="PaddleOCRSDK" Version="2.0.2" />`
 
 `<PackageReference Include="PaddleOCRRuntime_x64" Version="2.0.0" />`
 
-若使用paddle_inference2.6.2版本推理库引用PaddleOCRRuntime_x64 v1.0.5版本
+若使用paddle_inference2.6.2版本推理库使用以下版本
+
+`<PackageReference Include="PaddleOCRSDK" Version="1.0.5" />`
+
+`<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />`
 
 PaddleOCRRuntime_x64支持Python、Go、C++等环境
 

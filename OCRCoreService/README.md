@@ -27,6 +27,8 @@ pause
 并将批处理发送至桌面快捷方式
 双击批处理文件StartOCRApi.bat，启动服务，默认端口5000(批处理中可修改)，浏览器打开http://localhost:5000 提示服务正在运行即正常。
 
+打开http://localhost:5000/swagger/index.html可查看接口及在线调试
+
 ### 修改Web.Config 配置文件，将hostingModel="inprocess"改为hostingModel=" OutOfProcess "
 
 ## 请求与响应协议
