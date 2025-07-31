@@ -28,7 +28,7 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mk
 
 3、.net引用(支持netstandard2.0;net45;net461;net47;net48;net6.0;net7.0;net8.0;net9.0)
 
-`<PackageReference Include="PaddleOCRSDK" Version="2.0.2" />`
+`<PackageReference Include="PaddleOCRSDK" Version="2.1.0" />`
 
 `<PackageReference Include="PaddleOCRRuntime_x64" Version="2.0.0" />`
 
@@ -146,6 +146,9 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 <img src="./Demo/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
+### v2.1.0 `2025.7.31`
+- 修改PaddleOCR.dll接口，指针类型改为char*(UTF8编码)，增加DetectMat接口支持直接传入Mat，EnableANSIResult更名为EnableASCIIResult：JSON输出是否使用ASCII编码，为true是返回Ascii编码
+- 发布PaddleOCRSDK2.0.1版本，同步修改接口调用方法
 ### v2.0.0 `2025.6.4`
 - 修改PaddleOCR.dll接口，增加支持PP-OCRv5模型
 - WinForm Demo增加V5/V4模型选择下拉选项
