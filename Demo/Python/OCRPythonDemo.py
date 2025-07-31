@@ -35,21 +35,22 @@ images = os.listdir(image_dir)
 
 # 处理每张图片
 for image_name in images:
-    print("处理图片:", image_name)
-    start_time = time.time()
+    for i in range(10):
+        print("处理图片:", image_name)
+        start_time = time.time()
 
-    # 调用OCR检测函数
-    image_path = image_dir + "\\" + image_name
-    detect_func.restype = ctypes.c_wchar_p
-    c_wstring = detect_func(ctypes.c_char_p(image_path.encode('utf-8')))
-    # 计算识别时间
-    elapsed_time = time.time() - start_time
-    print(f"OCR耗时: {elapsed_time * 1000:.2f}ms")
-    # 检查返回值是否为空指针
-    if c_wstring:
-        print("识别结果:", c_wstring)
-    else:
-        print("识别失败，返回空指针。")
+        # 调用OCR检测函数
+        image_path = image_dir + "\\" + image_name
+        detect_func.restype = ctypes.c_char_p
+        c_string = detect_func(ctypes.c_char_p(image_path.encode('utf-8'))).decode('utf-8')
+        # 计算识别时间
+        elapsed_time = time.time() - start_time
+        print(f"OCR耗时: {elapsed_time * 1000:.2f}ms")
+        # 检查返回值是否为空指针
+        if c_string:
+            print("识别结果:", c_string)
+        else:
+            print("识别失败，返回空指针。")
 
 # 等待用户输入以退出程序
 input("按回车键退出...")

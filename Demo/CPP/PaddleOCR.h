@@ -27,10 +27,10 @@ extern "C" {
     /// <returns></returns>
     __declspec(dllimport) void __stdcall EnableLog(bool useLog);
     /// <summary>
-    /// 是否使用单字节编码
+    /// JSON输出是否使用ASCII编码，为true是返回Ascii编码
     /// </summary>
     /// <param name="useANSI"></param>
-    __declspec(dllimport) void __stdcall EnableANSIResult(bool useANSI);
+    __declspec(dllimport) void __stdcall EnableASCIIResult(bool useASCII);
 
     /// <summary>
     /// 是否使用json格式返回结果，默认true
@@ -47,11 +47,12 @@ extern "C" {
         const char* keys,
         const char* parameterjson);
     __declspec(dllimport) bool __stdcall DynamicInit(SyncParameter parameter);
-    __declspec(dllimport) const wchar_t* __stdcall Detect(const char* imageFile);
-    __declspec(dllimport) const wchar_t* __stdcall DetectByte(const unsigned char* imagebytedata, size_t size);
-    __declspec(dllimport) const wchar_t* __stdcall DetectBase64(const char* imagebase64);
+    __declspec(dllimport) const char* __stdcall Detect(const char* imageFile);
+    /*__declspec(dllimport) const char* __stdcall DetectMat(const cv::Mat& cvmat);*/
+    __declspec(dllimport) const char* __stdcall DetectByte(const unsigned char* imagebytedata, size_t size);
+    __declspec(dllimport) const char* __stdcall DetectBase64(const char* imagebase64);
     __declspec(dllimport) int __stdcall FreeEngine();
-    __declspec(dllimport) wchar_t* __stdcall GetError();
+    __declspec(dllimport) char* __stdcall GetError();
     __declspec(dllimport) bool __stdcall InitTable(const char* det_infer,
         const char* rec_infer,
         const char* keys,
@@ -63,8 +64,8 @@ extern "C" {
         const char* keys,
         const char* table_model_dir,
         const char* table_char_dict_path, const char* parameterjson);
-    __declspec(dllimport) const wchar_t* __stdcall DetectTable(const char* imageFile);
-    __declspec(dllimport) const wchar_t* __stdcall DetectTableByte(const unsigned char* imagebytedata, size_t size);
-    __declspec(dllimport) const wchar_t* __stdcall DetectTableBase64(const char* imagebase64);
+    __declspec(dllimport) const char* __stdcall DetectTable(const char* imageFile);
+    __declspec(dllimport) const char* __stdcall DetectTableByte(const unsigned char* imagebytedata, size_t size);
+    __declspec(dllimport) const char* __stdcall DetectTableBase64(const char* imagebase64);
     __declspec(dllimport) int __stdcall FreeTableEngine();
 }

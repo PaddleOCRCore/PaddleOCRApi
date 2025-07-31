@@ -73,7 +73,7 @@ namespace PaddleOCRSDK
         /// 是否使用单字节编码，默认为false
         /// </summary>
         /// <param name="useANSI"></param>
-        void EnableANSIResult(bool useANSI);
+        void EnableASCIIResult(bool useANSI);
         /// <summary>
         /// 是否使用json格式返回结果，默认true
         /// </summary>

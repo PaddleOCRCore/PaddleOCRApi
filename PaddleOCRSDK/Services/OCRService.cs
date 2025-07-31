@@ -16,17 +16,59 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace PaddleOCRSDK
 {
+    /// <summary>
+    /// 跨版本 Marshal.UTF8 工具类
+    /// .NET Framework 没有 PtrToStringUTF8，这里统一提供。
+    /// </summary>
+    public static class MarshalUtf8
+    {
+        /// <summary>
+        /// 将 UTF-8 零结尾字节序列转换为托管字符串。
+        /// 支持 .NET Framework 2.0+ / .NET Core 1.x+ / .NET 5+
+        /// </summary>
+        public static string PtrToStringUTF8(IntPtr ptr)
+        {
+            if (ptr == IntPtr.Zero) return null;
+
+            // .NET 5+ 原生支持 PtrToStringUTF8
+#if NET5_0_OR_GREATER
+        return Marshal.PtrToStringUTF8(ptr);
+#else
+            return PtrToStringUTF8_Manual(ptr);
+#endif
+        }
+
+#if !NET5_0_OR_GREATER
+        /// <summary>
+        /// .NET Framework / Core 的手动实现
+        /// </summary>
+        private static string PtrToStringUTF8_Manual(IntPtr ptr)
+        {
+            // 1. 计算长度（到零字节为止）
+            int len = 0;
+            while (Marshal.ReadByte(ptr, len) != 0) len++;
+
+            // 2. 复制到托管数组
+            byte[] bytes = new byte[len];
+            Marshal.Copy(ptr, bytes, 0, len);
+
+            // 3. UTF-8 解码
+            return Encoding.UTF8.GetString(bytes);
+        }
+#endif
+    }
     public class OCRException : Exception
     {
         public OCRException(string message) : base(message)
         {
         }
     }
-    public class OCRService:IOCRService
+    public class OCRService : IOCRService
     {
         /// <summary>
         /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
@@ -156,7 +198,7 @@ namespace PaddleOCRSDK
                 }
                 else if (para.paraType == EnumParaType.TableClass)
                 {
-                    ret = OCRSDK.InitTable(para.det_infer, para.rec_infer, para.keyFile, para.table_model_dir,para.table_dict_path, para.tablepara);
+                    ret = OCRSDK.InitTable(para.det_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.tablepara);
                 }
                 else if (para.paraType == EnumParaType.TableJson)
                 {
@@ -200,12 +242,21 @@ namespace PaddleOCRSDK
             var ptrResult = OCRSDK.DetectByte(imagebyte, imagebyte.LongLength);
             return GetResult(ptrResult);
         }
+        /// <summary>
+        /// 对Mat进行文本识别
+        /// </summary>
+        /// <param name="ptr_cvmat">Mat</param>
+        /// <returns>OCR识别结果</returns>
+        public OCRResult DetectMat(IntPtr ptr_cvmat)
+        {
+            var ptrResult = OCRSDK.DetectMat(ptr_cvmat);
+            return GetResult(ptrResult);
+        }
         public OCRResult DetectBase64(string base64)
         {
             var ptrResult = OCRSDK.DetectBase64(base64);
             return GetResult(ptrResult);
         }
-
         private OCRResult GetResult(IntPtr ptrResult)
         {
             OCRResult result = new OCRResult();
@@ -221,15 +272,22 @@ namespace PaddleOCRSDK
             string json = string.Empty;
             try
             {
-                json = Marshal.PtrToStringUni(ptrResult);
-                List<JsonResult> jonResult = DeObject<List<JsonResult>>(json);
-                result.WordsResult = jonResult;
-                result.JsonText = json;
+                json = MarshalUtf8.PtrToStringUTF8(ptrResult);
+                try
+                {
+                    result.JsonText = json;
+                    List<JsonResult> jonResult = DeObject<List<JsonResult>>(json);
+                    result.WordsResult = jonResult;
+                }
+                catch (Exception e)
+                {
+                    result.JsonText = json + e.Message;
+                }
             }
             catch (Exception ex)
             {
                 throw new OCRException("OCR结果Json反序列化失败:" + ex.Message);
-            }            
+            }
             finally
             {
                 if (ptrResult != IntPtr.Zero)
@@ -284,7 +342,7 @@ namespace PaddleOCRSDK
             }
             try
             {
-                result = Marshal.PtrToStringUni(ptrResult);
+                result = MarshalUtf8.PtrToStringUTF8(ptrResult);
             }
             catch (Exception ex)
             {
@@ -312,7 +370,7 @@ namespace PaddleOCRSDK
                 var ret = OCRSDK.GetError();
                 if (ret != IntPtr.Zero)
                 {
-                    lastErr = Marshal.PtrToStringAnsi(ret);
+                    lastErr = MarshalUtf8.PtrToStringUTF8(ret);
                     Marshal.FreeHGlobal(ret);
                 }
             }
@@ -331,12 +389,12 @@ namespace PaddleOCRSDK
             OCRSDK.EnableLog(useLog);
         }
         /// <summary>
-        /// 是否使用单字节编码，默认为false
+        /// JSON输出是否使用ASCII编码，为true是返回Ascii编码，默认为false
         /// </summary>
-        /// <param name="useANSI"></param>
-        public void EnableANSIResult(bool useANSI)
+        /// <param name="useASCII"></param>
+        public void EnableASCIIResult(bool useASCII)
         {
-            OCRSDK.EnableANSIResult(useANSI);
+            OCRSDK.EnableASCIIResult(useASCII);
         }
         /// <summary>
         /// 是否使用json格式返回结果，默认true

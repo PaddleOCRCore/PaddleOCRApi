@@ -30,10 +30,10 @@ namespace PaddleOCRSDK
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern void EnableLog(bool useLog);
         /// <summary>
-        /// 是否使用单字节编码
+        /// JSON输出是否使用ASCII编码，为true是返回Ascii编码
         /// </summary>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern void EnableANSIResult(bool useANSI);
+        internal static extern void EnableASCIIResult(bool useASCII);
         /// <summary>
         /// 是否使用json格式返回结果，默认true
         /// </summary>
@@ -75,6 +75,13 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern IntPtr Detect(string filename);
+        /// <summary>
+        /// OCR识别Mat
+        /// </summary>
+        /// <param name="cvmat">Mat</param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectMat(IntPtr cvmat);
         /// <summary>
         /// OCR文字识别
         /// </summary>

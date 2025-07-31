@@ -276,6 +276,29 @@ namespace OCRCoreService.Controllers
             }
             return OKResult(result);
         }
+        /// <summary>
+        /// 通用文字识别，直接上传图片即可，无需保存图片，返回json
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetOCRJsonFile(IFormFile request)
+        {
+            string result = "";
+            if (request.Length == 0)
+            {
+                return (BadResult("识别失败:图片不存在！"));
+            }
+            using (MemoryStream ms = new MemoryStream())
+            {
+                request.CopyToAsync(ms);
+                var imageByte = ms.ToArray();
+                logger.LogTrace($"获取到图片:{imageByte.ToString()}");
+                OCRResult ocrResult = ocrEngine.OcrService.Detect(imageByte);
+                logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
+                result = ocrResult.JsonText;
+            }
+            return OKResult(result);
+        }
         #endregion
     }
 }
