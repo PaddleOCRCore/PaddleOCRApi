@@ -54,6 +54,12 @@ namespace PaddleOCRSDK
         /// <returns>OCR识别结果</returns>
         OCRResult Detect(byte[] imagebyte);
         /// <summary>
+        /// 对Mat进行文本识别
+        /// </summary>
+        /// <param name="ptr_cvmat">Mat</param>
+        /// <returns></returns>
+        OCRResult DetectMat(IntPtr ptr_cvmat);
+        /// <summary>
         /// 对base64图像进行识别
         /// </summary>
         /// <param name="base64"></param>
