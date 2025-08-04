@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using PaddleOCRSDK;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -129,7 +130,10 @@ namespace WinFormsApp
             LogMessage($"Image: {filePath}");
             LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             stopwatch.Start();
+            //Mat image = Cv2.ImRead(filePath, ImreadModes.Color);
+            LogMessage($"生成Mat成功: {startTime:HH:mm:ss.fff}");
             OCRResult ocrResult = ocrService.Detect(filePath);
+            //OCRResult ocrResult = ocrService.DetectMat(image.CvPtr);使用OpenCvSharp4时,可传入DetectMat(image.CvPtr)
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var item in ocrResult.WordsResult)
             {

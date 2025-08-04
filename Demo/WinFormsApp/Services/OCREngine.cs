@@ -84,7 +84,7 @@ namespace WinFormsApp.Services
             string msg = "文本识别初始化成功";
             try
             {
-                ocrService.EnableLog(false);//关闭Log日志
+                ocrService.EnableLog(true);//关闭Log日志
                 ocrService.Init(para);
             }
             catch (Exception ex)
