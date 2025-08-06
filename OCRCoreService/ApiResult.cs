@@ -144,6 +144,10 @@ namespace OCRCoreService
         /// </summary>
         public bool use_gpu { get; set; } = false;
         /// <summary>
+        /// 是否使用方向分类器
+        /// </summary>
+        public bool use_cls { get; set; } = true;
+        /// <summary>
         /// 是否使用mkldnn库
         /// </summary>
         public bool enable_mkldnn { get; set; } = true;
@@ -163,5 +167,9 @@ namespace OCRCoreService
         /// CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快
         /// </summary>
         public int cpu_threads { get; set; } = 30;
+        /// <summary>
+        /// 文字识别模型批量识别数量
+        /// </summary>
+        public int rec_batch_num { get; set; } = 7;
     }
 }

@@ -69,10 +69,10 @@ namespace OCRCoreService.Services
             oCRParameter.cpu_mem = _ocrConfig.cpu_mem;
             oCRParameter.cpu_threads = _ocrConfig.cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = _ocrConfig.enable_mkldnn;
-            oCRParameter.rec_batch_num = 7;
-            oCRParameter.cls = false;
+            oCRParameter.rec_batch_num = _ocrConfig.rec_batch_num;
             oCRParameter.det = true;
-            oCRParameter.use_angle_cls = false;
+            oCRParameter.cls = _ocrConfig.use_cls;
+            oCRParameter.use_angle_cls = _ocrConfig.use_cls;
             oCRParameter.det_db_score_mode = true;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
@@ -121,10 +121,10 @@ namespace OCRCoreService.Services
             oCRParameter.cpu_mem = _ocrConfig.cpu_mem;
             oCRParameter.cpu_threads = _ocrConfig.cpu_threads;//提升CPU速度，优化此参数
             oCRParameter.enable_mkldnn = _ocrConfig.enable_mkldnn;
-            oCRParameter.rec_batch_num = 7;
-            oCRParameter.cls = false;
+            oCRParameter.rec_batch_num = _ocrConfig.rec_batch_num;
             oCRParameter.det = true;
-            oCRParameter.use_angle_cls = false;
+            oCRParameter.cls = _ocrConfig.use_cls;
+            oCRParameter.use_angle_cls = _ocrConfig.use_cls;
             oCRParameter.det_db_score_mode = true;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
