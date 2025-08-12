@@ -15,6 +15,7 @@ ocr_dll = ctypes.CDLL(dll_path)
 init_func = ocr_dll.Initjson
 detect_func = ocr_dll.Detect
 enable_json_func = ocr_dll.EnableJsonResult
+enable_log_func = ocr_dll.EnableLog
 
 # 初始化OCR
 root_dir = get_current_directory()
@@ -28,7 +29,7 @@ init_func(
 
 # 设置返回结果格式
 enable_json_func(0)  # 0: 返回纯字符串结果, 1: 返回JSON字符串结果
-
+enable_log_func(1)  # 0: 不输出日志, 1: 输出日志
 # 读取图片目录
 image_dir = root_dir + "\\images"
 images = os.listdir(image_dir)
@@ -40,14 +41,14 @@ for image_name in images:
 
     # 调用OCR检测函数
     image_path = image_dir + "\\" + image_name
-    detect_func.restype = ctypes.c_wchar_p
-    c_wstring = detect_func(ctypes.c_char_p(image_path.encode('utf-8')))
+    detect_func.restype = ctypes.c_char_p
+    c_string = detect_func(ctypes.c_char_p(image_path.encode('utf-8'))).decode('utf-8')
     # 计算识别时间
     elapsed_time = time.time() - start_time
     print(f"OCR耗时: {elapsed_time * 1000:.2f}ms")
     # 检查返回值是否为空指针
-    if c_wstring:
-        print("识别结果:", c_wstring)
+    if c_string:
+        print("识别结果:", c_string)
     else:
         print("识别失败，返回空指针。")
 

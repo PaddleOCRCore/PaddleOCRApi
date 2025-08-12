@@ -15,6 +15,7 @@
 
 #pragma once
 #include <string>
+#include <opencv2/opencv.hpp>//使用OpenCV4.10
 #include <include/AI_Parameter.h>
 #pragma comment (lib,"PaddleOCR.lib")
 #pragma once
@@ -48,7 +49,7 @@ extern "C" {
         const char* parameterjson);
     __declspec(dllimport) bool __stdcall DynamicInit(SyncParameter parameter);
     __declspec(dllimport) const char* __stdcall Detect(const char* imageFile);
-    /*__declspec(dllimport) const char* __stdcall DetectMat(const cv::Mat& cvmat);*/
+    __declspec(dllimport) const char* __stdcall DetectMat(const cv::Mat& cvmat);
     __declspec(dllimport) const char* __stdcall DetectByte(const unsigned char* imagebytedata, size_t size);
     __declspec(dllimport) const char* __stdcall DetectBase64(const char* imagebase64);
     __declspec(dllimport) int __stdcall FreeEngine();

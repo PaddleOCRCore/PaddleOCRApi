@@ -89,7 +89,9 @@ int main()
         for (int i = 0; i < 1; i++) {//模拟单张图片循环识别
             cout << "images:" << image << endl;
             auto	starttime = chrono::steady_clock::now();
-            string cstr = Detect(const_cast<char*>(image.c_str()));
+            cv::Mat imgMat = cv::imread(const_cast<char*>(image.c_str()), cv::IMREAD_COLOR);
+            string cstr = DetectMat(imgMat);
+            //string cstr = Detect(const_cast<char*>(image.c_str()));
             auto	endtime = chrono::steady_clock::now();
             auto duration = chrono::duration_cast<chrono::milliseconds>(endtime - starttime);
             std::cout << "Detect:" << duration.count() << "ms" << endl;

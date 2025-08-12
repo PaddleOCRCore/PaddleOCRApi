@@ -1,5 +1,6 @@
 package main
 
+import "C"
 import (
 	"bufio"
 	"fmt"
@@ -77,18 +78,13 @@ func main() {
 
 		// 调用OCR检测函数
 		imagePath := imageDir + "\\" + image.Name()
-		cWString, _, _ := detectFunc.Call(stringToPointer(imagePath))
-
+		cString, _, _ := detectFunc.Call(stringToPointer(imagePath))
 		// 计算识别时间
 		elapsedTime := time.Since(startTime)
 		fmt.Printf("OCR耗时: %.2fms\n", float64(elapsedTime)/float64(time.Millisecond))
 
-		// 将返回的wchar_t指针转换为Go字符串
-		wstr := (*[1 << 30]uint16)(unsafe.Pointer(cWString))
-		var result string
-		for i := 0; wstr[i] != 0; i++ {
-			result += string(rune(wstr[i]))
-		}
+		// 将返回的char* 指针转换为Go字符串
+		var result string = C.GoString((*C.char)(unsafe.Pointer(cString)))
 		fmt.Println("识别结果:", result)
 	}
 

@@ -1,3 +1,4 @@
+CHCP 65001
 go build .\OCRGoDemo.go
-start .\OCRGoDemo.exe
+.\OCRGoDemo.exe
 @pause
