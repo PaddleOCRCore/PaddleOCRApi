@@ -94,7 +94,7 @@ namespace WinFormsApp.Services
             return msg;
         }
         /// <summary>
-        /// 初始化表格识别引擎默认V4模型，使用CPU及mkldnn
+        /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
         /// </summary>
         /// <param name="modelsPath"></param>
         /// <returns></returns>
@@ -104,6 +104,7 @@ namespace WinFormsApp.Services
             string root = AppDomain.CurrentDomain.BaseDirectory;
             string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
             para.det_infer = Path.Combine(modelsPath, det_infer);
+            para.cls_infer = Path.Combine(modelsPath, cls_infer);
             para.rec_infer = Path.Combine(modelsPath, rec_infer);
             para.keyFile = Path.Combine(modelsPath, keys);
             para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
