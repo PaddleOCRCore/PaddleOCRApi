@@ -1,5 +1,0 @@
-项目运行环境为VS2022+.net8，并有C++/GO调用Demo：
-复制当前文件夹中所有文件至项目编译启动文件夹
-
-默认paddle_inference3.0版本CPU版本推理库，其它推理库请手动下载
-https://www.paddlepaddle.org.cn/inference/v2.6/guides/install/download_lib.html#windows

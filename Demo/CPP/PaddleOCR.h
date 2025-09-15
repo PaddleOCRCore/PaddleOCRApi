@@ -55,12 +55,13 @@ extern "C" {
     __declspec(dllimport) int __stdcall FreeEngine();
     __declspec(dllimport) char* __stdcall GetError();
     __declspec(dllimport) bool __stdcall InitTable(const char* det_infer,
+        const char* cls_infer,
         const char* rec_infer,
         const char* keys,
         const char* table_model_dir,
         const char* table_char_dict_path, TableParameter parameter);
-    __declspec(dllimport) bool __stdcall InitTablejson(
-        const char* det_infer,
+    __declspec(dllimport) bool __stdcall InitTablejson(const char* det_infer,
+        const char* cls_infer,
         const char* rec_infer,
         const char* keys,
         const char* table_model_dir,

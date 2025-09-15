@@ -12,8 +12,8 @@ dll_path = os.path.join(root_dir, "PaddleOCR.dll")
 ocr_dll = ctypes.CDLL(dll_path)
 
 # 定义DLL中的函数
-init_func = ocr_dll.Initjson
-detect_func = ocr_dll.Detect
+initTable_func = ocr_dll.InitTablejson
+detect_func = ocr_dll.DetectTable
 enable_json_func = ocr_dll.EnableJsonResult
 enable_log_func = ocr_dll.EnableLog
 
@@ -23,13 +23,16 @@ enable_log_func(1)  # 0: 不输出日志, 1: 输出日志
 
 # 初始化OCR
 root_dir = get_current_directory()
-init_func(
+initTable_func(
     ctypes.c_char_p((root_dir + "\\models\\PP-OCRv5_mobile_det_infer").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\ch_ppocr_mobile_v5.0_cls_infer").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\PP-OCRv5_mobile_rec_infer").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\ppocr_keys.txt").encode('utf-8')),
+    ctypes.c_char_p((root_dir + "\\models\\ch_ppstructure_mobile_v2.0_SLANet_infer").encode('utf-8')),
+    ctypes.c_char_p((root_dir + "\\models\\table_structure_dict_ch.txt").encode('utf-8')),
     ctypes.c_char_p(b'{"use_gpu": false,"cpu_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 0,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":true,"det":true,"use_angle_cls":true}')
 )
+
 # 读取图片目录
 image_dir = root_dir + "\\images"
 images = os.listdir(image_dir)
