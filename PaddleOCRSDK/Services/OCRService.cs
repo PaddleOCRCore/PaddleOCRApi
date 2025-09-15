@@ -77,8 +77,8 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         public string InitDefaultOCREngine(string modelsPath)
         {
-            string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
-            string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
+            string det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
+            string rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
             string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
             string keys = "ppocr_keys.txt";
             bool use_gpu = false;//是否使用GPU
@@ -130,8 +130,8 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         public string InitDefaultTableEngine(string modelsPath)
         {
-            string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
-            string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
+            string det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
+            string rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
             string keys = "ppocr_keys.txt";
             string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
             string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
@@ -198,11 +198,11 @@ namespace PaddleOCRSDK
                 }
                 else if (para.paraType == EnumParaType.TableClass)
                 {
-                    ret = OCRSDK.InitTable(para.det_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.tablepara);
+                    ret = OCRSDK.InitTable(para.det_infer, para.cls_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.tablepara);
                 }
                 else if (para.paraType == EnumParaType.TableJson)
                 {
-                    ret = OCRSDK.InitTablejson(para.det_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.json);
+                    ret = OCRSDK.InitTablejson(para.det_infer, para.cls_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.json);
                 }
                 else
                 {

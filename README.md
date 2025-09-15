@@ -9,7 +9,7 @@
 </p>
 
 ## 一、简介
-免费离线OCR组件,支持CPU/GPU，免费使用CPU普通版、CPU加速版，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，支持paddle_inference2.6.2及3.0推理库。
+免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，支持paddle_inference2.6.2及3.2推理库。
 喜欢的请给本项目点一个免费的Star
 
 支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4/V3模型
@@ -17,7 +17,7 @@
 ## 二、运行环境
 项目运行环境为VS2022+.net8.0：
 
-1、默认[paddle_inference3.0](https://www.paddlepaddle.org.cn/inference/v3.0/guides/install/download_lib.html#windows)版本CPU版本推理库，其它推理库请手动下载
+1、默认paddle_inference3.2-CPU版本推理库，其它推理库请手动下载或自行编译
 
 - paddle_inference2.6.2版本推理库下载
 
@@ -28,9 +28,11 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mk
 
 3、.net引用(支持netstandard2.0;net45;net461;net47;net48;net6.0;net7.0;net8.0;net9.0)
 
-`<PackageReference Include="PaddleOCRSDK" Version="2.1.1" />`
+使用paddle_inference3.1+版本推理库使用以下版本
 
-`<PackageReference Include="PaddleOCRRuntime_x64" Version="2.0.0" />`
+`<PackageReference Include="PaddleOCRSDK" Version="3.1.0" />`
+
+`<PackageReference Include="PaddleOCRRuntime_x64" Version="3.1.0" />`
 
 若使用paddle_inference2.6.2版本推理库使用以下版本
 
@@ -102,19 +104,16 @@ WebApi部署后可供前端调用。
 - third_party\install\mkldnn\lib目录下的mkldnn.dll
 - third_party\install\mklml\lib目录下的libiomp5md.dll和mklml.dll
 #### 安装指定版本的CUDA以及CUDNN
-复制对应的CUDNN中的cudnn64_8.dll到程序运行文件夹中
-- 位于：C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin\\cudnn64_8.dll
+复制对应的CUDNN中的cudnn64_x.dll到程序运行文件夹中
+- 位于：C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.x\\bin\\cudnn64_x.dll
 
-### paddle_inference3.0版本GPU推理库下载及配置
+### paddle_inference3.x版本GPU推理库下载及配置
+
 首先将[paddle_inference3.0](https://www.paddlepaddle.org.cn/inference/master/guides/install/download_lib.html#windows)版本，请将paddleinference3目录中的PaddleOCR.dll替换当前目录文件
 
-- paddle_inference3.0版本推理库下载
+- paddle_inference3.x版本推理库下载
 
-- CPU版本(WebApi模式CPU加速不可用，请关闭enable_mkldnn)
-3.0.0正式版本：https://paddle-inference-lib.bj.bcebos.com/3.0.0/cxx_c/Windows/CPU/x86-64_avx-mkl-vs2019/paddle_inference.zip
-
-- GPU版本--官方推理库暂时不可用
-3.0.0正式版本：https://paddle-inference-lib.bj.bcebos.com/3.0.0/cxx_c/Windows/GPU/x86-64_cuda12.6_cudnn9.5.1_trt10.5.0.18_mkl_avx_vs2019/paddle_inference.zip
+- GPU版本--官方推理库暂时不可用,需自行编译，或联系作者获取
 
 paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 -  paddle\lib目录下的common.dll和paddle_inference.dll
@@ -122,16 +121,14 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 - third_party\install\mklml\lib目录下的libiomp5md.dll和mklml.dll
 
 #### 安装指定版本的CUDA以及CUDNN
-复制对应的CUDNN中的cudnn64_9.dll到程序运行文件夹中
-- 位于：C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.3\\bin\\cudnn64_9.dll
+复制对应的CUDNN中的cudnn64_x.dll到程序运行文件夹中
+- 位于：C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.x\\bin\\cudnn64_x.dll
 
-- [cuda下载](https://developer.nvidia.com/cuda-12-0-0-download-archive)
+- [cuda下载](https://developer.nvidia.com/cuda-toolkit-archive)
 - [cudnn下载](https://developer.nvidia.cn/rdp/cudnn-archive)
 - [TensorRT下载](https://developer.nvidia.com/nvidia-tensorrt-download)
 
-
-- [PP-OCRv4模型下载地址](https://gitee.com/paddlepaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/models_list.md)
-- [PP-OCRv5模型下载地址](https://gitee.com/paddlepaddle/PaddleOCR/blob/release/3.0/docs/version3.x/model_list.md)
+- [PP-OCRv4/PP-OCRv5模型下载地址](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html)
 
 ## 开发交流群
 
@@ -146,7 +143,12 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 <img src="./Demo/PaddleOCRRuntime/donate.jpg" width="382px;" />
 
 ## 更新日志
-### v2.1.1 `2028.8.1`
+### v3.1.0 `2025.9.15`
+  - 优化PaddleOCR.dll，支持paddle_inference3.2.0推理库 , 增加支持文本行方向分类模型PP-LCNet_x1_0_textline_ori，v4/v5模型采用yml格式。
+  - 表格初别初化增加方向分类模型参数，可单独使用表格识别功能。
+  - 发布PaddleOCRRuntime_x64 v3.1.0，包含paddle3.2.0推理库、PaddleOCR.dll及依赖文件
+  - 发布PaddleOCRSDK v3.1.0，对齐PaddleOCR.dll
+### v2.1.1 `2025.8.1`
 - 发布PaddleOCRSDK2.1.1版本，增加DetectMat接口
 ### v2.1.0 `2025.7.31`
 - 修改PaddleOCR.dll接口，指针类型改为char*(UTF8编码)，增加DetectMat接口支持直接传入Mat，EnableANSIResult更名为EnableASCIIResult：JSON输出是否使用ASCII编码，为true是返回Ascii编码

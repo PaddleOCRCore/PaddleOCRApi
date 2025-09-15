@@ -19,9 +19,6 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using PaddleOCRSDK;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 
 namespace OCRCoreService.Controllers
 {
@@ -238,7 +235,6 @@ namespace OCRCoreService.Controllers
             return OKResult(result);
         }
         #endregion
-
 
         #region 通用文字识别
         /// <summary>

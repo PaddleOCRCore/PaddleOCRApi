@@ -55,9 +55,9 @@ int main()
     GetCurrentDirectoryA(MAX_PATH, path);
     string det_infer(path);
     //请将PaddleOCRSDK项目中PaddleOCRRuntime下面所有文件复制到c++的生成Release运行目录
-    det_infer += "/models/ch_PP-OCRv4_det_infer";
+    det_infer += "/models/PP-OCRv4_mobile_det_infer";
     string rec_infer(path);
-    rec_infer += "/models/ch_PP-OCRv4_rec_infer";
+    rec_infer += "/models/PP-OCRv4_mobile_rec_infer";
     string cls_infer(path);
     cls_infer += "/models/ch_ppocr_mobile_v2.0_cls_infer";
     string keys(path);

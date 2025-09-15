@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using System;
 using PaddleOCRSDK;
 
 namespace OCRCoreService.Services
@@ -34,24 +32,13 @@ namespace OCRCoreService.Services
             _ocrConfig = ocrConfig;
             GetOCREngine();
         }
-        //private static string det_infer = "ch_PP-OCRv4_det_infer";//OCR检测模型
-        //private static string rec_infer = "ch_PP-OCRv4_rec_infer";//OCR识别模型
-        //private static string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
-        //private static string keys = "ppocr_keys.txt";
-        //private static string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
-        //private static string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
-        //public static bool use_gpu = false;//是否使用GPU
-        //public static int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
-        //public static int gpu_id = 0;//GPUId
-        //private static bool enable_mkldnn = true;
-        //public static int cpu_threads = 30; //CPU预测时的线程数
         /// <summary>
         /// 初始化OCR引擎
         /// </summary>
         /// <returns></returns>
         public string GetOCREngine()
         {
-            //自带轻量版中英文模型V4模型
+            //自带轻量版中英文模型V5模型
             InitParamater para=new InitParamater();
             //string root = AppDomain.CurrentDomain.BaseDirectory;
             string root = AppContext.BaseDirectory;
@@ -97,7 +84,7 @@ namespace OCRCoreService.Services
             return msg;
         }
         /// <summary>
-        /// 初始化表格识别引擎默认V4模型，使用CPU及mkldnn
+        /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
         /// Api接口未使用，若使用可将此加到OCREngine中
         /// </summary>
         /// <param name="modelsPath"></param>
@@ -109,6 +96,7 @@ namespace OCRCoreService.Services
             string root = AppContext.BaseDirectory;
             string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
             para.det_infer = Path.Combine(modelsPath, _ocrConfig.det_infer);
+            para.cls_infer = Path.Combine(modelsPath, _ocrConfig.cls_infer);
             para.rec_infer = Path.Combine(modelsPath, _ocrConfig.rec_infer);
             para.keyFile = Path.Combine(modelsPath, _ocrConfig.keyFile);
             para.table_model_dir = Path.Combine(modelsPath, _ocrConfig.table_model_dir);
