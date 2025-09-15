@@ -263,16 +263,14 @@ namespace WinFormsApp
         private void buttonDownModels_Click(object sender, EventArgs e)
         {
             // 定义要打开的 URL
-            string urlV4 = "https://gitee.com/paddlepaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/models_list.md";
-            string urlV5 = "https://gitee.com/paddlepaddle/PaddleOCR/blob/release/3.0/docs/version3.x/model_list.md";
+            string urlV5 = "https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html";
             try
             {
                 //Process.Start(new ProcessStartInfo(urlV4)
                 //{
                 //    UseShellExecute = true
                 //});
-                LogMessage($"PP-OCRv4模型下载地址：{urlV4}");
-                LogMessage($"PP-OCRv5模型下载地址：{urlV5}");
+                LogMessage($"PP-OCRv5/PP-OCRv4模型下载地址：{urlV5}");
             }
             catch (Exception ex)
             {
