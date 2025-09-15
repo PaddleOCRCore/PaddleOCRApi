@@ -109,10 +109,6 @@ WebApi部署后可供前端调用。
 
 ### paddle_inference3.x版本GPU推理库下载及配置
 
-首先将[paddle_inference3.0](https://www.paddlepaddle.org.cn/inference/master/guides/install/download_lib.html#windows)版本，请将paddleinference3目录中的PaddleOCR.dll替换当前目录文件
-
-- paddle_inference3.x版本推理库下载
-
 - GPU版本--官方推理库暂时不可用,需自行编译，或联系作者获取
 
 paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
