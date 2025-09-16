@@ -47,7 +47,7 @@ WebApi部署后可供前端调用。
 
 ### WinFormDemo预览：
 
-<img src="./Demo/PaddleOCRRuntime/ocrDemo.jpg" width="800px;" />
+<img src="./PaddleOCRSDK/PaddleOCR/ocrDemo.png" width="800px;" />
 
 依赖库列表参考：
 
