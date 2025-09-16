@@ -32,7 +32,7 @@ https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mk
 
 `<PackageReference Include="PaddleOCRSDK" Version="3.1.0" />`
 
-`<PackageReference Include="PaddleOCRRuntime_x64" Version="3.1.0" />`
+`<PackageReference Include="PaddleOCRRuntime_x64" Version="3.1.1" />`
 
 若使用paddle_inference2.6.2版本推理库使用以下版本
 
@@ -142,7 +142,7 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 ### v3.1.0 `2025.9.15`
   - 优化PaddleOCR.dll，支持paddle_inference3.2.0推理库 , 增加支持文本行方向分类模型PP-LCNet_x1_0_textline_ori，v4/v5模型采用yml格式。
   - 表格初别初化增加方向分类模型参数，可单独使用表格识别功能。
-  - 发布PaddleOCRRuntime_x64 v3.1.0，包含paddle3.2.0推理库、PaddleOCR.dll及依赖文件
+  - 发布PaddleOCRRuntime_x64 v3.1.1，包含paddle3.2.0推理库、PaddleOCR.dll及依赖文件
   - 发布PaddleOCRSDK v3.1.0，对齐PaddleOCR.dll
 ### v2.1.1 `2025.8.1`
 - 发布PaddleOCRSDK2.1.1版本，增加DetectMat接口

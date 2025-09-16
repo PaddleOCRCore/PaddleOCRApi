@@ -83,7 +83,7 @@ namespace WinFormsApp
                 {
                     OCREngine.det_infer = "PP-OCRv4_mobile_det_infer";//OCR V4检测模型
                     OCREngine.rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR V4识别模型
-                    OCREngine.cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";
+                    OCREngine.cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";//PaddleOCR3.2不再支持ch_ppocr_mobile_v2.0_cls_infer
                 }
                 string initmsg = OCREngine.GetOCREngine();
                 if (string.IsNullOrEmpty(initmsg))
@@ -149,9 +149,17 @@ namespace WinFormsApp
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
-            LogMessage(result);
-            if (outPutJson)
-                LogMessage($"输出json: {ocrResult.JsonText}");
+            if (!string.IsNullOrEmpty(result))
+            {
+                LogMessage(result);
+                if (outPutJson)
+                    LogMessage($"输出json: {ocrResult.JsonText}");
+            }
+            else
+            {
+                LogMessage("识别失败:");
+                LogMessage(ocrService.GetError());
+            }
             return result;
         }
 
@@ -177,7 +185,8 @@ namespace WinFormsApp
                             result = RecOCR(filePath);
                         }
                     }
-                    pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
+                    if(File.Exists(recFileName))
+                        pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
                 }
                 OpenFileDialog1.Dispose();
 
@@ -207,25 +216,27 @@ namespace WinFormsApp
             {
                 Directory.CreateDirectory(outputFolder);
             }
-            using (StreamWriter sw = new StreamWriter(htmlfile, false, System.Text.Encoding.GetEncoding("utf-8")))
+            if (File.Exists(htmlfile))
             {
-                sw.Write(ocrResult);
-            }
-            try
-            {
-                // 使用默认的浏览器打开HTML文件
-                Process.Start(new ProcessStartInfo
+                using (StreamWriter sw = new StreamWriter(htmlfile, false, System.Text.Encoding.GetEncoding("utf-8")))
                 {
-                    FileName = htmlfile,
-                    UseShellExecute = true
-                });
+                    sw.Write(ocrResult);
+                }
+                try
+                {
+                    // 使用默认的浏览器打开HTML文件
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = htmlfile,
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    //Console.WriteLine($"无法打开HTML文件：{ex.Message}");
+                    LogMessage($"无法打开HTML文件：{ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                //Console.WriteLine($"无法打开HTML文件：{ex.Message}");
-                LogMessage($"无法打开HTML文件：{ex.Message}");
-            }
-
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
