@@ -15,7 +15,7 @@
 
 #pragma once
 #include <string>
-#include <opencv2/opencv.hpp>//使用OpenCV4.10
+#include <opencv2/opencv.hpp>//使用OpenCV4.10，若不使用DetectMat方法，可不依赖OpenCV
 #include <include/AI_Parameter.h>
 #pragma comment (lib,"PaddleOCR.lib")
 #pragma once

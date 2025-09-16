@@ -54,12 +54,11 @@ int main()
     char path[MAX_PATH];
     GetCurrentDirectoryA(MAX_PATH, path);
     string det_infer(path);
-    //请将PaddleOCRSDK项目中PaddleOCRRuntime下面所有文件复制到c++的生成Release运行目录
-    det_infer += "/models/PP-OCRv4_mobile_det_infer";
+    det_infer += "/models/PP-OCRv5_mobile_det_infer";
     string rec_infer(path);
-    rec_infer += "/models/PP-OCRv4_mobile_rec_infer";
+    rec_infer += "/models/PP-OCRv5_mobile_rec_infer";
     string cls_infer(path);
-    cls_infer += "/models/ch_ppocr_mobile_v2.0_cls_infer";
+    cls_infer += "/models/ch_ppocr_mobile_v5.0_cls_infer";
     string keys(path);
     keys += "/models/ppocr_keys.txt";
     OCRParameter parameter;
@@ -80,7 +79,7 @@ int main()
     imagespath += "\\images";//请将图片放至此目录
     vector<string> images;
     GetFileList(imagespath, images);
-    EnableJsonResult(false);
+    EnableJsonResult(true);
 
     Init(const_cast<char*>(det_infer.c_str()), const_cast<char*>(cls_infer.c_str()), 
         const_cast<char*>(rec_infer.c_str()), const_cast<char*>(keys.c_str()), parameter);
