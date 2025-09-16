@@ -77,9 +77,9 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         public string InitDefaultOCREngine(string modelsPath)
         {
-            string det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
-            string rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
-            string cls_infer = "ch_ppocr_mobile_v2.0_cls_infer";
+            string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
+            string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
+            string cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";
             string keys = "ppocr_keys.txt";
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
