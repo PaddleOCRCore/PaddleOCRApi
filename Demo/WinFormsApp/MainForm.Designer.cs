@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             buttonInit = new Button();
             buttonRec = new Button();
             textBoxResult = new TextBox();
@@ -350,6 +351,7 @@
             Controls.Add(groupBox2);
             Controls.Add(groupBox1);
             Controls.Add(textBoxResult);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "PaddleOCR识别Demo V3.1.0--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
