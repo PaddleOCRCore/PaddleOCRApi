@@ -171,5 +171,9 @@ namespace OCRCoreService
         /// 文字识别模型批量识别数量
         /// </summary>
         public int rec_batch_num { get; set; } = 7;
+        /// <summary>
+        /// 是否用启日志
+        /// </summary>
+        public bool enableLog { get; set; } = false;
     }
 }

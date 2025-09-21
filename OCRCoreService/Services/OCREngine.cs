@@ -75,6 +75,7 @@ namespace OCRCoreService.Services
             string msg = "";
             try
             {
+                _ocrService.EnableLog(_ocrConfig.enableLog);
                 _ocrService.Init(para);
             }
             catch (Exception ex)
@@ -125,6 +126,7 @@ namespace OCRCoreService.Services
             string msg = "初始化成功";
             try
             {
+                _ocrService.EnableLog(_ocrConfig.enableLog);
                 _ocrService.Init(para);
             }
             catch (Exception ex)

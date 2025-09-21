@@ -1,0 +1,50 @@
+import os
+import ctypes
+from ctypes import *
+import json
+from datetime import datetime
+import time
+
+ocr_dll=cdll.LoadLibrary("./PaddleOCR.so")
+
+init_func = ocr_dll.Initjson
+detect_func = ocr_dll.Detect
+enable_json_func = ocr_dll.EnableJsonResult
+
+# 初始化OCR
+root_dir = "./"
+init_func(
+    ctypes.c_char_p((root_dir + "models/PP-OCRv5_mobile_det_infer").encode('utf-8')),
+    ctypes.c_char_p((root_dir + "models/ch_ppocr_mobile_v5.0_cls_infer").encode('utf-8')),
+    ctypes.c_char_p((root_dir + "models/PP-OCRv5_mobile_rec_infer").encode('utf-8')),
+    ctypes.c_char_p((root_dir + "models/ppocr_keys.txt").encode('utf-8')),
+    ctypes.c_char_p(b'{"use_gpu": false,"cpu_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 0,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":true,"det":true,"use_angle_cls":true}')
+)
+
+# 设置返回结果格式
+enable_json_func(0)  # 0: 返回纯字符串结果, 1: 返回JSON字符串结果
+
+# 读取图片目录
+image_dir = root_dir + "images"
+images = os.listdir(image_dir)
+
+# 处理每张图片
+for image_name in images:
+    for i in range(10):
+        start_time = time.time()
+        # 调用OCR检测函数
+        image_path = image_dir + "/" + image_name
+        detect_func.restype = ctypes.c_char_p
+        c_string = detect_func(ctypes.c_char_p(image_path.encode('utf-8'))).decode('utf-8')
+        # 计算识别时间
+        elapsed_time = time.time() - start_time
+        print(f"OCR耗时: {elapsed_time * 1000:.2f}ms")
+        # 检查返回值是否为空指针
+        if c_string:
+            print("识别结果:", c_string)
+        else:
+            print("识别失败，返回空指针。")
+
+# 等待用户输入以退出程序
+input("按回车键退出...")
+   
