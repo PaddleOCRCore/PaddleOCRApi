@@ -4,5 +4,8 @@
     <Compile Update="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="UserControl\PictureView.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

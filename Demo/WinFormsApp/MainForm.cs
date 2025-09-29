@@ -39,12 +39,20 @@ namespace WinFormsApp
         public static string RecFilepath = "";
         public static bool outPutJson = false;//是否输出JSON
         public static int recCount = 1; //OCR识别时同一张图片模拟调用接口次数
-        public static int model_type = 0;//模型类型：0是V5，1是V4
+        public static int model_type = 0;//模型类型：0是V5 Mobile，1是V5 Server， 2是V4 Mobile
+
+        private float zoom = 1.0f;          // 当前缩放比例
+        private readonly float zoomStep = 0.1f; // 每次滚轮缩放的步长
+        private readonly float minZoom = 0.1f;  // 最小缩放比例
+        private readonly float maxZoom = 5.0f;  // 最大缩放比例
+        private Image originalImage;        // 原始图像
         public MainForm()
         {
             InitializeComponent();
             ocrService = OCREngine.ocrService;
+            this.ActiveControl = pictureBoxImg;
         }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             try
@@ -77,6 +85,12 @@ namespace WinFormsApp
                 {
                     OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";//OCR V5检测模型
                     OCREngine.rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR V5识别模型
+                    OCREngine.cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";
+                }
+                else if (model_type == 1)
+                {
+                    OCREngine.det_infer = "PP-OCRv5_server_det_infer";//OCR V5检测模型
+                    OCREngine.rec_infer = "PP-OCRv5_server_rec_infer";//OCR V5识别模型
                     OCREngine.cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";
                 }
                 else
@@ -185,8 +199,10 @@ namespace WinFormsApp
                             result = RecOCR(filePath);
                         }
                     }
-                    if(File.Exists(recFileName))
-                        pictureBoxImg.Image = ImageTools.LoadImage(recFileName);
+                    if (File.Exists(recFileName))
+                    {
+                        pictureBoxImg.imgPath = recFileName;
+                    }
                 }
                 OpenFileDialog1.Dispose();
 
@@ -259,7 +275,10 @@ namespace WinFormsApp
                     {
                         string filePath = Path.GetFullPath(regfile);
                         result = RecOCRTable(filePath);
-                        pictureBoxImg.Image = ImageTools.LoadImage(filePath);
+                        if (File.Exists(filePath))
+                        {
+                            pictureBoxImg.imgPath = filePath;
+                        }
                     }
                 }
                 OpenFileDialog1.Dispose();
@@ -324,7 +343,7 @@ namespace WinFormsApp
                 if (DialogResult.OK == OpenFileDialog1.ShowDialog())
                 {
                     string filePath = OpenFileDialog1.FileName;
-                    textBoxResult.Text = HttpHelper.PostFile(this.textBoxApiAddress.Text.Trim(),filePath);
+                    textBoxResult.Text = HttpHelper.PostFile(this.textBoxApiAddress.Text.Trim(), filePath);
                 }
                 OpenFileDialog1.Dispose();
             }

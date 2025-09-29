@@ -128,15 +128,15 @@ paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
 
 ## 开发交流群
 
-欢迎加入QQ群475159576交流,或者添加QQ：2380243976,若您喜欢本项目，请点击免费的Star
+欢迎加入QQ群475159576交流,或者添加QQ定制项目：2380243976,若您喜欢本项目，请点击免费的Star
 
-<img src="./PaddleOCRSDK/PaddleOCR/qq.png" width="382px;" />
+<img src="./PaddleOCRSDK/PaddleOCR/qq.png" width="200px;" />
 
 ## 捐助
 
 如果这个项目对您有所帮助，请扫下方二维码打赏一杯咖啡。
 
-<img src="./PaddleOCRSDK/PaddleOCR/donate.jpg" width="382px;" />
+<img src="./PaddleOCRSDK/PaddleOCR/donate.jpg" width="200px;" />
 
 ## 更新日志
 ### v3.1.0 `2025.9.15`

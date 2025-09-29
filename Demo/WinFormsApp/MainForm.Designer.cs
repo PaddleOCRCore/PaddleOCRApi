@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             buttonInit = new Button();
             buttonRec = new Button();
@@ -53,15 +54,16 @@
             label2 = new Label();
             label1 = new Label();
             comboBoxuse_gpu = new ComboBox();
-            pictureBoxImg = new PictureBox();
-            groupBox2 = new GroupBox();
+            groupBoximg = new GroupBox();
+            imageList1 = new ImageList(components);
+            pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).BeginInit();
+            groupBoximg.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
-            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // buttonInit
@@ -178,7 +180,7 @@
             // comboBoxModel
             // 
             comboBoxModel.FormattingEnabled = true;
-            comboBoxModel.Items.AddRange(new object[] { "PP-OCRv5_mobile", "PP-OCRv4_mobile" });
+            comboBoxModel.Items.AddRange(new object[] { "PP-OCRv5_mobile", "PP-OCRv5_server", "PP-OCRv4_mobile" });
             comboBoxModel.Location = new Point(92, 89);
             comboBoxModel.Name = "comboBoxModel";
             comboBoxModel.Size = new Size(321, 25);
@@ -322,33 +324,38 @@
             comboBoxuse_gpu.TabIndex = 4;
             comboBoxuse_gpu.SelectedIndexChanged += comboBoxuse_gpu_SelectedIndexChanged;
             // 
+            // groupBoximg
+            // 
+            groupBoximg.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoximg.Controls.Add(pictureBoxImg);
+            groupBoximg.Location = new Point(12, 143);
+            groupBoximg.Name = "groupBoximg";
+            groupBoximg.Size = new Size(516, 537);
+            groupBoximg.TabIndex = 6;
+            groupBoximg.TabStop = false;
+            groupBoximg.Text = "图片";
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = ColorDepth.Depth32Bit;
+            imageList1.ImageSize = new Size(16, 16);
+            imageList1.TransparentColor = Color.Transparent;
+            // 
             // pictureBoxImg
             // 
-            pictureBoxImg.Dock = DockStyle.Fill;
-            pictureBoxImg.Location = new Point(3, 19);
+            pictureBoxImg.Location = new Point(10, 19);
             pictureBoxImg.Name = "pictureBoxImg";
-            pictureBoxImg.Size = new Size(510, 515);
+            pictureBoxImg.Size = new Size(500, 509);
             pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxImg.TabIndex = 5;
+            pictureBoxImg.TabIndex = 0;
             pictureBoxImg.TabStop = false;
-            // 
-            // groupBox2
-            // 
-            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox2.Controls.Add(pictureBoxImg);
-            groupBox2.Location = new Point(12, 143);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(516, 537);
-            groupBox2.TabIndex = 6;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "图片";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1093, 683);
-            Controls.Add(groupBox2);
+            Controls.Add(groupBoximg);
             Controls.Add(groupBox1);
             Controls.Add(textBoxResult);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -362,8 +369,8 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).EndInit();
+            groupBoximg.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
-            groupBox2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -381,8 +388,7 @@
         private NumericUpDown numDowngpu_id;
         private NumericUpDown numDowncpu_threads;
         private Label label3;
-        private PictureBox pictureBoxImg;
-        private GroupBox groupBox2;
+        private GroupBox groupBoximg;
         private Label label4;
         private ComboBox comboBoxJson;
         private NumericUpDown numericUpDownThread;
@@ -396,5 +402,7 @@
         private Label label8;
         private TextBox textBoxApiAddress;
         private Button buttonPostFile;
+        private ImageList imageList1;
+        private UserControl.PictureView pictureBoxImg;
     }
 }
