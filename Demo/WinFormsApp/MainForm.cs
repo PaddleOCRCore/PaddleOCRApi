@@ -201,7 +201,7 @@ namespace WinFormsApp
                     }
                     if (File.Exists(recFileName))
                     {
-                        pictureBoxImg.imgPath = recFileName;
+                        pictureBoxImg.ImgPath = recFileName;
                     }
                 }
                 OpenFileDialog1.Dispose();
@@ -277,7 +277,7 @@ namespace WinFormsApp
                         result = RecOCRTable(filePath);
                         if (File.Exists(filePath))
                         {
-                            pictureBoxImg.imgPath = filePath;
+                            pictureBoxImg.ImgPath = filePath;
                         }
                     }
                 }

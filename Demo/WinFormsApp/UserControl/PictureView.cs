@@ -5,116 +5,130 @@
         public PictureView()
         {
             InitializeComponent();
-            PictureView_Load();
+            InitPictureView();
         }
 
-        private bool isInitParent = false;
-        private bool isMouseDown = false;
-        private Point p1 = new Point();
-        private Point p2 = new Point();
+        private bool parentEventAttached = false;
+        private bool dragging = false;
+        private Point dragStartScreen = Point.Empty;
+        private Point dragStartLocation = Point.Empty;
 
-        public string imgPath
+        private void InitPictureView()
+        {
+            this.Location = new Point(0, 0);
+            this.Dock = DockStyle.None;
+            this.SizeMode = PictureBoxSizeMode.Zoom;
+            this.MouseDown += PictureView_MouseDown;
+            this.MouseUp += PictureView_MouseUp;
+            this.MouseMove += PictureView_MouseMove;
+            this.MouseDoubleClick += PictureView_MouseDoubleClick;
+            this.MouseWheel += PictureView_MouseWheel;
+        }
+
+        public string ImgPath
         {
             set
             {
-                if (value != string.Empty)
+                if (!string.IsNullOrWhiteSpace(value))
                 {
-                    this.Size = this.Parent.Size;
+                    this.Size = this.Parent?.Size ?? this.Size;
                     this.Location = new Point(0, 0);
                     this.Image = ImageTools.LoadImage(value);
-                    if (!isInitParent)
+                    if (!parentEventAttached && this.Parent != null)
                     {
-                        isInitParent = true;
-                        this.Parent.MouseDoubleClick += PictureBox_MouseDoubleClick;
+                        parentEventAttached = true;
+                        this.Parent.MouseDoubleClick += Parent_MouseDoubleClick;
                     }
                 }
             }
         }
 
-        private void PictureView_Load()
+        private void Parent_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            this.Location = new Point(0, 0);
-            this.Dock = DockStyle.None;
-            this.SizeMode = PictureBoxSizeMode.Zoom;
-            this.MouseWheel += PictureBox_MouseWheel;
-            this.MouseDown += PictureBox_MouseDown;
-            this.MouseUp += PictureBox_MouseUp;
-            this.MouseMove += PictureBox_MouseMove;
-            this.MouseDoubleClick += PictureBox_MouseDoubleClick;
+            ResetView();
         }
 
-        private void PictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void PictureView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (this.Image == null)
-            {
+            ResetView();
+        }
+
+        private void ResetView()
+        {
+            if (this.Image == null || this.Parent == null)
                 return;
-            }
             this.Size = this.Parent.Size;
             this.Location = new Point(0, 0);
         }
 
-        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
+        private void PictureView_MouseDown(object sender, MouseEventArgs e)
         {
             if (this.Image == null)
-            {
                 return;
+            if (e.Button == MouseButtons.Left)
+            {
+                dragging = true;
+                dragStartScreen = Control.MousePosition;
+                dragStartLocation = this.Location;
             }
-            int a = Control.MousePosition.X - p1.X;
-            int b = Control.MousePosition.Y - p1.Y;
-            if (isMouseDown)
-                this.Location = new Point(p2.X + a, p2.Y + b);
         }
 
-        private void PictureBox_MouseUp(object sender, MouseEventArgs e)
+        private void PictureView_MouseUp(object sender, MouseEventArgs e)
         {
             if (this.Image == null)
-            {
                 return;
+            if (e.Button == MouseButtons.Left)
+            {
+                dragging = false;
             }
-            isMouseDown = false;
         }
 
-        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
+        private void PictureView_MouseMove(object sender, MouseEventArgs e)
         {
-            if (this.Image == null)
-            {
+            if (this.Image == null || !dragging)
                 return;
-            }
-            isMouseDown = true;
-            p1 = Control.MousePosition;
-            p2 = this.Location;
+            Point currentScreen = Control.MousePosition;
+            int offsetX = currentScreen.X - dragStartScreen.X;
+            int offsetY = currentScreen.Y - dragStartScreen.Y;
+            this.Location = new Point(dragStartLocation.X + offsetX, dragStartLocation.Y + offsetY);
         }
 
-        private void PictureBox_MouseWheel(object sender, MouseEventArgs e)
+        private void PictureView_MouseWheel(object sender, MouseEventArgs e)
         {
             if (this.Image == null)
-            {
                 return;
-            }
-            int x = e.Location.X;
-            int y = e.Location.Y;
-            int ow = this.Width;
-            int oh = this.Height;
-            int VX, VY; 
-            int zoomStep = (this.Width > this.Height) ? this.Width / 10 : this.Height / 10;
+
+            int zoomStep = Math.Max(this.Width, this.Height) / 10;
+            if (zoomStep < 1) zoomStep = 1;
+
+            int newWidth = this.Width;
+            int newHeight = this.Height;
+
             if (e.Delta > 0)
             {
-                if (Math.Max(this.Width, this.Height) > Math.Max(this.Image.Width * 10, this.Image.Height * 10))
+                newWidth += zoomStep;
+                newHeight += zoomStep;
+                if (newWidth > this.Image.Width * 10 || newHeight > this.Image.Height * 10)
                     return;
-                this.Width += zoomStep;
-                this.Height += zoomStep;
             }
-            if (e.Delta < 0)
+            else if (e.Delta < 0)
             {
-                if (Math.Min(this.Width, this.Height) < Math.Min(this.Image.Width / 10, this.Image.Height / 10))
+                newWidth -= zoomStep;
+                newHeight -= zoomStep;
+                if (newWidth < Math.Max(10, this.Image.Width / 10) || newHeight < Math.Max(10, this.Image.Height / 10))
                     return;
-
-                this.Width -= zoomStep;
-                this.Height -= zoomStep;
             }
-            VX = (int)((double)x * (ow - this.Width) / ow);
-            VY = (int)((double)y * (oh - this.Height) / oh);
-            this.Location = new Point(this.Location.X + VX, this.Location.Y + VY);
+
+            int oldWidth = this.Width;
+            int oldHeight = this.Height;
+            this.Size = new Size(newWidth, newHeight);
+
+            // Adjust location to zoom around mouse pointer
+            int mouseX = e.Location.X;
+            int mouseY = e.Location.Y;
+            int dx = (int)((double)mouseX * (oldWidth - newWidth) / oldWidth);
+            int dy = (int)((double)mouseY * (oldHeight - newHeight) / oldHeight);
+            this.Location = new Point(this.Location.X + dx, this.Location.Y + dy);
         }
     }
 }
