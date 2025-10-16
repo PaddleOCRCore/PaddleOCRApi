@@ -172,6 +172,8 @@ namespace WinFormsApp
             else
             {
                 LogMessage("识别失败:");
+                if(!string.IsNullOrEmpty(ocrResult.JsonText))
+                    LogMessage($"输出json: {ocrResult.JsonText}");
                 LogMessage(ocrService.GetError());
             }
             return result;

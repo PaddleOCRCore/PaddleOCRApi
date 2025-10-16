@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using PaddleOCRSDK;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace OCRCoreService.Controllers
 {
@@ -242,7 +243,7 @@ namespace OCRCoreService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetOCRFile(IFormFile request)
+        public async Task<ActionResult> GetOCRFile(IFormFile request)
         {
             string result = "";
             if (request.Length==0)
@@ -251,7 +252,7 @@ namespace OCRCoreService.Controllers
             }
             using (MemoryStream ms = new MemoryStream())
             {
-                request.CopyToAsync(ms);
+                await request.CopyToAsync(ms);
                 var imageByte = ms.ToArray();
                 logger.LogTrace($"获取到图片:{imageByte.ToString()}");
                 OCRResult ocrResult = ocrEngine.OcrService.Detect(imageByte);
@@ -277,7 +278,7 @@ namespace OCRCoreService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetOCRJsonFile(IFormFile request)
+        public async Task<ActionResult> GetOCRJsonFile(IFormFile request)
         {
             string result = "";
             if (request.Length == 0)
@@ -286,7 +287,7 @@ namespace OCRCoreService.Controllers
             }
             using (MemoryStream ms = new MemoryStream())
             {
-                request.CopyToAsync(ms);
+                await request.CopyToAsync(ms);
                 var imageByte = ms.ToArray();
                 logger.LogTrace($"获取到图片:{imageByte.ToString()}");
                 OCRResult ocrResult = ocrEngine.OcrService.Detect(imageByte);
