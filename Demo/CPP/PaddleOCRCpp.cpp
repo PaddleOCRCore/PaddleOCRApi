@@ -58,7 +58,7 @@ int main()
     string rec_infer(path);
     rec_infer += "/models/PP-OCRv5_mobile_rec_infer";
     string cls_infer(path);
-    cls_infer += "/models/ch_ppocr_mobile_v5.0_cls_infer";
+    cls_infer += "/models/PP-LCNet_x1_0_textline_ori";
     string keys(path);
     keys += "/models/ppocr_keys.txt";
     OCRParameter parameter;

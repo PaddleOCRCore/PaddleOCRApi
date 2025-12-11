@@ -1,5 +1,6 @@
-[<img src="https://img.shields.io/badge/Language-简体中文-red.svg">](README.md)
-# PaddleOCRSDK离线OCR组件 支持C#/C++/java/Python/Go语言开发
+[<img src="https://img.shields.io/badge/Language-简体中文-red.svg">](README.md) [<img src="https://img.shields.io/badge/Language-English-blue.svg">](README_EN.md)
+# PaddleOCRApi离线OCR组件 支持C#/C++/java/Python/Go语言开发
+
 <p align="center">
     <a href="https://discord.gg/z9xaRVjdbD"><img src="https://img.shields.io/badge/Chat-on%20discord-7289da.svg?sanitize=true" alt="Chat"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
@@ -8,51 +9,158 @@
     <a href="https://github.com/PaddleOCRCore/PaddleOCRApi/stargazers"><img src="https://img.shields.io/github/stars/PaddleOCRCore/PaddleOCRApi?color=ccf"></a>
 </p>
 
-## 一、简介
-免费离线OCR组件,支持CPU/GPU，免费使用，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，支持paddle_inference2.6.2及3.2推理库。
-喜欢的请给本项目点一个免费的Star
+## 📖 目录
+
+- [简介](#-简介)
+- [项目特性](#-项目特性)
+- [项目结构](#-项目结构)
+- [快速开始](#-快速开始)
+- [运行环境](#-运行环境)
+- [调用参数说明](#-调用参数说明)
+- [GPU环境配置](#-gpu环境配置)
+- [多语言示例](#-多语言示例)
+- [开发交流](#开发交流群)
+- [更新日志](#更新日志)
+
+## 🚀 简介
+
+免费离线OCR组件，支持CPU/GPU，免费使用，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，支持最新paddle_inference3.2.2推理库。
+
+**喜欢的请给本项目点一个免费的Star ⭐**
 
 支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4/V3模型
 
-## 二、运行环境
-项目运行环境为VS2022+.net8.0：
+## ✨ 项目特性
 
-1、默认paddle_inference3.2-CPU版本推理库，其它推理库请手动下载或自行编译
+- ✅ **多语言支持**: C#、C++、Java、Python、Go
+- ✅ **高性能**: 支持CPU/GPU推理，支持TensorRT加速
+- ✅ **易集成**: 提供WebAPI服务，支持在线调用
+- ✅ **多线程**: 支持多线程并发，内存自动回收
+- ✅ **离线运行**: 无需联网，数据安全可靠
+- ✅ **模型丰富**: 支持PP-OCRv5/v4/v3全系列模型
+- ✅ **功能全面**: 文字检测、识别、方向分类、表格识别
 
-- paddle_inference2.6.2版本推理库下载
+## 📁 项目结构
 
-- CPU版本(PaddleOCRRuntime_x64已包含)：
-https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mkl-vs2019/paddle_inference.zip
+```
+PaddleOCRWebApi/
+├── PaddleOCRSDK/                  # OCR核心SDK项目
+│   ├── Services/                  # OCR服务实现
+│   │   ├── OCRService.cs         # OCR识别服务
+│   │   └── OCRSDK.cs             # SDK核心封装
+│   ├── Interface/                # 接口定义
+│   ├── Models/                   # 数据模型
+│   └── PaddleOCRSDK.csproj      # SDK项目文件
+│
+├── OCRCoreService/               # WebAPI服务项目
+│   ├── Controllers/              # API控制器
+│   │   ├── OCRServiceController.cs  # OCR接口
+│   │   └── HomeController.cs        # 首页
+│   ├── Services/                 # 业务服务
+│   │   └── OCREngine.cs         # OCR引擎
+│   ├── Authorization/            # 权限验证
+│   ├── Extensions/               # 扩展方法
+│   ├── Utilities/                # 工具类
+│   ├── Views/                    # 视图文件
+│   ├── wwwroot/                  # 静态资源
+│   ├── appsettings.json         # 配置文件
+│   └── README.md                # WebAPI文档
+│
+├── Demo/                         # 多语言示例代码
+│   ├── CPP/                     # C++调用示例
+│   │   ├── PaddleOCRCpp.cpp    # C++示例代码
+│   │   └── PaddleOCR.h         # C++头文件
+│   ├── Python/                  # Python调用示例
+│   │   ├── OCRPythonDemo.py    # Python示例
+│   │   └── OCRTablePythonDemo.py # 表格识别示例
+│   ├── GoDemo/                  # Go调用示例
+│   │   └── OCRGoDemo.go        # Go示例代码
+│   └── WinFormsApp/            # C# WinForms示例
+│       ├── MainForm.cs         # 主窗体
+│       └── Services/           # 服务层
+│
+├── packages/                    # NuGet包依赖
+│   └── PaddleOCRRuntime_x64.3.2.2/  # 运行时库
+│
+├── Doc/                        # 文档资料
+└── README.md                   # 项目说明文档
+```
 
-2、核心文件PaddleOCR.dll为C++动态链接库，支持CPU/GPU模式(GPU需接说明安装对应环境)
+## 🚀 快速开始
 
-3、.net引用(支持netstandard2.0;net45;net461;net47;net48;net6.0;net7.0;net8.0;net9.0)
+### 1. NuGet包安装（推荐）
 
-使用paddle_inference3.1+版本推理库使用以下版本
+使用paddle_inference3.2+版本推理库：
 
-`<PackageReference Include="PaddleOCRSDK" Version="3.1.0" />`
+```xml
+<PackageReference Include="PaddleOCRRuntime_x64" Version="3.2.2" />
+```
 
-`<PackageReference Include="PaddleOCRRuntime_x64" Version="3.1.1" />`
+若使用paddle_inference2.6.2版本推理库：
 
-若使用paddle_inference2.6.2版本推理库使用以下版本
+```xml
+<PackageReference Include="PaddleOCRSDK" Version="1.0.5" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
+```
 
-`<PackageReference Include="PaddleOCRSDK" Version="1.0.5" />`
+### 2. C#快速调用示例
 
-`<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />`
+```csharp
+using PaddleOCRSDK;
 
-PaddleOCRRuntime_x64支持Python、Go、C++等环境
+// 初始化OCR引擎
+var ocrService = new OCRService();
+ocrService.Initialize(
+    detModelPath: "models/PP-OCRv5_mobile_det_infer",
+    clsModelPath: "models/PP-LCNet_x1_0_textline_ori",
+    recModelPath: "models/PP-OCRv5_mobile_rec_infer",
+    keysPath: "models/ppocr_keys.txt"
+);
 
-### [WebApi接口文档](./OCRCoreService/README.md)
-WebApi部署后可供前端调用。
+// 识别图片
+var result = ocrService.Detect("test.jpg");
+Console.WriteLine(result);
+```
 
-### WinFormDemo预览：
+### 3. WebAPI服务启动
+
+```bash
+# 运行WebAPI服务
+cd OCRCoreService
+dotnet run --urls http://*:5000
+
+# 访问Swagger文档
+http://localhost:5000/swagger/index.html
+```
+
+详细的WebAPI接口文档请参考：[WebApi接口文档](./OCRCoreService/README.md)
+
+## 🔧 运行环境
+
+### 基础环境要求
+
+OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
+
+### 推理库版本说明
+
+1. **默认paddle_inference3.2.2-CPU版本推理库**，其它推理库请手动下载或自行编译
+
+2. **paddle_inference2.6.2版本推理库**请下载Release中的V1.0.5版本
+   - CPU版本(PaddleOCRRuntime_x64已包含)：
+   - https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mkl-vs2019/paddle_inference.zip
+
+3. **核心文件PaddleOCR.dll**为C++动态链接库，支持CPU/GPU模式(GPU需按说明安装对应环境)
+
+### .NET平台支持
+
+支持框架：netstandard2.0; net45; net461; net47; net48; net6.0; net7.0; net8.0; net9.0
+
+### WinFormDemo预览
 
 <img src="./PaddleOCRSDK/PaddleOCR/ocrDemo.png" width="800px;" />
 
-依赖库列表参考：
 
-
-## 三、调用参数说明
+## 📋 调用参数说明
 | 参数名称                     | 默认值 | 值说明                                                                                   |
 | ---------------------------- | ------ | ---------------------------------------------------------------------------------------- |
 | det_model_dir                | -      | 检测模型inference model地址                                                              |
@@ -93,77 +201,248 @@ WebApi部署后可供前端调用。
 | merge_empty_cell             | true   | 是否合并空单元格                                                                         |
 | table_batch_num              | 1      | table_batch_num                                                                          |
 
-## 四、GPU环境配置说明
-### paddle_inference2.6.2版本GPU推理库下载及配置
+## 🎯 多语言示例
 
-下载地址：[paddle_inference2.6.2](https://www.paddlepaddle.org.cn/inference/v2.6/guides/install/download_lib.html#windows)版本推理库，
+### C#示例
+
+```csharp
+// 详见 Demo/WinFormsApp/
+var ocrService = new OCRService();
+ocrService.Initialize(detModelPath, clsModelPath, recModelPath, keysPath);
+var result = ocrService.Detect(imagePath);
+```
+
+### Python示例
+
+```python
+# 详见 Demo/Python/OCRPythonDemo.py
+import ctypes
+
+ocr_dll = ctypes.CDLL("PaddleOCR.dll")
+init_func = ocr_dll.Initjson
+detect_func = ocr_dll.Detect
+
+# 初始化
+init_func(det_model_path, cls_model_path, rec_model_path, keys_path)
+# 识别
+result = detect_func(image_path)
+```
+
+### Go示例
+
+```go
+// 详见 Demo/GoDemo/OCRGoDemo.go
+ocrDLL, _ := syscall.LoadDLL("PaddleOCR.dll")
+initFunc, _ := ocrDLL.FindProc("Initjson")
+detectFunc, _ := ocrDLL.FindProc("Detect")
+
+// 初始化和调用
+initFunc.Call(detModelPath, clsModelPath, recModelPath, keysPath)
+detectFunc.Call(imagePath)
+```
+
+### C++示例
+
+```cpp
+// 详见 Demo/CPP/PaddleOCRCpp.cpp
+#include <PaddleOCR.h>
+
+// 初始化
+Initjson(detModelPath, clsModelPath, recModelPath, keysPath);
+// 识别
+char* result = Detect(imagePath);
+```
+
+更多完整示例请查看 `Demo/` 目录下的各语言示例代码。
+
+## 🖥️ GPU环境配置说明
+### paddle_inference2.6.2版本GPU推理库
+
+**下载地址**：[paddle_inference2.6.2](https://www.paddlepaddle.org.cn/inference/v2.6/guides/install/download_lib.html#windows)
 - https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12.0_cudnn8.9.1_trt8.6.1.6_mkl_avx_vs2019/paddle_inference.zip
 
-解压后将以下dll文件复制到程序运行文件夹中：
--  paddle\lib目录下的common.dll和paddle_inference.dll
-- third_party\install\mkldnn\lib目录下的mkldnn.dll
-- third_party\install\mklml\lib目录下的libiomp5md.dll和mklml.dll
-#### 安装指定版本的CUDA以及CUDNN
-复制对应的CUDNN中的cudnn64_x.dll到程序运行文件夹中
-- 位于：C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.x\\bin\\cudnn64_x.dll
+**配置步骤**：
 
-### paddle_inference3.x版本GPU推理库下载及配置
+1. 解压后将以下dll文件复制到程序运行文件夹：
+   - `paddle\lib\` 目录：`common.dll`、`paddle_inference.dll`
+   - `third_party\install\mkldnn\lib\` 目录：`mkldnn.dll`
+   - `third_party\install\mklml\lib\` 目录：`libiomp5md.dll`、`mklml.dll`
 
-- GPU版本--官方推理库暂时不可用,需自行编译，或联系作者获取
+2. 安装CUDA和CUDNN，复制对应的cudnn64_x.dll
+   - 位于：`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin\cudnn64_x.dll`
 
-paddle_inference解压后将以下dll文件复制到程序运行文件夹中：
--  paddle\lib目录下的common.dll和paddle_inference.dll
-- third_party\install\mkldnn\lib目录下的mkldnn.dll
-- third_party\install\mklml\lib目录下的libiomp5md.dll和mklml.dll
+### paddle_inference3.x版本GPU推理库
 
-#### 安装指定版本的CUDA以及CUDNN
-复制对应的CUDNN中的cudnn64_x.dll到程序运行文件夹中
-- 位于：C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.x\\bin\\cudnn64_x.dll
+⚠️ **注意**：GPU版本官方推理库暂时不可用，需自行编译，或联系作者获取
 
-- [cuda下载](https://developer.nvidia.com/cuda-toolkit-archive)
-- [cudnn下载](https://developer.nvidia.cn/rdp/cudnn-archive)
-- [TensorRT下载](https://developer.nvidia.com/nvidia-tensorrt-download)
+**配置步骤**：
 
-- [PP-OCRv4/PP-OCRv5模型下载地址](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html)
+1. 解压后将以下dll文件复制到程序运行文件夹：
+   - `paddle\lib\` 目录：`common.dll`、`paddle_inference.dll`
+   - `third_party\install\mkldnn\lib\` 目录：`mkldnn.dll`
+   - `third_party\install\mklml\lib\` 目录：`libiomp5md.dll`、`mklml.dll`
 
-## 开发交流群
+2. 安装CUDA和CUDNN，复制对应的cudnn64_x.dll
+   - 位于：`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin\cudnn64_x.dll`
 
-欢迎加入QQ群475159576交流,或者添加QQ定制项目：2380243976,若您喜欢本项目，请点击免费的Star
+### 相关下载链接
+
+| 资源 | 链接 |
+|------|------|
+| CUDA | [https://developer.nvidia.com/cuda-toolkit-archive](https://developer.nvidia.com/cuda-toolkit-archive) |
+| CUDNN | [https://developer.nvidia.cn/rdp/cudnn-archive](https://developer.nvidia.cn/rdp/cudnn-archive) |
+| TensorRT | [https://developer.nvidia.com/nvidia-tensorrt-download](https://developer.nvidia.com/nvidia-tensorrt-download) |
+| PP-OCRv4/v5模型 | [https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html) |
+
+## 🔗 WebAPI接口
+
+详细的WebAPI接口文档请参考：[WebApi接口文档](./OCRCoreService/README.md)
+
+**主要接口**：
+- `POST /OCRService/GetOCRText` - 图片OCR识别（Base64上传）
+- `POST /OCRService/GetOCRFile` - 图片OCR识别（文件上传）
+
+**Swagger文档**：`http://localhost:5000/swagger/index.html`
+
+## 💬 开发交流群
+
+欢迎加入QQ群 **475159576** 交流，或者添加QQ定制项目：**2380243976**
+
+若您喜欢本项目，请点击免费的 **Star ⭐**
 
 <img src="./PaddleOCRSDK/PaddleOCR/qq.png" width="200px;" />
 
-## 捐助
+## ☕ 捐助
 
 如果这个项目对您有所帮助，请扫下方二维码打赏一杯咖啡。
 
 <img src="./PaddleOCRSDK/PaddleOCR/donate.jpg" width="200px;" />
 
-## 更新日志
+## 🎯 技术架构
+
+### 核心组件
+
+```
+┌─────────────────────────────────────────┐
+│         应用层 (Application)            │
+│  WinForms / WebAPI / Console / SDK      │
+└─────────────────┬───────────────────────┘
+                  │
+┌─────────────────▼───────────────────────┐
+│       .NET封装层 (PaddleOCRSDK)         │
+│    OCRService / IOCRService / Models    │
+└─────────────────┬───────────────────────┘
+                  │ P/Invoke
+┌─────────────────▼───────────────────────┐
+│      C++动态库 (PaddleOCR.dll)          │
+│   文字检测 / 识别 / 分类 / 表格识别      │
+└─────────────────┬───────────────────────┘
+                  │
+┌─────────────────▼───────────────────────┐
+│   Paddle Inference 推理引擎              │
+│    paddle_inference 3.2.2 / 2.6.2       │
+└─────────────────┬───────────────────────┘
+                  │
+┌─────────────────▼───────────────────────┐
+│          硬件加速层                      │
+│     CPU (MKL) / GPU (CUDA+TensorRT)     │
+└─────────────────────────────────────────┘
+```
+
+### 工作流程
+
+1. **图片预处理** → 图像归一化、尺寸调整
+2. **文字检测** → DBNet检测文字区域
+3. **方向分类** → 文字方向校正（可选）
+4. **文字识别** → CRNN识别文字内容
+5. **结果输出** → JSON/文本格式返回
+
+## 📝 更新日志
+
+### v3.2.2 `2025.12.11`
+- ✅ 优化PaddleOCR.dll，支持paddle_inference3.2.2推理库
+- ✅ 发布PaddleOCRRuntime_x64 v3.2.2，包含paddle3.2.2推理库、PaddleOCR.dll及依赖文件
+- ⚠️ Nuget PaddleOCRSDK停止更新，核心文件已整合到PaddleOCRRuntime_x64中，.net项目请参考PaddleOCRSDK源码
+
 ### v3.1.0 `2025.9.15`
-  - 优化PaddleOCR.dll，支持paddle_inference3.2.0推理库 , 增加支持文本行方向分类模型PP-LCNet_x1_0_textline_ori，v4/v5模型采用yml格式。
-  - 表格初别初化增加方向分类模型参数，可单独使用表格识别功能。
-  - 发布PaddleOCRRuntime_x64 v3.1.1，包含paddle3.2.0推理库、PaddleOCR.dll及依赖文件
-  - 发布PaddleOCRSDK v3.1.0，对齐PaddleOCR.dll
+- ✅ 优化PaddleOCR.dll，支持paddle_inference3.2.0推理库
+- ✅ 增加支持文本行方向分类模型PP-LCNet_x1_0_textline_ori
+- ✅ v4/v5模型采用yml格式
+- ✅ 表格识别初始化增加方向分类模型参数，可单独使用表格识别功能
+- ✅ 发布PaddleOCRRuntime_x64 v3.1.1
+- ✅ 发布PaddleOCRSDK v3.1.0，对齐PaddleOCR.dll
+
 ### v2.1.1 `2025.8.1`
-- 发布PaddleOCRSDK2.1.1版本，增加DetectMat接口
+- ✅ 发布PaddleOCRSDK2.1.1版本，增加DetectMat接口
+
 ### v2.1.0 `2025.7.31`
-- 修改PaddleOCR.dll接口，指针类型改为char*(UTF8编码)，增加DetectMat接口支持直接传入Mat，EnableANSIResult更名为EnableASCIIResult：JSON输出是否使用ASCII编码，为true是返回Ascii编码
-- 发布PaddleOCRSDK2.1.0版本，同步修改接口调用方法
+- ✅ 修改PaddleOCR.dll接口，指针类型改为char*(UTF8编码)
+- ✅ 增加DetectMat接口支持直接传入Mat
+- ✅ EnableANSIResult更名为EnableASCIIResult
+- ✅ 发布PaddleOCRSDK2.1.0版本
+
 ### v2.0.0 `2025.6.4`
-- 修改PaddleOCR.dll接口，增加支持PP-OCRv5模型
-- WinForm Demo增加V5/V4模型选择下拉选项
+- ✅ 修改PaddleOCR.dll接口，增加支持PP-OCRv5模型
+- ✅ WinForm Demo增加V5/V4模型选择下拉选项
+
 ### v1.0.5 `2025.4.1`
-- 优化PaddleOCR.dll接口，Demo增加表格识别功能
+- ✅ 优化PaddleOCR.dll接口，Demo增加表格识别功能
+
 ### v1.0.4 `2025.3.29`
-- 优化PaddleOCR.dll，增加日志输出开关，OCR识别提速
-- WebApi接口优化，增加OCR初始化及参数设置
+- ✅ 优化PaddleOCR.dll，增加日志输出开关，OCR识别提速
+- ✅ WebApi接口优化，增加OCR初始化及参数设置
+
 ### v1.0.2 `2025.3.23`
-- 优化PaddleOCR.dll，增加多线程队列支持，增加内存达到上限自动回收
-- WinFormDemo功能强化，增加初始化选项，增加多图选择及模拟并发测试
+- ✅ 优化PaddleOCR.dll，增加多线程队列支持
+- ✅ 增加内存达到上限自动回收
+- ✅ WinFormDemo功能强化，增加初始化选项
+- ✅ 增加多图选择及模拟并发测试
+
 ### v1.0.1 `2025.3.5`
-- 优化PaddleOCR.dll，提高识别速度，增加智能指针
+- ✅ 优化PaddleOCR.dll，提高识别速度，增加智能指针
+
 ### v1.0 `2025.1.22`
-- 初版发行: PaddleOCRApi
+- 🎉 初版发行: PaddleOCRApi
+
+## 🔍 常见问题 (FAQ)
+
+<details>
+<summary><b>Q: 如何选择CPU版本还是GPU版本？</b></summary>
+
+**A:** 
+- CPU版本：适合小批量识别，部署简单，无需GPU环境
+- GPU版本：适合大批量识别，速度快，需要CUDA环境支持
+</details>
+
+<details>
+<summary><b>Q: 如何提高识别准确率？</b></summary>
+
+**A:** 
+1. 选择合适的模型（mobile/server）
+2. 调整`det_db_thresh`、`det_db_box_thresh`参数
+3. 启用方向分类器`use_angle_cls=true`
+4. 对图片进行预处理（去噪、二值化等）
+</details>
+
+<details>
+<summary><b>Q: 支持哪些图片格式？</b></summary>
+
+**A:** 支持常见的图片格式：jpg、jpeg、png、bmp、tiff等
+</details>
+
+<details>
+<summary><b>Q: 如何在Linux/Mac上使用？</b></summary>
+
+**A:** 
+- 需要针对对应平台编译PaddleOCR.so/.dylib动态库
+- 或使用Docker容器部署WebAPI服务
+</details>
+
+## 🙏 致谢
+
+本项目基于以下开源项目：
+- [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) - 百度飞桨OCR工具库
+- [Paddle Inference](https://www.paddlepaddle.org.cn/inference/master/guides/introduction/index_intro.html) - 飞桨推理引擎
 
 ## ⭐️ Star
 

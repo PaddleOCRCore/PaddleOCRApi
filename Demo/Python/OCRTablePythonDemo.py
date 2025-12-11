@@ -25,7 +25,7 @@ enable_log_func(1)  # 0: 不输出日志, 1: 输出日志
 root_dir = get_current_directory()
 initTable_func(
     ctypes.c_char_p((root_dir + "\\models\\PP-OCRv5_mobile_det_infer").encode('utf-8')),
-    ctypes.c_char_p((root_dir + "\\models\\ch_ppocr_mobile_v5.0_cls_infer").encode('utf-8')),
+    ctypes.c_char_p((root_dir + "\\models\\PP-LCNet_x1_0_textline_ori").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\PP-OCRv5_mobile_rec_infer").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\ppocr_keys.txt").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\ch_ppstructure_mobile_v2.0_SLANet_infer").encode('utf-8')),

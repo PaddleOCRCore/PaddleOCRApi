@@ -85,19 +85,19 @@ namespace WinFormsApp
                 {
                     OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";//OCR V5检测模型
                     OCREngine.rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR V5识别模型
-                    OCREngine.cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";
+                    OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
                 }
                 else if (model_type == 1)
                 {
                     OCREngine.det_infer = "PP-OCRv5_server_det_infer";//OCR V5检测模型
                     OCREngine.rec_infer = "PP-OCRv5_server_rec_infer";//OCR V5识别模型
-                    OCREngine.cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";
+                    OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
                 }
                 else
                 {
                     OCREngine.det_infer = "PP-OCRv4_mobile_det_infer";//OCR V4检测模型
                     OCREngine.rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR V4识别模型
-                    OCREngine.cls_infer = "ch_ppocr_mobile_v5.0_cls_infer";//PaddleOCR3.2不再支持ch_ppocr_mobile_v2.0_cls_infer
+                    OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";//PaddleOCR3.2不再支持ch_ppocr_mobile_v2.0_cls_infer
                 }
                 string initmsg = OCREngine.GetOCREngine();
                 if (string.IsNullOrEmpty(initmsg))
