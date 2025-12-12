@@ -271,7 +271,7 @@ char* result = Detect(imagePath);
 2. 安装CUDA和CUDNN，复制对应的cudnn64_x.dll
    - 位于：`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin\cudnn64_x.dll`
 
-### paddle_inference3.x版本GPU推理库
+### paddle_inference3.x版本GPU推理库，要求CUDA12.9以上
 
 ⚠️ **注意**：GPU版本官方推理库暂时不可用，需自行编译，或联系作者获取
 
@@ -282,8 +282,8 @@ char* result = Detect(imagePath);
    - `third_party\install\mkldnn\lib\` 目录：`mkldnn.dll`
    - `third_party\install\mklml\lib\` 目录：`libiomp5md.dll`、`mklml.dll`
 
-2. 安装CUDA和CUDNN，复制对应的cudnn64_x.dll
-   - 位于：`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin\cudnn64_x.dll`
+2. 安装CUDA和CUDNN，复制对应的cublas64_12.dll、cublasLt64_12.dll、cudnn_cnn64_9.dll、cudnn_engines_precompiled64_9.dll、cudnn_engines_runtime_compiled64_9.dll、cudnn_graph64_9.dll、cudnn_heuristic64_9.dll、cudnn_ops64_9.dll、cudnn64_9.dll
+   - 位于：`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9\bin`
 
 ### 相关下载链接
 
@@ -411,7 +411,7 @@ char* result = Detect(imagePath);
 
 **A:** 
 - CPU版本：适合小批量识别，部署简单，无需GPU环境
-- GPU版本：适合大批量识别，速度快，需要CUDA环境支持
+- GPU版本：适合大批量识别，速度快，需要CUDA12.9环境支持
 </details>
 
 <details>

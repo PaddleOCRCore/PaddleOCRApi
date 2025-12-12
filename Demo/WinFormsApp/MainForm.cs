@@ -372,8 +372,8 @@ namespace WinFormsApp
                     sb.Append($"third_party\\install\\mkldnn\\lib目录下的mkldnn.dll" + Environment.NewLine);
                     sb.Append($"third_party\\install\\mklml\\lib目录下的libiomp5md.dll和mklml.dll" + Environment.NewLine);
                     sb.Append($"安装指定版本的CUDA以及CUDNN" + Environment.NewLine);
-                    sb.Append($"复制对应的CUDNN中的cudnn64_8.dll(CUDNN8的文件名)或cudnn64_9.dll(CUDNN9的文件名)到程序运行文件夹中" + Environment.NewLine);
-                    sb.Append($"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\bin\\cudnn64_8.dll" + Environment.NewLine);
+                    sb.Append($"复制对应的cublas64_12.dll、cublasLt64_12.dll、cudnn_cnn64_9.dll、cudnn_engines_precompiled64_9.dll、cudnn_engines_runtime_compiled64_9.dll、cudnn_graph64_9.dll、cudnn_heuristic64_9.dll、cudnn_ops64_9.dll、cudnn64_9.dll到程序运行文件夹中" + Environment.NewLine);
+                    sb.Append($"位于C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.9\\bin" + Environment.NewLine);
                     LogMessage(sb.ToString());
                     break;
                 default:

@@ -270,8 +270,8 @@ For more complete examples, please check the `Demo/` directory for each language
    - `third_party\install\mkldnn\lib\` directory: `mkldnn.dll`
    - `third_party\install\mklml\lib\` directory: `libiomp5md.dll`, `mklml.dll`
 
-2. Install CUDA and CUDNN, copy the corresponding cudnn64_x.dll
-   - Located at: `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin\cudnn64_x.dll`
+2. Install CUDA and CUDNN, copy the corresponding cublas64_12.dll、cublasLt64_12.dll、cudnn_cnn64_9.dll、cudnn_engines_precompiled64_9.dll、cudnn_engines_runtime_compiled64_9.dll、cudnn_graph64_9.dll、cudnn_heuristic64_9.dll、cudnn_ops64_9.dll、cudnn64_9.dll
+   - Located at: `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin`
 
 ### paddle_inference 3.x GPU Version
 
@@ -413,7 +413,7 @@ If this project helps you, please scan the QR code below to buy us a coffee.
 
 **A:** 
 - CPU version: Suitable for small batch recognition, simple deployment, no GPU environment required
-- GPU version: Suitable for large batch recognition, faster speed, requires CUDA environment support
+- GPU version: Suitable for large batch recognition, faster speed, requires CUDA12.9 environment support
 </details>
 
 <details>
