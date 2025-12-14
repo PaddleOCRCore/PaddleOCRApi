@@ -267,7 +267,9 @@ namespace PaddleOCRSDK
                 var lastErr = GetError();
                 if (!string.IsNullOrEmpty(lastErr))
                 {
-                    throw new OCRException("OCR内部错误：" + lastErr);
+                    result.Code = 0;
+                    result.ErrorMsg = "OCR内部错误：" + lastErr;
+                    //throw new OCRException("OCR内部错误：" + lastErr);
                 }
                 return result;
             }
@@ -275,20 +277,32 @@ namespace PaddleOCRSDK
             try
             {
                 json = MarshalUtf8.PtrToStringUTF8(ptrResult);
-                try
+                if (string.IsNullOrEmpty(json))
                 {
-                    result.JsonText = json;
-                    List<JsonResult> jonResult = DeObject<List<JsonResult>>(json);
-                    result.WordsResult = jonResult;
+                    var lastErr = GetError();
+                    result.Code = 0;
+                    result.ErrorMsg = "识别结果为空:" + lastErr;
                 }
-                catch (Exception e)
+                else
                 {
-                    result.JsonText = json + e.Message;
+                    try
+                    {
+                        result.JsonText = json;
+                        List<JsonResult> jonResult = DeObject<List<JsonResult>>(json);
+                        result.WordsResult = jonResult;
+                    }
+                    catch (Exception e)
+                    {
+                        result.JsonText = json + e.Message;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw new OCRException("OCR结果Json反序列化失败:" + ex.Message);
+                var lastErr = GetError();
+                result.Code = 0;
+                result.ErrorMsg = "OCR结果Json反序列化失败:" + ex.Message;
+                //throw new OCRException("OCR结果Json反序列化失败:" + ex.Message);
             }
             finally
             {

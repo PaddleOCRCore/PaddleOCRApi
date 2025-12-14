@@ -151,15 +151,22 @@ namespace WinFormsApp
             OCRResult ocrResult = ocrService.Detect(filePath);
             //OCRResult ocrResult = ocrService.DetectMat(image.CvPtr);使用OpenCvSharp4时,可传入DetectMat(image.CvPtr)
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (var item in ocrResult.WordsResult)
+            if (ocrResult.Code == 1)
             {
-                if (stringBuilder.Length > 0)
+                foreach (var item in ocrResult.WordsResult)
                 {
-                    stringBuilder.Append(Environment.NewLine);
+                    if (stringBuilder.Length > 0)
+                    {
+                        stringBuilder.Append(Environment.NewLine);
+                    }
+                    stringBuilder.Append(item.Words);
                 }
-                stringBuilder.Append(item.Words);
+                result = stringBuilder.ToString();
             }
-            result = stringBuilder.ToString();
+            else
+            {
+                result = ocrResult.ErrorMsg;
+            }                
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");

@@ -26,6 +26,16 @@ namespace PaddleOCRSDK
     public class OCRResult
     {
         /// <summary>
+        /// 识别结果状态：1成功，0失败
+        /// </summary>
+        public int Code { get; set; } = 1;
+
+        /// <summary>
+        /// 错误原因，识别成功时为空
+        /// </summary>
+        public string ErrorMsg { get; set; } = string.Empty;
+
+        /// <summary>
         /// 文本块列表
         /// </summary>
         public List<JsonResult> WordsResult { get; set; } = new List<JsonResult>();
