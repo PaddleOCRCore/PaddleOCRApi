@@ -55,8 +55,8 @@
             label1 = new Label();
             comboBoxuse_gpu = new ComboBox();
             groupBoximg = new GroupBox();
-            imageList1 = new ImageList(components);
             pictureBoxImg = new WinFormsApp.UserControl.PictureView();
+            imageList1 = new ImageList(components);
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
@@ -335,12 +335,6 @@
             groupBoximg.TabStop = false;
             groupBoximg.Text = "图片";
             // 
-            // imageList1
-            // 
-            imageList1.ColorDepth = ColorDepth.Depth32Bit;
-            imageList1.ImageSize = new Size(16, 16);
-            imageList1.TransparentColor = Color.Transparent;
-            // 
             // pictureBoxImg
             // 
             pictureBoxImg.Location = new Point(10, 19);
@@ -349,6 +343,12 @@
             pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxImg.TabIndex = 0;
             pictureBoxImg.TabStop = false;
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = ColorDepth.Depth32Bit;
+            imageList1.ImageSize = new Size(16, 16);
+            imageList1.TransparentColor = Color.Transparent;
             // 
             // MainForm
             // 
@@ -361,7 +361,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PaddleOCR识别Demo V3.1.0--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
+            Text = "PaddleOCR识别Demo V3.2.2--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
             Load += MainForm_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
