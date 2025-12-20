@@ -33,7 +33,7 @@
 ## ✨ 项目特性
 
 - ✅ **多语言支持**: C#、C++、Java、Python、Go
-- ✅ **高性能**: 支持CPU/GPU推理，支持TensorRT加速
+- ✅ **高性能**: 支持CPU/GPU推理
 - ✅ **易集成**: 提供WebAPI服务，支持在线调用
 - ✅ **多线程**: 支持多线程并发，内存自动回收
 - ✅ **离线运行**: 无需联网，数据安全可靠
@@ -431,17 +431,18 @@ char* result = Detect(imagePath);
 </details>
 
 <details>
-<summary><b>Q: 如何在Linux/Mac上使用？</b></summary>
+<summary><b>Q: 如何在Linux上使用？</b></summary>
 
 **A:** 
-- 需要针对对应平台编译PaddleOCR.so/.dylib动态库
-- 或使用Docker容器部署WebAPI服务
+- 需要针对对应平台编译PaddleOCR.so动态库
+- 或部署WebAPI服务
+- 联系开发者定制
 </details>
 
 ## 🙏 致谢
 
 本项目基于以下开源项目：
-- [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) - 百度飞桨OCR工具库
+- [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) - 飞桨PaddleOCR
 - [Paddle Inference](https://www.paddlepaddle.org.cn/inference/master/guides/introduction/index_intro.html) - 飞桨推理引擎
 
 ## ⭐️ Star

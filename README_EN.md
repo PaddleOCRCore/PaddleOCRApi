@@ -33,7 +33,7 @@ Supports the latest PP-OCRv5_mobile/PP-OCRv5_server models, backward compatible 
 ## ✨ Features
 
 - ✅ **Multi-Language Support**: C#, C++, Java, Python, Go
-- ✅ **High Performance**: CPU/GPU inference support, TensorRT acceleration
+- ✅ **High Performance**: CPU/GPU inference support
 - ✅ **Easy Integration**: WebAPI service for online calling
 - ✅ **Multi-Threading**: Concurrent processing with automatic memory management
 - ✅ **Offline Operation**: No internet required, secure data processing
@@ -433,11 +433,11 @@ If this project helps you, please scan the QR code below to buy us a coffee.
 </details>
 
 <details>
-<summary><b>Q: How to use on Linux/Mac?</b></summary>
+<summary><b>Q: How to use on Linux</b></summary>
 
 **A:** 
-- Need to compile PaddleOCR.so/.dylib dynamic library for the corresponding platform
-- Or deploy WebAPI service using Docker container
+- Need to compile PaddleOCR.so dynamic library for the corresponding platform
+- Or deploy WebAPI service
 </details>
 
 ## 🙏 Acknowledgments
