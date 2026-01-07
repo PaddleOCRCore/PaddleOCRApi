@@ -39,6 +39,45 @@ try
     builder.Services.AddSingleton<IOCRService, OCRService>();
     builder.Services.AddSingleton<OCREngine>();
 
+    // UVDoc文档矫正服务依赖注入（条件注入）
+    var uvdocConfig = builder.Configuration.GetSection("UVDocConfig").Get<UVDocConfig>();
+    if (uvdocConfig != null)
+    {
+        builder.Services.AddSingleton(uvdocConfig);
+        if (uvdocConfig.enabled)
+        {
+            logger.Info("UVDoc文档矫正服务已启用");
+            // 注入UVDoc服务
+            builder.Services.AddSingleton<IUVDocService>(sp =>
+            {
+                var uvdocService = new UVDocService();
+                var parameter = new UVDocParameter
+                {
+                    enable_mkldnn = uvdocConfig.enable_mkldnn,
+                    cpu_threads = uvdocConfig.cpu_threads,
+                    use_gpu = uvdocConfig.use_gpu,
+                    gpu_id = uvdocConfig.gpu_id,
+                    gpu_mem = uvdocConfig.gpu_mem,
+                    use_tensorrt = uvdocConfig.use_tensorrt
+                };
+                string modelPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "models", uvdocConfig.uvdoc_infer);
+                if (uvdocService.Initialize(modelPath, parameter))
+                {
+                    logger.Info($"UVDoc引擎初始化成功 [GPU: {parameter.use_gpu}, CPU线程: {parameter.cpu_threads}]");
+                }
+                else
+                {
+                    logger.Error($"UVDoc引擎初始化失败: {uvdocService.GetLastError()}");
+                }
+                return uvdocService;
+            });
+        }
+        else
+        {
+            logger.Info("UVDoc文档矫正服务未启用");
+        }
+    }
+
     // 网页显示中文
     builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -2,10 +2,8 @@
 # PaddleOCRApi Offline OCR SDK - Support C#/C++/Java/Python/Go
 
 <p align="center">
-    <a href="https://discord.gg/z9xaRVjdbD"><img src="https://img.shields.io/badge/Chat-on%20discord-7289da.svg?sanitize=true" alt="Chat"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
     <a href="https://github.com/PaddleOCRCore/PaddleOCRApi/releases"><img src="https://img.shields.io/github/v/release/PaddleOCRCore/PaddleOCRApi?color=ffa"></a>
-    <a href=""><img src="https://img.shields.io/badge/os-linux%2C%20win%2C%20mac-pink.svg"></a>
     <a href="https://github.com/PaddleOCRCore/PaddleOCRApi/stargazers"><img src="https://img.shields.io/github/stars/PaddleOCRCore/PaddleOCRApi?color=ccf"></a>
 </p>
 
@@ -18,17 +16,18 @@
 - [Runtime Environment](#-runtime-environment)
 - [Parameter Description](#-parameter-description)
 - [GPU Configuration](#-gpu-configuration)
-- [Multi-Language Examples](#-multi-language-examples)
 - [Community](#-community)
 - [Changelog](#-changelog)
 
 ## 🚀 Introduction
 
-Free offline OCR SDK supporting CPU/GPU, free to use and upgrade. Supports C#, C++, Java, Python, and Go development with multi-threading, automatic memory management. Based on Baidu's PaddleOCR with C++ dynamic library wrapper, supports the latest paddle_inference 3.2.2 inference engine.
+A completely offline Chinese character recognition component based on Baidu's PaddleOCR deep encapsulation, providing a simple and easy-to-use API interface that supports C#/C++/Java/Python/Go and other development languages. Completely free to use and upgrade, supports multi-threading concurrency and automatic memory management. Built on C++ dynamic library wrapper of Baidu's PaddleOCR, supports the latest paddle_inference 3.2.2 inference engine.
 
 **If you like this project, please give us a free Star ⭐**
 
-Supports the latest PP-OCRv5_mobile/PP-OCRv5_server models, backward compatible with V4/V3 models.
+Supports the latest PP-OCRv5_mobile/PP-OCRv5_server models, backward compatible with V4/V3 models and custom trained models.
+
+> 💡 **Note**: The open-source version is suitable for learning and research. For commercial projects, paid versions are recommended for better performance and technical support. For paid version details, contact developer QQ: **2380243976**
 
 ## ✨ Features
 
@@ -39,6 +38,7 @@ Supports the latest PP-OCRv5_mobile/PP-OCRv5_server models, backward compatible 
 - ✅ **Offline Operation**: No internet required, secure data processing
 - ✅ **Rich Models**: Support for PP-OCRv5/v4/v3 series models
 - ✅ **Comprehensive Features**: Text detection, recognition, orientation classification, table recognition
+- ✅ **Image Correction**: Document image geometric transformation, correcting distortion, tilt, and perspective deformation to improve recognition accuracy
 
 ## 📁 Project Structure
 
@@ -48,14 +48,17 @@ PaddleOCRWebApi/
 │   ├── Services/                  # OCR service implementation
 │   │   ├── OCRService.cs         # OCR recognition service
 │   │   └── OCRSDK.cs             # SDK core wrapper
+│   ├── UVDoc/                    # Document image correction module
+│   │   └── ...                   # Geometric transformation, perspective correction
 │   ├── Interface/                # Interface definitions
 │   ├── Models/                   # Data models
 │   └── PaddleOCRSDK.csproj      # SDK project file
 │
 ├── OCRCoreService/               # WebAPI service project
 │   ├── Controllers/              # API controllers
-│   │   ├── OCRServiceController.cs  # OCR endpoints
-│   │   └── HomeController.cs        # Home page
+│   │   ├── OCRServiceController.cs      # OCR endpoints
+│   │   ├── UVDocServiceController.cs    # Document correction endpoints
+│   │   └── HomeController.cs            # Home page
 │   ├── Services/                 # Business services
 │   │   └── OCREngine.cs         # OCR engine
 │   ├── Authorization/            # Authorization
@@ -75,7 +78,10 @@ PaddleOCRWebApi/
 │   │   └── OCRTablePythonDemo.py # Table recognition example
 │   ├── GoDemo/                  # Go calling example
 │   │   └── OCRGoDemo.go        # Go example code
-│   └── WinFormsApp/            # C# WinForms example
+│   ├── PaddleVisionWinForm/    # Document correction WinForms demo
+│   │   ├── MainForm.cs         # Main form
+│   │   └── ...                 # Document distortion correction, perspective transform demo
+│   └── WinFormsApp/            # OCR recognition WinForms demo
 │       ├── MainForm.cs         # Main form
 │       └── Services/           # Service layer
 │
@@ -103,26 +109,7 @@ For paddle_inference 2.6.2 version:
 <PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
 ```
 
-### 2. C# Quick Example
-
-```csharp
-using PaddleOCRSDK;
-
-// Initialize OCR engine
-var ocrService = new OCRService();
-ocrService.Initialize(
-    detModelPath: "models/PP-OCRv5_mobile_det_infer",
-    clsModelPath: "models/PP-LCNet_x1_0_textline_ori",
-    recModelPath: "models/PP-OCRv5_mobile_rec_infer",
-    keysPath: "models/ppocr_keys.txt"
-);
-
-// Recognize image
-var result = ocrService.Detect("test.jpg");
-Console.WriteLine(result);
-```
-
-### 3. WebAPI Service Startup
+### 2. WebAPI Service Startup
 
 ```bash
 # Run WebAPI service
@@ -202,58 +189,6 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | merge_empty_cell             | true    | Whether to merge empty cells                                                                  |
 | table_batch_num              | 1       | table_batch_num                                                                               |
 
-## 🎯 Multi-Language Examples
-
-### C# Example
-
-```csharp
-// See Demo/WinFormsApp/
-var ocrService = new OCRService();
-ocrService.Initialize(detModelPath, clsModelPath, recModelPath, keysPath);
-var result = ocrService.Detect(imagePath);
-```
-
-### Python Example
-
-```python
-# See Demo/Python/OCRPythonDemo.py
-import ctypes
-
-ocr_dll = ctypes.CDLL("PaddleOCR.dll")
-init_func = ocr_dll.Initjson
-detect_func = ocr_dll.Detect
-
-# Initialize
-init_func(det_model_path, cls_model_path, rec_model_path, keys_path)
-# Recognize
-result = detect_func(image_path)
-```
-
-### Go Example
-
-```go
-// See Demo/GoDemo/OCRGoDemo.go
-ocrDLL, _ := syscall.LoadDLL("PaddleOCR.dll")
-initFunc, _ := ocrDLL.FindProc("Initjson")
-detectFunc, _ := ocrDLL.FindProc("Detect")
-
-// Initialize and call
-initFunc.Call(detModelPath, clsModelPath, recModelPath, keysPath)
-detectFunc.Call(imagePath)
-```
-
-### C++ Example
-
-```cpp
-// See Demo/CPP/PaddleOCRCpp.cpp
-#include <PaddleOCR.h>
-
-// Initialize
-Initjson(detModelPath, clsModelPath, recModelPath, keysPath);
-// Recognize
-char* result = Detect(imagePath);
-```
-
 For more complete examples, please check the `Demo/` directory for each language example code.
 
 ## 🖥️ GPU Configuration
@@ -274,8 +209,6 @@ For more complete examples, please check the `Demo/` directory for each language
    - Located at: `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin`
 
 ### paddle_inference 3.x GPU Version
-
-⚠️ **Note**: Official GPU version inference library is not available yet, needs self-compilation or contact author
 
 **Configuration Steps**:
 
@@ -299,10 +232,6 @@ For more complete examples, please check the `Demo/` directory for each language
 ## 🔗 WebAPI Interface
 
 For detailed WebAPI documentation, please refer to: [WebApi Documentation](./OCRCoreService/README.md)
-
-**Main Endpoints**:
-- `POST /OCRService/GetOCRText` - Image OCR recognition (Base64 upload)
-- `POST /OCRService/GetOCRFile` - Image OCR recognition (File upload)
 
 **Swagger Documentation**: `http://localhost:5000/swagger/index.html`
 
@@ -361,90 +290,17 @@ If this project helps you, please scan the QR code below to buy us a coffee.
 
 ## 📝 Changelog
 
-### v3.2.2 `2025.12.11`
-- ✅ Optimized PaddleOCR.dll, supports paddle_inference 3.2.2 inference library
-- ✅ Released PaddleOCRRuntime_x64 v3.2.2, includes paddle 3.2.2 inference library, PaddleOCR.dll and dependencies
-- ⚠️ NuGet PaddleOCRSDK stops updating, core files integrated into PaddleOCRRuntime_x64, .NET projects refer to PaddleOCRSDK source code
-
-### v3.1.0 `2025.9.15`
-- ✅ Optimized PaddleOCR.dll, supports paddle_inference 3.2.0 inference library
-- ✅ Added support for text line orientation classification model PP-LCNet_x1_0_textline_ori
-- ✅ V4/V5 models use yml format
-- ✅ Table recognition initialization adds orientation classification model parameter, can use table recognition independently
-- ✅ Released PaddleOCRRuntime_x64 v3.1.1
-- ✅ Released PaddleOCRSDK v3.1.0, aligned with PaddleOCR.dll
-
-### v2.1.1 `2025.8.1`
-- ✅ Released PaddleOCRSDK 2.1.1, added DetectMat interface
-
-### v2.1.0 `2025.7.31`
-- ✅ Modified PaddleOCR.dll interface, pointer type changed to char* (UTF8 encoding)
-- ✅ Added DetectMat interface supporting direct Mat input
-- ✅ EnableANSIResult renamed to EnableASCIIResult
-- ✅ Released PaddleOCRSDK 2.1.0
-
-### v2.0.0 `2025.6.4`
-- ✅ Modified PaddleOCR.dll interface, added support for PP-OCRv5 model
-- ✅ WinForm Demo added V5/V4 model selection dropdown
-
-### v1.0.5 `2025.4.1`
-- ✅ Optimized PaddleOCR.dll interface, Demo added table recognition feature
-
-### v1.0.4 `2025.3.29`
-- ✅ Optimized PaddleOCR.dll, added log output switch, OCR recognition speed improvement
-- ✅ WebApi interface optimization, added OCR initialization and parameter settings
-
-### v1.0.2 `2025.3.23`
-- ✅ Optimized PaddleOCR.dll, added multi-thread queue support
-- ✅ Added automatic memory recycling when limit reached
-- ✅ WinFormDemo feature enhancement, added initialization options
-- ✅ Added multi-image selection and concurrent testing simulation
-
-### v1.0.1 `2025.3.5`
-- ✅ Optimized PaddleOCR.dll, improved recognition speed, added smart pointers
-
-### v1.0 `2025.1.22`
-- 🎉 Initial release: PaddleOCRApi
+For detailed update history, please see: [Changelog](./Doc/CHANGELOG_EN.md)
 
 ## 🔍 FAQ
 
-<details>
-<summary><b>Q: How to choose between CPU and GPU version?</b></summary>
-
-**A:** 
-- CPU version: Suitable for small batch recognition, simple deployment, no GPU environment required
-- GPU version: Suitable for large batch recognition, faster speed, requires CUDA12.9 environment support
-</details>
-
-<details>
-<summary><b>Q: How to improve recognition accuracy?</b></summary>
-
-**A:** 
-1. Choose the appropriate model (mobile/server)
-2. Adjust `det_db_thresh`, `det_db_box_thresh` parameters
-3. Enable orientation classifier `use_angle_cls=true`
-4. Preprocess images (denoising, binarization, etc.)
-</details>
-
-<details>
-<summary><b>Q: What image formats are supported?</b></summary>
-
-**A:** Supports common image formats: jpg, jpeg, png, bmp, tiff, etc.
-</details>
-
-<details>
-<summary><b>Q: How to use on Linux</b></summary>
-
-**A:** 
-- Need to compile PaddleOCR.so dynamic library for the corresponding platform
-- Or deploy WebAPI service
-</details>
+For frequently asked questions, please see: [FAQ](./Doc/FAQ_EN.md)
 
 ## 🙏 Acknowledgments
 
 This project is based on the following open source projects:
 - [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) - Baidu PaddleOCR toolkit
-- [Paddle Inference](https://www.paddlepaddle.org.cn/inference/master/guides/introduction/index_intro.html) - PaddlePaddle inference engine
+- [Paddle](https://github.com/PaddlePaddle/Paddle) - PaddlePaddle inference engine
 
 ## ⭐️ Star
 

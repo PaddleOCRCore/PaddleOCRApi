@@ -15,7 +15,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaddleOCRSDK", "PaddleOCRSD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{BB893EE8-0181-4694-8288-41DADBBAC75D}"
 	ProjectSection(SolutionItems) = preProject
+		Doc\CHANGELOG.md = Doc\CHANGELOG.md
+		Doc\CHANGELOG_EN.md = Doc\CHANGELOG_EN.md
+		Doc\FAQ.md = Doc\FAQ.md
+		Doc\FAQ_EN.md = Doc\FAQ_EN.md
 		Doc\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf = Doc\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaddleVisionWinForm", "Demo\PaddleVisionWinForm\PaddleVisionWinForm.csproj", "{962E1AD2-77AB-9628-2D49-ED3BD041D895}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{9FA3D6BD-1EC1-3BA5-80CB-CE02773A58D5}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		README_EN.md = README_EN.md
 	EndProjectSection
 EndProject
 Global
@@ -76,6 +88,18 @@ Global
 		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|x64.Build.0 = Release|Any CPU
 		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|x86.ActiveCfg = Release|Any CPU
 		{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}.Release|x86.Build.0 = Release|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Debug|x64.Build.0 = Debug|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Debug|x86.Build.0 = Debug|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Release|x64.ActiveCfg = Release|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Release|x64.Build.0 = Release|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Release|x86.ActiveCfg = Release|Any CPU
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +107,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8B3E3FD3-4197-4B27-8BCF-5477E0005F9E} = {485D3CE3-B927-45EB-BFA3-540D7CE7D601}
 		{708753C9-B623-4CA0-BEEE-BCD71D067A31} = {485D3CE3-B927-45EB-BFA3-540D7CE7D601}
+		{962E1AD2-77AB-9628-2D49-ED3BD041D895} = {485D3CE3-B927-45EB-BFA3-540D7CE7D601}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CE873DC-1EC4-4301-8203-98E5E6965964}

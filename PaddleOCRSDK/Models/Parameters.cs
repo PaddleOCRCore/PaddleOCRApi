@@ -267,4 +267,5 @@ namespace PaddleOCRSDK
         public float d_det_db_thresh { get; set; } = 0.3f;
 
     }
+
 }

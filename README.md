@@ -1,11 +1,9 @@
 [<img src="https://img.shields.io/badge/Language-简体中文-red.svg">](README.md) [<img src="https://img.shields.io/badge/Language-English-blue.svg">](README_EN.md)
 # PaddleOCRApi离线OCR组件 支持C#/C++/java/Python/Go语言开发
 
-<p align="center">
-    <a href="https://discord.gg/z9xaRVjdbD"><img src="https://img.shields.io/badge/Chat-on%20discord-7289da.svg?sanitize=true" alt="Chat"></a>
+<p align="center">    
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
     <a href="https://github.com/PaddleOCRCore/PaddleOCRApi/releases"><img src="https://img.shields.io/github/v/release/PaddleOCRCore/PaddleOCRApi?color=ffa"></a>
-    <a href=""><img src="https://img.shields.io/badge/os-linux%2C%20win%2C%20mac-pink.svg"></a>
     <a href="https://github.com/PaddleOCRCore/PaddleOCRApi/stargazers"><img src="https://img.shields.io/github/stars/PaddleOCRCore/PaddleOCRApi?color=ccf"></a>
 </p>
 
@@ -18,17 +16,18 @@
 - [运行环境](#-运行环境)
 - [调用参数说明](#-调用参数说明)
 - [GPU环境配置](#-gpu环境配置)
-- [多语言示例](#-多语言示例)
 - [开发交流](#开发交流群)
 - [更新日志](#更新日志)
 
 ## 🚀 简介
 
-免费离线OCR组件，支持CPU/GPU，免费使用，免费升级，支持C#/C++/java/Python/Go语言开发，支持多线程并发，支持内存自动回收， 基于百度飞桨PaddleOCR封装的C++动态链接库，支持最新paddle_inference3.2.2推理库。
+基于百度飞桨PaddleOCR深度封装的完全离线文字识别组件，提供简洁易用的API接口，支持C#/C++/Java/Python/Go等多种开发语言。完全免费使用，免费升级，支持多线程并发，支持内存自动回收。基于百度飞桨PaddleOCR封装的C++动态链接库，支持最新paddle_inference3.2.2推理库。
 
 **喜欢的请给本项目点一个免费的Star ⭐**
 
-支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4/V3模型
+支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4/V3模型及自训练模型
+
+> 💡 **说明**：开源版本为Windows CPU-飞浆推理库版，需要高性能推理等更多版本请联系作者定制：QQ:**2380243976**
 
 ## ✨ 项目特性
 
@@ -39,6 +38,7 @@
 - ✅ **离线运行**: 无需联网，数据安全可靠
 - ✅ **模型丰富**: 支持PP-OCRv5/v4/v3全系列模型
 - ✅ **功能全面**: 文字检测、识别、方向分类、表格识别
+- ✅ **图像矫正**: 文本图像几何变换，纠正文档扭曲、倾斜、透视变形，提升识别准确率
 
 ## 📁 项目结构
 
@@ -48,14 +48,17 @@ PaddleOCRWebApi/
 │   ├── Services/                  # OCR服务实现
 │   │   ├── OCRService.cs         # OCR识别服务
 │   │   └── OCRSDK.cs             # SDK核心封装
+│   ├── UVDoc/                    # 文本图像矫正模块
+│   │   └── ...                   # 文档几何变换、透视矫正等功能
 │   ├── Interface/                # 接口定义
 │   ├── Models/                   # 数据模型
 │   └── PaddleOCRSDK.csproj      # SDK项目文件
 │
 ├── OCRCoreService/               # WebAPI服务项目
 │   ├── Controllers/              # API控制器
-│   │   ├── OCRServiceController.cs  # OCR接口
-│   │   └── HomeController.cs        # 首页
+│   │   ├── OCRServiceController.cs   # OCR接口
+│   │   ├── UVDocServiceController.cs # 文本图像矫正接口
+│   │   └── HomeController.cs         # 首页
 │   ├── Services/                 # 业务服务
 │   │   └── OCREngine.cs         # OCR引擎
 │   ├── Authorization/            # 权限验证
@@ -75,7 +78,10 @@ PaddleOCRWebApi/
 │   │   └── OCRTablePythonDemo.py # 表格识别示例
 │   ├── GoDemo/                  # Go调用示例
 │   │   └── OCRGoDemo.go        # Go示例代码
-│   └── WinFormsApp/            # C# WinForms示例
+│   ├── PaddleVisionWinForm/    # 文本图像矫正WinForms示例
+│   │   ├── MainForm.cs         # 主窗体
+│   │   └── ...                 # 文档扭曲矫正、透视变换演示
+│   └── WinFormsApp/            # OCR识别WinForms示例
 │       ├── MainForm.cs         # 主窗体
 │       └── Services/           # 服务层
 │
@@ -103,26 +109,7 @@ PaddleOCRWebApi/
 <PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
 ```
 
-### 2. C#快速调用示例
-
-```csharp
-using PaddleOCRSDK;
-
-// 初始化OCR引擎
-var ocrService = new OCRService();
-ocrService.Initialize(
-    detModelPath: "models/PP-OCRv5_mobile_det_infer",
-    clsModelPath: "models/PP-LCNet_x1_0_textline_ori",
-    recModelPath: "models/PP-OCRv5_mobile_rec_infer",
-    keysPath: "models/ppocr_keys.txt"
-);
-
-// 识别图片
-var result = ocrService.Detect("test.jpg");
-Console.WriteLine(result);
-```
-
-### 3. WebAPI服务启动
+### 2. WebAPI服务启动
 
 ```bash
 # 运行WebAPI服务
@@ -201,59 +188,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
 | merge_empty_cell             | true   | 是否合并空单元格                                                                         |
 | table_batch_num              | 1      | table_batch_num                                                                          |
 
-## 🎯 多语言示例
-
-### C#示例
-
-```csharp
-// 详见 Demo/WinFormsApp/
-var ocrService = new OCRService();
-ocrService.Initialize(detModelPath, clsModelPath, recModelPath, keysPath);
-var result = ocrService.Detect(imagePath);
-```
-
-### Python示例
-
-```python
-# 详见 Demo/Python/OCRPythonDemo.py
-import ctypes
-
-ocr_dll = ctypes.CDLL("PaddleOCR.dll")
-init_func = ocr_dll.Initjson
-detect_func = ocr_dll.Detect
-
-# 初始化
-init_func(det_model_path, cls_model_path, rec_model_path, keys_path)
-# 识别
-result = detect_func(image_path)
-```
-
-### Go示例
-
-```go
-// 详见 Demo/GoDemo/OCRGoDemo.go
-ocrDLL, _ := syscall.LoadDLL("PaddleOCR.dll")
-initFunc, _ := ocrDLL.FindProc("Initjson")
-detectFunc, _ := ocrDLL.FindProc("Detect")
-
-// 初始化和调用
-initFunc.Call(detModelPath, clsModelPath, recModelPath, keysPath)
-detectFunc.Call(imagePath)
-```
-
-### C++示例
-
-```cpp
-// 详见 Demo/CPP/PaddleOCRCpp.cpp
-#include <PaddleOCR.h>
-
-// 初始化
-Initjson(detModelPath, clsModelPath, recModelPath, keysPath);
-// 识别
-char* result = Detect(imagePath);
-```
-
-更多完整示例请查看 `Demo/` 目录下的各语言示例代码。
+完整示例请查看 `Demo/` 目录下的各语言示例代码。
 
 ## 🖥️ GPU环境配置说明
 ### paddle_inference2.6.2版本GPU推理库
@@ -272,8 +207,6 @@ char* result = Detect(imagePath);
    - 位于：`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin\cudnn64_x.dll`
 
 ### paddle_inference3.x版本GPU推理库，要求CUDA12.9以上
-
-⚠️ **注意**：GPU版本官方推理库暂时不可用，需自行编译，或联系作者获取
 
 **配置步骤**：
 
@@ -297,10 +230,6 @@ char* result = Detect(imagePath);
 ## 🔗 WebAPI接口
 
 详细的WebAPI接口文档请参考：[WebApi接口文档](./OCRCoreService/README.md)
-
-**主要接口**：
-- `POST /OCRService/GetOCRText` - 图片OCR识别（Base64上传）
-- `POST /OCRService/GetOCRFile` - 图片OCR识别（文件上传）
 
 **Swagger文档**：`http://localhost:5000/swagger/index.html`
 
@@ -359,91 +288,17 @@ char* result = Detect(imagePath);
 
 ## 📝 更新日志
 
-### v3.2.2 `2025.12.11`
-- ✅ 优化PaddleOCR.dll，支持paddle_inference3.2.2推理库
-- ✅ 发布PaddleOCRRuntime_x64 v3.2.2，包含paddle3.2.2推理库、PaddleOCR.dll及依赖文件
-- ⚠️ Nuget PaddleOCRSDK停止更新，核心文件已整合到PaddleOCRRuntime_x64中，.net项目请参考PaddleOCRSDK源码
-
-### v3.1.0 `2025.9.15`
-- ✅ 优化PaddleOCR.dll，支持paddle_inference3.2.0推理库
-- ✅ 增加支持文本行方向分类模型PP-LCNet_x1_0_textline_ori
-- ✅ v4/v5模型采用yml格式
-- ✅ 表格识别初始化增加方向分类模型参数，可单独使用表格识别功能
-- ✅ 发布PaddleOCRRuntime_x64 v3.1.1
-- ✅ 发布PaddleOCRSDK v3.1.0，对齐PaddleOCR.dll
-
-### v2.1.1 `2025.8.1`
-- ✅ 发布PaddleOCRSDK2.1.1版本，增加DetectMat接口
-
-### v2.1.0 `2025.7.31`
-- ✅ 修改PaddleOCR.dll接口，指针类型改为char*(UTF8编码)
-- ✅ 增加DetectMat接口支持直接传入Mat
-- ✅ EnableANSIResult更名为EnableASCIIResult
-- ✅ 发布PaddleOCRSDK2.1.0版本
-
-### v2.0.0 `2025.6.4`
-- ✅ 修改PaddleOCR.dll接口，增加支持PP-OCRv5模型
-- ✅ WinForm Demo增加V5/V4模型选择下拉选项
-
-### v1.0.5 `2025.4.1`
-- ✅ 优化PaddleOCR.dll接口，Demo增加表格识别功能
-
-### v1.0.4 `2025.3.29`
-- ✅ 优化PaddleOCR.dll，增加日志输出开关，OCR识别提速
-- ✅ WebApi接口优化，增加OCR初始化及参数设置
-
-### v1.0.2 `2025.3.23`
-- ✅ 优化PaddleOCR.dll，增加多线程队列支持
-- ✅ 增加内存达到上限自动回收
-- ✅ WinFormDemo功能强化，增加初始化选项
-- ✅ 增加多图选择及模拟并发测试
-
-### v1.0.1 `2025.3.5`
-- ✅ 优化PaddleOCR.dll，提高识别速度，增加智能指针
-
-### v1.0 `2025.1.22`
-- 🎉 初版发行: PaddleOCRApi
+详细的更新历史请查看：[更新日志](./Doc/CHANGELOG.md)
 
 ## 🔍 常见问题 (FAQ)
 
-<details>
-<summary><b>Q: 如何选择CPU版本还是GPU版本？</b></summary>
-
-**A:** 
-- CPU版本：适合小批量识别，部署简单，无需GPU环境
-- GPU版本：适合大批量识别，速度快，需要CUDA12.9环境支持
-</details>
-
-<details>
-<summary><b>Q: 如何提高识别准确率？</b></summary>
-
-**A:** 
-1. 选择合适的模型（mobile/server）
-2. 调整`det_db_thresh`、`det_db_box_thresh`参数
-3. 启用方向分类器`use_angle_cls=true`
-4. 对图片进行预处理（去噪、二值化等）
-</details>
-
-<details>
-<summary><b>Q: 支持哪些图片格式？</b></summary>
-
-**A:** 支持常见的图片格式：jpg、jpeg、png、bmp、tiff等
-</details>
-
-<details>
-<summary><b>Q: 如何在Linux上使用？</b></summary>
-
-**A:** 
-- 需要针对对应平台编译PaddleOCR.so动态库
-- 或部署WebAPI服务
-- 联系开发者定制
-</details>
+详细的常见问题请查看：[常见问题](./Doc/FAQ.md)
 
 ## 🙏 致谢
 
 本项目基于以下开源项目：
 - [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) - 飞桨PaddleOCR
-- [Paddle Inference](https://www.paddlepaddle.org.cn/inference/master/guides/introduction/index_intro.html) - 飞桨推理引擎
+- [Paddle](https://github.com/PaddlePaddle/Paddle) - 飞桨推理引擎
 
 ## ⭐️ Star
 

@@ -22,7 +22,7 @@ namespace PaddleOCRSDK
     /// </summary>
     internal class OCRSDK
     {
-        internal const string dllFileName = "PaddleOCR.dll";
+        internal const string dllFileName = "PaddleOCR";
 
         /// <summary>
         /// 是否生成日志

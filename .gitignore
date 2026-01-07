@@ -22,6 +22,14 @@ paddle_inference.dll
 /demo/WinFormsApp/obj/Debug
 /demo/WinFormsApp/obj/Release
 /demo/WinFormsApp/obj
+/demo/WinFormsApp/.vs
+/demo/PaddleVisionWinForm/bin/Debug
+/demo/PaddleVisionWinForm/bin/Release
+/demo/PaddleVisionWinForm/bin
+/demo/PaddleVisionWinForm/obj/Debug
+/demo/PaddleVisionWinForm/obj/Release
+/demo/PaddleVisionWinForm/obj
+/demo/PaddleVisionWinForm/.vs
 /demo/CPP/log
 /demo/CPP/x64
 /PaddleOCRCore/bin/Debug

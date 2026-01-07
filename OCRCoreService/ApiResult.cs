@@ -176,4 +176,50 @@ namespace OCRCoreService
         /// </summary>
         public bool enableLog { get; set; } = false;
     }
+
+    /// <summary>
+    /// UVDoc文档矫正配置
+    /// </summary>
+    public class UVDocConfig
+    {
+        /// <summary>
+        /// 是否启用UVDoc文档矫正服务
+        /// </summary>
+        public bool enabled { get; set; } = false;
+
+        /// <summary>
+        /// UVDoc模型路径
+        /// </summary>
+        public string uvdoc_infer { get; set; } = "UVDoc_infer";
+
+        /// <summary>
+        /// CPU模式下，是否使用mkldnn库
+        /// </summary>
+        public bool enable_mkldnn { get; set; } = true;
+
+        /// <summary>
+        /// CPU模式下，预测时的线程数
+        /// </summary>
+        public int cpu_threads { get; set; } = 10;
+
+        /// <summary>
+        /// 是否使用GPU
+        /// </summary>
+        public bool use_gpu { get; set; } = false;
+
+        /// <summary>
+        /// GPU id，使用GPU时有效
+        /// </summary>
+        public int gpu_id { get; set; } = 0;
+
+        /// <summary>
+        /// 使用GPU时内存
+        /// </summary>
+        public int gpu_mem { get; set; } = 2000;
+
+        /// <summary>
+        /// 使用GPU预测时，是否启动tensorrt
+        /// </summary>
+        public bool use_tensorrt { get; set; } = false;
+    }
 }

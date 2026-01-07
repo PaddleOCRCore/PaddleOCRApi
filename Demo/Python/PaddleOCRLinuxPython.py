@@ -10,6 +10,8 @@ ocr_dll=cdll.LoadLibrary("./PaddleOCR.so")
 init_func = ocr_dll.Initjson
 detect_func = ocr_dll.Detect
 enable_json_func = ocr_dll.EnableJsonResult
+enablelog_func = ocr_dll.EnableLog
+
 
 # 初始化OCR
 root_dir = "./"
@@ -23,7 +25,7 @@ init_func(
 
 # 设置返回结果格式
 enable_json_func(0)  # 0: 返回纯字符串结果, 1: 返回JSON字符串结果
-
+enablelog_func(1)
 # 读取图片目录
 image_dir = root_dir + "images"
 images = os.listdir(image_dir)
