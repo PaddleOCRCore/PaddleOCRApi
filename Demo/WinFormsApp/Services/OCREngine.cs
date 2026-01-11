@@ -141,6 +141,20 @@ namespace WinFormsApp.Services
             }
             return msg;
         }
+        /// <summary>
+        /// 释放OCR引擎
+        /// </summary>
+        public static void FreeEngine()
+        {
+            try
+            {
+                ocrService.FreeEngine();
+                ocrService.FreeTableEngine();
+            }
+            catch (Exception)
+            {
+            }
+        }
     }
 }
 

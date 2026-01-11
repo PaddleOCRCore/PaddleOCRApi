@@ -46,11 +46,13 @@ namespace WinFormsApp
         private readonly float minZoom = 0.1f;  // 最小缩放比例
         private readonly float maxZoom = 5.0f;  // 最大缩放比例
         private Image originalImage;        // 原始图像
+        private bool isInitSuccess = false; // OCR是否初始化成功
         public MainForm()
         {
             InitializeComponent();
             ocrService = OCREngine.ocrService;
             this.ActiveControl = pictureBoxImg;
+            this.FormClosing += MainForm_FormClosing;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -65,6 +67,7 @@ namespace WinFormsApp
                 {
                     Directory.CreateDirectory(RecFilepath);
                 }
+                buttonFreeEngine.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -78,6 +81,7 @@ namespace WinFormsApp
             //LogMessage($"{DateTime.Now:HH:mm:ss.fff}:正在初始化,请稍后...");
             try
             {
+                this.isInitSuccess = false;
                 OCREngine.use_gpu = use_gpu;
                 OCREngine.gpu_id = gpu_id;
                 OCREngine.cpu_threads = cpu_threads;
@@ -111,6 +115,7 @@ namespace WinFormsApp
                 if (initmsg.IndexOf("初始化成功") >= 0)
                 {
                     this.buttonRec.Enabled = true;
+                    this.isInitSuccess = true;
                 }
                 else
                 {
@@ -128,10 +133,17 @@ namespace WinFormsApp
                 if (initmsg.IndexOf("初始化成功") >= 0)
                 {
                     this.buttonRecTable.Enabled = true;
+                    this.isInitSuccess = true;
                 }
                 else
                 {
                     this.buttonRecTable.Enabled = false;
+                }
+
+                if (this.isInitSuccess)
+                {
+                    this.buttonInit.Enabled = false;
+                    this.buttonFreeEngine.Enabled = true;
                 }
             }
             catch (Exception ex)
@@ -166,7 +178,7 @@ namespace WinFormsApp
             else
             {
                 result = ocrResult.ErrorMsg;
-            }                
+            }
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
@@ -178,8 +190,8 @@ namespace WinFormsApp
             }
             else
             {
-                LogMessage("识别失败:"+ ocrService.GetError());
-                if(!string.IsNullOrEmpty(ocrResult.JsonText))
+                LogMessage("识别失败:" + ocrService.GetError());
+                if (!string.IsNullOrEmpty(ocrResult.JsonText))
                     LogMessage($"输出json: {ocrResult.JsonText}");
             }
             return result;
@@ -459,6 +471,25 @@ namespace WinFormsApp
         private void comboBoxModel_SelectedIndexChanged(object sender, EventArgs e)
         {
             model_type = comboBoxModel.SelectedIndex;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (isInitSuccess)
+            {
+                OCREngine.FreeEngine();
+            }
+        }
+
+        private void buttonFreeEngine_Click(object sender, EventArgs e)
+        {
+            OCREngine.FreeEngine();
+            this.isInitSuccess = false;
+            this.buttonInit.Enabled = true;
+            this.buttonFreeEngine.Enabled = false;
+            this.buttonRec.Enabled = false;
+            this.buttonRecTable.Enabled = false;
+            LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR引擎已释放！");
         }
     }
 }

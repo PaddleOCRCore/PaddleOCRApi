@@ -16,7 +16,7 @@ init_func = ocr_dll.Initjson
 detect_func = ocr_dll.Detect
 enable_json_func = ocr_dll.EnableJsonResult
 enable_log_func = ocr_dll.EnableLog
-
+free_engine_func = ocr_dll.FreeEngine
 # 设置返回结果格式
 enable_json_func(0)  # 0: 返回纯字符串结果, 1: 返回JSON字符串结果
 enable_log_func(1)  # 0: 不输出日志, 1: 输出日志
@@ -51,6 +51,6 @@ for image_name in images:
         print("识别结果:", c_string)
     else:
         print("识别失败，返回空指针。")
-
+free_engine_func()
 # 等待用户输入以退出程序
 input("按回车键退出...")

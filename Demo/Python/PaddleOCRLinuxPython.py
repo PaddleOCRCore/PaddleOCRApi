@@ -11,7 +11,7 @@ init_func = ocr_dll.Initjson
 detect_func = ocr_dll.Detect
 enable_json_func = ocr_dll.EnableJsonResult
 enablelog_func = ocr_dll.EnableLog
-
+free_engine_func = ocr_dll.FreeEngine
 
 # 初始化OCR
 root_dir = "./"
@@ -46,7 +46,7 @@ for image_name in images:
             print("识别结果:", c_string)
         else:
             print("识别失败，返回空指针。")
-
+free_engine_func()
 # 等待用户输入以退出程序
 input("按回车键退出...")
    

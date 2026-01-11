@@ -308,7 +308,7 @@ namespace PaddleOCRSDK
             {
                 if (ptrResult != IntPtr.Zero)
                 {
-                    Marshal.FreeHGlobal(ptrResult);
+                    Marshal.FreeCoTaskMem(ptrResult);
                 }
             }
             return result;
@@ -368,7 +368,7 @@ namespace PaddleOCRSDK
             {
                 if (ptrResult != IntPtr.Zero)
                 {
-                    Marshal.FreeHGlobal(ptrResult);
+                    Marshal.FreeCoTaskMem(ptrResult);
                 }
             }
             return result;
@@ -387,7 +387,7 @@ namespace PaddleOCRSDK
                 if (ret != IntPtr.Zero)
                 {
                     lastErr = MarshalUtf8.PtrToStringUTF8(ret);
-                    Marshal.FreeHGlobal(ret);
+                    Marshal.FreeCoTaskMem(ret);
                 }
             }
             catch (Exception e)
@@ -434,6 +434,20 @@ namespace PaddleOCRSDK
                 TypeNameHandling = TypeNameHandling.Auto,
             };
             return (T)JsonConvert.DeserializeObject(json, typeof(T), settings);
+        }
+        /// <summary>
+        /// 释放OCR实例
+        /// </summary>
+        public void FreeEngine()
+        {
+            OCRSDK.FreeEngine();
+        }
+        /// <summary>
+        /// 释放OCR表格识别实例
+        /// </summary>
+        public void FreeTableEngine()
+        {
+            OCRSDK.FreeTableEngine();
         }
     }
 }

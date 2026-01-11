@@ -57,6 +57,7 @@
             groupBoximg = new GroupBox();
             pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             imageList1 = new ImageList(components);
+            buttonFreeEngine = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
@@ -79,7 +80,7 @@
             // buttonRec
             // 
             buttonRec.Enabled = false;
-            buttonRec.Location = new Point(748, 22);
+            buttonRec.Location = new Point(699, 23);
             buttonRec.Name = "buttonRec";
             buttonRec.Size = new Size(120, 28);
             buttonRec.TabIndex = 1;
@@ -99,7 +100,7 @@
             // 
             // buttonGetBase64
             // 
-            buttonGetBase64.Location = new Point(919, 22);
+            buttonGetBase64.Location = new Point(919, 23);
             buttonGetBase64.Name = "buttonGetBase64";
             buttonGetBase64.Size = new Size(120, 28);
             buttonGetBase64.TabIndex = 3;
@@ -110,6 +111,7 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(buttonFreeEngine);
             groupBox1.Controls.Add(buttonPostFile);
             groupBox1.Controls.Add(textBoxApiAddress);
             groupBox1.Controls.Add(label8);
@@ -190,7 +192,7 @@
             // buttonRecTable
             // 
             buttonRecTable.Enabled = false;
-            buttonRecTable.Location = new Point(748, 55);
+            buttonRecTable.Location = new Point(699, 56);
             buttonRecTable.Name = "buttonRecTable";
             buttonRecTable.Size = new Size(120, 28);
             buttonRecTable.TabIndex = 17;
@@ -200,7 +202,7 @@
             // 
             // buttonDownModels
             // 
-            buttonDownModels.Location = new Point(919, 54);
+            buttonDownModels.Location = new Point(919, 55);
             buttonDownModels.Name = "buttonDownModels";
             buttonDownModels.Size = new Size(120, 28);
             buttonDownModels.TabIndex = 16;
@@ -350,6 +352,17 @@
             imageList1.ImageSize = new Size(16, 16);
             imageList1.TransparentColor = Color.Transparent;
             // 
+            // buttonFreeEngine
+            // 
+            buttonFreeEngine.Enabled = false;
+            buttonFreeEngine.Location = new Point(825, 23);
+            buttonFreeEngine.Name = "buttonFreeEngine";
+            buttonFreeEngine.Size = new Size(87, 60);
+            buttonFreeEngine.TabIndex = 24;
+            buttonFreeEngine.Text = "释放OCR";
+            buttonFreeEngine.UseVisualStyleBackColor = true;
+            buttonFreeEngine.Click += buttonFreeEngine_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -404,5 +417,6 @@
         private Button buttonPostFile;
         private ImageList imageList1;
         private UserControl.PictureView pictureBoxImg;
+        private Button buttonFreeEngine;
     }
 }

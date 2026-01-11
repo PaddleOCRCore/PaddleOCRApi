@@ -100,8 +100,16 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 对图像文件进行表格识别
         /// </summary>
-        /// <param name="imagebyte">图像文件</param>
+        /// <param name="base64">base64</param>
         /// <returns>OCR识别结果</returns>
         string DetectTableBase64(string base64);
+        /// <summary>
+        /// 释放OCR实例
+        /// </summary>
+        void FreeEngine();
+        /// <summary>
+        /// 释放OCR表格识别实例
+        /// </summary>
+        void FreeTableEngine();
     }
 }
