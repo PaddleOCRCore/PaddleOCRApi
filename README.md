@@ -1,5 +1,5 @@
 [<img src="https://img.shields.io/badge/Language-简体中文-red.svg">](README.md) [<img src="https://img.shields.io/badge/Language-English-blue.svg">](README_EN.md)
-# PaddleOCRApi离线OCR组件 支持C#/C++/java/Python/Go语言开发
+# PaddleOCRApi离线OCR组件，支持C#/C++/java/Python/Go语言开发
 
 <p align="center">    
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
@@ -86,7 +86,7 @@ PaddleOCRWebApi/
 │       └── Services/           # 服务层
 │
 ├── packages/                    # NuGet包依赖
-│   └── PaddleOCRRuntime_x64.3.2.2/  # 运行时库
+│   └── PaddleOCRRuntime_x64.3.3.0/  # 运行时库
 │
 ├── Doc/                        # 文档资料
 └── README.md                   # 项目说明文档
@@ -99,7 +99,7 @@ PaddleOCRWebApi/
 使用paddle_inference3.2+版本推理库：
 
 ```xml
-<PackageReference Include="PaddleOCRRuntime_x64" Version="3.2.2" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="3.3.3" />
 ```
 
 若使用paddle_inference2.6.2版本推理库：

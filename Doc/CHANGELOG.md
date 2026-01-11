@@ -1,5 +1,10 @@
 # 📝 更新日志
 
+## v3.3.0 `2026.1.11`
+- ✅ 优化PaddleOCR.dll，C++指针采用CoTaskMemAlloc分配，C#使用Marshal.FreeCoTaskMem释放，修复DetectTableByte接口异常
+- ✅ 发布PaddleOCRRuntime_x64 v3.3.0，包含paddle3.2.2推理库、PaddleOCR.dll及依赖文件，增加UVDoc_infer模型
+- ✅ PaddleocrSDK v3.3.0对齐PaddleOCR.dll，增加UVDoc文本图像矫正功能(依赖PaddleDocVision.dll，暂未开放)，并集成到WebApi中，Demo增加PaddleVisionWinform。
+
 ## v3.2.2 `2025.12.11`
 - ✅ 优化PaddleOCR.dll，支持paddle_inference3.2.2推理库
 - ✅ 发布PaddleOCRRuntime_x64 v3.2.2，包含paddle3.2.2推理库、PaddleOCR.dll及依赖文件

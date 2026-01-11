@@ -1,5 +1,10 @@
 # 📝 Changelog
 
+## v3.3.0 2026.1.11
+- ✅ Optimized PaddleOCR.dll: C++ pointers are now allocated using CoTaskMemAlloc and released in C# via Marshal.FreeCoTaskMem, fixing the exception in the DetectTableByte interface.
+- ✅ Released PaddleOCRRuntime_x64 v3.3.0, including the paddle 3.2.2 inference library, PaddleOCR.dll, and all dependencies; added the UVDoc_infer model.
+- ✅ PaddleocrSDK v3.3.0 is aligned with PaddleOCR.dll, adds UVDoc text image rectification (depends on PaddleDocVision.dll, not yet publicly available), and integrates this functionality into the WebApi; the demo now includes PaddleVisionWinform.
+
 ## v3.2.2 `2025.12.11`
 - ✅ Optimized PaddleOCR.dll, supports paddle_inference 3.2.2 inference library
 - ✅ Released PaddleOCRRuntime_x64 v3.2.2, includes paddle 3.2.2 inference library, PaddleOCR.dll and dependencies

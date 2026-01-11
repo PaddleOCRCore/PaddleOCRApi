@@ -35,6 +35,7 @@
             textBoxResult = new TextBox();
             buttonGetBase64 = new Button();
             groupBox1 = new GroupBox();
+            buttonFreeEngine = new Button();
             buttonPostFile = new Button();
             textBoxApiAddress = new TextBox();
             label8 = new Label();
@@ -57,7 +58,6 @@
             groupBoximg = new GroupBox();
             pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             imageList1 = new ImageList(components);
-            buttonFreeEngine = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
@@ -140,6 +140,17 @@
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "功能选项";
+            // 
+            // buttonFreeEngine
+            // 
+            buttonFreeEngine.Enabled = false;
+            buttonFreeEngine.Location = new Point(825, 23);
+            buttonFreeEngine.Name = "buttonFreeEngine";
+            buttonFreeEngine.Size = new Size(87, 60);
+            buttonFreeEngine.TabIndex = 24;
+            buttonFreeEngine.Text = "释放OCR";
+            buttonFreeEngine.UseVisualStyleBackColor = true;
+            buttonFreeEngine.Click += buttonFreeEngine_Click;
             // 
             // buttonPostFile
             // 
@@ -352,17 +363,6 @@
             imageList1.ImageSize = new Size(16, 16);
             imageList1.TransparentColor = Color.Transparent;
             // 
-            // buttonFreeEngine
-            // 
-            buttonFreeEngine.Enabled = false;
-            buttonFreeEngine.Location = new Point(825, 23);
-            buttonFreeEngine.Name = "buttonFreeEngine";
-            buttonFreeEngine.Size = new Size(87, 60);
-            buttonFreeEngine.TabIndex = 24;
-            buttonFreeEngine.Text = "释放OCR";
-            buttonFreeEngine.UseVisualStyleBackColor = true;
-            buttonFreeEngine.Click += buttonFreeEngine_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -374,7 +374,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PaddleOCR识别Demo V3.2.2--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
+            Text = "PaddleOCR识别Demo V3.3.0--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
             Load += MainForm_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();

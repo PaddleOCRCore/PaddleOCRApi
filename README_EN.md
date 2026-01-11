@@ -86,7 +86,7 @@ PaddleOCRWebApi/
 │       └── Services/           # Service layer
 │
 ├── packages/                    # NuGet package dependencies
-│   └── PaddleOCRRuntime_x64.3.2.2/  # Runtime library
+│   └── PaddleOCRRuntime_x64.3.3.0/  # Runtime library
 │
 ├── Doc/                        # Documentation
 └── README.md                   # Project documentation
@@ -99,7 +99,7 @@ PaddleOCRWebApi/
 For paddle_inference 3.2+ version:
 
 ```xml
-<PackageReference Include="PaddleOCRRuntime_x64" Version="3.2.2" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="3.3.0" />
 ```
 
 For paddle_inference 2.6.2 version:
