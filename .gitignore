@@ -45,3 +45,4 @@ paddle_inference.dll
 /PaddleOCRSDK/obj/Release
 /PaddleOCRSDK/obj
 /x64
+/OCRCoreService/Properties/PublishProfiles
