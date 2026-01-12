@@ -214,14 +214,14 @@ namespace PaddleOCRSDK
                 if (!ret)
                 {
                     var error = GetError();
-                    throw new OCRException($"初始化失败: {error}");
+                    throw new OCRException($"{error}");
                 }
 
                 return ret;
             }
             catch (Exception ex)
             {
-                throw new OCRException($"初始化失败: {ex.Message}");
+                throw new OCRException($"{ex.Message}");
             }
         }
         /// <summary>

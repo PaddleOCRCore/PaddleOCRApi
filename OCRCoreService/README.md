@@ -56,8 +56,16 @@ pause
 
 |序号| 类型| 接口地址| 接口名称| 创建日期| 最后发布日期| 备注|
 | -- | --- |-------- | ------- |---------| ------------|-----|
-|1| OCR| /OCRService/GetOCRText| 图片OCR识别| 2025/03/28| 2025/03/28| 上传Base64|
-|2| OCR| /OCRService/GetOCRFile| 图片OCR识别| 2025/04/27| 2025/04/27| 上传图片|
+|1| OCR| /OCRService/Get| 检查服务状态| 2025/03/28| 2025/03/28| GET请求|
+|2| OCR| /OCRService/GetIdCard| 身份证识别| 2025/03/28| 2025/03/28| 上传Base64|
+|3| OCR| /OCRService/GetOCRText| 通用文字识别| 2025/03/28| 2025/03/28| 上传Base64|
+|4| OCR| /OCRService/GetOCRFile| 通用文字识别| 2025/04/27| 2025/04/27| 上传图片|
+|5| OCR| /OCRService/GetOCRJsonFile| 通用文字识别| 2025/04/27| 2025/04/27| 上传图片，返回JSON|
+|6| UVDoc| /UVDocService/Get| 检查服务状态| 2026/01/11| 2026/01/11| GET请求|
+|7| UVDoc| /UVDocService/UVDocBase64| 文本图像矫正| 2026/01/11| 2026/01/11| 上传Base64|
+|8| UVDoc| /UVDocService/UVDocFile| 文本图像矫正| 2026/01/11| 2026/01/11| 上传图片|
+|9| UVDoc| /UVDocService/UVDocFileToBase64| 文本图像矫正| 2026/01/11| 2026/01/11| 上传图片，返回Base64|
+|10| UVDoc| /UVDocService/UVDocBytes| 文本图像矫正| 2026/01/11| 2026/01/11| 上传字节数组|
 
 图片OCR识别：/OCRService/GetOCRText 
 
@@ -73,7 +81,7 @@ pause
 
 | 序号|  参数名称   | 描述  | 类型   |  是否必填 |  备注  | 
 | --- | ----------  |-------| ------ |-----------| ------ |
-| 1   | Base64String|  图片Base6 编码|  字符串|  必填|
+| 1   | Base64String|  图片Base64编码|  字符串|  必填|
 | 2   | ResultType | text/json|  字符串 | 必填 | Text仅返回文字| 
 
 ### 返回结果示例：
@@ -90,3 +98,194 @@ pause
  "errorMessage": ""
 }
 `
+
+## OCR服务接口详细文档
+
+### 1. 检查服务状态：/OCRService/Get
+
+提交方式：GET
+
+传入参数：无
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": "接口已正式启用，仅支持64位模式",
+ "errorMessage": ""
+}
+`
+
+### 2. 身份证识别：/OCRService/GetIdCard
+
+提交方式：POST
+
+传入参数：
+
+`
+{
+ "Base64String": "",
+ "id_card_side": "front"
+}
+`
+
+| 序号| 参数名称 | 描述 | 类型 | 是否必填 | 备注 |
+| --- | -------- | ---- | ---- | -------- | ---- |
+| 1 | Base64String | 图片Base64编码 | 字符串 | 必填 | |
+| 2 | id_card_side | 身份证面 | 字符串 | 必填 | front(头像面)/back(国徽面) |
+
+返回结果示例（头像面）：
+
+`
+{
+ "status": 200,
+ "data": {
+  "姓名": "张三",
+  "性别": "男",
+  "民族": "汉",
+  "出生": "19900101",
+  "住址": "北京市朝阳区",
+  "公民身份号码": "110101199001011234",
+  "text": "姓名张三性别男民族汉出生19900101住址北京市朝阳区公民身份号码110101199001011234"
+ },
+ "errorMessage": ""
+}
+`
+
+返回结果示例（国徽面）：
+
+`
+{
+ "status": 200,
+ "data": {
+  "签发机关": "北京市公安局朝阳分局",
+  "有效期限": "20100101-20300101",
+  "text": "签发机关北京市公安局朝阳分局有效期限20100101-20300101"
+ },
+ "errorMessage": ""
+}
+`
+
+### 3. 通用文字识别（Base64）：/OCRService/GetOCRText
+
+（同上，已描述）
+
+### 4. 通用文字识别（文件上传）：/OCRService/GetOCRFile
+
+提交方式：POST
+
+传入参数：FormData，key为"request"，value为图片文件
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": "识别出的文字内容",
+ "errorMessage": ""
+}
+`
+
+### 5. 通用文字识别（文件上传，返回JSON）：/OCRService/GetOCRJsonFile
+
+提交方式：POST
+
+传入参数：FormData，key为"request"，value为图片文件
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": "{\"words_result\":[{\"words\":\"文字内容\",\"confidence\":0.95}]}",
+ "errorMessage": ""
+}
+`
+
+## UVDoc服务接口详细文档
+
+### 6. 检查服务状态：/UVDocService/Get
+
+提交方式：GET
+
+传入参数：无
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "message": "UVDoc文档矫正服务已启动",
+  "initialized": true,
+  "timestamp": "2026-01-11T10:00:00"
+ },
+ "errorMessage": ""
+}
+`
+
+### 7. 文本图像矫正（Base64）：/UVDocService/UVDocBase64
+
+提交方式：POST
+
+传入参数：
+
+`
+{
+ "Base64String": ""
+}
+`
+
+| 序号| 参数名称 | 描述 | 类型 | 是否必填 | 备注 |
+| --- | -------- | ---- | ---- | -------- | ---- |
+| 1 | Base64String | 图片Base64编码 | 字符串 | 必填 | |
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "base64Image": "矫正后图片的Base64编码",
+  "timestamp": "2026-01-11T10:00:00"
+ },
+ "errorMessage": ""
+}
+`
+
+### 8. 文本图像矫正（文件上传）：/UVDocService/UVDocFile
+
+提交方式：POST
+
+传入参数：FormData，key为"file"，value为图片文件
+
+返回结果：直接返回矫正后的图片文件（image/jpeg）
+
+### 9. 文本图像矫正（文件上传，返回Base64）：/UVDocService/UVDocFileToBase64
+
+提交方式：POST
+
+传入参数：FormData，key为"file"，value为图片文件
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "base64Image": "矫正后图片的Base64编码",
+  "originalFileName": "input.jpg",
+  "timestamp": "2026-01-11T10:00:00"
+ },
+ "errorMessage": ""
+}
+`
+
+### 10. 文本图像矫正（字节数组）：/UVDocService/UVDocBytes
+
+提交方式：POST
+
+传入参数：FormData，key为"file"，value为图片文件
+
+返回结果：直接返回矫正后的图片文件（image/jpeg）
