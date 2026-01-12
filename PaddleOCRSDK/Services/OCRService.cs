@@ -214,14 +214,19 @@ namespace PaddleOCRSDK
                 if (!ret)
                 {
                     var error = GetError();
-                    throw new OCRException($"{error}");
+                    throw new OCRException($"初始化失败:{error}");
                 }
 
                 return ret;
             }
+            catch (OCRException)
+            {
+                // OCRException 已经包含了"初始化失败:"前缀，直接重新抛出
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new OCRException($"{ex.Message}");
+                throw new OCRException($"初始化失败:{ex.Message}");
             }
         }
         /// <summary>
