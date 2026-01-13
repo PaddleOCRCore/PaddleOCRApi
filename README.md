@@ -85,9 +85,6 @@ PaddleOCRWebApi/
 │       ├── MainForm.cs         # 主窗体
 │       └── Services/           # 服务层
 │
-├── packages/                    # NuGet包依赖
-│   └── PaddleOCRRuntime_x64.3.3.0/  # 运行时库
-│
 ├── Doc/                        # 文档资料
 └── README.md                   # 项目说明文档
 ```
@@ -99,7 +96,7 @@ PaddleOCRWebApi/
 使用paddle_inference3.2+版本推理库：
 
 ```xml
-<PackageReference Include="PaddleOCRRuntime_x64" Version="3.3.0" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="3.3.1" />
 ```
 
 若使用paddle_inference2.6.2版本推理库：
