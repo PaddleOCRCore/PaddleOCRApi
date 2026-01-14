@@ -40,14 +40,18 @@ namespace OCRCoreService.Services
         {
             //自带轻量版中英文模型V5模型
             InitParamater para=new InitParamater();
-            //string root = AppDomain.CurrentDomain.BaseDirectory;
-            string root = AppContext.BaseDirectory;
-            string modelPathroot = Path.Combine(root, "models");
-            para.det_infer = Path.Combine(modelPathroot, _ocrConfig.det_infer);
-            para.cls_infer = Path.Combine(modelPathroot, _ocrConfig.cls_infer);
-            para.rec_infer = Path.Combine(modelPathroot, _ocrConfig.rec_infer);
-            para.keyFile = Path.Combine(modelPathroot, _ocrConfig.keyFile);
+            //string root = AppContext.BaseDirectory;
+            //string modelPathroot = Path.Combine(root, "models");
+            //para.det_infer = Path.Combine(modelPathroot, _ocrConfig.det_infer);
+            //para.cls_infer = Path.Combine(modelPathroot, _ocrConfig.cls_infer);
+            //para.rec_infer = Path.Combine(modelPathroot, _ocrConfig.rec_infer);
+            //para.keyFile = Path.Combine(modelPathroot, _ocrConfig.keyFile);
 
+            //改为相对路径，避免中文路径问题
+            para.det_infer = $"models/{_ocrConfig.det_infer}";
+            para.cls_infer = $"models/{_ocrConfig.cls_infer}";
+            para.rec_infer = $"models/{_ocrConfig.rec_infer}";
+            para.keyFile = $"models/{_ocrConfig.keyFile}";
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = _ocrConfig.use_gpu;
             oCRParameter.use_tensorrt = false;
@@ -94,14 +98,22 @@ namespace OCRCoreService.Services
         {
             InitParamater para = new InitParamater();
             //string root = AppDomain.CurrentDomain.BaseDirectory;
-            string root = AppContext.BaseDirectory;
-            string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            para.det_infer = Path.Combine(modelsPath, _ocrConfig.det_infer);
-            para.cls_infer = Path.Combine(modelsPath, _ocrConfig.cls_infer);
-            para.rec_infer = Path.Combine(modelsPath, _ocrConfig.rec_infer);
-            para.keyFile = Path.Combine(modelsPath, _ocrConfig.keyFile);
-            para.table_model_dir = Path.Combine(modelsPath, _ocrConfig.table_model_dir);
-            para.table_dict_path = Path.Combine(modelsPath, _ocrConfig.table_dict_path);
+            //string root = AppContext.BaseDirectory;
+            //string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
+            //para.det_infer = Path.Combine(modelsPath, _ocrConfig.det_infer);
+            //para.cls_infer = Path.Combine(modelsPath, _ocrConfig.cls_infer);
+            //para.rec_infer = Path.Combine(modelsPath, _ocrConfig.rec_infer);
+            //para.keyFile = Path.Combine(modelsPath, _ocrConfig.keyFile);
+            //para.table_model_dir = Path.Combine(modelsPath, _ocrConfig.table_model_dir);
+            //para.table_dict_path = Path.Combine(modelsPath, _ocrConfig.table_dict_path);
+
+            //改为相对路径，避免中文路径问题
+            para.det_infer = $"models/{_ocrConfig.det_infer}";
+            para.cls_infer = $"models/{_ocrConfig.cls_infer}";
+            para.rec_infer = $"models/{_ocrConfig.rec_infer}";
+            para.keyFile = $"models/{_ocrConfig.keyFile}";
+            para.table_model_dir = $"models/{_ocrConfig.table_model_dir}";
+            para.table_dict_path = $"models/{_ocrConfig.table_dict_path}";
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = _ocrConfig.use_gpu;
             oCRParameter.use_tensorrt = false;

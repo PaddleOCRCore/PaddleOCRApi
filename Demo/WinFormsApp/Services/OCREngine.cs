@@ -49,12 +49,17 @@ namespace WinFormsApp.Services
         public static string GetOCREngine()
         {
             InitParamater para = new InitParamater();
-            string root = AppDomain.CurrentDomain.BaseDirectory;
-            string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            para.det_infer = Path.Combine(modelsPath, det_infer);
-            para.cls_infer = Path.Combine(modelsPath, cls_infer);
-            para.rec_infer = Path.Combine(modelsPath, rec_infer);
-            para.keyFile = Path.Combine(modelsPath, keys);
+            //string root = AppDomain.CurrentDomain.BaseDirectory;
+            //string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
+            //para.det_infer = Path.Combine(modelsPath, det_infer);
+            //para.cls_infer = Path.Combine(modelsPath, cls_infer);
+            //para.rec_infer = Path.Combine(modelsPath, rec_infer);
+            //para.keyFile = Path.Combine(modelsPath, keys);
+            //改为相对路径，避免中文路径问题
+            para.det_infer = $"models/{det_infer}";
+            para.cls_infer = $"models/{cls_infer}";
+            para.rec_infer = $"models/{ rec_infer}";
+            para.keyFile = $"models/{keys}";
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
@@ -103,12 +108,20 @@ namespace WinFormsApp.Services
             InitParamater para = new InitParamater();
             string root = AppDomain.CurrentDomain.BaseDirectory;
             string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            para.det_infer = Path.Combine(modelsPath, det_infer);
-            para.cls_infer = Path.Combine(modelsPath, cls_infer);
-            para.rec_infer = Path.Combine(modelsPath, rec_infer);
-            para.keyFile = Path.Combine(modelsPath, keys);
-            para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
-            para.table_dict_path = Path.Combine(modelsPath, table_dict_path);
+            //para.det_infer = Path.Combine(modelsPath, det_infer);
+            //para.cls_infer = Path.Combine(modelsPath, cls_infer);
+            //para.rec_infer = Path.Combine(modelsPath, rec_infer);
+            //para.keyFile = Path.Combine(modelsPath, keys);
+            //para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
+            //para.table_dict_path = Path.Combine(modelsPath, table_dict_path);
+
+            para.det_infer = $"models/{det_infer}";
+            para.cls_infer = $"models/{cls_infer}";
+            para.rec_infer = $"models/{rec_infer}";
+            para.keyFile = $"models/{keys}";
+            para.table_model_dir = $"models/{table_model_dir}";
+            para.table_dict_path = $"models/{table_dict_path}";
+
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = use_gpu;
             oCRParameter.use_tensorrt = false;
