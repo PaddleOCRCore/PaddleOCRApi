@@ -40,12 +40,11 @@ extern "C" {
     __declspec(dllimport) void __stdcall EnableJsonResult(bool enable);
     __declspec(dllimport) bool __stdcall Init(const char* det_infer,
         const char* cls_infer,
-        const char* rec_infer, const char* keys,
+        const char* rec_infer,
         const OCRParameter parameter);
     __declspec(dllimport) bool __stdcall Initjson(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* keys,
         const char* parameterjson);
     __declspec(dllimport) bool __stdcall DynamicInit(SyncParameter parameter);
     __declspec(dllimport) const char* __stdcall Detect(const char* imageFile);
@@ -57,13 +56,11 @@ extern "C" {
     __declspec(dllimport) bool __stdcall InitTable(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* keys,
         const char* table_model_dir,
         const char* table_char_dict_path, TableParameter parameter);
     __declspec(dllimport) bool __stdcall InitTablejson(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* keys,
         const char* table_model_dir,
         const char* table_char_dict_path, const char* parameterjson);
     __declspec(dllimport) const char* __stdcall DetectTable(const char* imageFile);

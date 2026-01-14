@@ -61,10 +61,6 @@ namespace PaddleOCRSDK
         /// </summary>
         public string table_dict_path { get; set; }
         /// <summary>
-        /// ppocr_keys.txt文件名全路径
-        /// </summary>
-        public string keyFile { get; set; }
-        /// <summary>
         /// 参数类型
         /// </summary>
         public EnumParaType paraType { get; set; }

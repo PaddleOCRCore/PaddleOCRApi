@@ -28,7 +28,6 @@ namespace WinFormsApp.Services
         public static string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
         public static string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
         public static string cls_infer = "PP-LCNet_x1_0_textline_ori";
-        private static string keys = "ppocr_keys.txt";
         private static string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
         private static string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
         private static bool enable_mkldnn = true;
@@ -59,7 +58,6 @@ namespace WinFormsApp.Services
             para.det_infer = $"models/{det_infer}";
             para.cls_infer = $"models/{cls_infer}";
             para.rec_infer = $"models/{ rec_infer}";
-            para.keyFile = $"models/{keys}";
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
@@ -118,7 +116,6 @@ namespace WinFormsApp.Services
             para.det_infer = $"models/{det_infer}";
             para.cls_infer = $"models/{cls_infer}";
             para.rec_infer = $"models/{rec_infer}";
-            para.keyFile = $"models/{keys}";
             para.table_model_dir = $"models/{table_model_dir}";
             para.table_dict_path = $"models/{table_dict_path}";
 

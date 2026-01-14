@@ -59,8 +59,6 @@ int main()
     rec_infer += "/models/PP-OCRv5_mobile_rec_infer";
     string cls_infer(path);
     cls_infer += "/models/PP-LCNet_x1_0_textline_ori";
-    string keys(path);
-    keys += "/models/ppocr_keys.txt";
     OCRParameter parameter;
     parameter.use_gpu = false;//是否使用GPU
     parameter.cpu_threads = 30;//CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快，默认10
@@ -82,7 +80,7 @@ int main()
     EnableJsonResult(true);
 
     Init(const_cast<char*>(det_infer.c_str()), const_cast<char*>(cls_infer.c_str()), 
-        const_cast<char*>(rec_infer.c_str()), const_cast<char*>(keys.c_str()), parameter);
+        const_cast<char*>(rec_infer.c_str()), parameter);
     for (const auto image : images) 
     {
         for (int i = 0; i < 1; i++) {//模拟单张图片循环识别

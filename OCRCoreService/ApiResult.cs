@@ -128,10 +128,6 @@ namespace OCRCoreService
         /// </summary>
         public string rec_infer { get; set; }
         /// <summary>
-        /// ppocr_keys.txt文件名全路径
-        /// </summary>
-        public string keyFile { get; set; }
-        /// <summary>
         /// 表格识别模型inference model地址
         /// </summary>
         public string table_model_dir { get; set; }

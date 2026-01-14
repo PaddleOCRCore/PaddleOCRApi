@@ -56,7 +56,7 @@ namespace PaddleOCRSDK
         /// <returns></returns>
 
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool Init(string det_infer, string cls_infer, string rec_infer, string keyfile, OCRParameter ocrpara);
+        internal static extern bool Init(string det_infer, string cls_infer, string rec_infer, OCRParameter ocrpara);
         /// <summary>
         /// 初始化OCR文字识别
         /// </summary>
@@ -67,7 +67,7 @@ namespace PaddleOCRSDK
         /// <param name="parjson">json参数</param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool Initjson(string det_infer, string cls_infer, string rec_infer, string keyfile, string parjson);
+        internal static extern bool Initjson(string det_infer, string cls_infer, string rec_infer, string parjson);
         /// <summary>
         /// OCR识别
         /// </summary>
@@ -118,7 +118,7 @@ namespace PaddleOCRSDK
         /// <param name="tablepara"></param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool InitTable(string det_infer, string cls_infer, string rec_infer, string keyfile, string table_model_dir, string table_dict_path, TableParameter tablepara);
+        internal static extern bool InitTable(string det_infer, string cls_infer, string rec_infer, string table_model_dir, string table_dict_path, TableParameter tablepara);
         /// <summary>
         /// 初始化OCR表格识别
         /// </summary>
@@ -131,7 +131,7 @@ namespace PaddleOCRSDK
         /// <param name="parjson">json参数</param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool InitTablejson(string det_infer, string cls_infer, string rec_infer, string keyfile, string table_model_dir, string table_dict_path, string parjson);
+        internal static extern bool InitTablejson(string det_infer, string cls_infer, string rec_infer, string table_model_dir, string table_dict_path, string parjson);
         /// <summary>
         /// OCR表格识别
         /// </summary>

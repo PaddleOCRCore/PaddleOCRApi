@@ -244,6 +244,7 @@
             // numericUpDownThread
             // 
             numericUpDownThread.Location = new Point(333, 59);
+            numericUpDownThread.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericUpDownThread.Name = "numericUpDownThread";
             numericUpDownThread.Size = new Size(80, 23);
             numericUpDownThread.TabIndex = 13;

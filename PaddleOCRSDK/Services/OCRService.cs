@@ -80,7 +80,6 @@ namespace PaddleOCRSDK
             string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
             string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
             string cls_infer = "PP-LCNet_x1_0_textline_ori";
-            string keys = "ppocr_keys.txt";
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
             int gpu_id = 0;//GPUId
@@ -90,7 +89,6 @@ namespace PaddleOCRSDK
             para.det_infer = Path.Combine(modelsPath, det_infer);
             para.cls_infer = Path.Combine(modelsPath, cls_infer);
             para.rec_infer = Path.Combine(modelsPath, rec_infer);
-            para.keyFile = Path.Combine(modelsPath, keys);
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
@@ -133,7 +131,6 @@ namespace PaddleOCRSDK
             string det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
             string rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
             string cls_infer = "PP-LCNet_x1_0_textline_ori";//表格分类模块模型
-            string keys = "ppocr_keys.txt";
             string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
             string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
             bool use_gpu = false;//是否使用GPU
@@ -145,7 +142,6 @@ namespace PaddleOCRSDK
             para.det_infer = Path.Combine(modelsPath, det_infer);
             para.rec_infer = Path.Combine(modelsPath, rec_infer);
             para.cls_infer = Path.Combine(modelsPath, cls_infer);
-            para.keyFile = Path.Combine(modelsPath, keys);
             para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
             para.table_dict_path = Path.Combine(modelsPath, table_dict_path);
             TableParameter oCRParameter = new TableParameter();
@@ -192,19 +188,19 @@ namespace PaddleOCRSDK
                 bool ret;
                 if (para.paraType == EnumParaType.Class)
                 {
-                    ret = OCRSDK.Init(para.det_infer, para.cls_infer, para.rec_infer, para.keyFile, para.ocrpara);
+                    ret = OCRSDK.Init(para.det_infer, para.cls_infer, para.rec_infer, para.ocrpara);
                 }
                 else if (para.paraType == EnumParaType.Json)
                 {
-                    ret = OCRSDK.Initjson(para.det_infer, para.cls_infer, para.rec_infer, para.keyFile, para.json);
+                    ret = OCRSDK.Initjson(para.det_infer, para.cls_infer, para.rec_infer, para.json);
                 }
                 else if (para.paraType == EnumParaType.TableClass)
                 {
-                    ret = OCRSDK.InitTable(para.det_infer, para.cls_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.tablepara);
+                    ret = OCRSDK.InitTable(para.det_infer, para.cls_infer, para.rec_infer, para.table_model_dir, para.table_dict_path, para.tablepara);
                 }
                 else if (para.paraType == EnumParaType.TableJson)
                 {
-                    ret = OCRSDK.InitTablejson(para.det_infer, para.cls_infer, para.rec_infer, para.keyFile, para.table_model_dir, para.table_dict_path, para.json);
+                    ret = OCRSDK.InitTablejson(para.det_infer, para.cls_infer, para.rec_infer, para.table_model_dir, para.table_dict_path, para.json);
                 }
                 else
                 {
