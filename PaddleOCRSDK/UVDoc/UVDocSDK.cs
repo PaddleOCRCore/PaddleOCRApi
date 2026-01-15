@@ -18,11 +18,11 @@ using System.Runtime.InteropServices;
 namespace PaddleOCRSDK
 {
     /// <summary>
-    /// UVDoc文本图像矫正服务，调用PaddleDocVision动态链接库（跨平台：Windows .dll / Linux .so）
+    /// UVDoc文本图像矫正服务，调用PaddleOCR动态链接库（跨平台：Windows .dll / Linux .so）
     /// </summary>
     internal class UVDocSDK
     {
-        internal const string dllFileName = "PaddleDocVision";
+        internal const string dllFileName = "PaddleOCR";
         /// <summary>
         /// 获取错误提示
         /// </summary>
@@ -77,13 +77,13 @@ namespace PaddleOCRSDK
         /// <returns></returns>
 
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern void DetectBase64(string base64, string outputfilepath);
+        internal static extern void UVDocBase64(string base64, string outputfilepath);
         /// <summary>
         /// 释放文本图像矫正实例
         /// </summary>
         /// <returns></returns>
 
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern int FreeEngine();
+        internal static extern int FreeUVDocEngine();
     }
 }

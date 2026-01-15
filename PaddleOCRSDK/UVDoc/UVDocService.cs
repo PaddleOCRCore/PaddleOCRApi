@@ -153,7 +153,7 @@ namespace PaddleOCRSDK
 
             lock (_lock)
             {
-                UVDocSDK.DetectBase64(base64String, outputPath);
+                UVDocSDK.UVDocBase64(base64String, outputPath);
             }
         }
 
@@ -174,12 +174,22 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         public string GetLastError()
         {
-            IntPtr errorPtr = UVDocSDK.GetError();
-            if (errorPtr != IntPtr.Zero)
+            string lastErr = "";
+            try
             {
-                return Marshal.PtrToStringAnsi(errorPtr) ?? string.Empty;
+                var ret = UVDocSDK.GetError();
+                if (ret != IntPtr.Zero)
+                {
+                    lastErr = MarshalUtf8.PtrToStringUTF8(ret);
+                    //Marshal.FreeCoTaskMem(ret); 改为调用SDK的释放接口
+                    OCRSDK.FreeResultBuffer(ret);
+                }
             }
-            return string.Empty;
+            catch (Exception e)
+            {
+                lastErr = e.Message;
+            }
+            return lastErr;
         }
 
         /// <summary>
@@ -191,7 +201,7 @@ namespace PaddleOCRSDK
             {
                 if (_initialized)
                 {
-                    UVDocSDK.FreeEngine();
+                    UVDocSDK.FreeUVDocEngine();
                     _initialized = false;
                 }
             }
