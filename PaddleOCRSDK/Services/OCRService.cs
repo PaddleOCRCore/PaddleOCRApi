@@ -309,7 +309,8 @@ namespace PaddleOCRSDK
             {
                 if (ptrResult != IntPtr.Zero)
                 {
-                    Marshal.FreeCoTaskMem(ptrResult);
+                    //Marshal.FreeCoTaskMem(ptrResult);改为调用SDK的释放接口
+                    OCRSDK.FreeResultBuffer(ptrResult);
                 }
             }
             return result;
@@ -369,7 +370,8 @@ namespace PaddleOCRSDK
             {
                 if (ptrResult != IntPtr.Zero)
                 {
-                    Marshal.FreeCoTaskMem(ptrResult);
+                    //Marshal.FreeCoTaskMem(ptrResult);改为调用SDK的释放接口
+                    OCRSDK.FreeResultBuffer(ptrResult);
                 }
             }
             return result;
@@ -388,7 +390,8 @@ namespace PaddleOCRSDK
                 if (ret != IntPtr.Zero)
                 {
                     lastErr = MarshalUtf8.PtrToStringUTF8(ret);
-                    Marshal.FreeCoTaskMem(ret);
+                    //Marshal.FreeCoTaskMem(ret); 改为调用SDK的释放接口
+                    OCRSDK.FreeResultBuffer(ret);
                 }
             }
             catch (Exception e)

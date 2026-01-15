@@ -166,6 +166,11 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern bool DynamicInit(SyncParameter parameter);
-
+        /// <summary>
+        /// 调用OCR结果释放函数
+        /// </summary>
+        /// <param name="buffer"></param>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern void FreeResultBuffer(IntPtr buffer);
     }
 }

@@ -67,4 +67,5 @@ extern "C" {
     __declspec(dllimport) const char* __stdcall DetectTableByte(const unsigned char* imagebytedata, size_t size);
     __declspec(dllimport) const char* __stdcall DetectTableBase64(const char* imagebase64);
     __declspec(dllimport) int __stdcall FreeTableEngine();
+    __declspec(dllimport) void __stdcall FreeResultBuffer(void* buffer);
 }
