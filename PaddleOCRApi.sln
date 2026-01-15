@@ -6,6 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OCRCoreService", "OCRCoreService\OCRCoreService.csproj", "{6119DC15-BFEC-4B5C-8158-4F56D1D96F31}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{485D3CE3-B927-45EB-BFA3-540D7CE7D601}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		README_EN.md = README_EN.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp", "Demo\WinFormsApp\WinFormsApp.csproj", "{8B3E3FD3-4197-4B27-8BCF-5477E0005F9E}"
 EndProject
@@ -23,12 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{BB893EE8-018
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaddleVisionWinForm", "Demo\PaddleVisionWinForm\PaddleVisionWinForm.csproj", "{962E1AD2-77AB-9628-2D49-ED3BD041D895}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{9FA3D6BD-1EC1-3BA5-80CB-CE02773A58D5}"
-	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
-		README_EN.md = README_EN.md
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
