@@ -73,7 +73,6 @@ Please contact developer QQ: **2380243976** or join QQ group: **475159576** for 
 <summary><b>Q: How to perform document image correction?</b></summary>
 
 **A:** 
-- Use the PaddleDocVision.dll in PaddleOCRSDK
 - Can be called via WebAPI's UVDocServiceController interface
 - Refer to Demo/PaddleVisionWinForm example for integration
 - Document image correction can fix distortion, tilt, and perspective deformation

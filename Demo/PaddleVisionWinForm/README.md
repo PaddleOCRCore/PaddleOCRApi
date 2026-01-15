@@ -23,7 +23,7 @@ dotnet build -c Release
 
 将以下文件复制到输出目录 `bin\Release\net8.0-windows\`:
 
-- `PaddleDocVision.dll`
+- `PaddleOCR.dll`
 - `models\UVDoc_infer\` 目录（包含所有模型文件）
 
 ### 3. 运行程序
@@ -64,10 +64,6 @@ WinFormDemo/
 4. GPU 模式需要 CUDA 支持
 
 ## 故障排除
-
-### 提示 "PaddleDocVision.dll 未找到"
-
-将 DLL 文件复制到程序所在目录。
 
 ### 提示 "模型初始化失败"
 
