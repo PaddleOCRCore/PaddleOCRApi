@@ -56,13 +56,11 @@ extern "C" {
     __declspec(dllimport) bool __stdcall InitTable(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* table_model_dir,
-        const char* table_char_dict_path, TableParameter parameter);
+        const char* table_model_dir,TableParameter parameter);
     __declspec(dllimport) bool __stdcall InitTablejson(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* table_model_dir,
-        const char* table_char_dict_path, const char* parameterjson);
+        const char* table_model_dir, const char* parameterjson);
     __declspec(dllimport) const char* __stdcall DetectTable(const char* imageFile);
     __declspec(dllimport) const char* __stdcall DetectTableByte(const unsigned char* imagebytedata, size_t size);
     __declspec(dllimport) const char* __stdcall DetectTableBase64(const char* imagebase64);

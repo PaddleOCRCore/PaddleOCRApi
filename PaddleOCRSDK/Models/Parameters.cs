@@ -57,10 +57,6 @@ namespace PaddleOCRSDK
         /// </summary>
         public string table_model_dir { get; set; }
         /// <summary>
-        /// 表格识别字典文件
-        /// </summary>
-        public string table_dict_path { get; set; }
-        /// <summary>
         /// 参数类型
         /// </summary>
         public EnumParaType paraType { get; set; }
