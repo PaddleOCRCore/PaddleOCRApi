@@ -195,7 +195,7 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 释放资源
         /// </summary>
-        public void Dispose()
+        public void FreeUVDocEngine()
         {
             lock (_lock)
             {

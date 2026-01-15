@@ -20,7 +20,7 @@ namespace PaddleOCRSDK
     /// <summary>
     /// UVDoc文本图像矫正服务接口
     /// </summary>
-    public interface IUVDocService : IDisposable
+    public interface IUVDocService
     {
         /// <summary>
         /// 是否已初始化
@@ -93,5 +93,9 @@ namespace PaddleOCRSDK
         /// </summary>
         /// <returns></returns>
         string GetLastError();
+        /// <summary>
+        /// 释放实例
+        /// </summary>
+        void FreeUVDocEngine();
     }
 }
