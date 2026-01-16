@@ -70,6 +70,7 @@ namespace OCRCoreService.Services
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
             oCRParameter.visualize = false;
+            oCRParameter.return_word_box = _ocrConfig.return_word_box;
 
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.Class;

@@ -171,6 +171,10 @@ namespace OCRCoreService
         /// 是否用启日志
         /// </summary>
         public bool enableLog { get; set; } = false;
+        /// <summary>
+        /// 是否启用单字坐标
+        /// </summary>
+        public bool return_word_box { get; set; } = false;
     }
 
     /// <summary>

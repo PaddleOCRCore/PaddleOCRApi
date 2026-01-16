@@ -104,6 +104,7 @@ namespace WinFormsApp
                 OCREngine.use_gpu = use_gpu;
                 OCREngine.gpu_id = gpu_id;
                 OCREngine.cpu_threads = cpu_threads;
+                OCREngine.return_word_box= chkReturnWordBox.Checked;
                 if (model_type == 0)
                 {
                     OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";//OCR V5检测模型

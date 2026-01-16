@@ -203,6 +203,12 @@ namespace PaddleOCRSDK
         /// </summary>
         public int rec_img_w { get; set; } = 320;
         #endregion
+        /// <summary>
+        /// 是否返回单字坐标，默认false，开启后json中会增加WordList字段
+        /// </summary>
+
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool return_word_box { get; set; } = false;
     }
     /// <summary>
     /// OCR表格识别模型参数

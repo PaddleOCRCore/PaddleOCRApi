@@ -39,6 +39,7 @@ namespace WinFormsApp.Services
         public static int gpu_mem = 4000;//GPU显存上限
         public static bool use_cls = true;//是否执行文字方向分类
         public static bool use_angle_cls = true;//是否使用方向分类器
+        public static bool return_word_box = false;//是否返回单字坐标
 
         /// <summary>
         /// 初始化OCR引擎
@@ -78,6 +79,7 @@ namespace WinFormsApp.Services
             oCRParameter.det_db_box_thresh = 0.3f;//DB后处理过滤box的阈值，如果检测存在漏框情况，可酌情减小
             oCRParameter.det_db_unclip_ratio = 1.6f;//表示文本框的紧致程度，越小则文本框更靠近文本
             oCRParameter.visualize = visualize;
+            oCRParameter.return_word_box = return_word_box;
 
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.Class;

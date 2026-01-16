@@ -54,6 +54,7 @@
             lblUVDocStatus = new Label();
             tabPageOCR = new TabPage();
             groupBox1 = new GroupBox();
+            chkReturnWordBox = new CheckBox();
             buttonFreeEngine = new Button();
             buttonPostFile = new Button();
             textBoxApiAddress = new TextBox();
@@ -366,6 +367,7 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(chkReturnWordBox);
             groupBox1.Controls.Add(buttonFreeEngine);
             groupBox1.Controls.Add(buttonPostFile);
             groupBox1.Controls.Add(textBoxApiAddress);
@@ -396,6 +398,16 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "OCR文本识别功能选项";
             // 
+            // chkReturnWordBox
+            // 
+            chkReturnWordBox.AutoSize = true;
+            chkReturnWordBox.Location = new Point(266, 91);
+            chkReturnWordBox.Name = "chkReturnWordBox";
+            chkReturnWordBox.Size = new Size(147, 21);
+            chkReturnWordBox.TabIndex = 25;
+            chkReturnWordBox.Text = "是否输出单字坐标json";
+            chkReturnWordBox.UseVisualStyleBackColor = true;
+            // 
             // buttonFreeEngine
             // 
             buttonFreeEngine.Enabled = false;
@@ -409,9 +421,9 @@
             // 
             // buttonPostFile
             // 
-            buttonPostFile.Location = new Point(874, 87);
+            buttonPostFile.Location = new Point(919, 87);
             buttonPostFile.Name = "buttonPostFile";
-            buttonPostFile.Size = new Size(165, 28);
+            buttonPostFile.Size = new Size(120, 28);
             buttonPostFile.TabIndex = 22;
             buttonPostFile.Text = "API接口测试";
             buttonPostFile.UseVisualStyleBackColor = true;
@@ -421,14 +433,14 @@
             // 
             textBoxApiAddress.Location = new Point(545, 89);
             textBoxApiAddress.Name = "textBoxApiAddress";
-            textBoxApiAddress.Size = new Size(323, 23);
+            textBoxApiAddress.Size = new Size(367, 23);
             textBoxApiAddress.TabIndex = 21;
             textBoxApiAddress.Text = "http://localhost:5000/OCRService/GetOCRFile";
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(419, 92);
+            label8.Location = new Point(425, 92);
             label8.Name = "label8";
             label8.Size = new Size(114, 17);
             label8.TabIndex = 20;
@@ -451,7 +463,7 @@
             comboBoxModel.Items.AddRange(new object[] { "PP-OCRv5_mobile", "PP-OCRv5_server", "PP-OCRv4_mobile" });
             comboBoxModel.Location = new Point(92, 89);
             comboBoxModel.Name = "comboBoxModel";
-            comboBoxModel.Size = new Size(321, 25);
+            comboBoxModel.Size = new Size(129, 25);
             comboBoxModel.TabIndex = 18;
             comboBoxModel.SelectedIndexChanged += comboBoxModel_SelectedIndexChanged;
             // 
@@ -757,5 +769,6 @@
         private UserControl.PictureView pictureBoxImg;
         private TabControl tabControlMain;
         private Button btnUVDocFreeEngine;
+        private CheckBox chkReturnWordBox;
     }
 }
