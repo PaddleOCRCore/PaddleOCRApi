@@ -146,7 +146,7 @@ OCRCoreService/
 ### 2. DLL文件部署
 
 确保以下DLL文件在应用程序目录：
-- `PaddleDocVision.dll` (或 Linux 下的 `libPaddleDocVision.so`)
+- `PaddleOCR.dll` (或 Linux 下的 `PaddleOCR.so`)
 - `paddle_inference.dll`
 - 相关依赖 DLL（MKL库、vcomp140.dll等）
 
@@ -180,7 +180,7 @@ OCRCoreService/
 3. **DLL找不到**
    - 错误: DllNotFoundException
    - 解决: 
-     - 确认 `PaddleDocVision.dll` 在应用程序目录
+     - 确认 `PaddleOCR.dll` 在应用程序目录
      - 确认所有依赖 DLL 都已部署
      - Windows: 检查 Visual C++ 运行库是否已安装
 

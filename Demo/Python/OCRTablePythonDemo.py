@@ -27,9 +27,7 @@ initTable_func(
     ctypes.c_char_p((root_dir + "\\models\\PP-OCRv5_mobile_det_infer").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\PP-LCNet_x1_0_textline_ori").encode('utf-8')),
     ctypes.c_char_p((root_dir + "\\models\\PP-OCRv5_mobile_rec_infer").encode('utf-8')),
-    ctypes.c_char_p((root_dir + "\\models\\ppocr_keys.txt").encode('utf-8')),
-    ctypes.c_char_p((root_dir + "\\models\\ch_ppstructure_mobile_v2.0_SLANet_infer").encode('utf-8')),
-    ctypes.c_char_p((root_dir + "\\models\\table_structure_dict_ch.txt").encode('utf-8')),
+    ctypes.c_char_p((root_dir + "\\models\\PP-SLANet_plus_infer").encode('utf-8')),
     ctypes.c_char_p(b'{"use_gpu": false,"cpu_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 0,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":true,"det":true,"use_angle_cls":true}')
 )
 

@@ -51,7 +51,6 @@ namespace OCRCoreService.Services
             para.det_infer = $"models/{_ocrConfig.det_infer}";
             para.cls_infer = $"models/{_ocrConfig.cls_infer}";
             para.rec_infer = $"models/{_ocrConfig.rec_infer}";
-            para.keyFile = $"models/{_ocrConfig.keyFile}";
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = _ocrConfig.use_gpu;
             oCRParameter.use_tensorrt = false;
@@ -71,6 +70,7 @@ namespace OCRCoreService.Services
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
             oCRParameter.visualize = false;
+            oCRParameter.return_word_box = _ocrConfig.return_word_box;
 
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.Class;
@@ -111,9 +111,7 @@ namespace OCRCoreService.Services
             para.det_infer = $"models/{_ocrConfig.det_infer}";
             para.cls_infer = $"models/{_ocrConfig.cls_infer}";
             para.rec_infer = $"models/{_ocrConfig.rec_infer}";
-            para.keyFile = $"models/{_ocrConfig.keyFile}";
             para.table_model_dir = $"models/{_ocrConfig.table_model_dir}";
-            para.table_dict_path = $"models/{_ocrConfig.table_dict_path}";
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = _ocrConfig.use_gpu;
             oCRParameter.use_tensorrt = false;

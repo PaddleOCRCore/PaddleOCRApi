@@ -96,7 +96,7 @@ PaddleOCRWebApi/
 使用paddle_inference3.2+版本推理库：
 
 ```xml
-<PackageReference Include="PaddleOCRRuntime_x64" Version="3.3.1" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.0" />
 ```
 
 若使用paddle_inference2.6.2版本推理库：
@@ -223,7 +223,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
 | CUDNN | [https://developer.nvidia.cn/rdp/cudnn-archive](https://developer.nvidia.cn/rdp/cudnn-archive) |
 | TensorRT | [https://developer.nvidia.com/nvidia-tensorrt-download](https://developer.nvidia.com/nvidia-tensorrt-download) |
 | PP-OCRv4/v5模型 | [https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html) |
-
+| 其它模型下载 | [https://gitee.com/paddlepaddle/PaddleOCR/blob/main/docs/version3.x/model_list.md) |
 ## 🔗 WebAPI接口
 
 详细的WebAPI接口文档请参考：[WebApi接口文档](./OCRCoreService/README.md)

@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using WinFormsApp.Services;
 using WinFormsApp.Utils;
+using System.Threading.Tasks;
 
 namespace WinFormsApp
 {
@@ -45,8 +46,14 @@ namespace WinFormsApp
         private readonly float zoomStep = 0.1f; // 每次滚轮缩放的步长
         private readonly float minZoom = 0.1f;  // 最小缩放比例
         private readonly float maxZoom = 5.0f;  // 最大缩放比例
-        private Image originalImage;        // 原始图像
+        private Image? originalImage;        // 原始图像
         private bool isInitSuccess = false; // OCR是否初始化成功
+        
+        // 图像矫正相关字段
+        private IUVDocService? uvdocService;
+        private string? currentImagePath;
+        private string? outputImagePath;
+        private System.Diagnostics.Stopwatch? processStopwatch;
         public MainForm()
         {
             InitializeComponent();
@@ -68,12 +75,24 @@ namespace WinFormsApp
                     Directory.CreateDirectory(RecFilepath);
                 }
                 buttonFreeEngine.Enabled = false;
+                
+                // 初始化图像矫正功能参数
+                InitializeUVDocParameters();
             }
             catch (Exception ex)
             {
                 message.Append(ex.Message);
                 textBoxResult.Text = message.ToString();
             }
+        }
+        
+        private void InitializeUVDocParameters()
+        {
+            chkUVDocUseGpu.Checked = false;
+            numUVDocCpuThreads.Value = Environment.ProcessorCount;
+            numUVDocGpuId.Value = 0;
+            numUVDocGpuMem.Value = 2000;
+            chkUVDocUseTensorRT.Checked = false;
         }
 
         private void buttonInit_Click(object sender, EventArgs e)
@@ -85,6 +104,7 @@ namespace WinFormsApp
                 OCREngine.use_gpu = use_gpu;
                 OCREngine.gpu_id = gpu_id;
                 OCREngine.cpu_threads = cpu_threads;
+                OCREngine.return_word_box= chkReturnWordBox.Checked;
                 if (model_type == 0)
                 {
                     OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";//OCR V5检测模型
@@ -473,13 +493,294 @@ namespace WinFormsApp
             model_type = comboBoxModel.SelectedIndex;
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             if (isInitSuccess)
             {
                 OCREngine.FreeEngine();
             }
+            // 释放图像矫正引擎
+            try
+            {
+                if (!string.IsNullOrEmpty(outputImagePath) && File.Exists(outputImagePath))
+                {
+                    File.Delete(outputImagePath);
+                }
+            }
+            catch { }
+            uvdocService?.FreeUVDocEngine();
         }
+
+        #region 图像矫正功能事件处理
+
+        private void btnUVDocInitialize_Click(object sender, EventArgs e)
+        {
+            InitializeUVDocEngine();
+        }
+
+        private void InitializeUVDocEngine()
+        {
+            try
+            {                
+                // 创建新的服务实例
+                uvdocService = new UVDocService();
+                var parameter = new UVDocParameter
+                {
+                    enable_mkldnn = true,
+                    cpu_threads = (int)numUVDocCpuThreads.Value,
+                    use_gpu = chkUVDocUseGpu.Checked,
+                    gpu_id = (int)numUVDocGpuId.Value,
+                    gpu_mem = (int)numUVDocGpuMem.Value,
+                    use_tensorrt = chkUVDocUseTensorRT.Checked
+                };
+                // 模型路径（相对于程序目录）
+                string modelPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "models", "UVDoc_infer");
+
+                // 如果模型不存在，尝试使用上级目录的模型
+                if (!Directory.Exists(modelPath))
+                {
+                    modelPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "models", "UVDoc_infer");
+                    modelPath = Path.GetFullPath(modelPath);
+                }
+
+                UpdateUVDocStatus($"正在初始化模型: {modelPath}");
+
+                // 禁用参数控件
+                SetUVDocParameterControlsEnabled(false);
+                btnUVDocInitialize.Enabled = false;
+
+                if (uvdocService.Initialize(modelPath, parameter))
+                {
+                    UpdateUVDocStatus($"模型初始化成功！[GPU: {(parameter.use_gpu ? "是" : "否")}, CPU线程: {parameter.cpu_threads}]");
+                    btnUVDocUpload.Enabled = true; // 允许上传图片
+                    btnUVDocProcess.Enabled = false; // 等待上传图片
+                    btnUVDocFreeEngine.Enabled = true; // 允许释放引擎
+                }
+                else
+                {
+                    string error = uvdocService.GetLastError();
+                    UpdateUVDocStatus($"模型初始化失败: {error}");
+                    MessageBox.Show($"模型初始化失败！\n错误信息: {error}\n\n请确保 models/UVDoc_infer 目录存在且包含正确的模型文件。",
+                        "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    SetUVDocParameterControlsEnabled(true);
+                    btnUVDocInitialize.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateUVDocStatus($"初始化异常: {ex.Message}");
+                MessageBox.Show($"初始化异常: {ex.Message}\n\n请确保 PaddleOCR.dll 及其依赖库在程序目录中。",
+                    "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetUVDocParameterControlsEnabled(true);
+                btnUVDocInitialize.Enabled = true;
+            }
+        }
+
+        private void SetUVDocParameterControlsEnabled(bool enabled)
+        {
+            chkUVDocUseGpu.Enabled = enabled;
+            numUVDocCpuThreads.Enabled = enabled;
+            numUVDocGpuId.Enabled = enabled && chkUVDocUseGpu.Checked;
+            numUVDocGpuMem.Enabled = enabled && chkUVDocUseGpu.Checked;
+            chkUVDocUseTensorRT.Enabled = enabled && chkUVDocUseGpu.Checked;
+        }
+
+        private void chkUVDocUseGpu_CheckedChanged(object sender, EventArgs e)
+        {
+            // GPU相关选项只在启用GPU时可用
+            numUVDocGpuId.Enabled = chkUVDocUseGpu.Checked && chkUVDocUseGpu.Enabled;
+            numUVDocGpuMem.Enabled = chkUVDocUseGpu.Checked && chkUVDocUseGpu.Enabled;
+            chkUVDocUseTensorRT.Enabled = chkUVDocUseGpu.Checked && chkUVDocUseGpu.Enabled;
+        }
+
+        private void btnUVDocUpload_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "图像文件|*.jpg;*.jpeg;*.png;*.bmp;*.tiff|所有文件|*.*";
+                openFileDialog.Title = "选择要矫正的图像";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        currentImagePath = openFileDialog.FileName;
+                        
+                        // 显示原始图像
+                        using (var fs = new FileStream(currentImagePath, FileMode.Open, FileAccess.Read))
+                        {
+                            pictureBoxOriginal.Image?.Dispose();
+                            pictureBoxOriginal.Image = Image.FromStream(fs);
+                        }
+
+                        // 清空输出图像
+                        pictureBoxOutput.Image?.Dispose();
+                        pictureBoxOutput.Image = null;
+
+                        btnUVDocProcess.Enabled = true;
+                        btnUVDocSave.Enabled = false;
+                        UpdateUVDocStatus($"已加载图像: {Path.GetFileName(currentImagePath)}");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"加载图像失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        UpdateUVDocStatus($"加载图像失败: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private async void btnUVDocProcess_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(currentImagePath) || uvdocService == null)
+            {
+                MessageBox.Show("请先上传图像并确保引擎已初始化", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                btnUVDocProcess.Enabled = false;
+                btnUVDocUpload.Enabled = false;
+                btnUVDocSave.Enabled = false;
+                UpdateUVDocStatus("正在处理图像，请稍候...");
+
+                // 生成输出文件路径
+                string tempDir = Path.Combine(Path.GetTempPath(), "PaddleDocVision");
+                Directory.CreateDirectory(tempDir);
+                outputImagePath = Path.Combine(tempDir, $"output_{DateTime.Now:yyyyMMddHHmmss}.jpg");
+
+                // 开始计时
+                processStopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+                // 使用异步方法处理图像
+                await uvdocService.UVDocImageFileAsync(currentImagePath, outputImagePath);
+
+                // 停止计时
+                processStopwatch.Stop();
+                double elapsedMilliseconds = processStopwatch.Elapsed.TotalMilliseconds;
+
+                // 显示处理后的图像
+                if (File.Exists(outputImagePath))
+                {
+                    using (var fs = new FileStream(outputImagePath, FileMode.Open, FileAccess.Read))
+                    {
+                        pictureBoxOutput.Image?.Dispose();
+                        pictureBoxOutput.Image = Image.FromStream(fs);
+                    }
+
+                    UpdateUVDocStatus($"图像处理完成！耗时: {elapsedMilliseconds:F0} ms");
+                    btnUVDocSave.Enabled = true;
+                }
+                else
+                {
+                    UpdateUVDocStatus($"处理失败：输出文件未生成（耗时: {elapsedMilliseconds:F0} ms）");
+                    MessageBox.Show("处理失败：输出文件未生成", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = uvdocService?.GetLastError() ?? "";
+                string message = $"处理图像时出错: {ex.Message}";
+                if (!string.IsNullOrEmpty(error))
+                {
+                    message += $"\nDLL错误信息: {error}";
+                }
+                
+                MessageBox.Show(message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                UpdateUVDocStatus($"处理失败: {ex.Message}");
+            }
+            finally
+            {
+                btnUVDocProcess.Enabled = true;
+                btnUVDocUpload.Enabled = true;
+            }
+        }
+
+        private void btnUVDocSave_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(outputImagePath) || !File.Exists(outputImagePath))
+            {
+                MessageBox.Show("没有可保存的图像", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "JPEG图像|*.jpg|PNG图像|*.png|所有文件|*.*";
+                saveFileDialog.Title = "保存矫正后的图像";
+                saveFileDialog.FileName = $"corrected_{DateTime.Now:yyyyMMddHHmmss}.jpg";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        File.Copy(outputImagePath, saveFileDialog.FileName, true);
+                        UpdateUVDocStatus($"图像已保存: {saveFileDialog.FileName}");
+                        MessageBox.Show("图像保存成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"保存图像失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        UpdateUVDocStatus($"保存失败: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private void UpdateUVDocStatus(string message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(UpdateUVDocStatus), message);
+                return;
+            }
+
+            lblUVDocStatus.Text = $"状态: {message}";
+        }
+
+        private void btnUVDocFreeEngine_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // 释放引擎
+                uvdocService?.FreeUVDocEngine();
+                uvdocService = null;
+                
+                // 清空图像
+                pictureBoxOriginal.Image?.Dispose();
+                pictureBoxOriginal.Image = null;
+                pictureBoxOutput.Image?.Dispose();
+                pictureBoxOutput.Image = null;
+                
+                // 清理临时文件
+                if (!string.IsNullOrEmpty(outputImagePath) && File.Exists(outputImagePath))
+                {
+                    File.Delete(outputImagePath);
+                }
+                outputImagePath = null;
+                currentImagePath = null;
+                
+                // 恢复按钮状态
+                btnUVDocInitialize.Enabled = true;
+                btnUVDocFreeEngine.Enabled = false;
+                btnUVDocUpload.Enabled = false;
+                btnUVDocProcess.Enabled = false;
+                btnUVDocSave.Enabled = false;
+                
+                // 恢复参数控件
+                SetUVDocParameterControlsEnabled(true);
+                
+                UpdateUVDocStatus("引擎已释放！");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"释放引擎失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                UpdateUVDocStatus($"释放失败: {ex.Message}");
+            }
+        }
+
+        #endregion
 
         private void buttonFreeEngine_Click(object sender, EventArgs e)
         {

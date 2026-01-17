@@ -128,10 +128,6 @@ namespace OCRCoreService
         /// </summary>
         public string rec_infer { get; set; }
         /// <summary>
-        /// ppocr_keys.txt文件名全路径
-        /// </summary>
-        public string keyFile { get; set; }
-        /// <summary>
         /// 表格识别模型inference model地址
         /// </summary>
         public string table_model_dir { get; set; }
@@ -175,6 +171,10 @@ namespace OCRCoreService
         /// 是否用启日志
         /// </summary>
         public bool enableLog { get; set; } = false;
+        /// <summary>
+        /// 是否启用单字坐标
+        /// </summary>
+        public bool return_word_box { get; set; } = false;
     }
 
     /// <summary>

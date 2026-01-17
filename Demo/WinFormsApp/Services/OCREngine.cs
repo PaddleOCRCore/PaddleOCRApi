@@ -28,9 +28,7 @@ namespace WinFormsApp.Services
         public static string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
         public static string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
         public static string cls_infer = "PP-LCNet_x1_0_textline_ori";
-        private static string keys = "ppocr_keys.txt";
-        private static string table_model_dir = "ch_ppstructure_mobile_v2.0_SLANet_infer";//表格识别模型inference
-        private static string table_dict_path = "table_structure_dict_ch.txt";//表格识别字典文件
+        private static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
         private static bool visualize = true;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。
@@ -41,6 +39,7 @@ namespace WinFormsApp.Services
         public static int gpu_mem = 4000;//GPU显存上限
         public static bool use_cls = true;//是否执行文字方向分类
         public static bool use_angle_cls = true;//是否使用方向分类器
+        public static bool return_word_box = false;//是否返回单字坐标
 
         /// <summary>
         /// 初始化OCR引擎
@@ -59,7 +58,6 @@ namespace WinFormsApp.Services
             para.det_infer = $"models/{det_infer}";
             para.cls_infer = $"models/{cls_infer}";
             para.rec_infer = $"models/{ rec_infer}";
-            para.keyFile = $"models/{keys}";
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
@@ -81,6 +79,7 @@ namespace WinFormsApp.Services
             oCRParameter.det_db_box_thresh = 0.3f;//DB后处理过滤box的阈值，如果检测存在漏框情况，可酌情减小
             oCRParameter.det_db_unclip_ratio = 1.6f;//表示文本框的紧致程度，越小则文本框更靠近文本
             oCRParameter.visualize = visualize;
+            oCRParameter.return_word_box = return_word_box;
 
             para.ocrpara = oCRParameter;
             para.paraType = EnumParaType.Class;
@@ -118,9 +117,7 @@ namespace WinFormsApp.Services
             para.det_infer = $"models/{det_infer}";
             para.cls_infer = $"models/{cls_infer}";
             para.rec_infer = $"models/{rec_infer}";
-            para.keyFile = $"models/{keys}";
             para.table_model_dir = $"models/{table_model_dir}";
-            para.table_dict_path = $"models/{table_dict_path}";
 
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = use_gpu;

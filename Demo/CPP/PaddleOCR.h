@@ -40,12 +40,11 @@ extern "C" {
     __declspec(dllimport) void __stdcall EnableJsonResult(bool enable);
     __declspec(dllimport) bool __stdcall Init(const char* det_infer,
         const char* cls_infer,
-        const char* rec_infer, const char* keys,
+        const char* rec_infer,
         const OCRParameter parameter);
     __declspec(dllimport) bool __stdcall Initjson(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* keys,
         const char* parameterjson);
     __declspec(dllimport) bool __stdcall DynamicInit(SyncParameter parameter);
     __declspec(dllimport) const char* __stdcall Detect(const char* imageFile);
@@ -57,17 +56,67 @@ extern "C" {
     __declspec(dllimport) bool __stdcall InitTable(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* keys,
-        const char* table_model_dir,
-        const char* table_char_dict_path, TableParameter parameter);
+        const char* table_model_dir,TableParameter parameter);
     __declspec(dllimport) bool __stdcall InitTablejson(const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
-        const char* keys,
-        const char* table_model_dir,
-        const char* table_char_dict_path, const char* parameterjson);
+        const char* table_model_dir, const char* parameterjson);
     __declspec(dllimport) const char* __stdcall DetectTable(const char* imageFile);
     __declspec(dllimport) const char* __stdcall DetectTableByte(const unsigned char* imagebytedata, size_t size);
     __declspec(dllimport) const char* __stdcall DetectTableBase64(const char* imagebase64);
     __declspec(dllimport) int __stdcall FreeTableEngine();
+    __declspec(dllimport) void __stdcall FreeResultBuffer(void* buffer);
+
+
+    // ==================== 文档图像矫正API ====================
+    /// <summary>
+    /// 初始化文本图像矫正模块-传入参数结构体
+    /// </summary>
+    /// <param name="uvdoc_infer">UVDoc模型路径</param>
+    /// <param name="uvdocpara">参数结构体</param>
+    /// <returns>成功返回true，失败返回false</returns>
+    __declspec(dllimport) bool InitUVDoc(const char* uvdoc_infer, UVDocParameter uvdocpara);
+
+    /// <summary>
+    /// 初始化文本图像矫正模块-传入JSON参数
+    /// </summary>
+    /// <param name="uvdoc_infer">UVDoc模型路径</param>
+    /// <param name="parjson">json参数字符串</param>
+    /// <returns>成功返回true，失败返回false</returns>
+    __declspec(dllimport) bool InitUVDocjson(const char* uvdoc_infer, const char* parjson);
+
+    /// <summary>
+    /// 文本图像矫正-传入图像文件路径
+    /// </summary>
+    /// <param name="filename">输入文件路径</param>
+    /// <param name="outputfilepath">输出文件路径</param>
+    __declspec(dllimport) void UVDocImageFile(const char* filename, const char* outputfilepath);
+
+    /// <summary>
+    /// 文本图像矫正-传入OpenCV Mat指针
+    /// </summary>
+    /// <param name="cvmat">OpenCV Mat指针</param>
+    /// <param name="outputfilepath">输出文件路径(必须)</param>
+    __declspec(dllimport) void UVDocMat(void* cvmat, const char* outputfilepath);
+
+    /// <summary>
+    /// 文本图像矫正-传入图片字节数组
+    /// </summary>
+    /// <param name="imagebyte">图片字节数组</param>
+    /// <param name="size">字节数组大小</param>
+    /// <param name="outputfilepath">输出文件路径(必须)</param>
+    __declspec(dllimport) void UVDocByte(const unsigned char* imagebyte, long long size, const char* outputfilepath);
+
+    /// <summary>
+    /// 文本图像矫正-传入Base64编码的图片
+    /// </summary>
+    /// <param name="base64">Base64编码字符串</param>
+    /// <param name="outputfilepath">输出文件路径(必须)</param>
+    __declspec(dllimport) void UVDocBase64(const char* base64, const char* outputfilepath);
+
+    /// <summary>
+    /// 释放文本图像矫正实例
+    /// </summary>
+    /// <returns>成功返回0，失败返回-1</returns>
+    __declspec(dllimport) int FreeUVDocEngine();
 }

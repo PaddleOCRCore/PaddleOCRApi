@@ -56,7 +56,6 @@ func main() {
 		stringToPointer(rootDir+"\\models\\PP-OCRv5_mobile_det_infer"),
 		stringToPointer(rootDir+"\\models\\PP-LCNet_x1_0_textline_ori"),
 		stringToPointer(rootDir+"\\models\\PP-OCRv5_mobile_rec_infer"),
-		stringToPointer(rootDir+"\\models\\ppocr_keys.txt"),
 		stringToPointer("{\"use_gpu\": false,\"cpu_math_library_num_threads\": 30,\"gpu_id\": 0,\"gpu_mem\": 4000,\"cpu_mem\": 4000,\"enable_mkldnn\": true,\"rec_img_h\": 48,\"rec_img_w\": 320,\"cls\":false,\"det\":true,\"use_angle_cls\":false,\"visualize\":true}"),
 	)
 

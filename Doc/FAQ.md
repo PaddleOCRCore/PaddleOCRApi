@@ -73,7 +73,6 @@
 <summary><b>Q: 如何进行文本图像矫正？</b></summary>
 
 **A:** 
-- 进群联系作者获取C++动态链接库：PaddleDocVision.dll
 - 可通过WebAPI的UVDocServiceController接口调用
 - 参考Demo/PaddleVisionWinForm示例进行集成
 - 文本图像矫正可纠正文档扭曲、倾斜、透视变形等问题

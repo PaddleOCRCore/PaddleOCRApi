@@ -82,7 +82,7 @@ namespace PaddleVisionWinForm
             catch (Exception ex)
             {
                 UpdateStatus($"初始化异常: {ex.Message}");
-                MessageBox.Show($"初始化异常: {ex.Message}\n\n请确保 PaddleDocVision.dll 及其依赖库在程序目录中。",
+                MessageBox.Show($"初始化异常: {ex.Message}\n\n请确保 PaddleOCR.dll 及其依赖库在程序目录中。",
                     "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetParameterControlsEnabled(true);
                 btnInitialize.Enabled = true;

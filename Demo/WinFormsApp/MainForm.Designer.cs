@@ -30,11 +30,35 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            buttonInit = new Button();
-            buttonRec = new Button();
+            imageList1 = new ImageList(components);
+            tabPageImageCorrection = new TabPage();
+            splitContainerUVDoc = new SplitContainer();
+            groupBoxUVDocOriginal = new GroupBox();
+            pictureBoxOriginal = new PictureBox();
+            groupBoxUVDocOutput = new GroupBox();
+            pictureBoxOutput = new PictureBox();
+            groupBoxUVDocControl = new GroupBox();
+            chkUVDocUseTensorRT = new CheckBox();
+            btnUVDocUpload = new Button();
+            btnUVDocInitialize = new Button();
+            btnUVDocProcess = new Button();
+            btnUVDocFreeEngine = new Button();
+            btnUVDocSave = new Button();
+            chkUVDocUseGpu = new CheckBox();
+            lblUVDocCpuThreads = new Label();
+            numUVDocCpuThreads = new NumericUpDown();
+            lblUVDocGpuId = new Label();
+            numUVDocGpuId = new NumericUpDown();
+            lblUVDocGpuMem = new Label();
+            numUVDocGpuMem = new NumericUpDown();
+            lblUVDocStatus = new Label();
+            tabPageOCR = new TabPage();
+            splitContainerOCR = new SplitContainer();
+            groupBoxOCRImage = new GroupBox();
+            pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             textBoxResult = new TextBox();
-            buttonGetBase64 = new Button();
             groupBox1 = new GroupBox();
+            chkReturnWordBox = new CheckBox();
             buttonFreeEngine = new Button();
             buttonPostFile = new Button();
             textBoxApiAddress = new TextBox();
@@ -55,62 +79,347 @@
             label2 = new Label();
             label1 = new Label();
             comboBoxuse_gpu = new ComboBox();
-            groupBoximg = new GroupBox();
-            pictureBoxImg = new WinFormsApp.UserControl.PictureView();
-            imageList1 = new ImageList(components);
+            buttonGetBase64 = new Button();
+            buttonInit = new Button();
+            buttonRec = new Button();
+            tabControlMain = new TabControl();
+            tabPageImageCorrection.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
+            splitContainerUVDoc.Panel1.SuspendLayout();
+            splitContainerUVDoc.Panel2.SuspendLayout();
+            splitContainerUVDoc.SuspendLayout();
+            groupBoxUVDocOriginal.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxOriginal).BeginInit();
+            groupBoxUVDocOutput.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxOutput).BeginInit();
+            groupBoxUVDocControl.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numUVDocCpuThreads).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numUVDocGpuId).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numUVDocGpuMem).BeginInit();
+            tabPageOCR.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerOCR).BeginInit();
+            splitContainerOCR.Panel1.SuspendLayout();
+            splitContainerOCR.Panel2.SuspendLayout();
+            splitContainerOCR.SuspendLayout();
+            groupBoxOCRImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).BeginInit();
-            groupBoximg.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
+            tabControlMain.SuspendLayout();
             SuspendLayout();
             // 
-            // buttonInit
+            // imageList1
             // 
-            buttonInit.Location = new Point(606, 23);
-            buttonInit.Name = "buttonInit";
-            buttonInit.Size = new Size(87, 60);
-            buttonInit.TabIndex = 0;
-            buttonInit.Text = "初始化OCR";
-            buttonInit.UseVisualStyleBackColor = true;
-            buttonInit.Click += buttonInit_Click;
+            imageList1.ColorDepth = ColorDepth.Depth32Bit;
+            imageList1.ImageSize = new Size(16, 16);
+            imageList1.TransparentColor = Color.Transparent;
             // 
-            // buttonRec
+            // tabPageImageCorrection
             // 
-            buttonRec.Enabled = false;
-            buttonRec.Location = new Point(699, 23);
-            buttonRec.Name = "buttonRec";
-            buttonRec.Size = new Size(120, 28);
-            buttonRec.TabIndex = 1;
-            buttonRec.Text = "OCR文本识别";
-            buttonRec.UseVisualStyleBackColor = true;
-            buttonRec.Click += buttonRec_Click;
+            tabPageImageCorrection.Controls.Add(splitContainerUVDoc);
+            tabPageImageCorrection.Controls.Add(groupBoxUVDocControl);
+            tabPageImageCorrection.Controls.Add(lblUVDocStatus);
+            tabPageImageCorrection.Location = new Point(4, 26);
+            tabPageImageCorrection.Name = "tabPageImageCorrection";
+            tabPageImageCorrection.Padding = new Padding(3);
+            tabPageImageCorrection.Size = new Size(1084, 662);
+            tabPageImageCorrection.TabIndex = 1;
+            tabPageImageCorrection.Text = "图像矫正";
+            tabPageImageCorrection.UseVisualStyleBackColor = true;
+            // 
+            // splitContainerUVDoc
+            // 
+            splitContainerUVDoc.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainerUVDoc.Location = new Point(6, 69);
+            splitContainerUVDoc.Name = "splitContainerUVDoc";
+            // 
+            // splitContainerUVDoc.Panel1
+            // 
+            splitContainerUVDoc.Panel1.Controls.Add(groupBoxUVDocOriginal);
+            // 
+            // splitContainerUVDoc.Panel2
+            // 
+            splitContainerUVDoc.Panel2.Controls.Add(groupBoxUVDocOutput);
+            splitContainerUVDoc.Size = new Size(1072, 551);
+            splitContainerUVDoc.SplitterDistance = 530;
+            splitContainerUVDoc.TabIndex = 2;
+            // 
+            // groupBoxUVDocOriginal
+            // 
+            groupBoxUVDocOriginal.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxUVDocOriginal.Controls.Add(pictureBoxOriginal);
+            groupBoxUVDocOriginal.Location = new Point(0, 3);
+            groupBoxUVDocOriginal.Name = "groupBoxUVDocOriginal";
+            groupBoxUVDocOriginal.Size = new Size(530, 548);
+            groupBoxUVDocOriginal.TabIndex = 1;
+            groupBoxUVDocOriginal.TabStop = false;
+            groupBoxUVDocOriginal.Text = "原始图像";
+            // 
+            // pictureBoxOriginal
+            // 
+            pictureBoxOriginal.BackColor = Color.FromArgb(240, 240, 240);
+            pictureBoxOriginal.BorderStyle = BorderStyle.FixedSingle;
+            pictureBoxOriginal.Dock = DockStyle.Fill;
+            pictureBoxOriginal.Location = new Point(3, 19);
+            pictureBoxOriginal.Name = "pictureBoxOriginal";
+            pictureBoxOriginal.Size = new Size(524, 526);
+            pictureBoxOriginal.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxOriginal.TabIndex = 0;
+            pictureBoxOriginal.TabStop = false;
+            // 
+            // groupBoxUVDocOutput
+            // 
+            groupBoxUVDocOutput.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxUVDocOutput.Controls.Add(pictureBoxOutput);
+            groupBoxUVDocOutput.Location = new Point(0, 3);
+            groupBoxUVDocOutput.Name = "groupBoxUVDocOutput";
+            groupBoxUVDocOutput.Size = new Size(538, 548);
+            groupBoxUVDocOutput.TabIndex = 2;
+            groupBoxUVDocOutput.TabStop = false;
+            groupBoxUVDocOutput.Text = "矫正后图像";
+            // 
+            // pictureBoxOutput
+            // 
+            pictureBoxOutput.BackColor = Color.FromArgb(240, 240, 240);
+            pictureBoxOutput.BorderStyle = BorderStyle.FixedSingle;
+            pictureBoxOutput.Dock = DockStyle.Fill;
+            pictureBoxOutput.Location = new Point(3, 19);
+            pictureBoxOutput.Name = "pictureBoxOutput";
+            pictureBoxOutput.Size = new Size(532, 526);
+            pictureBoxOutput.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxOutput.TabIndex = 0;
+            pictureBoxOutput.TabStop = false;
+            // 
+            // groupBoxUVDocControl
+            // 
+            groupBoxUVDocControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxUVDocControl.Controls.Add(chkUVDocUseTensorRT);
+            groupBoxUVDocControl.Controls.Add(btnUVDocUpload);
+            groupBoxUVDocControl.Controls.Add(btnUVDocInitialize);
+            groupBoxUVDocControl.Controls.Add(btnUVDocProcess);
+            groupBoxUVDocControl.Controls.Add(btnUVDocFreeEngine);
+            groupBoxUVDocControl.Controls.Add(btnUVDocSave);
+            groupBoxUVDocControl.Controls.Add(chkUVDocUseGpu);
+            groupBoxUVDocControl.Controls.Add(lblUVDocCpuThreads);
+            groupBoxUVDocControl.Controls.Add(numUVDocCpuThreads);
+            groupBoxUVDocControl.Controls.Add(lblUVDocGpuId);
+            groupBoxUVDocControl.Controls.Add(numUVDocGpuId);
+            groupBoxUVDocControl.Controls.Add(lblUVDocGpuMem);
+            groupBoxUVDocControl.Controls.Add(numUVDocGpuMem);
+            groupBoxUVDocControl.Location = new Point(6, 3);
+            groupBoxUVDocControl.Name = "groupBoxUVDocControl";
+            groupBoxUVDocControl.Size = new Size(1072, 60);
+            groupBoxUVDocControl.TabIndex = 0;
+            groupBoxUVDocControl.TabStop = false;
+            groupBoxUVDocControl.Text = "图像矫正控制";
+            // 
+            // chkUVDocUseTensorRT
+            // 
+            chkUVDocUseTensorRT.AutoSize = true;
+            chkUVDocUseTensorRT.Enabled = false;
+            chkUVDocUseTensorRT.Location = new Point(472, 26);
+            chkUVDocUseTensorRT.Name = "chkUVDocUseTensorRT";
+            chkUVDocUseTensorRT.Size = new Size(82, 21);
+            chkUVDocUseTensorRT.TabIndex = 11;
+            chkUVDocUseTensorRT.Text = "TensorRT";
+            chkUVDocUseTensorRT.UseVisualStyleBackColor = true;
+            // 
+            // btnUVDocUpload
+            // 
+            btnUVDocUpload.Enabled = false;
+            btnUVDocUpload.Location = new Point(660, 22);
+            btnUVDocUpload.Name = "btnUVDocUpload";
+            btnUVDocUpload.Size = new Size(95, 28);
+            btnUVDocUpload.TabIndex = 1;
+            btnUVDocUpload.Text = "上传图像";
+            btnUVDocUpload.UseVisualStyleBackColor = true;
+            btnUVDocUpload.Click += btnUVDocUpload_Click;
+            // 
+            // btnUVDocInitialize
+            // 
+            btnUVDocInitialize.Location = new Point(559, 22);
+            btnUVDocInitialize.Name = "btnUVDocInitialize";
+            btnUVDocInitialize.Size = new Size(95, 28);
+            btnUVDocInitialize.TabIndex = 0;
+            btnUVDocInitialize.Text = "初始化模型";
+            btnUVDocInitialize.UseVisualStyleBackColor = true;
+            btnUVDocInitialize.Click += btnUVDocInitialize_Click;
+            // 
+            // btnUVDocProcess
+            // 
+            btnUVDocProcess.Enabled = false;
+            btnUVDocProcess.Location = new Point(761, 22);
+            btnUVDocProcess.Name = "btnUVDocProcess";
+            btnUVDocProcess.Size = new Size(95, 28);
+            btnUVDocProcess.TabIndex = 2;
+            btnUVDocProcess.Text = "开始矫正";
+            btnUVDocProcess.UseVisualStyleBackColor = true;
+            btnUVDocProcess.Click += btnUVDocProcess_Click;
+            // 
+            // btnUVDocFreeEngine
+            // 
+            btnUVDocFreeEngine.Enabled = false;
+            btnUVDocFreeEngine.Location = new Point(963, 22);
+            btnUVDocFreeEngine.Name = "btnUVDocFreeEngine";
+            btnUVDocFreeEngine.Size = new Size(95, 28);
+            btnUVDocFreeEngine.TabIndex = 3;
+            btnUVDocFreeEngine.Text = "释放模型";
+            btnUVDocFreeEngine.UseVisualStyleBackColor = true;
+            btnUVDocFreeEngine.Click += btnUVDocFreeEngine_Click;
+            // 
+            // btnUVDocSave
+            // 
+            btnUVDocSave.Enabled = false;
+            btnUVDocSave.Location = new Point(862, 22);
+            btnUVDocSave.Name = "btnUVDocSave";
+            btnUVDocSave.Size = new Size(95, 28);
+            btnUVDocSave.TabIndex = 3;
+            btnUVDocSave.Text = "保存结果";
+            btnUVDocSave.UseVisualStyleBackColor = true;
+            btnUVDocSave.Click += btnUVDocSave_Click;
+            // 
+            // chkUVDocUseGpu
+            // 
+            chkUVDocUseGpu.AutoSize = true;
+            chkUVDocUseGpu.Location = new Point(7, 26);
+            chkUVDocUseGpu.Name = "chkUVDocUseGpu";
+            chkUVDocUseGpu.Size = new Size(76, 21);
+            chkUVDocUseGpu.TabIndex = 4;
+            chkUVDocUseGpu.Text = "启用GPU";
+            chkUVDocUseGpu.UseVisualStyleBackColor = true;
+            chkUVDocUseGpu.CheckedChanged += chkUVDocUseGpu_CheckedChanged;
+            // 
+            // lblUVDocCpuThreads
+            // 
+            lblUVDocCpuThreads.AutoSize = true;
+            lblUVDocCpuThreads.Location = new Point(86, 27);
+            lblUVDocCpuThreads.Name = "lblUVDocCpuThreads";
+            lblUVDocCpuThreads.Size = new Size(59, 17);
+            lblUVDocCpuThreads.TabIndex = 5;
+            lblUVDocCpuThreads.Text = "CPU线程:";
+            // 
+            // numUVDocCpuThreads
+            // 
+            numUVDocCpuThreads.Location = new Point(146, 25);
+            numUVDocCpuThreads.Maximum = new decimal(new int[] { 512, 0, 0, 0 });
+            numUVDocCpuThreads.Name = "numUVDocCpuThreads";
+            numUVDocCpuThreads.Size = new Size(50, 23);
+            numUVDocCpuThreads.TabIndex = 6;
+            numUVDocCpuThreads.Value = new decimal(new int[] { 4, 0, 0, 0 });
+            // 
+            // lblUVDocGpuId
+            // 
+            lblUVDocGpuId.AutoSize = true;
+            lblUVDocGpuId.Location = new Point(202, 27);
+            lblUVDocGpuId.Name = "lblUVDocGpuId";
+            lblUVDocGpuId.Size = new Size(53, 17);
+            lblUVDocGpuId.TabIndex = 7;
+            lblUVDocGpuId.Text = "GPU ID:";
+            // 
+            // numUVDocGpuId
+            // 
+            numUVDocGpuId.Enabled = false;
+            numUVDocGpuId.Location = new Point(260, 25);
+            numUVDocGpuId.Name = "numUVDocGpuId";
+            numUVDocGpuId.Size = new Size(44, 23);
+            numUVDocGpuId.TabIndex = 8;
+            // 
+            // lblUVDocGpuMem
+            // 
+            lblUVDocGpuMem.AutoSize = true;
+            lblUVDocGpuMem.Location = new Point(310, 27);
+            lblUVDocGpuMem.Name = "lblUVDocGpuMem";
+            lblUVDocGpuMem.Size = new Size(88, 17);
+            lblUVDocGpuMem.TabIndex = 9;
+            lblUVDocGpuMem.Text = "GPU内存(MB):";
+            // 
+            // numUVDocGpuMem
+            // 
+            numUVDocGpuMem.Enabled = false;
+            numUVDocGpuMem.Location = new Point(404, 25);
+            numUVDocGpuMem.Maximum = new decimal(new int[] { 32768, 0, 0, 0 });
+            numUVDocGpuMem.Name = "numUVDocGpuMem";
+            numUVDocGpuMem.Size = new Size(55, 23);
+            numUVDocGpuMem.TabIndex = 10;
+            numUVDocGpuMem.Value = new decimal(new int[] { 2000, 0, 0, 0 });
+            // 
+            // lblUVDocStatus
+            // 
+            lblUVDocStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblUVDocStatus.Location = new Point(6, 623);
+            lblUVDocStatus.Name = "lblUVDocStatus";
+            lblUVDocStatus.Size = new Size(1072, 35);
+            lblUVDocStatus.TabIndex = 3;
+            lblUVDocStatus.Text = "状态: 就绪";
+            lblUVDocStatus.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // tabPageOCR
+            // 
+            tabPageOCR.Controls.Add(splitContainerOCR);
+            tabPageOCR.Controls.Add(groupBox1);
+            tabPageOCR.Location = new Point(4, 26);
+            tabPageOCR.Name = "tabPageOCR";
+            tabPageOCR.Padding = new Padding(3);
+            tabPageOCR.Size = new Size(1084, 662);
+            tabPageOCR.TabIndex = 0;
+            tabPageOCR.Text = "文本识别";
+            tabPageOCR.UseVisualStyleBackColor = true;
+            // 
+            // splitContainerOCR
+            // 
+            splitContainerOCR.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainerOCR.Location = new Point(6, 137);
+            splitContainerOCR.Name = "splitContainerOCR";
+            // 
+            // splitContainerOCR.Panel1
+            // 
+            splitContainerOCR.Panel1.Controls.Add(groupBoxOCRImage);
+            // 
+            // splitContainerOCR.Panel2
+            // 
+            splitContainerOCR.Panel2.Controls.Add(textBoxResult);
+            splitContainerOCR.Size = new Size(1072, 519);
+            splitContainerOCR.SplitterDistance = 518;
+            splitContainerOCR.TabIndex = 8;
+            // 
+            // groupBoxOCRImage
+            // 
+            groupBoxOCRImage.Controls.Add(pictureBoxImg);
+            groupBoxOCRImage.Dock = DockStyle.Fill;
+            groupBoxOCRImage.Location = new Point(0, 0);
+            groupBoxOCRImage.Name = "groupBoxOCRImage";
+            groupBoxOCRImage.Size = new Size(518, 519);
+            groupBoxOCRImage.TabIndex = 7;
+            groupBoxOCRImage.TabStop = false;
+            groupBoxOCRImage.Text = "图片";
+            // 
+            // pictureBoxImg
+            // 
+            pictureBoxImg.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pictureBoxImg.Location = new Point(3, 19);
+            pictureBoxImg.Name = "pictureBoxImg";
+            pictureBoxImg.Size = new Size(512, 497);
+            pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxImg.TabIndex = 0;
+            pictureBoxImg.TabStop = false;
             // 
             // textBoxResult
             // 
-            textBoxResult.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            textBoxResult.Location = new Point(534, 143);
+            textBoxResult.Dock = DockStyle.Fill;
+            textBoxResult.Location = new Point(0, 0);
             textBoxResult.Multiline = true;
             textBoxResult.Name = "textBoxResult";
             textBoxResult.ScrollBars = ScrollBars.Both;
-            textBoxResult.Size = new Size(547, 537);
+            textBoxResult.Size = new Size(550, 519);
             textBoxResult.TabIndex = 2;
-            // 
-            // buttonGetBase64
-            // 
-            buttonGetBase64.Location = new Point(919, 23);
-            buttonGetBase64.Name = "buttonGetBase64";
-            buttonGetBase64.Size = new Size(120, 28);
-            buttonGetBase64.TabIndex = 3;
-            buttonGetBase64.Text = "获取图片Base64";
-            buttonGetBase64.UseVisualStyleBackColor = true;
-            buttonGetBase64.Click += buttonGetBase64_Click;
             // 
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(chkReturnWordBox);
             groupBox1.Controls.Add(buttonFreeEngine);
             groupBox1.Controls.Add(buttonPostFile);
             groupBox1.Controls.Add(textBoxApiAddress);
@@ -134,12 +443,23 @@
             groupBox1.Controls.Add(buttonGetBase64);
             groupBox1.Controls.Add(buttonInit);
             groupBox1.Controls.Add(buttonRec);
-            groupBox1.Location = new Point(12, 12);
+            groupBox1.Location = new Point(6, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(1069, 125);
+            groupBox1.Size = new Size(1072, 125);
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
-            groupBox1.Text = "功能选项";
+            groupBox1.Text = "OCR文本识别功能选项";
+            // 
+            // chkReturnWordBox
+            // 
+            chkReturnWordBox.AutoSize = true;
+            chkReturnWordBox.Location = new Point(314, 91);
+            chkReturnWordBox.Name = "chkReturnWordBox";
+            chkReturnWordBox.RightToLeft = RightToLeft.Yes;
+            chkReturnWordBox.Size = new Size(99, 21);
+            chkReturnWordBox.TabIndex = 25;
+            chkReturnWordBox.Text = "生成单字坐标";
+            chkReturnWordBox.UseVisualStyleBackColor = true;
             // 
             // buttonFreeEngine
             // 
@@ -154,9 +474,9 @@
             // 
             // buttonPostFile
             // 
-            buttonPostFile.Location = new Point(874, 87);
+            buttonPostFile.Location = new Point(919, 87);
             buttonPostFile.Name = "buttonPostFile";
-            buttonPostFile.Size = new Size(165, 28);
+            buttonPostFile.Size = new Size(120, 28);
             buttonPostFile.TabIndex = 22;
             buttonPostFile.Text = "API接口测试";
             buttonPostFile.UseVisualStyleBackColor = true;
@@ -166,14 +486,14 @@
             // 
             textBoxApiAddress.Location = new Point(545, 89);
             textBoxApiAddress.Name = "textBoxApiAddress";
-            textBoxApiAddress.Size = new Size(323, 23);
+            textBoxApiAddress.Size = new Size(367, 23);
             textBoxApiAddress.TabIndex = 21;
             textBoxApiAddress.Text = "http://localhost:5000/OCRService/GetOCRFile";
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(419, 92);
+            label8.Location = new Point(425, 92);
             label8.Name = "label8";
             label8.Size = new Size(114, 17);
             label8.TabIndex = 20;
@@ -196,7 +516,7 @@
             comboBoxModel.Items.AddRange(new object[] { "PP-OCRv5_mobile", "PP-OCRv5_server", "PP-OCRv4_mobile" });
             comboBoxModel.Location = new Point(92, 89);
             comboBoxModel.Name = "comboBoxModel";
-            comboBoxModel.Size = new Size(321, 25);
+            comboBoxModel.Size = new Size(129, 25);
             comboBoxModel.TabIndex = 18;
             comboBoxModel.SelectedIndexChanged += comboBoxModel_SelectedIndexChanged;
             // 
@@ -244,6 +564,7 @@
             // numericUpDownThread
             // 
             numericUpDownThread.Location = new Point(333, 59);
+            numericUpDownThread.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericUpDownThread.Name = "numericUpDownThread";
             numericUpDownThread.Size = new Size(80, 23);
             numericUpDownThread.TabIndex = 13;
@@ -337,86 +658,144 @@
             comboBoxuse_gpu.TabIndex = 4;
             comboBoxuse_gpu.SelectedIndexChanged += comboBoxuse_gpu_SelectedIndexChanged;
             // 
-            // groupBoximg
+            // buttonGetBase64
             // 
-            groupBoximg.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBoximg.Controls.Add(pictureBoxImg);
-            groupBoximg.Location = new Point(12, 143);
-            groupBoximg.Name = "groupBoximg";
-            groupBoximg.Size = new Size(516, 537);
-            groupBoximg.TabIndex = 6;
-            groupBoximg.TabStop = false;
-            groupBoximg.Text = "图片";
+            buttonGetBase64.Location = new Point(919, 23);
+            buttonGetBase64.Name = "buttonGetBase64";
+            buttonGetBase64.Size = new Size(120, 28);
+            buttonGetBase64.TabIndex = 3;
+            buttonGetBase64.Text = "获取图片Base64";
+            buttonGetBase64.UseVisualStyleBackColor = true;
+            buttonGetBase64.Click += buttonGetBase64_Click;
             // 
-            // pictureBoxImg
+            // buttonInit
             // 
-            pictureBoxImg.Location = new Point(10, 19);
-            pictureBoxImg.Name = "pictureBoxImg";
-            pictureBoxImg.Size = new Size(500, 509);
-            pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxImg.TabIndex = 0;
-            pictureBoxImg.TabStop = false;
+            buttonInit.Location = new Point(606, 23);
+            buttonInit.Name = "buttonInit";
+            buttonInit.Size = new Size(87, 60);
+            buttonInit.TabIndex = 0;
+            buttonInit.Text = "初始化OCR";
+            buttonInit.UseVisualStyleBackColor = true;
+            buttonInit.Click += buttonInit_Click;
             // 
-            // imageList1
+            // buttonRec
             // 
-            imageList1.ColorDepth = ColorDepth.Depth32Bit;
-            imageList1.ImageSize = new Size(16, 16);
-            imageList1.TransparentColor = Color.Transparent;
+            buttonRec.Enabled = false;
+            buttonRec.Location = new Point(699, 23);
+            buttonRec.Name = "buttonRec";
+            buttonRec.Size = new Size(120, 28);
+            buttonRec.TabIndex = 1;
+            buttonRec.Text = "OCR文本识别";
+            buttonRec.UseVisualStyleBackColor = true;
+            buttonRec.Click += buttonRec_Click;
+            // 
+            // tabControlMain
+            // 
+            tabControlMain.Controls.Add(tabPageOCR);
+            tabControlMain.Controls.Add(tabPageImageCorrection);
+            tabControlMain.Dock = DockStyle.Fill;
+            tabControlMain.Location = new Point(0, 0);
+            tabControlMain.Name = "tabControlMain";
+            tabControlMain.SelectedIndex = 0;
+            tabControlMain.Size = new Size(1092, 692);
+            tabControlMain.TabIndex = 1;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1093, 683);
-            Controls.Add(groupBoximg);
-            Controls.Add(groupBox1);
-            Controls.Add(textBoxResult);
+            ClientSize = new Size(1092, 692);
+            Controls.Add(tabControlMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PaddleOCR识别Demo V3.3.0--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
+            Text = "PaddleOCR识别Demo V4.0.0--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
             Load += MainForm_Load;
+            tabPageImageCorrection.ResumeLayout(false);
+            splitContainerUVDoc.Panel1.ResumeLayout(false);
+            splitContainerUVDoc.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).EndInit();
+            splitContainerUVDoc.ResumeLayout(false);
+            groupBoxUVDocOriginal.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxOriginal).EndInit();
+            groupBoxUVDocOutput.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxOutput).EndInit();
+            groupBoxUVDocControl.ResumeLayout(false);
+            groupBoxUVDocControl.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numUVDocCpuThreads).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numUVDocGpuId).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numUVDocGpuMem).EndInit();
+            tabPageOCR.ResumeLayout(false);
+            splitContainerOCR.Panel1.ResumeLayout(false);
+            splitContainerOCR.Panel2.ResumeLayout(false);
+            splitContainerOCR.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerOCR).EndInit();
+            splitContainerOCR.ResumeLayout(false);
+            groupBoxOCRImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).EndInit();
-            groupBoximg.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
+            tabControlMain.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
+        private ImageList imageList1;
+        private TabPage tabPageImageCorrection;
+        private SplitContainer splitContainerUVDoc;
+        private GroupBox groupBoxUVDocOriginal;
+        private PictureBox pictureBoxOriginal;
+        private GroupBox groupBoxUVDocOutput;
+        private PictureBox pictureBoxOutput;
+        private GroupBox groupBoxUVDocControl;
+        private CheckBox chkUVDocUseTensorRT;
+        private Button btnUVDocUpload;
+        private Button btnUVDocInitialize;
+        private Button btnUVDocProcess;
+        private Button btnUVDocSave;
+        private CheckBox chkUVDocUseGpu;
+        private Label lblUVDocCpuThreads;
+        private NumericUpDown numUVDocCpuThreads;
+        private Label lblUVDocGpuId;
+        private NumericUpDown numUVDocGpuId;
+        private Label lblUVDocGpuMem;
+        private NumericUpDown numUVDocGpuMem;
+        private Label lblUVDocStatus;
+        private TabPage tabPageOCR;
+        private GroupBox groupBox1;
+        private Button buttonFreeEngine;
+        private Button buttonPostFile;
+        private TextBox textBoxApiAddress;
+        private Label label8;
+        private Label label7;
+        private ComboBox comboBoxModel;
+        private Button buttonRecTable;
+        private Button buttonDownModels;
+        private NumericUpDown numericUpDowncpu_mem;
+        private Label label6;
+        private NumericUpDown numericUpDownThread;
+        private Label label5;
+        private Label label4;
+        private ComboBox comboBoxJson;
+        private NumericUpDown numDowncpu_threads;
+        private Label label3;
+        private NumericUpDown numDowngpu_id;
+        private Label label2;
+        private Label label1;
+        private ComboBox comboBoxuse_gpu;
+        private Button buttonGetBase64;
         private Button buttonInit;
         private Button buttonRec;
         private TextBox textBoxResult;
-        private Button buttonGetBase64;
-        private GroupBox groupBox1;
-        private Label label1;
-        private ComboBox comboBoxuse_gpu;
-        private Label label2;
-        private NumericUpDown numDowngpu_id;
-        private NumericUpDown numDowncpu_threads;
-        private Label label3;
-        private GroupBox groupBoximg;
-        private Label label4;
-        private ComboBox comboBoxJson;
-        private NumericUpDown numericUpDownThread;
-        private Label label5;
-        private NumericUpDown numericUpDowncpu_mem;
-        private Label label6;
-        private Button buttonDownModels;
-        private Button buttonRecTable;
-        private Label label7;
-        private ComboBox comboBoxModel;
-        private Label label8;
-        private TextBox textBoxApiAddress;
-        private Button buttonPostFile;
-        private ImageList imageList1;
+        private GroupBox groupBoxOCRImage;
         private UserControl.PictureView pictureBoxImg;
-        private Button buttonFreeEngine;
+        private TabControl tabControlMain;
+        private Button btnUVDocFreeEngine;
+        private CheckBox chkReturnWordBox;
+        private SplitContainer splitContainerOCR;
     }
 }

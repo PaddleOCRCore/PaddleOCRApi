@@ -96,7 +96,7 @@ PaddleOCRWebApi/
 For paddle_inference 3.2+ version:
 
 ```xml
-<PackageReference Include="PaddleOCRRuntime_x64" Version="3.3.1" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.0" />
 ```
 
 For paddle_inference 2.6.2 version:
@@ -225,6 +225,7 @@ For more complete examples, please check the `Demo/` directory for each language
 | CUDNN | [https://developer.nvidia.cn/rdp/cudnn-archive](https://developer.nvidia.cn/rdp/cudnn-archive) |
 | TensorRT | [https://developer.nvidia.com/nvidia-tensorrt-download](https://developer.nvidia.com/nvidia-tensorrt-download) |
 | PP-OCRv4/v5 Models | [https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html) |
+| Other Models | [https://gitee.com/paddlepaddle/PaddleOCR/blob/main/docs/version3.x/model_list.md) |
 
 ## 🔗 WebAPI Interface
 

@@ -21,7 +21,7 @@ public class OCRJavaDemo {
         void EnableJsonResult(boolean enable);
         
         // 初始化引擎 (JSON 配置方式)
-        boolean Initjson(String det_infer, String cls_infer, String rec_infer, String keys, String parameterjson);
+        boolean Initjson(String det_infer, String cls_infer, String rec_infer, String parameterjson);
         
         // 识别图片
         String Detect(String imageFile);
@@ -39,11 +39,11 @@ public class OCRJavaDemo {
             String detModel = rootDir + "\\models\\PP-OCRv5_mobile_det_infer";
             String clsModel = rootDir + "\\models\\PP-LCNet_x1_0_textline_ori";
             String recModel = rootDir + "\\models\\PP-OCRv5_mobile_rec_infer";
-            String keysPath = rootDir + "\\models\\ppocr_keys.txt";
             
             // 初始化参数 JSON
             String configJson = "{" +
                     "\"use_gpu\": false," +
+                    "\"return_word_box\": false," +
                     "\"cpu_math_library_num_threads\": 10," +
                     "\"gpu_id\": 0," +
                     "\"gpu_mem\": 4000," +
@@ -61,7 +61,7 @@ public class OCRJavaDemo {
             System.out.println("正在初始化 OCR 引擎...");
             
             // 初始化
-            boolean inited = PaddleOCR.INSTANCE.Initjson(detModel, clsModel, recModel, keysPath, configJson);
+            boolean inited = PaddleOCR.INSTANCE.Initjson(detModel, clsModel, recModel, configJson);
             
             if (!inited) {
                 System.err.println("OCR 初始化失败！请确认以下事项：");

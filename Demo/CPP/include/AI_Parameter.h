@@ -56,6 +56,7 @@ struct OCRParameter
 	int rec_batch_num = 10; //文字识别模型批量识别数量
 	int rec_img_h = 48; // 识别模型输入图像高度
 	int rec_img_w = 320;//识别模型输入图像宽度
+	bool return_word_box = false; //是否返回单字坐标
 };
 /// <summary>
 /// 表格识别参数
@@ -77,5 +78,14 @@ struct SyncParameter
 	float d_det_db_unclip_ratio = 1.6f;//表示文本框的紧致程度，越小则文本框更靠近文本
 	int d_max_side_len = 960;//输入图像长宽
 	float d_det_db_thresh = 0.3f; // DB后处理过滤box的阈值
+};
+//UVDoc参数结构体
+struct UVDocParameter {
+	bool enable_mkldnn; // CPU模式下，是否使用mkldnn库
+	int cpu_threads;    // CPU模式下，预测时的线程数
+	bool use_gpu;       // 是否使用GPU
+	int gpu_id;         // GPU id
+	int gpu_mem;        // GPU内存
+	bool use_tensorrt;  // 是否启动tensorrt
 };
 #pragma pack(pop)  
