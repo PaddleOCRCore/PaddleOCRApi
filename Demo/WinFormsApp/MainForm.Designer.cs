@@ -53,6 +53,10 @@
             numUVDocGpuMem = new NumericUpDown();
             lblUVDocStatus = new Label();
             tabPageOCR = new TabPage();
+            splitContainerOCR = new SplitContainer();
+            groupBoxOCRImage = new GroupBox();
+            pictureBoxImg = new WinFormsApp.UserControl.PictureView();
+            textBoxResult = new TextBox();
             groupBox1 = new GroupBox();
             chkReturnWordBox = new CheckBox();
             buttonFreeEngine = new Button();
@@ -78,9 +82,6 @@
             buttonGetBase64 = new Button();
             buttonInit = new Button();
             buttonRec = new Button();
-            textBoxResult = new TextBox();
-            groupBoxOCRImage = new GroupBox();
-            pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             tabControlMain = new TabControl();
             tabPageImageCorrection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
@@ -96,13 +97,17 @@
             ((System.ComponentModel.ISupportInitialize)numUVDocGpuId).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numUVDocGpuMem).BeginInit();
             tabPageOCR.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerOCR).BeginInit();
+            splitContainerOCR.Panel1.SuspendLayout();
+            splitContainerOCR.Panel2.SuspendLayout();
+            splitContainerOCR.SuspendLayout();
+            groupBoxOCRImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).BeginInit();
-            groupBoxOCRImage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
             tabControlMain.SuspendLayout();
             SuspendLayout();
             // 
@@ -353,9 +358,8 @@
             // 
             // tabPageOCR
             // 
+            tabPageOCR.Controls.Add(splitContainerOCR);
             tabPageOCR.Controls.Add(groupBox1);
-            tabPageOCR.Controls.Add(textBoxResult);
-            tabPageOCR.Controls.Add(groupBoxOCRImage);
             tabPageOCR.Location = new Point(4, 26);
             tabPageOCR.Name = "tabPageOCR";
             tabPageOCR.Padding = new Padding(3);
@@ -363,6 +367,54 @@
             tabPageOCR.TabIndex = 0;
             tabPageOCR.Text = "文本识别";
             tabPageOCR.UseVisualStyleBackColor = true;
+            // 
+            // splitContainerOCR
+            // 
+            splitContainerOCR.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainerOCR.Location = new Point(6, 137);
+            splitContainerOCR.Name = "splitContainerOCR";
+            // 
+            // splitContainerOCR.Panel1
+            // 
+            splitContainerOCR.Panel1.Controls.Add(groupBoxOCRImage);
+            // 
+            // splitContainerOCR.Panel2
+            // 
+            splitContainerOCR.Panel2.Controls.Add(textBoxResult);
+            splitContainerOCR.Size = new Size(1072, 519);
+            splitContainerOCR.SplitterDistance = 518;
+            splitContainerOCR.TabIndex = 8;
+            // 
+            // groupBoxOCRImage
+            // 
+            groupBoxOCRImage.Controls.Add(pictureBoxImg);
+            groupBoxOCRImage.Dock = DockStyle.Fill;
+            groupBoxOCRImage.Location = new Point(0, 0);
+            groupBoxOCRImage.Name = "groupBoxOCRImage";
+            groupBoxOCRImage.Size = new Size(518, 519);
+            groupBoxOCRImage.TabIndex = 7;
+            groupBoxOCRImage.TabStop = false;
+            groupBoxOCRImage.Text = "图片";
+            // 
+            // pictureBoxImg
+            // 
+            pictureBoxImg.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pictureBoxImg.Location = new Point(3, 19);
+            pictureBoxImg.Name = "pictureBoxImg";
+            pictureBoxImg.Size = new Size(512, 497);
+            pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxImg.TabIndex = 0;
+            pictureBoxImg.TabStop = false;
+            // 
+            // textBoxResult
+            // 
+            textBoxResult.Dock = DockStyle.Fill;
+            textBoxResult.Location = new Point(0, 0);
+            textBoxResult.Multiline = true;
+            textBoxResult.Name = "textBoxResult";
+            textBoxResult.ScrollBars = ScrollBars.Both;
+            textBoxResult.Size = new Size(550, 519);
+            textBoxResult.TabIndex = 2;
             // 
             // groupBox1
             // 
@@ -401,11 +453,12 @@
             // chkReturnWordBox
             // 
             chkReturnWordBox.AutoSize = true;
-            chkReturnWordBox.Location = new Point(266, 91);
+            chkReturnWordBox.Location = new Point(314, 91);
             chkReturnWordBox.Name = "chkReturnWordBox";
-            chkReturnWordBox.Size = new Size(147, 21);
+            chkReturnWordBox.RightToLeft = RightToLeft.Yes;
+            chkReturnWordBox.Size = new Size(99, 21);
             chkReturnWordBox.TabIndex = 25;
-            chkReturnWordBox.Text = "是否输出单字坐标json";
+            chkReturnWordBox.Text = "生成单字坐标";
             chkReturnWordBox.UseVisualStyleBackColor = true;
             // 
             // buttonFreeEngine
@@ -636,37 +689,6 @@
             buttonRec.UseVisualStyleBackColor = true;
             buttonRec.Click += buttonRec_Click;
             // 
-            // textBoxResult
-            // 
-            textBoxResult.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxResult.Location = new Point(512, 137);
-            textBoxResult.Multiline = true;
-            textBoxResult.Name = "textBoxResult";
-            textBoxResult.ScrollBars = ScrollBars.Both;
-            textBoxResult.Size = new Size(566, 519);
-            textBoxResult.TabIndex = 2;
-            // 
-            // groupBoxOCRImage
-            // 
-            groupBoxOCRImage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            groupBoxOCRImage.Controls.Add(pictureBoxImg);
-            groupBoxOCRImage.Location = new Point(6, 137);
-            groupBoxOCRImage.Name = "groupBoxOCRImage";
-            groupBoxOCRImage.Size = new Size(500, 519);
-            groupBoxOCRImage.TabIndex = 7;
-            groupBoxOCRImage.TabStop = false;
-            groupBoxOCRImage.Text = "图片";
-            // 
-            // pictureBoxImg
-            // 
-            pictureBoxImg.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pictureBoxImg.Location = new Point(6, 22);
-            pictureBoxImg.Name = "pictureBoxImg";
-            pictureBoxImg.Size = new Size(488, 491);
-            pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxImg.TabIndex = 0;
-            pictureBoxImg.TabStop = false;
-            // 
             // tabControlMain
             // 
             tabControlMain.Controls.Add(tabPageOCR);
@@ -704,15 +726,19 @@
             ((System.ComponentModel.ISupportInitialize)numUVDocGpuId).EndInit();
             ((System.ComponentModel.ISupportInitialize)numUVDocGpuMem).EndInit();
             tabPageOCR.ResumeLayout(false);
-            tabPageOCR.PerformLayout();
+            splitContainerOCR.Panel1.ResumeLayout(false);
+            splitContainerOCR.Panel2.ResumeLayout(false);
+            splitContainerOCR.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerOCR).EndInit();
+            splitContainerOCR.ResumeLayout(false);
+            groupBoxOCRImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).EndInit();
-            groupBoxOCRImage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
             tabControlMain.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -770,5 +796,6 @@
         private TabControl tabControlMain;
         private Button btnUVDocFreeEngine;
         private CheckBox chkReturnWordBox;
+        private SplitContainer splitContainerOCR;
     }
 }

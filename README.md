@@ -96,7 +96,7 @@ PaddleOCRWebApi/
 使用paddle_inference3.2+版本推理库：
 
 ```xml
-<PackageReference Include="PaddleOCRRuntime_x64" Version="3.3.1" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.0" />
 ```
 
 若使用paddle_inference2.6.2版本推理库：

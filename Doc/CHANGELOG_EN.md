@@ -1,5 +1,10 @@
 # 📝 Changelog
 
+## v4.0.0 2026.1.17
+- ✅ Optimized PaddleOCR.dll by integrating the UVDOC text image rectification feature, adding per-character (single-word) bounding box output controlled by the return_word_box parameter, and removing the Keys parameter from Init.
+- ✅ Released PaddleOCRRuntime_x64 v4.0.0, including the Paddle 3.2.2 inference library, PaddleOCR.dll, and all required dependencies. The table recognition model has been upgraded to PP-SLANet_plus_infer.
+- ✅ PaddleocrSDK v4.0.0 is aligned with PaddleOCR.dll. The WinFormsApp now supports optional per-character bounding box generation and integrates the text image rectification feature. Sample code for C++, Python, Go, and Java has been updated.
+
 ## v3.3.0 2026.1.11
 - ✅ Optimized PaddleOCR.dll: C++ pointers are now allocated using CoTaskMemAlloc and released in C# via Marshal.FreeCoTaskMem, fixing the exception in the DetectTableByte interface.
 - ✅ Released PaddleOCRRuntime_x64 v3.3.0, including the paddle 3.2.2 inference library, PaddleOCR.dll, and all dependencies; added the UVDoc_infer model.

@@ -1,5 +1,10 @@
 # 📝 更新日志
 
+## v4.0.0 `2026.1.17`
+- ✅ 优化PaddleOCR.dll，集成UVDOC文本图像矫正功能，增加单字坐标输出，由return_word_box参数控制,Init去掉Keys参数
+- ✅ 发布PaddleOCRRuntime_x64 v4.0.0，包含paddle3.2.2推理库、PaddleOCR.dll及依赖文件，表格识别模型升级为PP-SLANet_plus_infer
+- ✅ PaddleocrSDK v4.0.0对齐PaddleOCR.dll，WinFormsApp增加是否生成单字坐标功能，集成文本图像矫正功能。更新CPP、Python、GO、Java示例代码。
+- 
 ## v3.3.0 `2026.1.11`
 - ✅ 优化PaddleOCR.dll，C++指针采用CoTaskMemAlloc分配，C#使用Marshal.FreeCoTaskMem释放，修复DetectTableByte接口异常
 - ✅ 发布PaddleOCRRuntime_x64 v3.3.0，包含paddle3.2.2推理库、PaddleOCR.dll及依赖文件，增加UVDoc_infer模型
