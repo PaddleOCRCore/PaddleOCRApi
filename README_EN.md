@@ -151,9 +151,7 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | det_model_dir                | -       | Detection model inference model path                                                          |
 | cls_model_dir                | -       | Direction classifier inference model path                                                     |
 | rec_infer                    | -       | Text recognition model inference model path                                                   |
-| keys                         | -       | Text recognition dictionary file                                                              |
 | table_model_dir              | -       | Table recognition model inference model path                                                  |
-| table_char_dict_path         | -       | Table recognition dictionary file                                                             |
 | **General Parameters**       | --      | --                                                                                            |
 | det                          | true    | Whether to execute text detection                                                             |
 | rec                          | true    | Whether to execute text recognition                                                           |
@@ -185,6 +183,7 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | table_max_len                | 488     | Table recognition model input image long side size, final network input size is (table_max_len, table_max_len) |
 | merge_empty_cell             | true    | Whether to merge empty cells                                                                  |
 | table_batch_num              | 1       | table_batch_num                                                                               |
+| return_word_box              | false   | Whether to return per-character coordinates                                                   |
 
 For more complete examples, please check the `Demo/` directory for each language example code.
 

@@ -150,9 +150,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
 | det_model_dir                | -      | 检测模型inference model地址                                                              |
 | cls_model_dir                | -      | 方向分类器inference model地址                                                            |
 | rec_infer                    | -      | 文字识别模型inference model地址                                                          |
-| keys                         | -      | 文字识别字典文件                                                                         |
 | table_model_dir              | -      | 表格识别模型inference model地址                                                          |
-| table_char_dict_path         | -      | 表格识别字典文件                                                                         |
 | 通用参数                 | --     | -- |
 | det                          | true   | 是否执行文字检测                                                                         |
 | rec                          | true   | 是否执行文字识别                                                                         |
@@ -184,6 +182,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
 | table_max_len                | 488    | 表格识别模型输入图像长边大小，最终网络输入图像大小为（table_max_len，table_max_len）     |
 | merge_empty_cell             | true   | 是否合并空单元格                                                                         |
 | table_batch_num              | 1      | table_batch_num                                                                          |
+| return_word_box              | false  | 是否返回单字坐标                                                                         |
 
 完整示例请查看 `Demo/` 目录下的各语言示例代码。
 
