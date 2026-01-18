@@ -17,15 +17,10 @@
 using PaddleOCRSDK;
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using WinFormsApp.Services;
 using WinFormsApp.Utils;
-using System.Threading.Tasks;
+using SkiaSharp;
 
 namespace WinFormsApp
 {
@@ -35,7 +30,7 @@ namespace WinFormsApp
         private readonly IOCRService ocrService;
         public static bool use_gpu = false;//是否使用GPU
         public static int gpu_id = 0;//GPUId
-        public static int cpu_threads = 30; //CPU预测时的线程数
+        public static int cpu_threads = Environment.ProcessorCount; //CPU预测时的线程数
         public static int cpu_mem = 4000;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
         public static string RecFilepath = "";
         public static bool outPutJson = false;//是否输出JSON
@@ -67,6 +62,12 @@ namespace WinFormsApp
                 if (!Directory.Exists(RecFilepath))
                 {
                     Directory.CreateDirectory(RecFilepath);
+                }
+                // 创建uploads目录用于存储上传的原始图片
+                string uploadsPath = Path.Combine(Application.StartupPath, "uploads");
+                if (!Directory.Exists(uploadsPath))
+                {
+                    Directory.CreateDirectory(uploadsPath);
                 }
                 buttonFreeEngine.Enabled = false;
 
@@ -130,6 +131,7 @@ namespace WinFormsApp
                 {
                     this.buttonRec.Enabled = true;
                     this.buttonRecClipboard.Enabled = true;
+                    this.buttonRecPDF.Enabled = true;
                     this.isInitSuccess = true;
                 }
                 else
@@ -270,13 +272,11 @@ namespace WinFormsApp
                     return;
                 }
 
-                // 将Image转换为byte数组
-                byte[] imageBytes;
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    clipboardImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    imageBytes = ms.ToArray();
-                }
+                // 保存剪贴板图片到uploads目录
+                string uploadsPath = Path.Combine(Application.StartupPath, "uploads");
+                string clipboardImagePath = Path.Combine(uploadsPath, $"clipboard_{DateTime.Now:yyyyMMddHHmmss}.png");
+                clipboardImage.Save(clipboardImagePath, System.Drawing.Imaging.ImageFormat.Png);
+                LogMessage($"剪贴板图片已保存到: {clipboardImagePath}");
 
                 // 进行OCR识别
                 var stopwatch = new Stopwatch();
@@ -285,10 +285,112 @@ namespace WinFormsApp
                 LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
                 stopwatch.Start();
 
-                OCRResult ocrResult = ocrService.Detect(imageBytes);
+                OCRResult ocrResult = ocrService.Detect(clipboardImagePath);
 
                 StringBuilder stringBuilder = new StringBuilder();
                 string result = "";
+                if (ocrResult.Code == 1)
+                {
+                    foreach (var item in ocrResult.WordsResult)
+                    {
+                        if (stringBuilder.Length > 0)
+                        {
+                            stringBuilder.Append(Environment.NewLine);
+                        }
+                        stringBuilder.Append(item.Words);
+                    }
+                    result = stringBuilder.ToString();
+                }
+                else
+                {
+                    result = ocrResult.ErrorMsg;
+                }
+
+                var endTime = DateTime.Now;
+                LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
+                LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    LogMessage(result);
+                    if (outPutJson)
+                        LogMessage($"输出json: {ocrResult.JsonText}");
+                    
+                    // 显示识别结果图片（OCR引擎自动生成到output目录）
+                    string resultImageFileName = Path.GetFileName(clipboardImagePath);
+                    string resultImagePath = Path.Combine(RecFilepath, resultImageFileName);
+                    if (File.Exists(resultImagePath))
+                    {
+                        pictureBoxImg.ImgPath = resultImagePath;
+                    }
+                }
+                else
+                {
+                    LogMessage("识别失败:" + ocrService.GetError());
+                    if (!string.IsNullOrEmpty(ocrResult.JsonText))
+                        LogMessage($"输出json: {ocrResult.JsonText}");
+                }
+
+                clipboardImage.Dispose();
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"{DateTime.Now:HH:mm:ss.fff}:剪贴板OCR识别异常:{ex.Message}");
+            }
+        }
+
+        private string RecOCRFromPDF(string pdfFilePath)
+        {
+            string result = "";
+            SKBitmap? bitmap = null;
+            string uploadImagePath = "";
+
+            try
+            {
+                var stopwatch = new Stopwatch();
+                var startTime = DateTime.Now;
+                LogMessage($"PDF文件: {pdfFilePath}");
+                LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
+                stopwatch.Start();
+
+                // 读取PDF文件到内存流
+                byte[] pdfBytes = File.ReadAllBytes(pdfFilePath);
+                using (MemoryStream memoryStream = new MemoryStream(pdfBytes))
+                {
+                    try
+                    {
+                        // 将PDF第一页转换为SKBitmap
+                        bitmap = PDFtoImage.Conversion.ToImage(memoryStream);
+                        LogMessage("PDF转图片成功");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage($"PDF转图片失败: {ex.Message}");
+                        return "";
+                    }
+                }
+
+                // 将SKBitmap转换为byte数组
+                byte[] imageBytes;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (SKImage image = SKImage.FromBitmap(bitmap))
+                    using (SKData data = image.Encode(SKEncodedImageFormat.Png, 100))
+                    {
+                        imageBytes = data.ToArray();
+                    }
+                }
+
+                // 保存转换后的图片到uploads目录
+                string uploadsPath = Path.Combine(Application.StartupPath, "uploads");
+                uploadImagePath = Path.Combine(uploadsPath, Path.GetFileNameWithoutExtension(pdfFilePath) + "_page1.png");
+                File.WriteAllBytes(uploadImagePath, imageBytes);
+                LogMessage($"已保存转换后的图片到uploads: {uploadImagePath}");
+
+                // 进行OCR识别，传入文件路径
+                OCRResult ocrResult = ocrService.Detect(uploadImagePath);
+                StringBuilder stringBuilder = new StringBuilder();
+
                 if (ocrResult.Code == 1)
                 {
                     foreach (var item in ocrResult.WordsResult)
@@ -322,18 +424,54 @@ namespace WinFormsApp
                     if (!string.IsNullOrEmpty(ocrResult.JsonText))
                         LogMessage($"输出json: {ocrResult.JsonText}");
                 }
-
-                // 在pictureBox中显示图片
-                if (pictureBoxImg.Image != null)
-                {
-                    pictureBoxImg.Image.Dispose();
-                }
-                pictureBoxImg.Image = (Image)clipboardImage.Clone();
-                clipboardImage.Dispose();
             }
             catch (Exception ex)
             {
-                LogMessage($"{DateTime.Now:HH:mm:ss.fff}:剪贴板OCR识别异常:{ex.Message}");
+                LogMessage($"PDF识别异常: {ex.Message}");
+            }
+            finally
+            {
+                // 释放bitmap资源
+                bitmap?.Dispose();
+            }
+
+            return result;
+        }
+        private void buttonRecPDF_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                textBoxResult.Text = "";
+                message = new StringBuilder();
+                string result = "";
+                string recFileName = "";
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "PDF文件(*.pdf)|*.pdf";
+                openFileDialog.Multiselect = false;
+
+                if (DialogResult.OK == openFileDialog.ShowDialog())
+                {
+                    string filePath = Path.GetFullPath(openFileDialog.FileName);
+                    LogMessage($"正在处理PDF文件: {filePath}");
+
+                    result = RecOCRFromPDF(filePath);
+
+                    // 显示识别结果图片（OCR引擎自动生成到output目录，文件名基于uploads中的图片）
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        string uploadFileName = Path.GetFileNameWithoutExtension(filePath) + "_page1.png";
+                        recFileName = Path.Combine(RecFilepath, uploadFileName);
+                        if (File.Exists(recFileName))
+                        {
+                            pictureBoxImg.ImgPath = recFileName;
+                        }
+                    }
+                }
+                openFileDialog.Dispose();
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"PDF识别异常: {ex.Message}");
             }
         }
 
@@ -344,43 +482,46 @@ namespace WinFormsApp
             LogMessage($"Image: {filePath}");
             LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             stopwatch.Start();
+            
             string ocrResult = ocrService.DetectTable(filePath);
             string css = "<style>table{ border-spacing: 0;} td { border: 1px solid black;}</style>";
             ocrResult = ocrResult.Replace("<html>", "<html>" + css);
-            // 定义输出文件夹和文件名
-            string outputFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output");
-            string htmlfile = Path.Combine(outputFolder, $"{Path.GetFileNameWithoutExtension(filePath)}.html");
+            
+            // 定义输出文件夹和文件名（使用RecFilepath变量，即output目录）
+            string htmlfile = Path.Combine(RecFilepath, $"{Path.GetFileNameWithoutExtension(filePath)}.html");
 
             // 确保输出文件夹存在
-            if (!Directory.Exists(outputFolder))
+            if (!Directory.Exists(RecFilepath))
             {
-                Directory.CreateDirectory(outputFolder);
+                Directory.CreateDirectory(RecFilepath);
             }
-            if (File.Exists(htmlfile))
+            
+            // 写入HTML文件
+            try
             {
                 using (StreamWriter sw = new StreamWriter(htmlfile, false, System.Text.Encoding.GetEncoding("utf-8")))
                 {
                     sw.Write(ocrResult);
                 }
-                try
+                LogMessage($"表格识别结果已保存到: {htmlfile}");
+                
+                // 使用默认的浏览器打开HTML文件
+                Process.Start(new ProcessStartInfo
                 {
-                    // 使用默认的浏览器打开HTML文件
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = htmlfile,
-                        UseShellExecute = true
-                    });
-                }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine($"无法打开HTML文件：{ex.Message}");
-                    LogMessage($"无法打开HTML文件：{ex.Message}");
-                }
+                    FileName = htmlfile,
+                    UseShellExecute = true
+                });
             }
+            catch (Exception ex)
+            {
+                LogMessage($"保存或打开HTML文件失败：{ex.Message}");
+            }
+            
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
             LogMessage(ocrResult);
+            
             return ocrResult;
         }
         private void buttonRecTable_Click(object sender, EventArgs e)
@@ -477,7 +618,6 @@ namespace WinFormsApp
             }
 
         }
-
         private void comboBoxuse_gpu_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (this.comboBoxuse_gpu.SelectedIndex)
@@ -511,7 +651,6 @@ namespace WinFormsApp
                 gpu_id = Convert.ToInt32(this.numDowngpu_id.Value);
             }
         }
-
         private void numDowncpu_threads_ValueChanged(object sender, EventArgs e)
         {
             if (this.numDowncpu_threads.Value > 0)
@@ -874,9 +1013,9 @@ namespace WinFormsApp
             this.buttonFreeEngine.Enabled = false;
             this.buttonRec.Enabled = false;
             this.buttonRecClipboard.Enabled = false;
+            this.buttonRecPDF.Enabled = false;
             this.buttonRecTable.Enabled = false;
             LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR引擎已释放！");
         }
-
     }
 }

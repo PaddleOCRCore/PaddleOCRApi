@@ -84,6 +84,7 @@
             buttonRecClipboard = new Button();
             buttonRec = new Button();
             tabControlMain = new TabControl();
+            buttonRecPDF = new Button();
             tabPageImageCorrection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
             splitContainerUVDoc.Panel1.SuspendLayout();
@@ -420,6 +421,7 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(buttonRecPDF);
             groupBox1.Controls.Add(chkReturnWordBox);
             groupBox1.Controls.Add(buttonFreeEngine);
             groupBox1.Controls.Add(buttonPostFile);
@@ -525,9 +527,9 @@
             // buttonRecTable
             // 
             buttonRecTable.Enabled = false;
-            buttonRecTable.Location = new Point(825, 24);
+            buttonRecTable.Location = new Point(825, 58);
             buttonRecTable.Name = "buttonRecTable";
-            buttonRecTable.Size = new Size(109, 59);
+            buttonRecTable.Size = new Size(109, 25);
             buttonRecTable.TabIndex = 17;
             buttonRecTable.Text = "OCR表格识别";
             buttonRecTable.UseVisualStyleBackColor = true;
@@ -715,6 +717,17 @@
             tabControlMain.Size = new Size(1092, 692);
             tabControlMain.TabIndex = 1;
             // 
+            // buttonRecPDF
+            // 
+            buttonRecPDF.Enabled = false;
+            buttonRecPDF.Location = new Point(825, 24);
+            buttonRecPDF.Name = "buttonRecPDF";
+            buttonRecPDF.Size = new Size(109, 25);
+            buttonRecPDF.TabIndex = 26;
+            buttonRecPDF.Text = "PDF识别";
+            buttonRecPDF.UseVisualStyleBackColor = true;
+            buttonRecPDF.Click += buttonRecPDF_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -813,5 +826,6 @@
         private CheckBox chkReturnWordBox;
         private SplitContainer splitContainerOCR;
         private Button buttonRecClipboard;
+        private Button buttonRecPDF;
     }
 }
