@@ -41,14 +41,8 @@ namespace WinFormsApp
         public static bool outPutJson = false;//是否输出JSON
         public static int recCount = 1; //OCR识别时同一张图片模拟调用接口次数
         public static int model_type = 0;//模型类型：0是V5 Mobile，1是V5 Server， 2是V4 Mobile
-
-        private float zoom = 1.0f;          // 当前缩放比例
-        private readonly float zoomStep = 0.1f; // 每次滚轮缩放的步长
-        private readonly float minZoom = 0.1f;  // 最小缩放比例
-        private readonly float maxZoom = 5.0f;  // 最大缩放比例
-        private Image? originalImage;        // 原始图像
         private bool isInitSuccess = false; // OCR是否初始化成功
-        
+
         // 图像矫正相关字段
         private IUVDocService? uvdocService;
         private string? currentImagePath;
@@ -75,7 +69,7 @@ namespace WinFormsApp
                     Directory.CreateDirectory(RecFilepath);
                 }
                 buttonFreeEngine.Enabled = false;
-                
+
                 // 初始化图像矫正功能参数
                 InitializeUVDocParameters();
             }
@@ -85,7 +79,7 @@ namespace WinFormsApp
                 textBoxResult.Text = message.ToString();
             }
         }
-        
+
         private void InitializeUVDocParameters()
         {
             chkUVDocUseGpu.Checked = false;
@@ -104,7 +98,7 @@ namespace WinFormsApp
                 OCREngine.use_gpu = use_gpu;
                 OCREngine.gpu_id = gpu_id;
                 OCREngine.cpu_threads = cpu_threads;
-                OCREngine.return_word_box= chkReturnWordBox.Checked;
+                OCREngine.return_word_box = chkReturnWordBox.Checked;
                 if (model_type == 0)
                 {
                     OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";//OCR V5检测模型
@@ -135,6 +129,7 @@ namespace WinFormsApp
                 if (initmsg.IndexOf("初始化成功") >= 0)
                 {
                     this.buttonRec.Enabled = true;
+                    this.buttonRecClipboard.Enabled = true;
                     this.isInitSuccess = true;
                 }
                 else
@@ -250,6 +245,95 @@ namespace WinFormsApp
             catch (Exception ex)
             {
                 LogMessage(ex.Message);
+            }
+        }
+
+        private void buttonRecClipboard_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                textBoxResult.Text = "";
+                message = new StringBuilder();
+
+                // 检查剪贴板是否包含图片
+                if (!Clipboard.ContainsImage())
+                {
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:剪贴板中没有图片！");
+                    return;
+                }
+
+                // 从剪贴板获取图片
+                Image clipboardImage = Clipboard.GetImage();
+                if (clipboardImage == null)
+                {
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:无法从剪贴板获取图片！");
+                    return;
+                }
+
+                // 将Image转换为byte数组
+                byte[] imageBytes;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    clipboardImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    imageBytes = ms.ToArray();
+                }
+
+                // 进行OCR识别
+                var stopwatch = new Stopwatch();
+                var startTime = DateTime.Now;
+                LogMessage($"Image: 剪贴板图片");
+                LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
+                stopwatch.Start();
+
+                OCRResult ocrResult = ocrService.Detect(imageBytes);
+
+                StringBuilder stringBuilder = new StringBuilder();
+                string result = "";
+                if (ocrResult.Code == 1)
+                {
+                    foreach (var item in ocrResult.WordsResult)
+                    {
+                        if (stringBuilder.Length > 0)
+                        {
+                            stringBuilder.Append(Environment.NewLine);
+                        }
+                        stringBuilder.Append(item.Words);
+                    }
+                    result = stringBuilder.ToString();
+                }
+                else
+                {
+                    result = ocrResult.ErrorMsg;
+                }
+
+                var endTime = DateTime.Now;
+                LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
+                LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    LogMessage(result);
+                    if (outPutJson)
+                        LogMessage($"输出json: {ocrResult.JsonText}");
+                }
+                else
+                {
+                    LogMessage("识别失败:" + ocrService.GetError());
+                    if (!string.IsNullOrEmpty(ocrResult.JsonText))
+                        LogMessage($"输出json: {ocrResult.JsonText}");
+                }
+
+                // 在pictureBox中显示图片
+                if (pictureBoxImg.Image != null)
+                {
+                    pictureBoxImg.Image.Dispose();
+                }
+                pictureBoxImg.Image = (Image)clipboardImage.Clone();
+                clipboardImage.Dispose();
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"{DateTime.Now:HH:mm:ss.fff}:剪贴板OCR识别异常:{ex.Message}");
             }
         }
 
@@ -521,7 +605,7 @@ namespace WinFormsApp
         private void InitializeUVDocEngine()
         {
             try
-            {                
+            {
                 // 创建新的服务实例
                 uvdocService = new UVDocService();
                 var parameter = new UVDocParameter
@@ -605,7 +689,7 @@ namespace WinFormsApp
                     try
                     {
                         currentImagePath = openFileDialog.FileName;
-                        
+
                         // 显示原始图像
                         using (var fs = new FileStream(currentImagePath, FileMode.Open, FileAccess.Read))
                         {
@@ -686,7 +770,7 @@ namespace WinFormsApp
                 {
                     message += $"\nDLL错误信息: {error}";
                 }
-                
+
                 MessageBox.Show(message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 UpdateUVDocStatus($"处理失败: {ex.Message}");
             }
@@ -746,13 +830,13 @@ namespace WinFormsApp
                 // 释放引擎
                 uvdocService?.FreeUVDocEngine();
                 uvdocService = null;
-                
+
                 // 清空图像
                 pictureBoxOriginal.Image?.Dispose();
                 pictureBoxOriginal.Image = null;
                 pictureBoxOutput.Image?.Dispose();
                 pictureBoxOutput.Image = null;
-                
+
                 // 清理临时文件
                 if (!string.IsNullOrEmpty(outputImagePath) && File.Exists(outputImagePath))
                 {
@@ -760,17 +844,17 @@ namespace WinFormsApp
                 }
                 outputImagePath = null;
                 currentImagePath = null;
-                
+
                 // 恢复按钮状态
                 btnUVDocInitialize.Enabled = true;
                 btnUVDocFreeEngine.Enabled = false;
                 btnUVDocUpload.Enabled = false;
                 btnUVDocProcess.Enabled = false;
                 btnUVDocSave.Enabled = false;
-                
+
                 // 恢复参数控件
                 SetUVDocParameterControlsEnabled(true);
-                
+
                 UpdateUVDocStatus("引擎已释放！");
             }
             catch (Exception ex)
@@ -789,8 +873,10 @@ namespace WinFormsApp
             this.buttonInit.Enabled = true;
             this.buttonFreeEngine.Enabled = false;
             this.buttonRec.Enabled = false;
+            this.buttonRecClipboard.Enabled = false;
             this.buttonRecTable.Enabled = false;
             LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR引擎已释放！");
         }
+
     }
 }

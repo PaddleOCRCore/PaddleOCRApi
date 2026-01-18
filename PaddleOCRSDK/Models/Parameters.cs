@@ -193,7 +193,7 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 文字识别模型批量识别数量
         /// </summary>
-        public int rec_batch_num { get; set; } = 7;
+        public int rec_batch_num { get; set; } = 6;
         /// <summary>
         /// 识别模型输入图像高度
         /// </summary>

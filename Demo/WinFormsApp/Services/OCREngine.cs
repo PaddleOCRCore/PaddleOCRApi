@@ -76,8 +76,8 @@ namespace WinFormsApp.Services
             oCRParameter.rec_img_h = 48;
             oCRParameter.rec_img_w = 320;
             oCRParameter.det_db_thresh = 0.3f;//用于过滤DB预测的二值化图像，设置为0.-0.3对结果影响不明显 
-            oCRParameter.det_db_box_thresh = 0.3f;//DB后处理过滤box的阈值，如果检测存在漏框情况，可酌情减小
-            oCRParameter.det_db_unclip_ratio = 1.6f;//表示文本框的紧致程度，越小则文本框更靠近文本
+            oCRParameter.det_db_box_thresh = 0.5f;//DB后处理过滤box的阈值，如果检测存在漏框情况，可酌情减小
+            oCRParameter.det_db_unclip_ratio = 2f;//表示文本框的紧致程度，越小则文本框更靠近文本
             oCRParameter.visualize = visualize;
             oCRParameter.return_word_box = return_word_box;
 
