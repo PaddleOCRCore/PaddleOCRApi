@@ -81,8 +81,10 @@
             comboBoxuse_gpu = new ComboBox();
             buttonGetBase64 = new Button();
             buttonInit = new Button();
+            buttonRecClipboard = new Button();
             buttonRec = new Button();
             tabControlMain = new TabControl();
+            buttonRecPDF = new Button();
             tabPageImageCorrection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
             splitContainerUVDoc.Panel1.SuspendLayout();
@@ -419,6 +421,7 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(buttonRecPDF);
             groupBox1.Controls.Add(chkReturnWordBox);
             groupBox1.Controls.Add(buttonFreeEngine);
             groupBox1.Controls.Add(buttonPostFile);
@@ -442,6 +445,7 @@
             groupBox1.Controls.Add(comboBoxuse_gpu);
             groupBox1.Controls.Add(buttonGetBase64);
             groupBox1.Controls.Add(buttonInit);
+            groupBox1.Controls.Add(buttonRecClipboard);
             groupBox1.Controls.Add(buttonRec);
             groupBox1.Location = new Point(6, 6);
             groupBox1.Name = "groupBox1";
@@ -464,9 +468,9 @@
             // buttonFreeEngine
             // 
             buttonFreeEngine.Enabled = false;
-            buttonFreeEngine.Location = new Point(825, 23);
+            buttonFreeEngine.Location = new Point(613, 57);
             buttonFreeEngine.Name = "buttonFreeEngine";
-            buttonFreeEngine.Size = new Size(87, 60);
+            buttonFreeEngine.Size = new Size(80, 27);
             buttonFreeEngine.TabIndex = 24;
             buttonFreeEngine.Text = "释放OCR";
             buttonFreeEngine.UseVisualStyleBackColor = true;
@@ -474,7 +478,7 @@
             // 
             // buttonPostFile
             // 
-            buttonPostFile.Location = new Point(919, 87);
+            buttonPostFile.Location = new Point(946, 86);
             buttonPostFile.Name = "buttonPostFile";
             buttonPostFile.Size = new Size(120, 28);
             buttonPostFile.TabIndex = 22;
@@ -486,7 +490,7 @@
             // 
             textBoxApiAddress.Location = new Point(545, 89);
             textBoxApiAddress.Name = "textBoxApiAddress";
-            textBoxApiAddress.Size = new Size(367, 23);
+            textBoxApiAddress.Size = new Size(389, 23);
             textBoxApiAddress.TabIndex = 21;
             textBoxApiAddress.Text = "http://localhost:5000/OCRService/GetOCRFile";
             // 
@@ -523,9 +527,9 @@
             // buttonRecTable
             // 
             buttonRecTable.Enabled = false;
-            buttonRecTable.Location = new Point(699, 56);
+            buttonRecTable.Location = new Point(825, 58);
             buttonRecTable.Name = "buttonRecTable";
-            buttonRecTable.Size = new Size(120, 28);
+            buttonRecTable.Size = new Size(109, 25);
             buttonRecTable.TabIndex = 17;
             buttonRecTable.Text = "OCR表格识别";
             buttonRecTable.UseVisualStyleBackColor = true;
@@ -533,7 +537,7 @@
             // 
             // buttonDownModels
             // 
-            buttonDownModels.Location = new Point(919, 55);
+            buttonDownModels.Location = new Point(946, 54);
             buttonDownModels.Name = "buttonDownModels";
             buttonDownModels.Size = new Size(120, 28);
             buttonDownModels.TabIndex = 16;
@@ -660,7 +664,7 @@
             // 
             // buttonGetBase64
             // 
-            buttonGetBase64.Location = new Point(919, 23);
+            buttonGetBase64.Location = new Point(946, 22);
             buttonGetBase64.Name = "buttonGetBase64";
             buttonGetBase64.Size = new Size(120, 28);
             buttonGetBase64.TabIndex = 3;
@@ -670,20 +674,33 @@
             // 
             // buttonInit
             // 
-            buttonInit.Location = new Point(606, 23);
+            buttonInit.BackColor = Color.FromArgb(0, 192, 0);
+            buttonInit.ForeColor = Color.Transparent;
+            buttonInit.Location = new Point(613, 24);
             buttonInit.Name = "buttonInit";
-            buttonInit.Size = new Size(87, 60);
+            buttonInit.Size = new Size(80, 27);
             buttonInit.TabIndex = 0;
             buttonInit.Text = "初始化OCR";
-            buttonInit.UseVisualStyleBackColor = true;
+            buttonInit.UseVisualStyleBackColor = false;
             buttonInit.Click += buttonInit_Click;
+            // 
+            // buttonRecClipboard
+            // 
+            buttonRecClipboard.Enabled = false;
+            buttonRecClipboard.Location = new Point(706, 56);
+            buttonRecClipboard.Name = "buttonRecClipboard";
+            buttonRecClipboard.Size = new Size(110, 27);
+            buttonRecClipboard.TabIndex = 1;
+            buttonRecClipboard.Text = "剪贴板识别";
+            buttonRecClipboard.UseVisualStyleBackColor = true;
+            buttonRecClipboard.Click += buttonRecClipboard_Click;
             // 
             // buttonRec
             // 
             buttonRec.Enabled = false;
-            buttonRec.Location = new Point(699, 23);
+            buttonRec.Location = new Point(706, 23);
             buttonRec.Name = "buttonRec";
-            buttonRec.Size = new Size(120, 28);
+            buttonRec.Size = new Size(110, 27);
             buttonRec.TabIndex = 1;
             buttonRec.Text = "OCR文本识别";
             buttonRec.UseVisualStyleBackColor = true;
@@ -699,6 +716,17 @@
             tabControlMain.SelectedIndex = 0;
             tabControlMain.Size = new Size(1092, 692);
             tabControlMain.TabIndex = 1;
+            // 
+            // buttonRecPDF
+            // 
+            buttonRecPDF.Enabled = false;
+            buttonRecPDF.Location = new Point(825, 24);
+            buttonRecPDF.Name = "buttonRecPDF";
+            buttonRecPDF.Size = new Size(109, 25);
+            buttonRecPDF.TabIndex = 26;
+            buttonRecPDF.Text = "PDF识别";
+            buttonRecPDF.UseVisualStyleBackColor = true;
+            buttonRecPDF.Click += buttonRecPDF_Click;
             // 
             // MainForm
             // 
@@ -797,5 +825,7 @@
         private Button btnUVDocFreeEngine;
         private CheckBox chkReturnWordBox;
         private SplitContainer splitContainerOCR;
+        private Button buttonRecClipboard;
+        private Button buttonRecPDF;
     }
 }
