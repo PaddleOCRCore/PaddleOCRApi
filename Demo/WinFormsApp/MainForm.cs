@@ -203,13 +203,22 @@ namespace WinFormsApp
             {
                 LogMessage(result);
                 if (outPutJson)
-                    LogMessage($"输出json: {ocrResult.JsonText}");
+                {
+                    if (!string.IsNullOrEmpty(ocrResult.JsonText))
+                    {
+                        string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                        LogMessage($"输出json: {formattedJson}");
+                    }
+                }
             }
             else
             {
                 LogMessage("识别失败:" + ocrService.GetError());
                 if (!string.IsNullOrEmpty(ocrResult.JsonText))
-                    LogMessage($"输出json: {ocrResult.JsonText}");
+                {
+                    string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                    LogMessage($"输出json: {formattedJson}");
+                }
             }
             return result;
         }
@@ -314,8 +323,13 @@ namespace WinFormsApp
                 {
                     LogMessage(result);
                     if (outPutJson)
-                        LogMessage($"输出json: {ocrResult.JsonText}");
-                    
+                    {
+                        if (!string.IsNullOrEmpty(ocrResult.JsonText))
+                        {
+                            string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                            LogMessage($"输出json: {formattedJson}");
+                        }
+                    }
                     // 显示识别结果图片（OCR引擎自动生成到output目录）
                     string resultImageFileName = Path.GetFileName(clipboardImagePath);
                     string resultImagePath = Path.Combine(RecFilepath, resultImageFileName);
@@ -328,7 +342,10 @@ namespace WinFormsApp
                 {
                     LogMessage("识别失败:" + ocrService.GetError());
                     if (!string.IsNullOrEmpty(ocrResult.JsonText))
-                        LogMessage($"输出json: {ocrResult.JsonText}");
+                    {
+                        string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                        LogMessage($"输出json: {formattedJson}");
+                    }
                 }
 
                 clipboardImage.Dispose();
@@ -416,13 +433,22 @@ namespace WinFormsApp
                 {
                     LogMessage(result);
                     if (outPutJson)
-                        LogMessage($"输出json: {ocrResult.JsonText}");
+                    {
+                        if (!string.IsNullOrEmpty(ocrResult.JsonText))
+                        {
+                            string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                            LogMessage($"输出json: {formattedJson}");
+                        }
+                    }
                 }
                 else
                 {
                     LogMessage("识别失败:" + ocrService.GetError());
                     if (!string.IsNullOrEmpty(ocrResult.JsonText))
-                        LogMessage($"输出json: {ocrResult.JsonText}");
+                    {
+                        string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                        LogMessage($"输出json: {formattedJson}");
+                    }
                 }
             }
             catch (Exception ex)

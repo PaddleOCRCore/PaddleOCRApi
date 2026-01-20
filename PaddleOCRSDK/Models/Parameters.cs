@@ -151,7 +151,7 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 表示文本框的紧致程度，越小则文本框更靠近文本
         /// </summary>
-        public float det_db_unclip_ratio { get; set; } = 1.6f;
+        public float det_db_unclip_ratio { get; set; } = 1.3f;
         /// <summary>
         /// 是否在输出映射上使用膨胀
         /// </summary>

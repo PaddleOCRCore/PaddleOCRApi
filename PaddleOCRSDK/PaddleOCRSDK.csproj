@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.0" />
+    <PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta01" />
   </ItemGroup>
 	<ItemGroup>
 		<None Include="$(SolutionDir)PaddleOCRSDK\PaddleOCR\**">
