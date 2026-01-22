@@ -29,7 +29,7 @@ Supports the latest PP-OCRv5_mobile/PP-OCRv5_server models, backward compatible 
 
 > 💡 **Note**: The open-source version is suitable for learning and research. For commercial projects, paid versions are recommended for better performance and technical support. For paid version details, contact developer QQ: **2380243976**
 
-Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOCR.dll接口清单.md](Doc/PaddleOCR.dll接口清单.md)
+Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOCR.dll接口清单.md](docs/PaddleOCR.dll接口清单.md)
 
 ## ✨ Features
 
@@ -87,7 +87,7 @@ PaddleOCRWebApi/
 │       ├── MainForm.cs         # Main form
 │       └── Services/           # Service layer
 │
-├── Doc/                        # Documentation
+├── docs/                        # Documentation
 └── README.md                   # Project documentation
 ```
 
@@ -290,11 +290,11 @@ If this project helps you, please scan the QR code below to buy us a coffee.
 
 ## 📝 Changelog
 
-For detailed update history, please see: [Changelog](./Doc/CHANGELOG_EN.md)
+For detailed update history, please see: [Changelog](./docs/CHANGELOG_EN.md)
 
 ## 🔍 FAQ
 
-For frequently asked questions, please see: [FAQ](./Doc/FAQ_EN.md)
+For frequently asked questions, please see: [FAQ](./docs/FAQ_EN.md)
 
 ## 🙏 Acknowledgments
 
