@@ -1,17 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-   <Version>4.0.0</Version>
+    <!-- Package Identity -->
+    <PackageId>PaddleOCRSDK</PackageId>
+    <Version>4.0.1</Version>
+    <Authors>PaddleOCRCore</Authors>
+    <Company>PaddleOCRCore</Company>
+    
+    <!-- Package Description -->
+    <Title>PaddleOCR SDK for .NET</Title>
+    <Description>PaddleOCRSDK offline OCR component, supporting CPU/GPU acceleration and providing text detection, text recognition, text direction classification, table recognition, and other functionalities.</Description>
+    <PackageTags>OCR;PaddleOCR;.NET;Paddle;文字识别;离线OCR</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <!-- License and Copyright -->
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Copyright>Copyright (c) PaddleOCRCore</Copyright>
+    
+    <!-- Repository Information -->
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/PaddleOCRCore/PaddleOCRApi</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/PaddleOCRCore/PaddleOCRApi</PackageProjectUrl>
+    
+    <!-- Optional: Icon and Release Notes -->
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReleaseNotes>See https://github.com/PaddleOCRCore/PaddleOCRApi/releases for release notes.</PackageReleaseNotes>
+    
+    <!-- Build Settings -->
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    
+    <!-- NuGet Health Settings -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta02" />
-  </ItemGroup>
+  
 	<ItemGroup>
-		<None Include="$(SolutionDir)PaddleOCRSDK\PaddleOCR\**">
+		<None Include="PaddleOCR\**">
 			<Pack>true</Pack>
 			<PackageCopyToOutput>true</PackageCopyToOutput>
 			<PackagePath>build\PaddleOCR</PackagePath>
 		</None>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Remove="OCRModels\**" />
@@ -19,11 +51,15 @@
 	  <None Remove="OCRModels\**" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="$(SolutionDir)PaddleOCRSDK\PaddleOCRSDK.targets">
+		<None Include="PaddleOCRSDK.targets">
 	    <Pack>true</Pack>
 	    <PackageCopyToOutput>true</PackageCopyToOutput>
 	    <PackagePath>build</PackagePath>
 	  </None>
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Update="Images\ocrDemo.png">
@@ -32,4 +68,7 @@
 	    <Pack>true</Pack>
 	  </None>
 	</ItemGroup>
+	
+	<!-- Import local targets for packaging and publishing to NuGet -->
+	<Import Project="PaddleOCRSDK.targets" Condition="Exists('PaddleOCRSDK.targets')" />
 </Project>

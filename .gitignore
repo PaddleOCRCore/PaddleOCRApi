@@ -1,5 +1,5 @@
 ################################################################################
-# ´Ë .gitignore ÎÄ¼þÒÑÓÉ Microsoft(R) Visual Studio ×Ô¶¯´´½¨¡£
+# ï¿½ï¿½ .gitignore ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ Microsoft(R) Visual Studio ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ################################################################################
 
 /.vs
@@ -47,3 +47,6 @@ paddle_inference.dll
 /x64
 /OCRCoreService/Properties/PublishProfiles
 /OCRCoreService/Properties/PublishProfiles/FolderProfile.pubxml
+/PaddleOCRSDK/nupkgs
+/PaddleOCRSDK/sdk_push_nuget.bat
+/Demo/nuget

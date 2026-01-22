@@ -12,12 +12,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+using Newtonsoft.Json;
+using PaddleOCRSDK.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace PaddleOCRSDK
 {
@@ -450,6 +451,65 @@ namespace PaddleOCRSDK
         public void FreeTableEngine()
         {
             OCRSDK.FreeTableEngine();
+        }
+
+        /// <summary>
+        /// 以图找图：在大图中查找小图
+        /// </summary>
+        /// <param name="bigImagePath">大图路径</param>
+        /// <param name="smallImagePath">小图路径</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认0.8。滑块找图建议0.2左右</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false</param>
+        /// <returns>返回FindImageResult对象，包含匹配结果和位置信息</returns>
+        public FindImageResult FindImage(string bigImagePath, string smallImagePath, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false)
+        {
+            IntPtr result = IntPtr.Zero;
+            try
+            {
+                result = OCRSDK.FindImage(bigImagePath, smallImagePath, threshold, toGray, useSlideMatch);
+                
+                if (result == IntPtr.Zero)
+                {
+                    var lastErr = GetError();
+                    return new FindImageResult
+                    {
+                        Success = false,
+                        Message = string.IsNullOrEmpty(lastErr) ? "查找失败，返回结果为空" : "查找失败：" + lastErr,
+                        Data = null
+                    };
+                }
+
+                string json = MarshalUtf8.PtrToStringUTF8(result);
+                
+                if (string.IsNullOrEmpty(json))
+                {
+                    return new FindImageResult
+                    {
+                        Success = false,
+                        Message = "查找失败，返回结果为空",
+                        Data = null
+                    };
+                }
+
+                return DeObject<FindImageResult>(json);
+            }
+            catch (Exception ex)
+            {
+                return new FindImageResult
+                {
+                    Success = false,
+                    Message = $"以图找图异常: {ex.Message}",
+                    Data = null
+                };
+            }
+            finally
+            {
+                if (result != IntPtr.Zero)
+                {
+                    OCRSDK.FreeResultBuffer(result);
+                }
+            }
         }
     }
 }

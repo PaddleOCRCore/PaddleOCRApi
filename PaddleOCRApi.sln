@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35327.3
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OCRCoreService", "OCRCoreService\OCRCoreService.csproj", "{6119DC15-BFEC-4B5C-8158-4F56D1D96F31}"
 EndProject
@@ -13,13 +13,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PaddleOCRCpp", "Demo\CPP\Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaddleOCRSDK", "PaddleOCRSDK\PaddleOCRSDK.csproj", "{6FA30DB4-6710-4C78-BA55-919F9E0C32A0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{BB893EE8-0181-4694-8288-41DADBBAC75D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{BB893EE8-0181-4694-8288-41DADBBAC75D}"
 	ProjectSection(SolutionItems) = preProject
-		Doc\CHANGELOG.md = Doc\CHANGELOG.md
-		Doc\CHANGELOG_EN.md = Doc\CHANGELOG_EN.md
-		Doc\FAQ.md = Doc\FAQ.md
-		Doc\FAQ_EN.md = Doc\FAQ_EN.md
-		Doc\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf = Doc\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf
+		docs\CHANGELOG.md = docs\CHANGELOG.md
+		docs\CHANGELOG_EN.md = docs\CHANGELOG_EN.md
+		docs\FAQ.md = docs\FAQ.md
+		docs\FAQ_EN.md = docs\FAQ_EN.md
+		docs\PaddleOCR.dll接口清单.docx = docs\PaddleOCR.dll接口清单.docx
+		docs\PaddleOCR.dll接口清单.md = docs\PaddleOCR.dll接口清单.md
+		docs\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf = docs\PaddleOCRWebApi接口使用说明书_v2.0.0.pdf
 		README.md = README.md
 		README_EN.md = README_EN.md
 	EndProjectSection

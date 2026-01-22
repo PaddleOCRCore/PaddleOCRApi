@@ -1,4 +1,6 @@
-﻿namespace WinFormsApp.UserControl
+﻿using System.ComponentModel;
+
+namespace WinFormsApp.UserControl
 {
     public partial class PictureView : PictureBox
     {
@@ -25,6 +27,7 @@
             this.MouseWheel += PictureView_MouseWheel;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ImgPath
         {
             set

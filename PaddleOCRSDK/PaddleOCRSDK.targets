@@ -1,5 +1,30 @@
 <Project>
-  <Target Name="CopyPaddleModels" AfterTargets="Build">
-      <Message Text="PaddleOCRSDK library" Importance="high" />
+  <PropertyGroup>
+    <!-- NuGet settings: can be overridden with MSBuild properties or environment variables -->
+    <NuGetApiKey Condition=" '$(NuGetApiKey)' == '' ">$(NUGET_API_KEY)</NuGetApiKey>
+    <NuGetSource Condition=" '$(NuGetSource)' == '' ">https://api.nuget.org/v3/index.json</NuGetSource>
+    <NuGetOutputDir>$(MSBuildProjectDirectory)\nupkgs</NuGetOutputDir>
+  </PropertyGroup>
+
+  <Target Name="PackAndPushToNuGet" DependsOnTargets="_PackProjectIfNeeded">
+    <Message Text="Packing project $(MSBuildProjectName) to $(NuGetOutputDir)" Importance="high" />
+    <MakeDir Directories="$(NuGetOutputDir)" />
+
+    <!-- dotnet pack the project (use project file path) -->
+    <Exec Command="dotnet pack &quot;$(MSBuildProjectFullPath)&quot; -c $(Configuration) -o &quot;$(NuGetOutputDir)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
+
+    <Message Text="Pushing nupkgs from $(NuGetOutputDir) to $(NuGetSource)" Importance="high" />
+
+    <!-- push all packages in output. Use NuGetApiKey or environment variable NUGET_API_KEY -->
+    <Exec Command="dotnet nuget push &quot;$(NuGetOutputDir)\*.nupkg&quot; -s $(NuGetSource) -k $(NuGetApiKey) --skip-duplicate" WorkingDirectory="$(NuGetOutputDir)" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="NuGetPushExitCode" />
+    </Exec>
+
+    <Error Condition="'$(NuGetPushExitCode)' != '' and '$(NuGetPushExitCode)' != '0'" Text="NuGet push failed with exit code $(NuGetPushExitCode)." />
+  </Target>
+
+  <!-- Helper target to allow calling PackAndPushToNuGet standalone if needed -->
+  <Target Name="_PackProjectIfNeeded">
+    <Message Text="Ensuring project is packed before push (no-op if nupkg exists)." Importance="low" />
   </Target>
 </Project>

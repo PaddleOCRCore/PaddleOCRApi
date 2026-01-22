@@ -58,6 +58,7 @@
             pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             textBoxResult = new TextBox();
             groupBox1 = new GroupBox();
+            buttonRecPDF = new Button();
             chkReturnWordBox = new CheckBox();
             buttonFreeEngine = new Button();
             buttonPostFile = new Button();
@@ -84,7 +85,6 @@
             buttonRecClipboard = new Button();
             buttonRec = new Button();
             tabControlMain = new TabControl();
-            buttonRecPDF = new Button();
             tabPageImageCorrection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
             splitContainerUVDoc.Panel1.SuspendLayout();
@@ -454,6 +454,17 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "OCR文本识别功能选项";
             // 
+            // buttonRecPDF
+            // 
+            buttonRecPDF.Enabled = false;
+            buttonRecPDF.Location = new Point(825, 24);
+            buttonRecPDF.Name = "buttonRecPDF";
+            buttonRecPDF.Size = new Size(109, 25);
+            buttonRecPDF.TabIndex = 26;
+            buttonRecPDF.Text = "PDF识别";
+            buttonRecPDF.UseVisualStyleBackColor = true;
+            buttonRecPDF.Click += buttonRecPDF_Click;
+            // 
             // chkReturnWordBox
             // 
             chkReturnWordBox.AutoSize = true;
@@ -717,17 +728,6 @@
             tabControlMain.Size = new Size(1092, 692);
             tabControlMain.TabIndex = 1;
             // 
-            // buttonRecPDF
-            // 
-            buttonRecPDF.Enabled = false;
-            buttonRecPDF.Location = new Point(825, 24);
-            buttonRecPDF.Name = "buttonRecPDF";
-            buttonRecPDF.Size = new Size(109, 25);
-            buttonRecPDF.TabIndex = 26;
-            buttonRecPDF.Text = "PDF识别";
-            buttonRecPDF.UseVisualStyleBackColor = true;
-            buttonRecPDF.Click += buttonRecPDF_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -737,7 +737,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PaddleOCR识别Demo V4.0.0--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
+            Text = "PaddleOCR识别Demo V4.0.1--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
             Load += MainForm_Load;
             tabPageImageCorrection.ResumeLayout(false);
             splitContainerUVDoc.Panel1.ResumeLayout(false);
