@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta01" />
+	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta02" />
 	<PackageReference Include="PDFtoImage" Version="5.2.0" />
 	<PackageReference Include="SkiaSharp" Version="3.119.1" />
   </ItemGroup>

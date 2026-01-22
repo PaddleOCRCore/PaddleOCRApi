@@ -29,6 +29,8 @@ Supports the latest PP-OCRv5_mobile/PP-OCRv5_server models, backward compatible 
 
 > 💡 **Note**: The open-source version is suitable for learning and research. For commercial projects, paid versions are recommended for better performance and technical support. For paid version details, contact developer QQ: **2380243976**
 
+Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOCR.dll接口清单.md](Doc/PaddleOCR.dll接口清单.md)
+
 ## ✨ Features
 
 - ✅ **Multi-Language Support**: C#, C++, Java, Python, Go
@@ -123,7 +125,7 @@ For detailed WebAPI documentation, please refer to: [WebApi Documentation](./OCR
 
 ### Basic Requirements
 
-OCRCoreService (WebAPI) and WinForms project require VS2022 + .NET 8.0
+OCRCoreService (WebAPI) and WinForms project require VS2026 + .NET10.0
 
 ### Inference Library Version
 
@@ -137,7 +139,7 @@ OCRCoreService (WebAPI) and WinForms project require VS2022 + .NET 8.0
 
 ### .NET Platform Support
 
-Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.0; net8.0; net9.0
+Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.0; net8.0; net9.0; net10.0
 
 ### WinFormDemo Preview
 

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta01" />
+	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta02" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

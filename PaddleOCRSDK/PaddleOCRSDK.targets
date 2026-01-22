@@ -1,11 +1,5 @@
 <Project>
-	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)\PaddleOCR\*.*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<Visible>false</Visible>
-		</None>
-	</ItemGroup>
   <Target Name="CopyPaddleModels" AfterTargets="Build">
-      <Message Text="Copy PaddleOCR models and C++ dynamic link library" Importance="high" />
+      <Message Text="PaddleOCRSDK library" Importance="high" />
   </Target>
 </Project>
