@@ -26,7 +26,7 @@
 
 **喜欢的请给本项目点一个免费的Star ⭐**
 
-支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4/V3模型及自训练模型
+支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4模型及自训练模型
 
 > 💡 **说明**：开源版本为Windows CPU-飞浆推理库版，GPU版本依赖库进群 **475159576** 下载，更多高性能推理等更多版本请联系作者定制：QQ:**2380243976**
 
@@ -51,12 +51,12 @@
 ```
 PaddleOCRWebApi/
 ├── PaddleOCRSDK/                  # OCR核心SDK项目
-│   ├── Services/                  # OCR服务实现
+│   ├── PaddleOCR/                  # OCR服务实现
+│   │   ├── IOCRService.cs         # OCR服务接口
 │   │   ├── OCRService.cs         # OCR识别服务
 │   │   └── OCRSDK.cs             # SDK核心封装
 │   ├── UVDoc/                    # 文本图像矫正模块
 │   │   └── ...                   # 文档几何变换、透视矫正等功能
-│   ├── Interface/                # 接口定义
 │   ├── Models/                   # 数据模型
 │   └── PaddleOCRSDK.csproj      # SDK项目文件
 │
@@ -146,7 +146,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 
 ### WinFormDemo预览
 
-<img src="./PaddleOCRSDK/PaddleOCR/ocrDemo.png" width="800px;" />
+<img src="./PaddleOCRSDK/Images/ocrDemo.png" width="800px;" />
 
 
 ## 📋 调用参数说明
@@ -240,13 +240,13 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 
 若您喜欢本项目，请点击免费的 **Star ⭐**
 
-<img src="./PaddleOCRSDK/PaddleOCR/qq.png" width="200px;" />
+<img src="./PaddleOCRSDK/Images/qq.png" width="200px;" />
 
 ## ☕ 捐助
 
 如果这个项目对您有所帮助，请扫下方二维码打赏一杯咖啡。
 
-<img src="./PaddleOCRSDK/PaddleOCR/donate.jpg" width="200px;" />
+<img src="./PaddleOCRSDK/Images/donate.jpg" width="200px;" />
 
 ## 🎯 技术架构
 

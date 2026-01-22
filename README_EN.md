@@ -38,7 +38,7 @@ Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOC
 - ✅ **Easy Integration**: WebAPI service for online calling
 - ✅ **Multi-Threading**: Concurrent processing with automatic memory management
 - ✅ **Offline Operation**: No internet required, secure data processing
-- ✅ **Rich Models**: Support for PP-OCRv5/v4/v3 series models
+- ✅ **Rich Models**: Support for PP-OCRv5/v4 series models
 - ✅ **Comprehensive Features**: Text detection, recognition, orientation classification, table recognition
 - ✅ **Image Correction**: Document image geometric transformation, correcting distortion, tilt, and perspective deformation to improve recognition accuracy
 
@@ -47,12 +47,12 @@ Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOC
 ```
 PaddleOCRWebApi/
 ├── PaddleOCRSDK/                  # Core OCR SDK project
-│   ├── Services/                  # OCR service implementation
+│   ├── PaddleOCR/                  # OCR service implementation
+│   │   ├── IOCRService.cs         # Interface definitions
 │   │   ├── OCRService.cs         # OCR recognition service
 │   │   └── OCRSDK.cs             # SDK core wrapper
 │   ├── UVDoc/                    # Document image correction module
 │   │   └── ...                   # Geometric transformation, perspective correction
-│   ├── Interface/                # Interface definitions
 │   ├── Models/                   # Data models
 │   └── PaddleOCRSDK.csproj      # SDK project file
 │
@@ -143,7 +143,7 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 
 ### WinFormDemo Preview
 
-<img src="./PaddleOCRSDK/PaddleOCR/ocrDemo.png" width="800px;" />
+<img src="./PaddleOCRSDK/Images/ocrDemo.png" width="800px;" />
 
 
 ## 📋 Parameter Description
@@ -240,13 +240,13 @@ Welcome to join QQ group **475159576** for discussion, or add QQ for custom proj
 
 If you like this project, please give us a free **Star ⭐**
 
-<img src="./PaddleOCRSDK/PaddleOCR/qq.png" width="200px;" />
+<img src="./PaddleOCRSDK/Images/qq.png" width="200px;" />
 
 ## ☕ Donation
 
 If this project helps you, please scan the QR code below to buy us a coffee.
 
-<img src="./PaddleOCRSDK/PaddleOCR/donate.jpg" width="200px;" />
+<img src="./PaddleOCRSDK/Images/donate.jpg" width="200px;" />
 
 ## 🎯 Technical Architecture
 
