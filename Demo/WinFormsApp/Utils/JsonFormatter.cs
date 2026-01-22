@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace PaddleOCRSDK
+namespace WinFormsApp.Utils
 {
     public class JsonFormatter
     {
