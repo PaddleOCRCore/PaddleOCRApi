@@ -168,5 +168,18 @@ namespace PaddleOCRSDK
         /// <param name="buffer"></param>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern void FreeResultBuffer(IntPtr buffer);
+
+        // ==================== 以图找图API ====================
+        /// <summary>
+        /// 以图找图：在大图中查找小图，返回JSON字符串
+        /// </summary>
+        /// <param name="bigImagePath">大图路径</param>
+        /// <param name="smallImagePath">小图路径</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认0.8</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false，滑块找图请将threshold改为0.2左右</param>
+        /// <returns>返回JSON格式的匹配结果</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr FindImage(string bigImagePath, string smallImagePath, double threshold, bool toGray, bool useSlideMatch);
     }
 }
