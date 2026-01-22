@@ -17,8 +17,8 @@
 - [调用参数说明](#-调用参数说明)
 - [GPU环境配置](#-gpu环境配置)
 - [开发交流](#开发交流群)
-- [更新日志]([更新日志](./Doc/CHANGELOG.md))
-- [常见问题]([常见问题](./Doc/FAQ.md))
+- [更新日志]([更新日志](./docs/CHANGELOG.md))
+- [常见问题]([常见问题](./docs/FAQ.md))
 
 ## 🚀 简介
 
@@ -31,7 +31,7 @@
 > 💡 **说明**：开源版本为Windows CPU-飞浆推理库版，GPU版本依赖库进群 **475159576** 下载，更多高性能推理等更多版本请联系作者定制：QQ:**2380243976**
 
 ## 📁 相关文档
-- 核心C++动态链接库PaddleOCR.dll接口文档： [PaddleOCR.dll接口清单.md](Doc/PaddleOCR.dll接口清单.md)
+- 核心C++动态链接库PaddleOCR.dll接口文档： [PaddleOCR.dll接口清单.md](docs/PaddleOCR.dll接口清单.md)
 - OCRCoreService WebAPI接口文档：[WebApi接口文档](./OCRCoreService/README.md)
 
 ## ✨ 项目特性
@@ -91,7 +91,7 @@ PaddleOCRWebApi/
 │       ├── MainForm.cs         # 主窗体
 │       └── Services/           # 服务层
 │
-├── Doc/                        # 文档资料
+├── docs/                        # 文档资料
 └── README.md                   # 项目说明文档
 ```
 
