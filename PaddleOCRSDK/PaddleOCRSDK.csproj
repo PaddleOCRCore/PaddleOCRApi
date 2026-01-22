@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta01" />
+    <PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1-beta02" />
   </ItemGroup>
 	<ItemGroup>
 		<None Include="$(SolutionDir)PaddleOCRSDK\PaddleOCR\**">
@@ -23,6 +23,13 @@
 	    <Pack>true</Pack>
 	    <PackageCopyToOutput>true</PackageCopyToOutput>
 	    <PackagePath>build</PackagePath>
+	  </None>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Images\ocrDemo.png">
+	    <PackagePath>build\PaddleOCR</PackagePath>
+	    <PackageCopyToOutput>true</PackageCopyToOutput>
+	    <Pack>true</Pack>
 	  </None>
 	</ItemGroup>
 </Project>

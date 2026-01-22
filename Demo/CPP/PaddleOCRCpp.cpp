@@ -44,21 +44,14 @@ void GetFileList(string directoryPath, vector<string>& files)
     // 关闭目录句柄
     FindClose(hFind);
 }
-string ConvertWStringToString(const wstring& wstr) {
-    wstring_convert<codecvt_utf8<wchar_t>> converter;
-    return converter.to_bytes(wstr);
-}
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);//解决控制台中文乱码，使用UTF-8编码
     char path[MAX_PATH];
     GetCurrentDirectoryA(MAX_PATH, path);
-    string det_infer(path);
-    det_infer += "/models/PP-OCRv5_mobile_det_infer";
-    string rec_infer(path);
-    rec_infer += "/models/PP-OCRv5_mobile_rec_infer";
-    string cls_infer(path);
-    cls_infer += "/models/PP-LCNet_x1_0_textline_ori";
+    string det_infer = "models/PP-OCRv5_mobile_det_infer";
+    string rec_infer = "models/PP-OCRv5_mobile_rec_infer";
+    string cls_infer = "models/PP-LCNet_x1_0_textline_ori";
     OCRParameter parameter;
     parameter.use_gpu = false;//是否使用GPU
     parameter.cpu_threads = 30;//CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快，默认10

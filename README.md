@@ -17,17 +17,22 @@
 - [调用参数说明](#-调用参数说明)
 - [GPU环境配置](#-gpu环境配置)
 - [开发交流](#开发交流群)
-- [更新日志](#更新日志)
+- [更新日志]([更新日志](./Doc/CHANGELOG.md))
+- [常见问题]([常见问题](./Doc/FAQ.md))
 
 ## 🚀 简介
 
-基于百度飞桨PaddleOCR深度封装的完全离线文字识别组件，提供简洁易用的API接口，支持C#/C++/Java/Python/Go等多种开发语言。完全免费使用，免费升级，支持多线程并发，支持内存自动回收。基于百度飞桨PaddleOCR封装的C++动态链接库，支持最新paddle_inference3.2.2推理库。
+基于PaddleOCR深度封装的完全离线文字识别组件，提供简洁易用的API接口，支持CPU/GPU，支持C#/C++/Java/Python/Go等多种开发语言。完全免费使用，免费升级，支持多线程并发，支持内存自动回收，支持最新paddle_inference3.2.2推理库。
 
 **喜欢的请给本项目点一个免费的Star ⭐**
 
 支持最新PP-OCRv5_mobile/PP-OCRv5_server模型，向下兼容V4/V3模型及自训练模型
 
-> 💡 **说明**：开源版本为Windows CPU-飞浆推理库版，需要高性能推理等更多版本请联系作者定制：QQ:**2380243976**
+> 💡 **说明**：开源版本为Windows CPU-飞浆推理库版，GPU版本依赖库进群 **475159576** 下载，更多高性能推理等更多版本请联系作者定制：QQ:**2380243976**
+
+## 📁 相关文档
+- 核心C++动态链接库PaddleOCR.dll接口文档： [PaddleOCR.dll接口清单.md](Doc/PaddleOCR.dll接口清单.md)
+- OCRCoreService WebAPI接口文档：[WebApi接口文档](./OCRCoreService/README.md)
 
 ## ✨ 项目特性
 
@@ -39,6 +44,7 @@
 - ✅ **模型丰富**: 支持PP-OCRv5/v4/v3全系列模型
 - ✅ **功能全面**: 文字检测、识别、方向分类、表格识别
 - ✅ **图像矫正**: 文本图像几何变换，纠正文档扭曲、倾斜、透视变形，提升识别准确率
+- ✅ **以图找图**: 在大图中找到小图输出小图位置坐标，支持登录验证滑块识别
 
 ## 📁 项目结构
 
@@ -117,13 +123,12 @@ dotnet run --urls http://*:5000
 http://localhost:5000/swagger/index.html
 ```
 
-详细的WebAPI接口文档请参考：[WebApi接口文档](./OCRCoreService/README.md)
 
 ## 🔧 运行环境
 
 ### 基础环境要求
 
-OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
+OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 
 ### 推理库版本说明
 
@@ -137,7 +142,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
 
 ### .NET平台支持
 
-支持框架：netstandard2.0; net45; net461; net47; net48; net6.0; net7.0; net8.0; net9.0
+支持框架：netstandard2.0; net45; net461; net47; net48; net6.0; net7.0; net8.0; net9.0; net10.0
 
 ### WinFormDemo预览
 
@@ -281,14 +286,6 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2022+.net8.0：
 3. **方向分类** → 文字方向校正（可选）
 4. **文字识别** → CRNN识别文字内容
 5. **结果输出** → JSON/文本格式返回
-
-## 📝 更新日志
-
-详细的更新历史请查看：[更新日志](./Doc/CHANGELOG.md)
-
-## 🔍 常见问题 (FAQ)
-
-详细的常见问题请查看：[常见问题](./Doc/FAQ.md)
 
 ## 🙏 致谢
 

@@ -15,12 +15,13 @@
 // limitations under the License.
 
 using PaddleOCRSDK;
+using SkiaSharp;
 using System;
 using System.Diagnostics;
 using System.Text;
 using WinFormsApp.Services;
 using WinFormsApp.Utils;
-using SkiaSharp;
+
 
 namespace WinFormsApp
 {
@@ -57,7 +58,7 @@ namespace WinFormsApp
             {
                 comboBoxuse_gpu.SelectedIndex = 0;
                 comboBoxJson.SelectedIndex = 0;
-                comboBoxModel.SelectedIndex = 0;
+                comboBoxModel.SelectedIndex = 2;
                 RecFilepath = Path.Combine(Application.StartupPath, "output");
                 if (!Directory.Exists(RecFilepath))
                 {
