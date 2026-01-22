@@ -47,3 +47,8 @@ paddle_inference.dll
 /x64
 /OCRCoreService/Properties/PublishProfiles
 /OCRCoreService/Properties/PublishProfiles/FolderProfile.pubxml
+/PaddleOCRSDK/nupkgs
+/Demo/PaddleOCRRuntime_x64.4.0.1
+/Demo/PaddleOCRRuntime_x64.targets
+/PaddleOCRSDK/pack_and_push_nuget.bat
+/Demo/nuget
