@@ -46,3 +46,4 @@ paddle_inference.dll
 /PaddleOCRSDK/obj
 /x64
 /OCRCoreService/Properties/PublishProfiles
+/OCRCoreService/Properties/PublishProfiles/FolderProfile.pubxml
