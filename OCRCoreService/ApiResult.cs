@@ -148,6 +148,10 @@ namespace OCRCoreService
         /// </summary>
         public bool enable_mkldnn { get; set; } = true;
         /// <summary>
+        /// 使用GPU预测时，是否启动tensorrt
+        /// </summary>
+        public bool use_tensorrt { get; set; } = false;
+        /// <summary>
         /// GPU id，使用GPU时有效
         /// </summary>
         public int gpu_id { get; set; } = 0;

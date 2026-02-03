@@ -18,6 +18,7 @@ using PaddleOCRSDK;
 using SkiaSharp;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using WinFormsApp.Services;
@@ -36,6 +37,7 @@ namespace WinFormsApp
         public static int cpu_mem = 4000;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
         public static string RecFilepath = "";
         public static bool outPutJson = false;//是否输出JSON
+        public static bool use_tensorrt = false;//使用GPU预测时，是否启动tensorrt
         public static int recCount = 1; //OCR识别时同一张图片模拟调用接口次数
         public static int model_type = 0;//模型类型：0是V5 Mobile，1是V5 Server， 2是V4 Mobile
         private bool isInitSuccess = false; // OCR是否初始化成功
@@ -57,8 +59,6 @@ namespace WinFormsApp
         {
             try
             {
-                comboBoxuse_gpu.SelectedIndex = 0;
-                comboBoxJson.SelectedIndex = 0;
                 comboBoxModel.SelectedIndex = 0;
                 RecFilepath = Path.Combine(Application.StartupPath, "output");
                 if (!Directory.Exists(RecFilepath))
@@ -101,6 +101,7 @@ namespace WinFormsApp
                 OCREngine.use_gpu = use_gpu;
                 OCREngine.gpu_id = gpu_id;
                 OCREngine.cpu_threads = cpu_threads;
+                OCREngine.use_tensorrt = use_tensorrt;
                 OCREngine.return_word_box = chkReturnWordBox.Checked;
                 if (model_type == 0)
                 {
@@ -529,11 +530,11 @@ namespace WinFormsApp
             LogMessage($"Image: {filePath}");
             LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             stopwatch.Start();
-            
+
             string ocrResult = ocrService.DetectTable(filePath);
             string css = "<style>table{ border-spacing: 0;} td { border: 1px solid black;}</style>";
             ocrResult = ocrResult.Replace("<html>", "<html>" + css);
-            
+
             // 定义输出文件夹和文件名（使用RecFilepath变量，即output目录）
             string htmlfile = Path.Combine(RecFilepath, $"{Path.GetFileNameWithoutExtension(filePath)}.html");
 
@@ -542,7 +543,7 @@ namespace WinFormsApp
             {
                 Directory.CreateDirectory(RecFilepath);
             }
-            
+
             // 写入HTML文件
             try
             {
@@ -551,7 +552,7 @@ namespace WinFormsApp
                     sw.Write(ocrResult);
                 }
                 LogMessage($"表格识别结果已保存到: {htmlfile}");
-                
+
                 // 使用默认的浏览器打开HTML文件
                 Process.Start(new ProcessStartInfo
                 {
@@ -563,12 +564,12 @@ namespace WinFormsApp
             {
                 LogMessage($"保存或打开HTML文件失败：{ex.Message}");
             }
-            
+
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
             LogMessage(ocrResult);
-            
+
             return ocrResult;
         }
         private void buttonRecTable_Click(object sender, EventArgs e)
@@ -665,30 +666,33 @@ namespace WinFormsApp
             }
 
         }
-        private void comboBoxuse_gpu_SelectedIndexChanged(object sender, EventArgs e)
+        private void chkUseGpu_CheckedChanged(object sender, EventArgs e)
         {
-            switch (this.comboBoxuse_gpu.SelectedIndex)
+            use_gpu = chkUseGpu.Checked;
+            chkUseTensorRT.Enabled = chkUseGpu.Checked && chkUseGpu.Enabled;
+            if (use_gpu)
             {
-                case 0:
-                    use_gpu = false;
-                    break;
-                case 1:
-                    use_gpu = true;
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference解压" + Environment.NewLine);
-                    sb.Append($"解压后将以下dll文件复制到程序运行文件夹中：" + Environment.NewLine);
-                    sb.Append($"paddle\\lib目录下的common.dll和paddle_inference.dll" + Environment.NewLine);
-                    sb.Append($"third_party\\install\\mkldnn\\lib目录下的mkldnn.dll" + Environment.NewLine);
-                    sb.Append($"third_party\\install\\mklml\\lib目录下的libiomp5md.dll和mklml.dll" + Environment.NewLine);
-                    sb.Append($"安装指定版本的CUDA以及CUDNN" + Environment.NewLine);
-                    sb.Append($"复制对应的cublas64_12.dll、cublasLt64_12.dll、cudnn_cnn64_9.dll、cudnn_engines_precompiled64_9.dll、cudnn_engines_runtime_compiled64_9.dll、cudnn_graph64_9.dll、cudnn_heuristic64_9.dll、cudnn_ops64_9.dll、cudnn64_9.dll到程序运行文件夹中" + Environment.NewLine);
-                    sb.Append($"位于C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.9\\bin" + Environment.NewLine);
-                    LogMessage(sb.ToString());
-                    break;
-                default:
-                    use_gpu = false;
-                    break;
+                StringBuilder sb = new StringBuilder();
+                sb.Append($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference解压" + Environment.NewLine);
+                sb.Append($"解压后将以下dll文件复制到程序运行文件夹中：" + Environment.NewLine);
+                sb.Append($"paddle\\lib目录下的common.dll和paddle_inference.dll" + Environment.NewLine);
+                sb.Append($"third_party\\install\\mkldnn\\lib目录下的mkldnn.dll" + Environment.NewLine);
+                sb.Append($"third_party\\install\\mklml\\lib目录下的libiomp5md.dll和mklml.dll" + Environment.NewLine);
+                sb.Append($"安装指定版本的CUDA以及CUDNN" + Environment.NewLine);
+                sb.Append($"复制对应的cublas64_12.dll、cublasLt64_12.dll、cudnn_cnn64_9.dll、cudnn_engines_precompiled64_9.dll、cudnn_engines_runtime_compiled64_9.dll、cudnn_graph64_9.dll、cudnn_heuristic64_9.dll、cudnn_ops64_9.dll、cudnn64_9.dll到程序运行文件夹中" + Environment.NewLine);
+                sb.Append($"位于C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.9\\bin" + Environment.NewLine);
+                LogMessage(sb.ToString());
             }
+        }
+
+        private void chkJson_CheckedChanged(object sender, EventArgs e)
+        {
+            outPutJson = chkJson.Checked;
+        }
+
+        private void chkUseTensorRT_CheckedChanged(object sender, EventArgs e)
+        {
+            use_tensorrt = chkUseTensorRT.Checked;
         }
 
         private void numDowngpu_id_ValueChanged(object sender, EventArgs e)
@@ -715,23 +719,6 @@ namespace WinFormsApp
         {
             if (numericUpDownThread.Value > 0)
                 recCount = Convert.ToInt32(numericUpDownThread.Value);
-        }
-
-        private void comboBoxJson_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (this.comboBoxJson.SelectedIndex)
-            {
-                case 0:
-                    outPutJson = false;
-                    break;
-                case 1:
-                    outPutJson = true;
-                    break;
-                default:
-                    outPutJson = false;
-                    break;
-            }
-
         }
 
         #region LogMessage

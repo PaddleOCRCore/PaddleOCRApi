@@ -40,6 +40,7 @@ namespace WinFormsApp.Services
         public static bool use_cls = true;//是否执行文字方向分类
         public static bool use_angle_cls = true;//是否使用方向分类器
         public static bool return_word_box = false;//是否返回单字坐标
+        public static bool use_tensorrt = false;//使用GPU预测时，是否启动tensorrt
 
         /// <summary>
         /// 初始化OCR引擎
@@ -61,7 +62,8 @@ namespace WinFormsApp.Services
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = false;
+            if(use_gpu)
+                oCRParameter.use_tensorrt = use_tensorrt;
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = gpu_mem;
             oCRParameter.cpu_mem = cpu_mem;
