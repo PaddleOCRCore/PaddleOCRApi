@@ -187,6 +187,7 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | merge_empty_cell             | true    | Whether to merge empty cells                                                                  |
 | table_batch_num              | 1       | table_batch_num                                                                               |
 | return_word_box              | false   | Whether to return per-character coordinates                                                   |
+| ocr_instance_count           | false   | Number of OCR engine instances: default is 1, maximum is 10, suitable for high-concurrency scenarios.  |
 
 For more complete examples, please check the `Demo/` directory for each language example code.
 

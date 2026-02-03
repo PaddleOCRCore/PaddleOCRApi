@@ -189,6 +189,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | merge_empty_cell             | true   | 是否合并空单元格                                                                         |
 | table_batch_num              | 1      | table_batch_num                                                                          |
 | return_word_box              | false  | 是否返回单字坐标                                                                         |
+| ocr_instance_count           | false  | OCR引擎实例数量，默认1，最大10，适用于高并发时使用。                                     |
 
 完整示例请查看 `Demo/` 目录下的各语言示例代码。
 
