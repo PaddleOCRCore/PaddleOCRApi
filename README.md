@@ -22,7 +22,7 @@
 
 ## 🚀 简介
 
-基于PaddleOCR深度封装的完全离线文字识别组件，提供简洁易用的API接口，支持CPU/GPU，支持C#/C++/Java/Python/Go等多种开发语言。完全免费使用，免费升级，支持多线程并发，支持内存自动回收，支持最新paddle_inference3.2.2推理库。
+基于PaddleOCR深度封装的完全离线文字识别组件，提供简洁易用的API接口，支持CPU/GPU，支持C#/C++/Java/Python/Go等多种开发语言。完全免费使用，免费升级，支持多线程并发，支持内存自动回收，支持最新paddle_inference3.3.0推理库。
 
 **喜欢的请给本项目点一个免费的Star ⭐**
 
@@ -133,7 +133,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 
 ### 推理库版本说明
 
-1. **默认paddle_inference3.2.2-CPU版本推理库**，其它推理库请手动下载或自行编译
+1. **默认paddle_inference3.3.0-CPU版本推理库**，其它推理库请手动下载或自行编译
 
 2. **paddle_inference2.6.2版本推理库**请下载Release中的V1.0.5版本
    - CPU版本(PaddleOCRRuntime_x64已包含)：
@@ -272,7 +272,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
                   │
 ┌─────────────────▼───────────────────────┐
 │   Paddle Inference 推理引擎              │
-│    paddle_inference 3.2.2 / 2.6.2       │
+│    paddle_inference 3.3.0 / 2.6.2       │
 └─────────────────┬───────────────────────┘
                   │
 ┌─────────────────▼───────────────────────┐

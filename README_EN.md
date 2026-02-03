@@ -21,7 +21,7 @@
 
 ## 🚀 Introduction
 
-A completely offline Chinese character recognition component based on Baidu's PaddleOCR deep encapsulation, providing a simple and easy-to-use API interface that supports C#/C++/Java/Python/Go and other development languages. Completely free to use and upgrade, supports multi-threading concurrency and automatic memory management. Built on C++ dynamic library wrapper of Baidu's PaddleOCR, supports the latest paddle_inference 3.2.2 inference engine.
+A completely offline Chinese character recognition component based on Baidu's PaddleOCR deep encapsulation, providing a simple and easy-to-use API interface that supports C#/C++/Java/Python/Go and other development languages. Completely free to use and upgrade, supports multi-threading concurrency and automatic memory management. Built on C++ dynamic library wrapper of Baidu's PaddleOCR, supports the latest paddle_inference 3.3.0 inference engine.
 
 **If you like this project, please give us a free Star ⭐**
 
@@ -130,7 +130,7 @@ OCRCoreService (WebAPI) and WinForms project require VS2026 + .NET10.0
 
 ### Inference Library Version
 
-1. **Default paddle_inference 3.2.2 CPU version**, other versions can be downloaded manually or compiled
+1. **Default paddle_inference 3.3.0 CPU version**, other versions can be downloaded manually or compiled
 
 2. **paddle_inference 2.6.2 version** download Release V1.0.5
    - CPU version (included in PaddleOCRRuntime_x64):
@@ -272,7 +272,7 @@ If this project helps you, please scan the QR code below to buy us a coffee.
                   │
 ┌─────────────────▼───────────────────────┐
 │    Paddle Inference Engine              │
-│    paddle_inference 3.2.2 / 2.6.2       │
+│    paddle_inference 3.3.0 / 2.6.2       │
 └─────────────────┬───────────────────────┘
                   │
 ┌─────────────────▼───────────────────────┐
