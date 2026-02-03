@@ -99,7 +99,7 @@ PaddleOCRWebApi/
 
 ### 1. NuGet包安装（推荐）
 
-使用paddle_inference3.2+版本推理库：
+使用paddle_inference3.3+版本推理库：
 
 ```xml
 <PackageReference Include="PaddleOCRSDK" Version="4.1.1" />

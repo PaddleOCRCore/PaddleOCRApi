@@ -95,7 +95,7 @@ PaddleOCRWebApi/
 
 ### 1. NuGet Package Installation (Recommended)
 
-For paddle_inference 3.2+ version:
+For paddle_inference 3.3+ version:
 
 ```xml
 <PackageReference Include="PaddleOCRSDK" Version="4.1.1" />
