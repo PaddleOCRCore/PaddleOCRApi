@@ -123,6 +123,6 @@ namespace PaddleOCRSDK
         /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
         /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false</param>
         /// <returns>返回FindImageResult对象，包含匹配结果和位置信息</returns>
-        FindImageResult c(string bigImagePath, string smallImagePath, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false);
+        FindImageResult FindImage(string bigImagePath, string smallImagePath, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false);
     }
 }
