@@ -74,22 +74,29 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
         /// </summary>
-        /// <param name="modelsPath"></param>
+        /// <param name="modelsPath">模型所在目录，如models</param>
+        /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
         /// <returns></returns>
-        public string InitDefaultOCREngine(string modelsPath)
+        public string InitDefaultOCREngine(string modelsPath="models",bool useV5 = true)
         {
             string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
             string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
+
+            if (!useV5)
+            {
+                det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
+                rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
+            }
             string cls_infer = "PP-LCNet_x1_0_textline_ori";
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
             int gpu_id = 0;//GPUId
             bool enable_mkldnn = true;
-            int cpu_threads = 30; //CPU预测时的线程数
+            int cpu_threads = Environment.ProcessorCount; //CPU预测时的线程数
             InitParamater para = new InitParamater();
-            para.det_infer = Path.Combine(modelsPath, det_infer);
-            para.cls_infer = Path.Combine(modelsPath, cls_infer);
-            para.rec_infer = Path.Combine(modelsPath, rec_infer);
+            para.det_infer = $"{modelsPath}/{det_infer}";
+            para.cls_infer = $"{modelsPath}/{cls_infer}";
+            para.rec_infer = $"{modelsPath}/{rec_infer}";
 
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = use_gpu;
@@ -123,26 +130,32 @@ namespace PaddleOCRSDK
             return msg;
         }
         /// <summary>
-        /// 初始化表格识别引擎默认V4模型，使用CPU及mkldnn
+        /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
         /// </summary>
-        /// <param name="modelsPath"></param>
+        /// <param name="modelsPath">模型所在目录，如models</param>
+        /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
         /// <returns></returns>
-        public string InitDefaultTableEngine(string modelsPath)
+        public string InitDefaultTableEngine(string modelsPath = "models", bool useV5 = true)
         {
-            string det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
-            string rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
+            string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
+            string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
+            if (!useV5)
+            {
+                det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
+                rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
+            }
             string cls_infer = "PP-LCNet_x1_0_textline_ori";//表格分类模块模型
             string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
             int gpu_id = 0;//GPUId
             bool enable_mkldnn = true;
-            int cpu_threads = 30; //CPU预测时的线程数
+            int cpu_threads = Environment.ProcessorCount;  //CPU预测时的线程数
             InitParamater para = new InitParamater();
-            para.det_infer = Path.Combine(modelsPath, det_infer);
-            para.rec_infer = Path.Combine(modelsPath, rec_infer);
-            para.cls_infer = Path.Combine(modelsPath, cls_infer);
-            para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
+            para.det_infer = $"{modelsPath}/{det_infer}";
+            para.cls_infer = $"{modelsPath}/{cls_infer}";
+            para.rec_infer = $"{modelsPath}/{rec_infer}";
+            para.table_model_dir = $"{modelsPath}/{table_model_dir}";
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = use_gpu;
             oCRParameter.use_tensorrt = true;

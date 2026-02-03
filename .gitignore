@@ -50,3 +50,5 @@ paddle_inference.dll
 /PaddleOCRSDK/nupkgs
 /PaddleOCRSDK/sdk_push_nuget.bat
 /Demo/nuget
+/Demo/ConsoleSharp/bin/Release/net10.0
+/Demo/ConsoleSharp/obj

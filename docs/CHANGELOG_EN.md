@@ -1,5 +1,11 @@
 # 📝 Changelog
 
+v4.1.1 2026.2.3
+- ✅ Optimized PaddleOCR.dll: added a multi-instance PaddleOCR recognition engine with a configurable number of instances, suitable for high-concurrency scenarios; optimized memory usage; fixed an issue where recognition results could occasionally be empty; added support for passing screenshots directly as images for recognition.
+- ✅ Released the NuGet package PaddleocrSDK v4.1.1. .NET projects can reference this package directly, or copy and modify the open-source project as needed.
+- ✅ Released the NuGet package PaddleOCRRuntime_x64 v4.1.1, which includes the Paddle 3.3.0 CPU inference library, PaddleOCR.dll, and all required dependencies.
+- ✅ Added a ConsoleSharp console application demo with a simple example demonstrating how to call OCR.
+
 v4.0.1 2026.1.22
 - ✅ Upgraded the project to VS 2026 + .NET 10
 - ✅ Optimized PaddleOCR.dll and added image-to-image search functionality

@@ -66,16 +66,16 @@ namespace PaddleOCRSDK
         /// <summary>
         ///文本识别置信度
         /// </summary>
-        public float Score { get; set; }
+        public float? Score { get; set; }
 
         /// <summary>
         ///角度分类置信度
         /// </summary>
-        public float Cls_score { get; set; }
+        public float? Cls_score { get; set; }
         /// <summary>
         ///角度分类标签
         /// </summary>
-        public int CLs_label { get; set; }
+        public int? CLs_label { get; set; }
     }
 
     /// <summary>
@@ -86,10 +86,10 @@ namespace PaddleOCRSDK
         /// <summary>
         /// X坐标
         /// </summary>
-        public int x;
+        public int? x;
         /// <summary>
         /// Y坐标
         /// </summary>
-        public int y;
+        public int? y;
     }
 }

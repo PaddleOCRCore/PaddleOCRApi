@@ -19,6 +19,7 @@ using SkiaSharp;
 using System;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 using WinFormsApp.Services;
 using WinFormsApp.Utils;
 
@@ -58,7 +59,7 @@ namespace WinFormsApp
             {
                 comboBoxuse_gpu.SelectedIndex = 0;
                 comboBoxJson.SelectedIndex = 0;
-                comboBoxModel.SelectedIndex = 2;
+                comboBoxModel.SelectedIndex = 0;
                 RecFilepath = Path.Combine(Application.StartupPath, "output");
                 if (!Directory.Exists(RecFilepath))
                 {
@@ -169,16 +170,30 @@ namespace WinFormsApp
                 LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR初始化失败:{ex.Message}");
             }
         }
-        private string RecOCR(string filePath)
+        public static string FormatJsonSafe(string json)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(json);
+                return JsonSerializer.Serialize(doc, new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+            }
+            catch (System.Exception)
+            {
+                return json;
+            }
+        }
+        private async Task<string> RecOCRAsync(string filePath)
         {
             string result = "";
             var stopwatch = new Stopwatch();
             var startTime = DateTime.Now;
-            LogMessage($"Image: {filePath}");
             LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             stopwatch.Start();
             //Mat image = Cv2.ImRead(filePath, ImreadModes.Color);
-            OCRResult ocrResult = ocrService.Detect(filePath);
+            OCRResult ocrResult = await Task.Run(() => ocrService.Detect(filePath));
             //OCRResult ocrResult = ocrService.DetectMat(image.CvPtr);使用OpenCvSharp4时,可传入DetectMat(image.CvPtr)
             StringBuilder stringBuilder = new StringBuilder();
             if (ocrResult.Code == 1)
@@ -207,7 +222,7 @@ namespace WinFormsApp
                 {
                     if (!string.IsNullOrEmpty(ocrResult.JsonText))
                     {
-                        string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                        string formattedJson = FormatJsonSafe(ocrResult.JsonText);
                         LogMessage($"输出json: {formattedJson}");
                     }
                 }
@@ -217,14 +232,15 @@ namespace WinFormsApp
                 LogMessage("识别失败:" + ocrService.GetError());
                 if (!string.IsNullOrEmpty(ocrResult.JsonText))
                 {
-                    string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                    string formattedJson = FormatJsonSafe(ocrResult.JsonText);
                     LogMessage($"输出json: {formattedJson}");
                 }
             }
+            LogMessage("===============================================");
             return result;
         }
 
-        private void buttonRec_Click(object sender, EventArgs e)
+        private async void buttonRec_Click(object sender, EventArgs e)
         {
             try
             {
@@ -241,14 +257,18 @@ namespace WinFormsApp
                     {
                         foreach (var regfile in OpenFileDialog1.FileNames)
                         {
+                            LogMessage($"Image: {Path.GetFileName(regfile)}");
                             string filePath = Path.GetFullPath(regfile);
                             recFileName = Path.Combine(RecFilepath, Path.GetFileName(regfile));
-                            result = RecOCR(filePath);
+                            result = await RecOCRAsync(filePath);
+                            if (File.Exists(recFileName))
+                            {
+                                pictureBoxImg.BeginInvoke(() =>
+                                {
+                                    pictureBoxImg.ImgPath = recFileName;
+                                });
+                            }
                         }
-                    }
-                    if (File.Exists(recFileName))
-                    {
-                        pictureBoxImg.ImgPath = recFileName;
                     }
                 }
                 OpenFileDialog1.Dispose();
@@ -327,7 +347,7 @@ namespace WinFormsApp
                     {
                         if (!string.IsNullOrEmpty(ocrResult.JsonText))
                         {
-                            string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                            string formattedJson = FormatJsonSafe(ocrResult.JsonText);
                             LogMessage($"输出json: {formattedJson}");
                         }
                     }
@@ -344,7 +364,7 @@ namespace WinFormsApp
                     LogMessage("识别失败:" + ocrService.GetError());
                     if (!string.IsNullOrEmpty(ocrResult.JsonText))
                     {
-                        string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                        string formattedJson = FormatJsonSafe(ocrResult.JsonText);
                         LogMessage($"输出json: {formattedJson}");
                     }
                 }
@@ -437,7 +457,7 @@ namespace WinFormsApp
                     {
                         if (!string.IsNullOrEmpty(ocrResult.JsonText))
                         {
-                            string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                            string formattedJson = FormatJsonSafe(ocrResult.JsonText);
                             LogMessage($"输出json: {formattedJson}");
                         }
                     }
@@ -447,7 +467,7 @@ namespace WinFormsApp
                     LogMessage("识别失败:" + ocrService.GetError());
                     if (!string.IsNullOrEmpty(ocrResult.JsonText))
                     {
-                        string formattedJson = JsonFormatter.ConvertJsonString(ocrResult.JsonText);
+                        string formattedJson = FormatJsonSafe(ocrResult.JsonText);
                         LogMessage($"输出json: {formattedJson}");
                     }
                 }
