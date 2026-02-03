@@ -57,6 +57,7 @@ struct OCRParameter
 	int rec_img_h = 48; // 识别模型输入图像高度
 	int rec_img_w = 320;//识别模型输入图像宽度
 	bool return_word_box = false; //是否返回单字坐标
+	int ocr_instance_count = 1; // OCR引擎实例数量，默认1，最大10
 };
 /// <summary>
 /// 表格识别参数

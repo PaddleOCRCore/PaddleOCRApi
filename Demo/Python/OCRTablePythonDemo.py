@@ -17,6 +17,13 @@ detect_func = ocr_dll.DetectTable
 enable_json_func = ocr_dll.EnableJsonResult
 enable_log_func = ocr_dll.EnableLog
 
+# 跨平台内存释放函数（替代Windows特有的CoTaskMemFree）
+free_result_buffer_func = ocr_dll.FreeResultBuffer
+free_result_buffer_func.argtypes = [ctypes.c_void_p]
+free_result_buffer_func.restype = None
+
+freeTable_func = ocr_dll.FreeTableEngine
+freeTable_func()
 # 设置返回结果格式
 enable_json_func(0)  # 0: 返回纯字符串结果, 1: 返回JSON字符串结果
 enable_log_func(1)  # 0: 不输出日志, 1: 输出日志
@@ -42,8 +49,10 @@ for image_name in images:
 
     # 调用OCR检测函数
     image_path = image_dir + "\\" + image_name
-    detect_func.restype = ctypes.c_char_p
-    c_string = detect_func(ctypes.c_char_p(image_path.encode('utf-8'))).decode('utf-8')
+    detect_func.restype = ctypes.c_void_p
+    result_ptr = detect_func(ctypes.c_char_p(image_path.encode('utf-8')))
+    c_string = ctypes.string_at(result_ptr).decode('utf-8')
+    free_result_buffer_func(result_ptr)
     # 计算识别时间
     elapsed_time = time.time() - start_time
     print(f"OCR耗时: {elapsed_time * 1000:.2f}ms")
@@ -52,6 +61,6 @@ for image_name in images:
         print("识别结果:", c_string)
     else:
         print("识别失败，返回空指针。")
-
+freeTable_func()
 # 等待用户输入以退出程序
 input("按回车键退出...")

@@ -24,6 +24,7 @@ PaddleOCRSDK 是一个高性能的文字识别（OCR）库，基于百度飞浆P
 ### 1. NuGet安装
 
 ```bash
+Install-Package PaddleOCRRuntime_x64
 Install-Package PaddleOCRSDK
 ```
 

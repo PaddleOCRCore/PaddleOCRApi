@@ -13,6 +13,11 @@ enable_json_func = ocr_dll.EnableJsonResult
 enablelog_func = ocr_dll.EnableLog
 free_engine_func = ocr_dll.FreeEngine
 
+# 跨平台内存释放函数（替代Windows特有的CoTaskMemFree）
+free_result_buffer_func = ocr_dll.FreeResultBuffer
+free_result_buffer_func.argtypes = [ctypes.c_void_p]
+free_result_buffer_func.restype = None
+free_engine_func()
 # 初始化OCR
 root_dir = "./"
 init_func(
@@ -35,8 +40,10 @@ for image_name in images:
         start_time = time.time()
         # 调用OCR检测函数
         image_path = image_dir + "/" + image_name
-        detect_func.restype = ctypes.c_char_p
-        c_string = detect_func(ctypes.c_char_p(image_path.encode('utf-8'))).decode('utf-8')
+        detect_func.restype = ctypes.c_void_p
+        result_ptr = detect_func(ctypes.c_char_p(image_path.encode('utf-8')))
+        c_string = ctypes.string_at(result_ptr).decode('utf-8')
+        free_result_buffer_func(result_ptr)
         # 计算识别时间
         elapsed_time = time.time() - start_time
         print(f"OCR耗时: {elapsed_time * 1000:.2f}ms")

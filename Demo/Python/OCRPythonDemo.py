@@ -22,6 +22,7 @@ free_engine_func = ocr_dll.FreeEngine
 free_result_buffer_func = ocr_dll.FreeResultBuffer
 free_result_buffer_func.argtypes = [ctypes.c_void_p]
 free_result_buffer_func.restype = None
+free_engine_func()
 # 设置返回结果格式
 enable_json_func(0)  # 0: 返回纯字符串结果, 1: 返回JSON字符串结果
 enable_log_func(1)  # 0: 不输出日志, 1: 输出日志

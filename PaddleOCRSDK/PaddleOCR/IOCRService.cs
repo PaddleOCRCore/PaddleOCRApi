@@ -23,15 +23,17 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
         /// </summary>
-        /// <param name="modelsPath"></param>
+        /// <param name="modelsPath">模型所在目录，如models</param>
+        /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
         /// <returns>返回初始化结果</returns>
-        string InitDefaultOCREngine(string modelsPath);
+        string InitDefaultOCREngine(string modelsPath, bool useV5);
         /// <summary>
-        /// 初始化表格识别引擎默认V4模型，使用CPU及mkldnn
+        /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
         /// </summary>
-        /// <param name="modelsPath"></param>
+        /// <param name="modelsPath">模型所在目录，如models</param>
+        /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
         /// <returns></returns>
-        string InitDefaultTableEngine(string modelsPath);
+        string InitDefaultTableEngine(string modelsPath, bool useV5);
         /// <summary>
         /// 初如化OCR
         /// </summary>

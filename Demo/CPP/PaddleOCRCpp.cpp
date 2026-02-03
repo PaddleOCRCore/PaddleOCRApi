@@ -65,7 +65,7 @@ int main()
     parameter.rec_img_h = 48;
     parameter.rec_img_w = 320;
     parameter.visualize = false;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的图像上。
-
+    parameter.ocr_instance_count = 1;//默认使用OCR实例，多线程时可以增大
     string imagespath(path);
     imagespath += "\\images";//请将图片放至此目录
     vector<string> images;

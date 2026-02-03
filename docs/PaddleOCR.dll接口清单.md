@@ -99,24 +99,6 @@
 
 ---
 
-## 性能与内存监控 API
-
-- `const char* GetPerformanceReport()`
-  - 描述：获取当前性能报告（如耗时和阶段统计）。
-  - 返回：指向性能统计字符串（UTF-8），调用者需使用 `FreeResultBuffer` 释放。
-
-- `void ResetPerformanceStats()`
-  - 描述：重置性能统计数据（清零计时器等）。
-
-- `const char* GetMemoryPoolStatus()`
-  - 描述：获取内存池状态信息（用于诊断内存使用）。
-  - 返回：指向内存池状态字符串（UTF-8），调用者需使用 `FreeResultBuffer` 释放。
-
-- `void CleanupMemoryPool()`
-  - 描述：清理内存池，回收可释放的内存资源。
-
----
-
 ## 文档图像矫正（UVDoc）API
 
 - `bool InitUVDoc(const char* uvdoc_infer, UVDocParameter uvdocpara)`

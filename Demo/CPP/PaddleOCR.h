@@ -112,6 +112,13 @@ extern "C" {
     /// <param name="imagebase64">Base64 编码的图片字符串</param>
     /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
     __declspec(dllimport) const char* __stdcall DetectBase64(const char* imagebase64);
+    /// <summary>
+    /// 对内存截图执行OCR检测并返回结果字符串
+    /// </summary>
+    /// <param name="data">内存截图数据指针</param>
+    /// <param name="size">内存截图数据长度（字节数）</param>
+    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
+    __declspec(dllimport) const char* __stdcall DetectScreenShot(unsigned char* data, int size);
 
     /// <summary>
     /// 释放并关闭 OCR 引擎，释放所有相关资源。
@@ -185,33 +192,6 @@ extern "C" {
     /// </summary>
     /// <param name="buffer">由 Detect 系列函数返回的指针</param>
     __declspec(dllimport) void __stdcall FreeResultBuffer(void* buffer);
-
-
-    // ==================== 性能监控API ====================
-    /// <summary>
-    /// 获取当前性能报告（例如耗时、各阶段统计）。
-    /// 返回值为库内部分配的缓冲区，调用者需使用 FreeResultBuffer 释放。
-    /// </summary>
-    /// <returns>性能统计信息的字符串（UTF-8）。</returns>
-    __declspec(dllimport) const char* __stdcall GetPerformanceReport();
-
-    /// <summary>
-    /// 重置性能统计数据（清零计时器等）。
-    /// </summary>
-    __declspec(dllimport) void __stdcall ResetPerformanceStats();
-
-    /// <summary>
-    /// 获取内存池状态信息（用于诊断内存使用情况）。
-    /// 返回值为库内部分配的缓冲区，调用者需使用 FreeResultBuffer 释放。
-    /// </summary>
-    /// <returns>内存池状态信息的字符串（UTF-8）。</returns>
-    __declspec(dllimport) const char* __stdcall GetMemoryPoolStatus();
-
-    /// <summary>
-    /// 清理内存池，回收可释放的内存资源。
-    /// </summary>
-    __declspec(dllimport) void __stdcall CleanupMemoryPool();
-
 
     // ==================== 文档图像矫正API ====================
     /// <summary>

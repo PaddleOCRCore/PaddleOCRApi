@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <PlatformTarget>x64</PlatformTarget>
-	<Version>4.0.1</Version>
+	<Version>4.1.1</Version>
 	<ApplicationIcon>OCR.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.1.1" />
 	<PackageReference Include="PDFtoImage" Version="5.2.0" />
 	<PackageReference Include="SkiaSharp" Version="3.119.1" />
   </ItemGroup>

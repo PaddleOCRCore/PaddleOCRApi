@@ -2,7 +2,7 @@
   <PropertyGroup>
     <!-- Package Identity -->
     <PackageId>PaddleOCRSDK</PackageId>
-    <Version>4.0.1</Version>
+    <Version>4.1.1</Version>
     <Authors>PaddleOCRCore</Authors>
     <Company>PaddleOCRCore</Company>
     
@@ -58,7 +58,6 @@
 	  </None>
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="PaddleOCRRuntime_x64" Version="4.0.1" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 	<ItemGroup>

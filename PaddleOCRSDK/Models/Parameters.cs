@@ -209,6 +209,10 @@ namespace PaddleOCRSDK
 
         [field: MarshalAs(UnmanagedType.I1)]
         public bool return_word_box { get; set; } = false;
+        /// <summary>
+        /// OCR引擎实例数量，默认1，最大10
+        /// </summary>
+        public int ocr_instance_count { get; set; } = 1;
     }
     /// <summary>
     /// OCR表格识别模型参数

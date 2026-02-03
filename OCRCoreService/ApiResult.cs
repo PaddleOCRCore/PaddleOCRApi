@@ -175,6 +175,10 @@ namespace OCRCoreService
         /// 是否启用单字坐标
         /// </summary>
         public bool return_word_box { get; set; } = false;
+        /// <summary>
+        /// OCR引擎实例数量，默认1，最大10，适用于高并发时使用。
+        /// </summary>
+        public int ocr_instance_count { get; set; } = 1;
     }
 
     /// <summary>

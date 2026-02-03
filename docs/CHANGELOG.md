@@ -1,5 +1,11 @@
 # 📝 更新日志
 
+## v4.1.1 `2026.2.3`
+- ✅ 优化PaddleOCR.dll，增加PaddleOCR多实例识别引擎，数量自定义，适合高并发情况使用，优化内存，修复有时识别为空问题，增加截图传入图片识别。
+- ✅ 发布Nuget引用包PaddleocrSDK v4.1.1，.net项目可直接引用此包，也可Copy开源项目自行修改。
+- ✅ 发布Nuget引用包PaddleOCRRuntime_x64 v4.1.1，包含paddle3.3.0 CPU推理库、PaddleOCR.dll及依赖文件
+- ✅ Demo增加ConsoleSharp控制台应用，简单调用OCR示例。
+
 ## v4.0.1 `2026.1.22`
 - ✅ 升级项目为VS2026+.net10
 - ✅ 优化PaddleOCR.dll，增加以图找图功能
