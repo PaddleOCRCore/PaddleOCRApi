@@ -51,7 +51,6 @@ namespace PaddleOCRSDK
         /// <param name="det_infer"></param>
         /// <param name="cls_infer"></param>
         /// <param name="rec_infer"></param>
-        /// <param name="keyfile"></param>
         /// <param name="ocrpara"></param>
         /// <returns></returns>
 

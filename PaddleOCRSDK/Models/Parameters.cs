@@ -158,10 +158,10 @@ namespace PaddleOCRSDK
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_dilation { get; set; } = false;
         /// <summary>
-        /// true:使用多边形框计算bbox score，false:使用矩形框计算。矩形框计算速度更快，多边形框对弯曲文本区域计算更准确。
+        /// false:使用多边形框计算bbox score，false:使用矩形框计算。矩形框计算速度更快，多边形框对弯曲文本区域计算更准确。
         /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
-        public bool det_db_score_mode { get; set; } = true;
+        public bool det_db_score_mode { get; set; } = false;
         /// <summary>
         /// 是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。
         /// </summary>

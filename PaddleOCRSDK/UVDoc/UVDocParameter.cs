@@ -56,6 +56,10 @@ namespace PaddleOCRSDK
         /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_tensorrt { get; set; } = false;
+        /// <summary>
+        /// UVDoc引擎实例数量默认1，最大10
+        /// </summary>
+        public int uvdoc_instance_count { get; set; } = 1;
     }
 }
 

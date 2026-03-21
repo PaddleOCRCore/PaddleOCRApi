@@ -109,7 +109,7 @@ namespace PaddleOCRSDK
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
-            oCRParameter.det_db_score_mode = true;
+            oCRParameter.det_db_score_mode = false;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
             oCRParameter.rec_img_w = 320;
@@ -167,7 +167,7 @@ namespace PaddleOCRSDK
             oCRParameter.cls = false;
             oCRParameter.det = true;
             oCRParameter.use_angle_cls = false;
-            oCRParameter.det_db_score_mode = true;
+            oCRParameter.det_db_score_mode = false;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
             oCRParameter.rec_img_w = 320;

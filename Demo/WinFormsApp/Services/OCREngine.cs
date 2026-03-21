@@ -38,6 +38,7 @@ namespace WinFormsApp.Services
         public static int gpu_id = 0;//GPUId
         public static int gpu_mem = 4000;//GPU显存上限
         public static bool use_cls = true;//是否执行文字方向分类
+        public static bool use_det = true;//是否文本检测模型
         public static bool use_angle_cls = true;//是否使用方向分类器
         public static bool return_word_box = false;//是否返回单字坐标
         public static bool use_tensorrt = false;//使用GPU预测时，是否启动tensorrt
@@ -71,9 +72,9 @@ namespace WinFormsApp.Services
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.rec_batch_num = 6;
             oCRParameter.cls = use_cls;
-            oCRParameter.det = true;
+            oCRParameter.det = use_det;
             oCRParameter.use_angle_cls = use_angle_cls;
-            oCRParameter.det_db_score_mode = true;
+            oCRParameter.det_db_score_mode = false;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
             oCRParameter.rec_img_w = 320;
@@ -131,9 +132,9 @@ namespace WinFormsApp.Services
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.rec_batch_num = 6;
             oCRParameter.cls = use_cls;
-            oCRParameter.det = true;
+            oCRParameter.det = use_det;
             oCRParameter.use_angle_cls = use_angle_cls;
-            oCRParameter.det_db_score_mode = true;
+            oCRParameter.det_db_score_mode = false;
             oCRParameter.max_side_len = 960;
             oCRParameter.rec_img_h = 48;
             oCRParameter.rec_img_w = 320;
