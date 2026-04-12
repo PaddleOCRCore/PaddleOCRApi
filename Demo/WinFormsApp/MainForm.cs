@@ -18,13 +18,17 @@ using PaddleOCRSDK;
 using PaddleOCRVLSDK;
 using PaddleOCRVLSDK.Models;
 using SkiaSharp;
+using Microsoft.Win32.SafeHandles;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using WinFormsApp.Services;
 using WinFormsApp.Utils;
 
@@ -54,10 +58,13 @@ namespace WinFormsApp
         private System.Diagnostics.Stopwatch? processStopwatch;
         private bool isOCRVLInitSuccess = false;
         private bool isOCRVLLayoutAnalysis = false;
+        private readonly NativeConsoleRedirector ocrvlNativeLogRedirector = new NativeConsoleRedirector();
+        private bool isOCRVLNativeLogRedirecting = false;
 
         public MainForm()
         {
             InitializeComponent();
+            StartOCRVLNativeLogRedirect();
             ocrService = OCREngine.ocrService;
             ocrvlService = new OCRVLService();
             this.ActiveControl = pictureBoxImg;
@@ -116,12 +123,10 @@ namespace WinFormsApp
         {
             if (checkBoxOCRVLDocAnalysis.Checked)
             {
-                labelOCRVLPrompt.Text = "AI提示词：";
-                textBoxOCRVLPrompt.Enabled = true;
+                textBoxOCRVLPrompt.Enabled = false;
             }
             else
             {
-                labelOCRVLPrompt.Text = "AI提示词：";
                 textBoxOCRVLPrompt.Enabled = true;
             }
         }
@@ -156,6 +161,57 @@ namespace WinFormsApp
             textBoxOCRVLConfigPath.Enabled = enabled;
             buttonOCRVLBrowseConfig.Enabled = enabled;
             checkBoxOCRVLDocAnalysis.Enabled = enabled;
+        }
+
+        private void StartOCRVLNativeLogRedirect()
+        {
+            if (isOCRVLNativeLogRedirecting)
+            {
+                return;
+            }
+
+            try
+            {
+                ocrvlNativeLogRedirector.Start(line =>
+                {
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        LogOCRVLMessage($"[Native] {line}");
+                    }
+                });
+
+                isOCRVLNativeLogRedirecting = true;
+                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:已开启 C++ 控制台日志重定向");
+            }
+            catch (Exception ex)
+            {
+                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:开启控制台日志重定向失败: {ex.Message}");
+            }
+        }
+
+        private void StopOCRVLNativeLogRedirect(bool writeLog)
+        {
+            if (!isOCRVLNativeLogRedirecting)
+            {
+                return;
+            }
+
+            try
+            {
+                ocrvlNativeLogRedirector.Stop();
+                isOCRVLNativeLogRedirecting = false;
+                if (writeLog)
+                {
+                    LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:已停止 C++ 控制台日志重定向");
+                }
+            }
+            catch (Exception ex)
+            {
+                if (writeLog)
+                {
+                    LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:停止控制台日志重定向失败: {ex.Message}");
+                }
+            }
         }
 
         private string GetOCRVLPrompt()
@@ -375,6 +431,7 @@ namespace WinFormsApp
 
                 isOCRVLLayoutAnalysis = checkBoxOCRVLDocAnalysis.Checked;
                 UpdateOCRVLStatus("正在初始化 OCR-VL 引擎...");
+                StartOCRVLNativeLogRedirect();
 
                 if (isOCRVLLayoutAnalysis)
                 {
@@ -459,6 +516,7 @@ namespace WinFormsApp
             {
                 ocrvlService.FreeDocAnalyser();
                 ocrvlService.FreeEngine();
+                StopOCRVLNativeLogRedirect(writeLog: true);
                 isOCRVLInitSuccess = false;
                 isOCRVLLayoutAnalysis = false;
 
@@ -1164,6 +1222,7 @@ namespace WinFormsApp
                 {
                 }
             }
+            StopOCRVLNativeLogRedirect(writeLog: false);
             // 释放图像矫正引擎
             try
             {
@@ -1459,5 +1518,7 @@ namespace WinFormsApp
             this.buttonRecTable.Enabled = false;
             LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR引擎已释放！");
         }
+
+
     }
 }

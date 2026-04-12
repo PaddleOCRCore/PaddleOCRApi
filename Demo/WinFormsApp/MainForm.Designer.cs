@@ -90,12 +90,12 @@
             pictureBoxOCRVL = new WinFormsApp.UserControl.PictureView();
             textBoxOCRVLResult = new TextBox();
             groupBoxOCRVLControl = new GroupBox();
-            buttonOCRVLFreeEngine = new Button();
-            buttonOCRVLRecPDF = new Button();
-            buttonOCRVLRec = new Button();
-            buttonOCRVLInit = new Button();
+            groupBoxAI = new GroupBox();
             textBoxOCRVLPrompt = new TextBox();
-            labelOCRVLPrompt = new Label();
+            buttonOCRVLRec = new Button();
+            buttonOCRVLRecPDF = new Button();
+            buttonOCRVLFreeEngine = new Button();
+            buttonOCRVLInit = new Button();
             checkBoxOCRVLDocAnalysis = new CheckBox();
             buttonOCRVLBrowseConfig = new Button();
             textBoxOCRVLConfigPath = new TextBox();
@@ -135,6 +135,7 @@
             groupBoxOCRVLImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxOCRVL).BeginInit();
             groupBoxOCRVLControl.SuspendLayout();
+            groupBoxAI.SuspendLayout();
             SuspendLayout();
             // 
             // imageList1
@@ -434,7 +435,9 @@
             // 
             // textBoxResult
             // 
+            textBoxResult.BackColor = SystemColors.Window;
             textBoxResult.Dock = DockStyle.Fill;
+            textBoxResult.ForeColor = SystemColors.WindowText;
             textBoxResult.Location = new Point(0, 0);
             textBoxResult.Multiline = true;
             textBoxResult.Name = "textBoxResult";
@@ -812,12 +815,9 @@
             // groupBoxOCRVLControl
             // 
             groupBoxOCRVLControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxOCRVLControl.Controls.Add(groupBoxAI);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLFreeEngine);
-            groupBoxOCRVLControl.Controls.Add(buttonOCRVLRecPDF);
-            groupBoxOCRVLControl.Controls.Add(buttonOCRVLRec);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLInit);
-            groupBoxOCRVLControl.Controls.Add(textBoxOCRVLPrompt);
-            groupBoxOCRVLControl.Controls.Add(labelOCRVLPrompt);
             groupBoxOCRVLControl.Controls.Add(checkBoxOCRVLDocAnalysis);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLBrowseConfig);
             groupBoxOCRVLControl.Controls.Add(textBoxOCRVLConfigPath);
@@ -829,32 +829,34 @@
             groupBoxOCRVLControl.TabStop = false;
             groupBoxOCRVLControl.Text = "OCR-VL功能选项";
             // 
-            // buttonOCRVLFreeEngine
+            // groupBoxAI
             // 
-            buttonOCRVLFreeEngine.Enabled = false;
-            buttonOCRVLFreeEngine.Location = new Point(220, 59);
-            buttonOCRVLFreeEngine.Name = "buttonOCRVLFreeEngine";
-            buttonOCRVLFreeEngine.Size = new Size(80, 32);
-            buttonOCRVLFreeEngine.TabIndex = 10;
-            buttonOCRVLFreeEngine.Text = "释放引擎";
-            buttonOCRVLFreeEngine.UseVisualStyleBackColor = true;
-            buttonOCRVLFreeEngine.Click += buttonOCRVLFreeEngine_Click;
+            groupBoxAI.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxAI.Controls.Add(textBoxOCRVLPrompt);
+            groupBoxAI.Controls.Add(buttonOCRVLRec);
+            groupBoxAI.Controls.Add(buttonOCRVLRecPDF);
+            groupBoxAI.Location = new Point(524, 15);
+            groupBoxAI.Name = "groupBoxAI";
+            groupBoxAI.Size = new Size(542, 77);
+            groupBoxAI.TabIndex = 11;
+            groupBoxAI.TabStop = false;
+            groupBoxAI.Text = "AI识别（AI提示词仅在未启用版面分析时有效）";
             // 
-            // buttonOCRVLRecPDF
+            // textBoxOCRVLPrompt
             // 
-            buttonOCRVLRecPDF.Enabled = false;
-            buttonOCRVLRecPDF.Location = new Point(434, 59);
-            buttonOCRVLRecPDF.Name = "buttonOCRVLRecPDF";
-            buttonOCRVLRecPDF.Size = new Size(80, 33);
-            buttonOCRVLRecPDF.TabIndex = 9;
-            buttonOCRVLRecPDF.Text = "PDF识别";
-            buttonOCRVLRecPDF.UseVisualStyleBackColor = true;
-            buttonOCRVLRecPDF.Click += buttonOCRVLRecPDF_Click;
+            textBoxOCRVLPrompt.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            textBoxOCRVLPrompt.Location = new Point(6, 22);
+            textBoxOCRVLPrompt.Multiline = true;
+            textBoxOCRVLPrompt.Name = "textBoxOCRVLPrompt";
+            textBoxOCRVLPrompt.Size = new Size(358, 49);
+            textBoxOCRVLPrompt.TabIndex = 5;
+            textBoxOCRVLPrompt.Text = "OCR:";
             // 
             // buttonOCRVLRec
             // 
+            buttonOCRVLRec.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOCRVLRec.Enabled = false;
-            buttonOCRVLRec.Location = new Point(327, 59);
+            buttonOCRVLRec.Location = new Point(370, 26);
             buttonOCRVLRec.Name = "buttonOCRVLRec";
             buttonOCRVLRec.Size = new Size(80, 32);
             buttonOCRVLRec.TabIndex = 8;
@@ -862,35 +864,40 @@
             buttonOCRVLRec.UseVisualStyleBackColor = true;
             buttonOCRVLRec.Click += buttonOCRVLRec_Click;
             // 
+            // buttonOCRVLRecPDF
+            // 
+            buttonOCRVLRecPDF.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonOCRVLRecPDF.Enabled = false;
+            buttonOCRVLRecPDF.Location = new Point(456, 25);
+            buttonOCRVLRecPDF.Name = "buttonOCRVLRecPDF";
+            buttonOCRVLRecPDF.Size = new Size(80, 33);
+            buttonOCRVLRecPDF.TabIndex = 9;
+            buttonOCRVLRecPDF.Text = "PDF识别";
+            buttonOCRVLRecPDF.UseVisualStyleBackColor = true;
+            buttonOCRVLRecPDF.Click += buttonOCRVLRecPDF_Click;
+            // 
+            // buttonOCRVLFreeEngine
+            // 
+            buttonOCRVLFreeEngine.Enabled = false;
+            buttonOCRVLFreeEngine.Location = new Point(438, 60);
+            buttonOCRVLFreeEngine.Name = "buttonOCRVLFreeEngine";
+            buttonOCRVLFreeEngine.Size = new Size(80, 32);
+            buttonOCRVLFreeEngine.TabIndex = 10;
+            buttonOCRVLFreeEngine.Text = "释放引擎";
+            buttonOCRVLFreeEngine.UseVisualStyleBackColor = true;
+            buttonOCRVLFreeEngine.Click += buttonOCRVLFreeEngine_Click;
+            // 
             // buttonOCRVLInit
             // 
             buttonOCRVLInit.BackColor = Color.FromArgb(0, 192, 0);
             buttonOCRVLInit.ForeColor = Color.Transparent;
-            buttonOCRVLInit.Location = new Point(113, 59);
+            buttonOCRVLInit.Location = new Point(352, 59);
             buttonOCRVLInit.Name = "buttonOCRVLInit";
             buttonOCRVLInit.Size = new Size(80, 33);
             buttonOCRVLInit.TabIndex = 7;
             buttonOCRVLInit.Text = "初始化";
             buttonOCRVLInit.UseVisualStyleBackColor = false;
             buttonOCRVLInit.Click += buttonOCRVLInit_Click;
-            // 
-            // textBoxOCRVLPrompt
-            // 
-            textBoxOCRVLPrompt.Location = new Point(610, 22);
-            textBoxOCRVLPrompt.Multiline = true;
-            textBoxOCRVLPrompt.Name = "textBoxOCRVLPrompt";
-            textBoxOCRVLPrompt.Size = new Size(456, 65);
-            textBoxOCRVLPrompt.TabIndex = 5;
-            textBoxOCRVLPrompt.Text = "OCR:";
-            // 
-            // labelOCRVLPrompt
-            // 
-            labelOCRVLPrompt.AutoSize = true;
-            labelOCRVLPrompt.Location = new Point(536, 47);
-            labelOCRVLPrompt.Name = "labelOCRVLPrompt";
-            labelOCRVLPrompt.Size = new Size(68, 17);
-            labelOCRVLPrompt.TabIndex = 4;
-            labelOCRVLPrompt.Text = "AI提示词：";
             // 
             // checkBoxOCRVLDocAnalysis
             // 
@@ -905,9 +912,9 @@
             // 
             // buttonOCRVLBrowseConfig
             // 
-            buttonOCRVLBrowseConfig.Location = new Point(428, 26);
+            buttonOCRVLBrowseConfig.Location = new Point(438, 26);
             buttonOCRVLBrowseConfig.Name = "buttonOCRVLBrowseConfig";
-            buttonOCRVLBrowseConfig.Size = new Size(90, 27);
+            buttonOCRVLBrowseConfig.Size = new Size(80, 27);
             buttonOCRVLBrowseConfig.TabIndex = 2;
             buttonOCRVLBrowseConfig.Text = "选择配置";
             buttonOCRVLBrowseConfig.UseVisualStyleBackColor = true;
@@ -917,7 +924,7 @@
             // 
             textBoxOCRVLConfigPath.Location = new Point(82, 28);
             textBoxOCRVLConfigPath.Name = "textBoxOCRVLConfigPath";
-            textBoxOCRVLConfigPath.Size = new Size(336, 23);
+            textBoxOCRVLConfigPath.Size = new Size(350, 23);
             textBoxOCRVLConfigPath.TabIndex = 1;
             // 
             // labelOCRVLConfigPath
@@ -989,6 +996,8 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxOCRVL).EndInit();
             groupBoxOCRVLControl.ResumeLayout(false);
             groupBoxOCRVLControl.PerformLayout();
+            groupBoxAI.ResumeLayout(false);
+            groupBoxAI.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -1058,11 +1067,11 @@
         private Button buttonOCRVLRec;
         private Button buttonOCRVLInit;
         private TextBox textBoxOCRVLPrompt;
-        private Label labelOCRVLPrompt;
         private CheckBox checkBoxOCRVLDocAnalysis;
         private Button buttonOCRVLBrowseConfig;
         private TextBox textBoxOCRVLConfigPath;
         private Label labelOCRVLConfigPath;
         private Label labelOCRVLStatus;
+        private GroupBox groupBoxAI;
     }
 }
