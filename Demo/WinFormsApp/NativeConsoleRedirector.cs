@@ -16,6 +16,15 @@ namespace WinFormsApp
         private const int OText = 0x4000;
         private const uint DuplicateSameAccess = 0x00000002;
         private const int SwHide = 0;
+        private const uint WaitObject0 = 0x00000000;
+        private const uint WaitTimeout = 0x00000102;
+        private const uint Infinite = 0xFFFFFFFF;
+        private const uint PageReadWrite = 0x04;
+        private const uint FileMapRead = 0x0004;
+        private static readonly IntPtr InvalidFileHandle = new IntPtr(-1);
+        private const string DbWinBufferReadyEventName = "DBWIN_BUFFER_READY";
+        private const string DbWinDataReadyEventName = "DBWIN_DATA_READY";
+        private const string DbWinBufferName = "DBWIN_BUFFER";
         private static readonly IntPtr InvalidHandleValue = new IntPtr(-1);
         private const uint HandleFlagInherit = 0x00000001;
 
@@ -26,6 +35,11 @@ namespace WinFormsApp
         private SafeFileHandle? pipeRead;
         private CancellationTokenSource? cts;
         private Task? readTask;
+        private CancellationTokenSource? monitorCts;
+        private Task? monitorTask;
+        private CancellationTokenSource? debugCts;
+        private Task? debugTask;
+        private Action<string>? lineHandler;
         private bool started;
         private int savedStdOutFd = -1;
         private int savedStdErrFd = -1;
@@ -45,8 +59,14 @@ namespace WinFormsApp
 
             lock (syncLock)
             {
+                lineHandler = onLine;
+
                 if (started)
                 {
+                    // Native libraries may overwrite process std handles after startup.
+                    // Rebind to our pipe to keep capture stable.
+                    RebindToPipeHandles();
+                    EnsureReaderTaskRunning();
                     return;
                 }
 
@@ -94,6 +114,9 @@ namespace WinFormsApp
                     pipeWrite = writeHandle;
                     cts = new CancellationTokenSource();
                     readTask = Task.Run(() => ReadLoop(onLine, cts.Token));
+                    monitorCts = new CancellationTokenSource();
+                    monitorTask = Task.Run(() => MonitorLoop(monitorCts.Token));
+                    EnsureDebugTaskRunning();
                     started = true;
                 }
                 catch
@@ -123,6 +146,8 @@ namespace WinFormsApp
         public void Stop()
         {
             Task? readerToWait = null;
+            Task? monitorToWait = null;
+            Task? debugToWait = null;
             lock (syncLock)
             {
                 if (!started)
@@ -143,6 +168,8 @@ namespace WinFormsApp
                 }
 
                 cts?.Cancel();
+                monitorCts?.Cancel();
+                debugCts?.Cancel();
 
                 if (pipeWrite != IntPtr.Zero)
                 {
@@ -151,12 +178,21 @@ namespace WinFormsApp
                 }
 
                 readerToWait = readTask;
+                monitorToWait = monitorTask;
+                debugToWait = debugTask;
 
                 readTask = null;
                 cts?.Dispose();
                 cts = null;
+                monitorTask = null;
+                monitorCts?.Dispose();
+                monitorCts = null;
+                debugTask = null;
+                debugCts?.Dispose();
+                debugCts = null;
                 pipeRead?.Dispose();
                 pipeRead = null;
+                lineHandler = null;
 
                 if (allocatedConsole)
                 {
@@ -175,6 +211,192 @@ namespace WinFormsApp
                 }
                 catch
                 {
+                }
+            }
+
+            if (monitorToWait != null)
+            {
+                try
+                {
+                    monitorToWait.Wait(300);
+                }
+                catch
+                {
+                }
+            }
+
+            if (debugToWait != null)
+            {
+                try
+                {
+                    debugToWait.Wait(300);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void EnsureReaderTaskRunning()
+        {
+            if (!started || pipeRead == null || pipeRead.IsInvalid)
+            {
+                return;
+            }
+
+            if (lineHandler == null)
+            {
+                return;
+            }
+
+            if (readTask != null && !readTask.IsCompleted)
+            {
+                return;
+            }
+
+            if (cts == null || cts.IsCancellationRequested)
+            {
+                cts?.Dispose();
+                cts = new CancellationTokenSource();
+            }
+
+            readTask = Task.Run(() => ReadLoop(lineHandler, cts.Token));
+        }
+
+        private void EnsureDebugTaskRunning()
+        {
+            if (!started || lineHandler == null)
+            {
+                return;
+            }
+
+            if (debugTask != null && !debugTask.IsCompleted)
+            {
+                return;
+            }
+
+            if (debugCts == null || debugCts.IsCancellationRequested)
+            {
+                debugCts?.Dispose();
+                debugCts = new CancellationTokenSource();
+            }
+
+            debugTask = Task.Run(() => DebugOutputLoop(lineHandler, debugCts.Token));
+        }
+
+        private async Task MonitorLoop(CancellationToken token)
+        {
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    lock (syncLock)
+                    {
+                        if (!started)
+                        {
+                            return;
+                        }
+
+                        if (pipeWrite != IntPtr.Zero)
+                        {
+                            IntPtr stdOut = GetStdHandle(StdOutputHandle);
+                            IntPtr stdErr = GetStdHandle(StdErrorHandle);
+                            if (stdOut != pipeWrite || stdErr != pipeWrite)
+                            {
+                                RebindToPipeHandles();
+                            }
+                        }
+
+                        EnsureReaderTaskRunning();
+                        EnsureDebugTaskRunning();
+                    }
+
+                    await Task.Delay(700, token).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch
+            {
+            }
+        }
+
+        private void DebugOutputLoop(Action<string> onLine, CancellationToken token)
+        {
+            IntPtr hBufferReady = IntPtr.Zero;
+            IntPtr hDataReady = IntPtr.Zero;
+            IntPtr hMap = IntPtr.Zero;
+            IntPtr pBuf = IntPtr.Zero;
+
+            try
+            {
+                hBufferReady = CreateEvent(IntPtr.Zero, false, false, DbWinBufferReadyEventName);
+                hDataReady = CreateEvent(IntPtr.Zero, false, false, DbWinDataReadyEventName);
+                hMap = CreateFileMapping(InvalidFileHandle, IntPtr.Zero, PageReadWrite, 0, 4096, DbWinBufferName);
+
+                if (hBufferReady == IntPtr.Zero || hDataReady == IntPtr.Zero || hMap == IntPtr.Zero)
+                {
+                    return;
+                }
+
+                pBuf = MapViewOfFile(hMap, FileMapRead, 0, 0, new UIntPtr(4096));
+                if (pBuf == IntPtr.Zero)
+                {
+                    return;
+                }
+
+                while (!token.IsCancellationRequested)
+                {
+                    SetEvent(hBufferReady);
+                    uint wait = WaitForSingleObject(hDataReady, 400);
+                    if (wait == WaitTimeout)
+                    {
+                        continue;
+                    }
+
+                    if (wait != WaitObject0)
+                    {
+                        continue;
+                    }
+
+                    int pid = Marshal.ReadInt32(pBuf);
+                    if (pid != 0 && pid != Environment.ProcessId)
+                    {
+                        continue;
+                    }
+
+                    IntPtr textPtr = IntPtr.Add(pBuf, 4);
+                    string? msg = Marshal.PtrToStringAnsi(textPtr);
+                    if (!string.IsNullOrWhiteSpace(msg))
+                    {
+                        TryEmitLine(onLine, $"[DebugOut] {msg.Trim()} ");
+                    }
+                }
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (pBuf != IntPtr.Zero)
+                {
+                    UnmapViewOfFile(pBuf);
+                }
+
+                if (hMap != IntPtr.Zero)
+                {
+                    CloseHandle(hMap);
+                }
+
+                if (hDataReady != IntPtr.Zero)
+                {
+                    CloseHandle(hDataReady);
+                }
+
+                if (hBufferReady != IntPtr.Zero)
+                {
+                    CloseHandle(hBufferReady);
                 }
             }
         }
@@ -328,6 +550,29 @@ namespace WinFormsApp
             }
         }
 
+        private void RebindToPipeHandles()
+        {
+            if (pipeWrite == IntPtr.Zero)
+            {
+                return;
+            }
+
+            SetStdHandle(StdOutputHandle, pipeWrite);
+            SetStdHandle(StdErrorHandle, pipeWrite);
+
+            if (pipeWriteFd >= 0)
+            {
+                Dup2(pipeWriteFd, 1);
+                Dup2(pipeWriteFd, 2);
+            }
+
+            if (pipeWriteFdMsvcrt >= 0)
+            {
+                Dup2Msvcrt(pipeWriteFdMsvcrt, 1);
+                Dup2Msvcrt(pipeWriteFdMsvcrt, 2);
+            }
+        }
+
         private void ReadLoop(Action<string> onLine, CancellationToken token)
         {
             SafeFileHandle? readHandle = pipeRead;
@@ -355,6 +600,17 @@ namespace WinFormsApp
 
                     pending.Append(chunk);
 
+                    // Some native modules flush output without trailing newlines.
+                    // Emit the partial text immediately to avoid apparent log loss.
+                    if (chunk.IndexOf('\n') < 0 && pending.Length > 0)
+                    {
+                        string partial = pending.ToString().Trim();
+                        TryEmitLine(onLine, partial);
+
+                        pending.Clear();
+                        continue;
+                    }
+
                     while (true)
                     {
                         int newlineIndex = pending.ToString().IndexOf('\n');
@@ -365,24 +621,35 @@ namespace WinFormsApp
 
                         string line = pending.ToString(0, newlineIndex);
                         pending.Remove(0, newlineIndex + 1);
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            onLine(line);
-                        }
+                        TryEmitLine(onLine, line);
                     }
                 }
 
                 if (pending.Length > 0)
                 {
                     string rest = pending.ToString().Trim();
-                    if (!string.IsNullOrEmpty(rest))
-                    {
-                        onLine(rest);
-                    }
+                    TryEmitLine(onLine, rest);
                 }
             }
             catch
             {
+            }
+        }
+
+        private static void TryEmitLine(Action<string> onLine, string? line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                return;
+            }
+
+            try
+            {
+                onLine(line);
+            }
+            catch
+            {
+                // Ignore per-line callback errors to keep native log pump alive.
             }
         }
 
@@ -449,6 +716,24 @@ namespace WinFormsApp
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool CloseHandle(IntPtr hObject);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern IntPtr CreateEvent(IntPtr lpEventAttributes, bool bManualReset, bool bInitialState, string lpName);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern IntPtr CreateFileMapping(IntPtr hFile, IntPtr lpFileMappingAttributes, uint flProtect, uint dwMaximumSizeHigh, uint dwMaximumSizeLow, string lpName);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr MapViewOfFile(IntPtr hFileMappingObject, uint dwDesiredAccess, uint dwFileOffsetHigh, uint dwFileOffsetLow, UIntPtr dwNumberOfBytesToMap);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetEvent(IntPtr hEvent);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct SECURITY_ATTRIBUTES

@@ -293,7 +293,6 @@ namespace WinFormsApp
             LogOCRVLMessage($"Image: {Path.GetFileName(filePath)}");
             LogOCRVLMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             LogOCRVLMessage("正在识别，请稍后...");
-            StartOCRVLNativeLogRedirect();
             LogOCRVLMessage($"日志重定向状态: {(isOCRVLNativeLogRedirecting ? "已开启" : "未开启")}");
             stopwatch.Start();
 
@@ -428,7 +427,6 @@ namespace WinFormsApp
 
                 isOCRVLLayoutAnalysis = checkBoxOCRVLDocAnalysis.Checked;
                 UpdateOCRVLStatus("正在初始化 OCR-VL 引擎...");
-                StartOCRVLNativeLogRedirect();
 
                 if (isOCRVLLayoutAnalysis)
                 {
