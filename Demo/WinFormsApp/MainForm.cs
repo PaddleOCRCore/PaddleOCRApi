@@ -15,8 +15,6 @@
 // limitations under the License.
 
 using PaddleOCRSDK;
-using PaddleOCRVLSDK;
-using PaddleOCRVLSDK.Models;
 using SkiaSharp;
 using Microsoft.Win32.SafeHandles;
 using System;
@@ -56,6 +54,8 @@ namespace WinFormsApp
         private string? currentImagePath;
         private string? outputImagePath;
         private System.Diagnostics.Stopwatch? processStopwatch;
+
+        // OCR-VL相关字段
         private bool isOCRVLInitSuccess = false;
         private bool isOCRVLLayoutAnalysis = false;
         private readonly NativeConsoleRedirector ocrvlNativeLogRedirector = new NativeConsoleRedirector();
@@ -293,15 +293,12 @@ namespace WinFormsApp
             LogOCRVLMessage($"Image: {Path.GetFileName(filePath)}");
             LogOCRVLMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             LogOCRVLMessage("正在识别，请稍后...");
+            StartOCRVLNativeLogRedirect();
+            LogOCRVLMessage($"日志重定向状态: {(isOCRVLNativeLogRedirecting ? "已开启" : "未开启")}");
             stopwatch.Start();
 
             if (isOCRVLLayoutAnalysis)
             {
-                if (!string.Equals(prompt, "OCR:", StringComparison.OrdinalIgnoreCase))
-                {
-                    LogOCRVLMessage("当前版面分析模式使用 DocChat，AI提示词输入不会传递到 DLL 接口。");
-                }
-
                 VLDocumentResult docResult = await Task.Run(() => ocrvlService.DocChat(filePath, PocrOutputFormat.Both));
                 var endTime = DateTime.Now;
                 LogOCRVLMessage($"结束时间: {endTime:HH:mm:ss.fff}");

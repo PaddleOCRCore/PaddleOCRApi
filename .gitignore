@@ -63,12 +63,6 @@ paddle_inference.dll
 /PaddleOCRSDK/obj/Debug
 /PaddleOCRSDK/obj/Release
 /PaddleOCRSDK/obj
-/PaddleOCRVLSDK/bin/Debug
-/PaddleOCRVLSDK/bin/Release
-/PaddleOCRVLSDK/bin
-/PaddleOCRVLSDK/obj/Debug
-/PaddleOCRVLSDK/obj/Release
-/PaddleOCRVLSDK/obj
 /x64
 /OCRCoreService/Properties/PublishProfiles
 /OCRCoreService/Properties/PublishProfiles/FolderProfile.pubxml

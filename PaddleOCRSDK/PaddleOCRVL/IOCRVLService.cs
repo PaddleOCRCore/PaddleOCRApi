@@ -1,7 +1,6 @@
 using System;
-using PaddleOCRVLSDK.Models;
 
-namespace PaddleOCRVLSDK
+namespace PaddleOCRSDK
 {
     [Flags]
     public enum PocrOutputFormat

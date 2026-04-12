@@ -1,6 +1,6 @@
 using System;
 
-namespace PaddleOCRVLSDK
+namespace PaddleOCRSDK
 {
     public class OCRVLException : Exception
     {

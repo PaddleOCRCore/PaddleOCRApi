@@ -2,13 +2,13 @@
   <PropertyGroup>
     <!-- Package Identity -->
     <PackageId>PaddleOCRSDK</PackageId>
-    <Version>4.1.1</Version>
+    <Version>4.2.0</Version>
     <Authors>PaddleOCRCore</Authors>
     <Company>PaddleOCRCore</Company>
     
     <!-- Package Description -->
     <Title>PaddleOCR SDK for .NET</Title>
-    <Description>PaddleOCRSDK offline OCR component, supporting CPU/GPU acceleration and providing text detection, text recognition, text direction classification, table recognition, and other functionalities.</Description>
+    <Description>PaddleOCR/PaddleOCR-VL offline OCR component, supporting CPU/GPU acceleration and providing text detection, text recognition, text direction classification, table recognition, and other functionalities.</Description>
     <PackageTags>OCR;PaddleOCR;.NET;Paddle;文字识别;离线OCR</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     

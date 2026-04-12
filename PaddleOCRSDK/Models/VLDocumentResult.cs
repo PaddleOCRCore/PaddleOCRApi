@@ -1,4 +1,4 @@
-namespace PaddleOCRVLSDK.Models
+namespace PaddleOCRSDK
 {
     /// <summary>
     /// 文档分析结果。

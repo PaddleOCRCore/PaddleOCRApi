@@ -1,4 +1,4 @@
-namespace PaddleOCRVLSDK.Models
+namespace PaddleOCRSDK
 {
     /// <summary>
     /// VL OCR 调用结果。

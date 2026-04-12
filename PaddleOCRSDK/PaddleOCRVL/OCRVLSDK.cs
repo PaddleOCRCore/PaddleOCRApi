@@ -2,9 +2,9 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace PaddleOCRVLSDK
+namespace PaddleOCRSDK
 {
-    internal static class PaddleOCRVLDll
+    internal static class OCRVLSDK
     {
         internal const string DllFileName = "llamaocr-vl";
         internal const string OutputDelimiter = "\n---JSON---\n";

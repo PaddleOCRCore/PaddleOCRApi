@@ -1,7 +1,6 @@
 using System;
-using PaddleOCRVLSDK.Models;
 
-namespace PaddleOCRVLSDK
+namespace PaddleOCRSDK
 {
     /// <summary>
     /// llamaocr-vl.dll 的 .NET 服务封装。
@@ -20,7 +19,7 @@ namespace PaddleOCRVLSDK
 
             lock (_syncRoot)
             {
-                int result = PaddleOCRVLDll.Init(configPath);
+                int result = OCRVLSDK.Init(configPath);
                 if (result != 1)
                 {
                     throw new OCRVLException($"初始化 VL OCR 引擎失败: {GetLastError()}");
@@ -38,7 +37,7 @@ namespace PaddleOCRVLSDK
 
             lock (_syncRoot)
             {
-                int result = PaddleOCRVLDll.InitDoc(configPath);
+                int result = OCRVLSDK.InitDoc(configPath);
                 if (result != 1)
                 {
                     throw new OCRVLException($"初始化文档分析引擎失败: {GetLastError()}");
@@ -55,7 +54,7 @@ namespace PaddleOCRVLSDK
             ValidateRequiredString(prompt, nameof(prompt));
             ValidateRequiredString(imagePath, nameof(imagePath));
 
-            return ExecuteChat(() => PaddleOCRVLDll.Chat(prompt, imagePath), "VL OCR 返回空结果");
+            return ExecuteChat(() => OCRVLSDK.Chat(prompt, imagePath), "VL OCR 返回空结果");
         }
 
         public VLChatResult ChatData(byte[] imageData, string prompt)
@@ -64,7 +63,7 @@ namespace PaddleOCRVLSDK
             ValidateImageData(imageData, nameof(imageData));
             ValidateRequiredString(prompt, nameof(prompt));
 
-            return ExecuteChat(() => PaddleOCRVLDll.ChatData(prompt, imageData, new UIntPtr((uint)imageData.LongLength)), "VL OCR 返回空结果");
+            return ExecuteChat(() => OCRVLSDK.ChatData(prompt, imageData, new UIntPtr((uint)imageData.LongLength)), "VL OCR 返回空结果");
         }
 
         public VLChatResult ChatBase64(string prompt, string base64Image)
@@ -73,7 +72,7 @@ namespace PaddleOCRVLSDK
             ValidateRequiredString(prompt, nameof(prompt));
             ValidateRequiredString(base64Image, nameof(base64Image));
 
-            return ExecuteChat(() => PaddleOCRVLDll.ChatBase64(prompt, base64Image), "VL OCR 返回空结果");
+            return ExecuteChat(() => OCRVLSDK.ChatBase64(prompt, base64Image), "VL OCR 返回空结果");
         }
 
         public VLChatResult ChatMat(string prompt, IntPtr cvMat)
@@ -85,7 +84,7 @@ namespace PaddleOCRVLSDK
                 throw new ArgumentException("cvMat 不能为空", nameof(cvMat));
             }
 
-            return ExecuteChat(() => PaddleOCRVLDll.ChatMat(prompt, cvMat), "VL OCR 返回空结果");
+            return ExecuteChat(() => OCRVLSDK.ChatMat(prompt, cvMat), "VL OCR 返回空结果");
         }
 
         public VLDocumentResult DocChat(string imagePath, PocrOutputFormat outputFormat = PocrOutputFormat.Both)
@@ -93,7 +92,7 @@ namespace PaddleOCRVLSDK
             EnsureDocumentInitialized();
             ValidateRequiredString(imagePath, nameof(imagePath));
 
-            return ExecuteDocument(() => PaddleOCRVLDll.DocChat(imagePath, (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChat(imagePath, (int)outputFormat), outputFormat);
         }
 
         public VLDocumentResult DocChatData(byte[] imageData, PocrOutputFormat outputFormat = PocrOutputFormat.Both)
@@ -101,7 +100,7 @@ namespace PaddleOCRVLSDK
             EnsureDocumentInitialized();
             ValidateImageData(imageData, nameof(imageData));
 
-            return ExecuteDocument(() => PaddleOCRVLDll.DocChatData(imageData, new UIntPtr((uint)imageData.LongLength), (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChatData(imageData, new UIntPtr((uint)imageData.LongLength), (int)outputFormat), outputFormat);
         }
 
         public VLDocumentResult DocChatBase64(string base64Image, PocrOutputFormat outputFormat = PocrOutputFormat.Both)
@@ -109,7 +108,7 @@ namespace PaddleOCRVLSDK
             EnsureDocumentInitialized();
             ValidateRequiredString(base64Image, nameof(base64Image));
 
-            return ExecuteDocument(() => PaddleOCRVLDll.DocChatBase64(base64Image, (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChatBase64(base64Image, (int)outputFormat), outputFormat);
         }
 
         public VLDocumentResult DocChatMat(IntPtr cvMat, PocrOutputFormat outputFormat = PocrOutputFormat.Both)
@@ -120,7 +119,7 @@ namespace PaddleOCRVLSDK
                 throw new ArgumentException("cvMat 不能为空", nameof(cvMat));
             }
 
-            return ExecuteDocument(() => PaddleOCRVLDll.DocChatMat(cvMat, (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChatMat(cvMat, (int)outputFormat), outputFormat);
         }
 
         public string GetLastError()
@@ -129,7 +128,7 @@ namespace PaddleOCRVLSDK
 
             try
             {
-                IntPtr errorPtr = PaddleOCRVLDll.GetError();
+                IntPtr errorPtr = OCRVLSDK.GetError();
                 return MarshalUtf8.PtrToStringUTF8(errorPtr) ?? string.Empty;
             }
             catch (Exception ex)
@@ -147,7 +146,7 @@ namespace PaddleOCRVLSDK
 
             lock (_syncRoot)
             {
-                PaddleOCRVLDll.FreeEngine();
+                OCRVLSDK.FreeEngine();
                 _ocrInitialized = false;
             }
         }
@@ -161,7 +160,7 @@ namespace PaddleOCRVLSDK
 
             lock (_syncRoot)
             {
-                PaddleOCRVLDll.FreeDocAnalyser();
+                OCRVLSDK.FreeDocAnalyser();
                 _documentInitialized = false;
             }
         }
@@ -211,7 +210,7 @@ namespace PaddleOCRVLSDK
                 {
                     if (resultPtr != IntPtr.Zero)
                     {
-                        PaddleOCRVLDll.FreeMemory(resultPtr);
+                        OCRVLSDK.FreeMemory(resultPtr);
                     }
                 }
             }
@@ -246,7 +245,7 @@ namespace PaddleOCRVLSDK
                 {
                     if (resultPtr != IntPtr.Zero)
                     {
-                        PaddleOCRVLDll.FreeMemory(resultPtr);
+                        OCRVLSDK.FreeMemory(resultPtr);
                     }
                 }
             }
@@ -271,7 +270,7 @@ namespace PaddleOCRVLSDK
                 return result;
             }
 
-            string[] parts = content.Split(new[] { PaddleOCRVLDll.OutputDelimiter }, 2, StringSplitOptions.None);
+            string[] parts = content.Split(new[] { OCRVLSDK.OutputDelimiter }, 2, StringSplitOptions.None);
             if (parts.Length == 2)
             {
                 result.Markdown = parts[0];

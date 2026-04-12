@@ -18,6 +18,7 @@ PaddleOCRSDK 是一个高性能的文字识别（OCR）库，基于百度飞浆P
 - ✅ 支持PP-OCRv5/v4全系列模型
 - ✅ CPU/GPU推理
 - ✅ 支持自定义训练模型
+- ✅ 支持文档版面识别+PaddleOCR-VL识别
 
 ## 🚀 快速开始
 
@@ -33,7 +34,7 @@ Install-Package PaddleOCRSDK
 
 - **.NET**: .NET Core 6.0+
 - **操作系统**: Windows x64
-- **推理库**: PaddleOCR.dll
+- **推理库**: PaddleOCR.dll/llamaocr-vl.dll
 
 ## 💻 多语言示例
 
