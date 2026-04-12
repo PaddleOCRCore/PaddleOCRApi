@@ -13,6 +13,7 @@ use_seal_recognition: true # 是否启用印章识别
 use_ocr_for_image_block: false # 是否对 image 类块执行 OCR
 format_block_content: false # 是否格式化块内容
 save_debug_artifacts: true # 是否保存调试中间产物
+enable_log: true # 是否启用日志（true：调试信息输出到控制台+Log目录日志文件；false：仅警告/错误输出到控制台）
 
 # Markdown 输出中要忽略的版面标签
 markdown_ignore_labels:

@@ -9,6 +9,7 @@
     <PackageTags>OCR;PaddleOCR-VL;VL;.NET;llamaocr-vl;文档解析</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	<Copyright>Copyright (c) PaddleOCRCore</Copyright>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/PaddleOCRCore/PaddleOCRApi</RepositoryUrl>
     <PackageProjectUrl>https://github.com/PaddleOCRCore/PaddleOCRApi</PackageProjectUrl>
