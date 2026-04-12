@@ -22,5 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PaddleOCRSDK\PaddleOCRSDK.csproj" />
+    <ProjectReference Include="..\..\PaddleOCRVLSDK\PaddleOCRVLSDK.csproj" />
   </ItemGroup>
 </Project>

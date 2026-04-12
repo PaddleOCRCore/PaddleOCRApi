@@ -15,10 +15,14 @@
 // limitations under the License.
 
 using PaddleOCRSDK;
+using PaddleOCRVLSDK;
+using PaddleOCRVLSDK.Models;
 using SkiaSharp;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Text;
 using System.Text.Json;
 using WinFormsApp.Services;
@@ -31,6 +35,7 @@ namespace WinFormsApp
     {
         StringBuilder message = new StringBuilder();
         private readonly IOCRService ocrService;
+        private readonly IOCRVLService ocrvlService;
         public static bool use_gpu = false;//是否使用GPU
         public static int gpu_id = 0;//GPUId
         public static int cpu_threads = Environment.ProcessorCount; //CPU预测时的线程数
@@ -47,10 +52,14 @@ namespace WinFormsApp
         private string? currentImagePath;
         private string? outputImagePath;
         private System.Diagnostics.Stopwatch? processStopwatch;
+        private bool isOCRVLInitSuccess = false;
+        private bool isOCRVLLayoutAnalysis = false;
+
         public MainForm()
         {
             InitializeComponent();
             ocrService = OCREngine.ocrService;
+            ocrvlService = new OCRVLService();
             this.ActiveControl = pictureBoxImg;
             this.FormClosing += MainForm_FormClosing;
         }
@@ -72,6 +81,7 @@ namespace WinFormsApp
                     Directory.CreateDirectory(uploadsPath);
                 }
                 buttonFreeEngine.Enabled = false;
+                InitializeOCRVLDefaults();
 
                 // 初始化图像矫正功能参数
                 InitializeUVDocParameters();
@@ -90,6 +100,386 @@ namespace WinFormsApp
             numUVDocGpuId.Value = 0;
             numUVDocGpuMem.Value = 2000;
             chkUVDocUseTensorRT.Checked = false;
+        }
+
+        private void InitializeOCRVLDefaults()
+        {
+            string defaultConfigPath = Path.Combine(Application.StartupPath, "configs", "PaddleOCR-VL-1.5.yaml");
+            textBoxOCRVLConfigPath.Text = defaultConfigPath;
+            textBoxOCRVLPrompt.Text = "OCR:";
+            checkBoxOCRVLDocAnalysis.Checked = false;
+            UpdateOCRVLPromptState();
+            UpdateOCRVLStatus("就绪");
+        }
+
+        private void UpdateOCRVLPromptState()
+        {
+            if (checkBoxOCRVLDocAnalysis.Checked)
+            {
+                labelOCRVLPrompt.Text = "AI提示词：";
+                textBoxOCRVLPrompt.Enabled = true;
+            }
+            else
+            {
+                labelOCRVLPrompt.Text = "AI提示词：";
+                textBoxOCRVLPrompt.Enabled = true;
+            }
+        }
+
+        private void UpdateOCRVLStatus(string message)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action<string>(UpdateOCRVLStatus), message);
+                return;
+            }
+
+            labelOCRVLStatus.Text = $"状态: {message}";
+        }
+
+        private void LogOCRVLMessage(string infoValue)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action<string>(LogOCRVLMessage), infoValue);
+                return;
+            }
+
+            textBoxOCRVLResult.AppendText(infoValue);
+            textBoxOCRVLResult.AppendText(Environment.NewLine);
+            textBoxOCRVLResult.SelectionStart = textBoxOCRVLResult.Text.Length;
+            textBoxOCRVLResult.ScrollToCaret();
+        }
+
+        private void SetOCRVLParameterControlsEnabled(bool enabled)
+        {
+            textBoxOCRVLConfigPath.Enabled = enabled;
+            buttonOCRVLBrowseConfig.Enabled = enabled;
+            checkBoxOCRVLDocAnalysis.Enabled = enabled;
+        }
+
+        private string GetOCRVLPrompt()
+        {
+            string prompt = textBoxOCRVLPrompt.Text.Trim();
+            return string.IsNullOrWhiteSpace(prompt) ? "OCR:" : prompt;
+        }
+
+        private string GetOCRVLPreviewPath(string inputImagePath)
+        {
+            if (isOCRVLLayoutAnalysis)
+            {
+                string overlayPath = Path.Combine(RecFilepath, "layout_overlay_page_0.png");
+                if (File.Exists(overlayPath))
+                {
+                    return overlayPath;
+                }
+            }
+
+            return inputImagePath;
+        }
+
+        private static string NormalizeOCRVLDisplayText(string? text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return string.Empty;
+            }
+
+            string normalized = text;
+
+            for (int i = 0; i < 3; i++)
+            {
+                string replaced = normalized
+                    .Replace("\\u000D\\u000A", "\n")
+                    .Replace("\\u000d\\u000a", "\n")
+                    .Replace("\\u000A", "\n")
+                    .Replace("\\u000a", "\n")
+                    .Replace("\\u000D", "\n")
+                    .Replace("\\u000d", "\n")
+                    .Replace("\\r\\n", "\n")
+                    .Replace("\\n", "\n")
+                    .Replace("\\r", "\n")
+                    .Replace("\\t", "\t");
+
+                if (replaced == normalized)
+                {
+                    break;
+                }
+
+                normalized = replaced;
+            }
+
+            normalized = Regex.Replace(
+                normalized,
+                @"\\u([0-9a-fA-F]{4})",
+                match => ((char)Convert.ToInt32(match.Groups[1].Value, 16)).ToString());
+
+            return normalized
+                .Replace("\r\n", "\n")
+                .Replace("\r", "\n")
+                .Replace("\n", Environment.NewLine);
+        }
+
+        private void ShowOCRVLPreview(string inputImagePath)
+        {
+            string previewPath = GetOCRVLPreviewPath(inputImagePath);
+            if (File.Exists(previewPath))
+            {
+                pictureBoxOCRVL.ImgPath = previewPath;
+            }
+        }
+
+        private async Task<string> RecOCRVLAsync(string filePath)
+        {
+            var stopwatch = new Stopwatch();
+            string prompt = GetOCRVLPrompt();
+            var startTime = DateTime.Now;
+            LogOCRVLMessage($"Image: {Path.GetFileName(filePath)}");
+            LogOCRVLMessage($"开始时间: {startTime:HH:mm:ss.fff}");
+            LogOCRVLMessage("正在识别，请稍后...");
+            stopwatch.Start();
+
+            if (isOCRVLLayoutAnalysis)
+            {
+                if (!string.Equals(prompt, "OCR:", StringComparison.OrdinalIgnoreCase))
+                {
+                    LogOCRVLMessage("当前版面分析模式使用 DocChat，AI提示词输入不会传递到 DLL 接口。");
+                }
+
+                VLDocumentResult docResult = await Task.Run(() => ocrvlService.DocChat(filePath, PocrOutputFormat.Both));
+                var endTime = DateTime.Now;
+                LogOCRVLMessage($"结束时间: {endTime:HH:mm:ss.fff}");
+                LogOCRVLMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+
+                if (docResult.Code != 1)
+                {
+                    LogOCRVLMessage(docResult.ErrorMsg);
+                    LogOCRVLMessage("===============================================");
+                    return docResult.ErrorMsg;
+                }
+
+                StringBuilder builder = new StringBuilder();
+                if (!string.IsNullOrWhiteSpace(docResult.Markdown))
+                {
+                    builder.AppendLine("Markdown:");
+                    builder.AppendLine(NormalizeOCRVLDisplayText(docResult.Markdown).Trim());
+                }
+                if (!string.IsNullOrWhiteSpace(docResult.JsonText))
+                {
+                    if (builder.Length > 0)
+                    {
+                        builder.AppendLine();
+                    }
+                    builder.AppendLine("JSON:");
+                    builder.AppendLine(FormatJsonSafe(docResult.JsonText));
+                }
+
+                string result = builder.ToString().Trim();
+                LogOCRVLMessage(result);
+                LogOCRVLMessage("===============================================");
+                ShowOCRVLPreview(filePath);
+                return result;
+            }
+
+            VLChatResult chatResult = await Task.Run(() => ocrvlService.Chat(prompt, filePath));
+            var finishTime = DateTime.Now;
+            LogOCRVLMessage($"结束时间: {finishTime:HH:mm:ss.fff}");
+            LogOCRVLMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+
+            string chatText = chatResult.Code == 1
+                ? NormalizeOCRVLDisplayText(chatResult.Content)
+                : NormalizeOCRVLDisplayText(chatResult.ErrorMsg);
+            LogOCRVLMessage(chatText);
+            LogOCRVLMessage("===============================================");
+            ShowOCRVLPreview(filePath);
+            return chatText;
+        }
+
+        private string ConvertPdfFirstPageToImage(string pdfFilePath, string suffix)
+        {
+            SKBitmap? bitmap = null;
+            try
+            {
+                byte[] pdfBytes = File.ReadAllBytes(pdfFilePath);
+                using (MemoryStream memoryStream = new MemoryStream(pdfBytes))
+                {
+                    bitmap = PDFtoImage.Conversion.ToImage(memoryStream);
+                }
+
+                byte[] imageBytes;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (SKImage image = SKImage.FromBitmap(bitmap))
+                    using (SKData data = image.Encode(SKEncodedImageFormat.Png, 100))
+                    {
+                        imageBytes = data.ToArray();
+                    }
+                }
+
+                string uploadsPath = Path.Combine(Application.StartupPath, "uploads");
+                Directory.CreateDirectory(uploadsPath);
+
+                string imagePath = Path.Combine(
+                    uploadsPath,
+                    Path.GetFileNameWithoutExtension(pdfFilePath) + suffix + "_page1.png");
+
+                File.WriteAllBytes(imagePath, imageBytes);
+                return imagePath;
+            }
+            finally
+            {
+                bitmap?.Dispose();
+            }
+        }
+
+        private void buttonOCRVLBrowseConfig_Click(object? sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "配置文件(*.yaml;*.yml;*.json)|*.yaml;*.yml;*.json|所有文件|*.*";
+                openFileDialog.Multiselect = false;
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    textBoxOCRVLConfigPath.Text = openFileDialog.FileName;
+                }
+            }
+        }
+
+        private void checkBoxOCRVLDocAnalysis_CheckedChanged(object? sender, EventArgs e)
+        {
+            UpdateOCRVLPromptState();
+            UpdateOCRVLStatus(checkBoxOCRVLDocAnalysis.Checked
+                ? "已启用版面分析，识别后优先预览 output/layout_overlay_page_0.png"
+                : "已切换为普通 OCR-VL 模式");
+        }
+
+        private void buttonOCRVLInit_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                textBoxOCRVLResult.Clear();
+                string configPath = textBoxOCRVLConfigPath.Text.Trim();
+                if (string.IsNullOrWhiteSpace(configPath))
+                {
+                    UpdateOCRVLStatus("配置文件不能为空");
+                    MessageBox.Show("请先选择 YAML 配置文件。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!File.Exists(configPath))
+                {
+                    UpdateOCRVLStatus("配置文件不存在");
+                    MessageBox.Show($"配置文件不存在：{configPath}", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                isOCRVLLayoutAnalysis = checkBoxOCRVLDocAnalysis.Checked;
+                UpdateOCRVLStatus("正在初始化 OCR-VL 引擎...");
+
+                if (isOCRVLLayoutAnalysis)
+                {
+                    ocrvlService.InitDoc(configPath);
+                }
+                else
+                {
+                    ocrvlService.Init(configPath);
+                }
+
+                isOCRVLInitSuccess = true;
+                buttonOCRVLInit.Enabled = false;
+                buttonOCRVLFreeEngine.Enabled = true;
+                buttonOCRVLRec.Enabled = true;
+                buttonOCRVLRecPDF.Enabled = true;
+                SetOCRVLParameterControlsEnabled(false);
+
+                string mode = isOCRVLLayoutAnalysis ? "版面分析模式(InitDoc)" : "普通模式(Init)";
+                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR-VL 初始化成功，当前为{mode}");
+                UpdateOCRVLStatus($"初始化成功，当前为{mode}");
+            }
+            catch (Exception ex)
+            {
+                isOCRVLInitSuccess = false;
+                UpdateOCRVLStatus($"初始化失败: {ex.Message}");
+                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR-VL 初始化失败: {ex.Message}");
+            }
+        }
+
+        private async void buttonOCRVLRec_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                textBoxOCRVLResult.Clear();
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Filter = "图像文件|*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff|所有文件|*.*";
+                    openFileDialog.Multiselect = false;
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = Path.GetFullPath(openFileDialog.FileName);
+                        await RecOCRVLAsync(filePath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogOCRVLMessage($"图片识别异常: {ex.Message}");
+                UpdateOCRVLStatus($"图片识别异常: {ex.Message}");
+            }
+        }
+
+        private async void buttonOCRVLRecPDF_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                textBoxOCRVLResult.Clear();
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Filter = "PDF文件(*.pdf)|*.pdf";
+                    openFileDialog.Multiselect = false;
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string pdfPath = Path.GetFullPath(openFileDialog.FileName);
+                        LogOCRVLMessage($"正在处理PDF文件: {pdfPath}");
+                        string imagePath = ConvertPdfFirstPageToImage(pdfPath, "_ocrvl");
+                        LogOCRVLMessage($"已保存转换后的图片到uploads: {imagePath}");
+                        await RecOCRVLAsync(imagePath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogOCRVLMessage($"PDF识别异常: {ex.Message}");
+                UpdateOCRVLStatus($"PDF识别异常: {ex.Message}");
+            }
+        }
+
+        private void buttonOCRVLFreeEngine_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                ocrvlService.FreeDocAnalyser();
+                ocrvlService.FreeEngine();
+                isOCRVLInitSuccess = false;
+                isOCRVLLayoutAnalysis = false;
+
+                buttonOCRVLInit.Enabled = true;
+                buttonOCRVLFreeEngine.Enabled = false;
+                buttonOCRVLRec.Enabled = false;
+                buttonOCRVLRecPDF.Enabled = false;
+                SetOCRVLParameterControlsEnabled(true);
+
+                textBoxOCRVLResult.Clear();
+                pictureBoxOCRVL.Image?.Dispose();
+                pictureBoxOCRVL.Image = null;
+
+                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR-VL 引擎已释放！");
+                UpdateOCRVLStatus("引擎已释放");
+            }
+            catch (Exception ex)
+            {
+                LogOCRVLMessage($"释放 OCR-VL 引擎失败: {ex.Message}");
+                UpdateOCRVLStatus($"释放失败: {ex.Message}");
+            }
         }
 
         private void buttonInit_Click(object sender, EventArgs e)
@@ -178,12 +568,19 @@ namespace WinFormsApp
                 using var doc = JsonDocument.Parse(json);
                 return JsonSerializer.Serialize(doc, new JsonSerializerOptions
                 {
-                    WriteIndented = true
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
                 });
             }
             catch (System.Exception)
             {
-                return json;
+                return Regex.Replace(
+                    json,
+                    @"\\u([0-9a-fA-F]{4})",
+                    match => ((char)Convert.ToInt32(match.Groups[1].Value, 16)).ToString())
+                    .Replace("\\r\\n", Environment.NewLine)
+                    .Replace("\\n", Environment.NewLine)
+                    .Replace("\\r", Environment.NewLine);
             }
         }
         private async Task<string> RecOCRAsync(string filePath)
@@ -755,6 +1152,17 @@ namespace WinFormsApp
             if (isInitSuccess)
             {
                 OCREngine.FreeEngine();
+            }
+            if (isOCRVLInitSuccess)
+            {
+                try
+                {
+                    ocrvlService.FreeDocAnalyser();
+                    ocrvlService.FreeEngine();
+                }
+                catch
+                {
+                }
             }
             // 释放图像矫正引擎
             try

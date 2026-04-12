@@ -3,6 +3,25 @@
 ################################################################################
 
 /.vs
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options directory
+.vs/
+.github/
+
+# Visual Studio Code
+.vscode/
+
 packages
 mkldnn.dll
 mklml.dll
@@ -44,6 +63,12 @@ paddle_inference.dll
 /PaddleOCRSDK/obj/Debug
 /PaddleOCRSDK/obj/Release
 /PaddleOCRSDK/obj
+/PaddleOCRVLSDK/bin/Debug
+/PaddleOCRVLSDK/bin/Release
+/PaddleOCRVLSDK/bin
+/PaddleOCRVLSDK/obj/Debug
+/PaddleOCRVLSDK/obj/Release
+/PaddleOCRVLSDK/obj
 /x64
 /OCRCoreService/Properties/PublishProfiles
 /OCRCoreService/Properties/PublishProfiles/FolderProfile.pubxml
