@@ -91,6 +91,7 @@
             textBoxOCRVLResult = new TextBox();
             groupBoxOCRVLControl = new GroupBox();
             groupBoxAI = new GroupBox();
+            comboBoxPrompt = new ComboBox();
             textBoxOCRVLPrompt = new TextBox();
             buttonOCRVLRec = new Button();
             buttonOCRVLRecPDF = new Button();
@@ -767,7 +768,7 @@
             // splitContainerOCRVL
             // 
             splitContainerOCRVL.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            splitContainerOCRVL.Location = new Point(6, 110);
+            splitContainerOCRVL.Location = new Point(6, 127);
             splitContainerOCRVL.Name = "splitContainerOCRVL";
             // 
             // splitContainerOCRVL.Panel1
@@ -777,7 +778,7 @@
             // splitContainerOCRVL.Panel2
             // 
             splitContainerOCRVL.Panel2.Controls.Add(textBoxOCRVLResult);
-            splitContainerOCRVL.Size = new Size(1072, 510);
+            splitContainerOCRVL.Size = new Size(1072, 493);
             splitContainerOCRVL.SplitterDistance = 518;
             splitContainerOCRVL.TabIndex = 8;
             // 
@@ -787,7 +788,7 @@
             groupBoxOCRVLImage.Dock = DockStyle.Fill;
             groupBoxOCRVLImage.Location = new Point(0, 0);
             groupBoxOCRVLImage.Name = "groupBoxOCRVLImage";
-            groupBoxOCRVLImage.Size = new Size(518, 510);
+            groupBoxOCRVLImage.Size = new Size(518, 493);
             groupBoxOCRVLImage.TabIndex = 0;
             groupBoxOCRVLImage.TabStop = false;
             groupBoxOCRVLImage.Text = "图片预览";
@@ -797,7 +798,7 @@
             pictureBoxOCRVL.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pictureBoxOCRVL.Location = new Point(3, 19);
             pictureBoxOCRVL.Name = "pictureBoxOCRVL";
-            pictureBoxOCRVL.Size = new Size(512, 488);
+            pictureBoxOCRVL.Size = new Size(512, 471);
             pictureBoxOCRVL.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxOCRVL.TabIndex = 0;
             pictureBoxOCRVL.TabStop = false;
@@ -809,7 +810,7 @@
             textBoxOCRVLResult.Multiline = true;
             textBoxOCRVLResult.Name = "textBoxOCRVLResult";
             textBoxOCRVLResult.ScrollBars = ScrollBars.Both;
-            textBoxOCRVLResult.Size = new Size(550, 510);
+            textBoxOCRVLResult.Size = new Size(550, 493);
             textBoxOCRVLResult.TabIndex = 0;
             // 
             // groupBoxOCRVLControl
@@ -824,7 +825,7 @@
             groupBoxOCRVLControl.Controls.Add(labelOCRVLConfigPath);
             groupBoxOCRVLControl.Location = new Point(6, 6);
             groupBoxOCRVLControl.Name = "groupBoxOCRVLControl";
-            groupBoxOCRVLControl.Size = new Size(1072, 98);
+            groupBoxOCRVLControl.Size = new Size(1072, 115);
             groupBoxOCRVLControl.TabIndex = 0;
             groupBoxOCRVLControl.TabStop = false;
             groupBoxOCRVLControl.Text = "OCR-VL功能选项";
@@ -832,23 +833,33 @@
             // groupBoxAI
             // 
             groupBoxAI.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxAI.Controls.Add(comboBoxPrompt);
             groupBoxAI.Controls.Add(textBoxOCRVLPrompt);
             groupBoxAI.Controls.Add(buttonOCRVLRec);
             groupBoxAI.Controls.Add(buttonOCRVLRecPDF);
             groupBoxAI.Location = new Point(524, 15);
             groupBoxAI.Name = "groupBoxAI";
-            groupBoxAI.Size = new Size(542, 77);
+            groupBoxAI.Size = new Size(542, 94);
             groupBoxAI.TabIndex = 11;
             groupBoxAI.TabStop = false;
             groupBoxAI.Text = "AI识别（AI提示词仅在未启用版面分析时有效）";
             // 
+            // comboBoxPrompt
+            // 
+            comboBoxPrompt.FormattingEnabled = true;
+            comboBoxPrompt.Location = new Point(6, 45);
+            comboBoxPrompt.Name = "comboBoxPrompt";
+            comboBoxPrompt.Size = new Size(122, 25);
+            comboBoxPrompt.TabIndex = 19;
+            comboBoxPrompt.SelectedIndexChanged += comboBoxPrompt_SelectedIndexChanged;
+            // 
             // textBoxOCRVLPrompt
             // 
             textBoxOCRVLPrompt.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBoxOCRVLPrompt.Location = new Point(6, 22);
+            textBoxOCRVLPrompt.Location = new Point(134, 22);
             textBoxOCRVLPrompt.Multiline = true;
             textBoxOCRVLPrompt.Name = "textBoxOCRVLPrompt";
-            textBoxOCRVLPrompt.Size = new Size(358, 49);
+            textBoxOCRVLPrompt.Size = new Size(316, 66);
             textBoxOCRVLPrompt.TabIndex = 5;
             textBoxOCRVLPrompt.Text = "OCR:";
             // 
@@ -856,9 +867,9 @@
             // 
             buttonOCRVLRec.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOCRVLRec.Enabled = false;
-            buttonOCRVLRec.Location = new Point(370, 26);
+            buttonOCRVLRec.Location = new Point(456, 22);
             buttonOCRVLRec.Name = "buttonOCRVLRec";
-            buttonOCRVLRec.Size = new Size(80, 32);
+            buttonOCRVLRec.Size = new Size(80, 29);
             buttonOCRVLRec.TabIndex = 8;
             buttonOCRVLRec.Text = "图片识别";
             buttonOCRVLRec.UseVisualStyleBackColor = true;
@@ -868,9 +879,9 @@
             // 
             buttonOCRVLRecPDF.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOCRVLRecPDF.Enabled = false;
-            buttonOCRVLRecPDF.Location = new Point(456, 25);
+            buttonOCRVLRecPDF.Location = new Point(456, 59);
             buttonOCRVLRecPDF.Name = "buttonOCRVLRecPDF";
-            buttonOCRVLRecPDF.Size = new Size(80, 33);
+            buttonOCRVLRecPDF.Size = new Size(80, 29);
             buttonOCRVLRecPDF.TabIndex = 9;
             buttonOCRVLRecPDF.Text = "PDF识别";
             buttonOCRVLRecPDF.UseVisualStyleBackColor = true;
@@ -879,7 +890,7 @@
             // buttonOCRVLFreeEngine
             // 
             buttonOCRVLFreeEngine.Enabled = false;
-            buttonOCRVLFreeEngine.Location = new Point(438, 60);
+            buttonOCRVLFreeEngine.Location = new Point(438, 69);
             buttonOCRVLFreeEngine.Name = "buttonOCRVLFreeEngine";
             buttonOCRVLFreeEngine.Size = new Size(80, 32);
             buttonOCRVLFreeEngine.TabIndex = 10;
@@ -891,7 +902,7 @@
             // 
             buttonOCRVLInit.BackColor = Color.FromArgb(0, 192, 0);
             buttonOCRVLInit.ForeColor = Color.Transparent;
-            buttonOCRVLInit.Location = new Point(352, 59);
+            buttonOCRVLInit.Location = new Point(352, 70);
             buttonOCRVLInit.Name = "buttonOCRVLInit";
             buttonOCRVLInit.Size = new Size(80, 33);
             buttonOCRVLInit.TabIndex = 7;
@@ -1073,5 +1084,6 @@
         private Label labelOCRVLConfigPath;
         private Label labelOCRVLStatus;
         private GroupBox groupBoxAI;
+        private ComboBox comboBoxPrompt;
     }
 }

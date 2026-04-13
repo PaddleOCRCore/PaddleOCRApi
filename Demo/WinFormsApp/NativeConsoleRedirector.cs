@@ -66,6 +66,7 @@ namespace WinFormsApp
                     // Native libraries may overwrite process std handles after startup.
                     // Rebind to our pipe to keep capture stable.
                     RebindToPipeHandles();
+                    FlushAllCrtBuffers();
                     EnsureReaderTaskRunning();
                     return;
                 }
@@ -305,6 +306,8 @@ namespace WinFormsApp
                             {
                                 RebindToPipeHandles();
                             }
+
+                            FlushAllCrtBuffers();
                         }
 
                         EnsureReaderTaskRunning();
@@ -361,16 +364,12 @@ namespace WinFormsApp
                     }
 
                     int pid = Marshal.ReadInt32(pBuf);
-                    if (pid != 0 && pid != Environment.ProcessId)
-                    {
-                        continue;
-                    }
 
                     IntPtr textPtr = IntPtr.Add(pBuf, 4);
                     string? msg = Marshal.PtrToStringAnsi(textPtr);
                     if (!string.IsNullOrWhiteSpace(msg))
                     {
-                        TryEmitLine(onLine, $"[DebugOut] {msg.Trim()} ");
+                        TryEmitLine(onLine, $"[DebugOut pid={pid}] {msg.Trim()}");
                     }
                 }
             }
@@ -573,6 +572,25 @@ namespace WinFormsApp
             }
         }
 
+        private void FlushAllCrtBuffers()
+        {
+            try
+            {
+                FlushAllUcrt();
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                FlushAllMsvcrt();
+            }
+            catch
+            {
+            }
+        }
+
         private void ReadLoop(Action<string> onLine, CancellationToken token)
         {
             SafeFileHandle? readHandle = pipeRead;
@@ -713,6 +731,12 @@ namespace WinFormsApp
 
         [DllImport("msvcrt.dll", EntryPoint = "_close", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         private static extern int CloseFdMsvcrt(int fd);
+
+        [DllImport("ucrtbase.dll", EntryPoint = "_flushall", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        private static extern int FlushAllUcrt();
+
+        [DllImport("msvcrt.dll", EntryPoint = "_flushall", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        private static extern int FlushAllMsvcrt();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool CloseHandle(IntPtr hObject);

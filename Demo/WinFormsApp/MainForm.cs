@@ -1,4 +1,3 @@
-
 // Copyright (c) 2025 PaddleOCRCore All Rights Reserved.
 // https://github.com/PaddleOCRCore/PaddleOCRApi.git
 //
@@ -58,23 +57,39 @@ namespace WinFormsApp
         // OCR-VL相关字段
         private bool isOCRVLInitSuccess = false;
         private bool isOCRVLLayoutAnalysis = false;
-        private readonly NativeConsoleRedirector ocrvlNativeLogRedirector = new NativeConsoleRedirector();
-        private bool isOCRVLNativeLogRedirecting = false;
 
         public MainForm()
         {
             InitializeComponent();
-            StartOCRVLNativeLogRedirect();
             ocrService = OCREngine.ocrService;
             ocrvlService = new OCRVLService();
             this.ActiveControl = pictureBoxImg;
             this.FormClosing += MainForm_FormClosing;
+        }
+        // comboBoxPrompt选中项变化时，将textBoxOCRVLPrompt的值设置为对应项
+        private void comboBoxPrompt_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxPrompt.SelectedItem != null)
+            {
+                textBoxOCRVLPrompt.Text = comboBoxPrompt.SelectedItem.ToString();
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             try
             {
+                comboBoxPrompt.Items.AddRange(new object[] {
+                "OCR:",
+                "Table Recognition:",
+                "Formula Recognition:",
+                "Chart Recognition:",
+                "Spotting:",
+                "Seal Recognition:"
+                });
+                // 设置comboBoxPrompt默认选中第一个
+                comboBoxPrompt.SelectedIndex = 0;
+
                 comboBoxModel.SelectedIndex = 0;
                 RecFilepath = Path.Combine(Application.StartupPath, "output");
                 if (!Directory.Exists(RecFilepath))
@@ -124,10 +139,12 @@ namespace WinFormsApp
             if (checkBoxOCRVLDocAnalysis.Checked)
             {
                 textBoxOCRVLPrompt.Enabled = false;
+                comboBoxPrompt.Enabled = false;
             }
             else
             {
                 textBoxOCRVLPrompt.Enabled = true;
+                comboBoxPrompt.Enabled=true;
             }
         }
 
@@ -161,57 +178,6 @@ namespace WinFormsApp
             textBoxOCRVLConfigPath.Enabled = enabled;
             buttonOCRVLBrowseConfig.Enabled = enabled;
             checkBoxOCRVLDocAnalysis.Enabled = enabled;
-        }
-
-        private void StartOCRVLNativeLogRedirect()
-        {
-            if (isOCRVLNativeLogRedirecting)
-            {
-                return;
-            }
-
-            try
-            {
-                ocrvlNativeLogRedirector.Start(line =>
-                {
-                    if (!string.IsNullOrWhiteSpace(line))
-                    {
-                        LogOCRVLMessage($"[Native] {line}");
-                    }
-                });
-
-                isOCRVLNativeLogRedirecting = true;
-                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:已开启 C++ 控制台日志重定向");
-            }
-            catch (Exception ex)
-            {
-                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:开启控制台日志重定向失败: {ex.Message}");
-            }
-        }
-
-        private void StopOCRVLNativeLogRedirect(bool writeLog)
-        {
-            if (!isOCRVLNativeLogRedirecting)
-            {
-                return;
-            }
-
-            try
-            {
-                ocrvlNativeLogRedirector.Stop();
-                isOCRVLNativeLogRedirecting = false;
-                if (writeLog)
-                {
-                    LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:已停止 C++ 控制台日志重定向");
-                }
-            }
-            catch (Exception ex)
-            {
-                if (writeLog)
-                {
-                    LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:停止控制台日志重定向失败: {ex.Message}");
-                }
-            }
         }
 
         private string GetOCRVLPrompt()
@@ -291,9 +257,8 @@ namespace WinFormsApp
             string prompt = GetOCRVLPrompt();
             var startTime = DateTime.Now;
             LogOCRVLMessage($"Image: {Path.GetFileName(filePath)}");
-            LogOCRVLMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             LogOCRVLMessage("正在识别，请稍后...");
-            LogOCRVLMessage($"日志重定向状态: {(isOCRVLNativeLogRedirecting ? "已开启" : "未开启")}");
+            LogOCRVLMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             stopwatch.Start();
 
             if (isOCRVLLayoutAnalysis)
@@ -301,8 +266,8 @@ namespace WinFormsApp
                 VLDocumentResult docResult = await Task.Run(() => ocrvlService.DocChat(filePath, PocrOutputFormat.Both));
                 var endTime = DateTime.Now;
                 LogOCRVLMessage($"结束时间: {endTime:HH:mm:ss.fff}");
-                LogOCRVLMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
-
+                LogOCRVLMessage($"用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+                LogOCRVLMessage($"识别结果：");
                 if (docResult.Code != 1)
                 {
                     LogOCRVLMessage(docResult.ErrorMsg);
@@ -337,6 +302,7 @@ namespace WinFormsApp
             var finishTime = DateTime.Now;
             LogOCRVLMessage($"结束时间: {finishTime:HH:mm:ss.fff}");
             LogOCRVLMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
+            LogOCRVLMessage($"识别结果：");
 
             string chatText = chatResult.Code == 1
                 ? NormalizeOCRVLDisplayText(chatResult.Content)
@@ -456,6 +422,7 @@ namespace WinFormsApp
             }
         }
 
+        // 支持多选图片识别，结果全部显示
         private async void buttonOCRVLRec_Click(object? sender, EventArgs e)
         {
             try
@@ -464,11 +431,14 @@ namespace WinFormsApp
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
                     openFileDialog.Filter = "图像文件|*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff|所有文件|*.*";
-                    openFileDialog.Multiselect = false;
+                    openFileDialog.Multiselect = true;
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        string filePath = Path.GetFullPath(openFileDialog.FileName);
-                        await RecOCRVLAsync(filePath);
+                        foreach (var filePath in openFileDialog.FileNames)
+                        {
+                            string absPath = Path.GetFullPath(filePath);
+                            string result = await RecOCRVLAsync(absPath);
+                        }
                     }
                 }
             }
@@ -511,7 +481,6 @@ namespace WinFormsApp
             {
                 ocrvlService.FreeDocAnalyser();
                 ocrvlService.FreeEngine();
-                StopOCRVLNativeLogRedirect(writeLog: true);
                 isOCRVLInitSuccess = false;
                 isOCRVLLayoutAnalysis = false;
 
@@ -1217,7 +1186,6 @@ namespace WinFormsApp
                 {
                 }
             }
-            StopOCRVLNativeLogRedirect(writeLog: false);
             // 释放图像矫正引擎
             try
             {
