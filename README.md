@@ -45,6 +45,7 @@
 - ✅ **功能全面**: 文字检测、识别、方向分类、表格识别
 - ✅ **图像矫正**: 文本图像几何变换，纠正文档扭曲、倾斜、透视变形，提升识别准确率
 - ✅ **以图找图**: 在大图中找到小图输出小图位置坐标，支持登录验证滑块识别
+- ✅ **视觉语言模型**: 集成PaddleOCR-VL视觉语言模型，支持通用OCR识别（带提示词）和版面分析
 
 ## 📁 项目结构
 
@@ -57,14 +58,19 @@ PaddleOCRWebApi/
 │   │   └── OCRSDK.cs             # SDK核心封装
 │   ├── UVDoc/                    # 文本图像矫正模块
 │   │   └── ...                   # 文档几何变换、透视矫正等功能
+│   ├── PaddleOCRVL/              # 视觉语言模型模块
+│   │   ├── IOCRVLService.cs      # VL服务接口
+│   │   ├── OCRVLService.cs       # VL识别服务
+│   │   └── OCRVLSDK.cs          # VL SDK封装
 │   ├── Models/                   # 数据模型
 │   └── PaddleOCRSDK.csproj      # SDK项目文件
 │
 ├── OCRCoreService/               # WebAPI服务项目
 │   ├── Controllers/              # API控制器
-│   │   ├── OCRServiceController.cs   # OCR接口
-│   │   ├── UVDocServiceController.cs # 文本图像矫正接口
-│   │   └── HomeController.cs         # 首页
+│   │   ├── OCRServiceController.cs      # OCR接口
+│   │   ├── UVDocServiceController.cs    # 文本图像矫正接口
+│   │   ├── OCRVLServiceController.cs    # 视觉语言模型接口
+│   │   └── HomeController.cs            # 首页
 │   ├── Services/                 # 业务服务
 │   │   └── OCREngine.cs         # OCR引擎
 │   ├── Authorization/            # 权限验证
@@ -192,6 +198,35 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | ocr_instance_count           | false  | OCR引擎实例数量，默认1，最大10，适用于高并发时使用。                                     |
 
 完整示例请查看 `Demo/` 目录下的各语言示例代码。
+
+## 🤖 OCR-VL 视觉语言模型
+
+PaddleOCR-VL 是基于视觉语言大模型（VLM）的 OCR 扩展模块，通过 `llamaocr-vl.dll` 提供推理能力。
+
+### 功能说明
+
+| 接口 | 说明 |
+| ---- | ---- |
+| `GetOCRVL` | 通用OCR识别，传入提示词 + 图片Base64，返回识别文本（未启用版面分析时使用） |
+| `GetOCRVLFile` | 通用OCR识别，传入提示词 + 图片文件，返回识别文本（未启用版面分析时使用） |
+| `GetDOCVL` | 版面分析识别，传入图片Base64，返回Markdown和JSON结构化结果（启用版面分析时使用） |
+| `GetDOCVLFile` | 版面分析识别，传入图片文件，返回Markdown和JSON结构化结果（启用版面分析时使用） |
+
+### 配置说明
+
+在 `appsettings.json` 中配置 `OCRVLConfig`：
+
+```json
+"OCRVLConfig": {
+  "enabled": false,
+  "yaml_path": "configs/PaddleOCR-VL-1.5.yaml"
+}
+```
+
+| 参数 | 默认值 | 说明 |
+| ---- | ------ | ---- |
+| `enabled` | `false` | 是否启用OCR-VL服务 |
+| `yaml_path` | `configs/PaddleOCR-VL-1.5.yaml` | yaml模型配置文件路径 |
 
 ## 🖥️ GPU环境配置说明
 ### paddle_inference2.6.2版本GPU推理库

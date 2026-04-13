@@ -41,6 +41,7 @@ Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOC
 - ✅ **Rich Models**: Support for PP-OCRv5/v4 series models
 - ✅ **Comprehensive Features**: Text detection, recognition, orientation classification, table recognition
 - ✅ **Image Correction**: Document image geometric transformation, correcting distortion, tilt, and perspective deformation to improve recognition accuracy
+- ✅ **Vision-Language Model**: Integrated PaddleOCR-VL vision-language model supporting general OCR with prompts and document layout analysis
 
 ## 📁 Project Structure
 
@@ -53,6 +54,10 @@ PaddleOCRWebApi/
 │   │   └── OCRSDK.cs             # SDK core wrapper
 │   ├── UVDoc/                    # Document image correction module
 │   │   └── ...                   # Geometric transformation, perspective correction
+│   ├── PaddleOCRVL/              # Vision-Language model module
+│   │   ├── IOCRVLService.cs      # VL service interface
+│   │   ├── OCRVLService.cs       # VL recognition service
+│   │   └── OCRVLSDK.cs          # VL SDK wrapper
 │   ├── Models/                   # Data models
 │   └── PaddleOCRSDK.csproj      # SDK project file
 │
@@ -60,6 +65,7 @@ PaddleOCRWebApi/
 │   ├── Controllers/              # API controllers
 │   │   ├── OCRServiceController.cs      # OCR endpoints
 │   │   ├── UVDocServiceController.cs    # Document correction endpoints
+│   │   ├── OCRVLServiceController.cs    # Vision-Language model endpoints
 │   │   └── HomeController.cs            # Home page
 │   ├── Services/                 # Business services
 │   │   └── OCREngine.cs         # OCR engine
@@ -190,6 +196,35 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | ocr_instance_count           | false   | Number of OCR engine instances: default is 1, maximum is 10, suitable for high-concurrency scenarios.  |
 
 For more complete examples, please check the `Demo/` directory for each language example code.
+
+## 🤖 OCR-VL Vision-Language Model
+
+PaddleOCR-VL is an OCR extension module based on a vision-language model (VLM), providing inference capabilities via `llamaocr-vl.dll`.
+
+### API Overview
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `GetOCRVL` | General OCR recognition with prompt + image Base64, returns recognized text (use when layout analysis is not enabled) |
+| `GetOCRVLFile` | General OCR recognition with prompt + image file upload, returns recognized text (use when layout analysis is not enabled) |
+| `GetDOCVL` | Layout analysis recognition with image Base64, returns Markdown and JSON structured results (use when layout analysis is enabled) |
+| `GetDOCVLFile` | Layout analysis recognition with image file upload, returns Markdown and JSON structured results (use when layout analysis is enabled) |
+
+### Configuration
+
+Configure `OCRVLConfig` in `appsettings.json`:
+
+```json
+"OCRVLConfig": {
+  "enabled": false,
+  "yaml_path": "configs/PaddleOCR-VL-1.5.yaml"
+}
+```
+
+| Parameter | Default | Description |
+| --------- | ------- | ----------- |
+| `enabled` | `false` | Whether to enable the OCR-VL service |
+| `yaml_path` | `configs/PaddleOCR-VL-1.5.yaml` | Path to the yaml model configuration file |
 
 ## 🖥️ GPU Configuration
 

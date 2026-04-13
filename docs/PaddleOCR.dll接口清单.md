@@ -146,3 +146,105 @@
   - 参数：由库返回的缓冲区指针。
 
 ---
+
+## OCRVLServiceController WebAPI 接口
+
+> 基于视觉语言模型（VLM）的 OCR 扩展服务，路由前缀：`/OCRVLService`。
+> 需要在 `appsettings.json` 中将 `OCRVLConfig.enabled` 设为 `true` 后方可使用。
+
+### GET `/OCRVLService/Get`
+
+- 描述：检查 OCR-VL 服务状态。
+- 返回：服务状态信息（message、timestamp）。
+
+---
+
+### POST `/OCRVLService/GetOCRVL`
+
+- 描述：通用 OCR 识别，传入提示词和图片 Base64 编码（**未启用版面分析时使用**）。
+- Content-Type：`application/json`
+- 请求体：
+
+```json
+{
+  "Prompt": "请识别图片中的文字",
+  "Base64String": "<图片Base64字符串>"
+}
+```
+
+- 返回：
+
+```json
+{
+  "code": 200,
+  "data": { "content": "识别结果文本" }
+}
+```
+
+---
+
+### POST `/OCRVLService/GetOCRVLFile`
+
+- 描述：通用 OCR 识别，上传图片文件和提示词（**未启用版面分析时使用**）。
+- Content-Type：`multipart/form-data`
+- 请求参数：
+  - `file`：图片文件（必填）
+  - `prompt`：提示词字符串（必填）
+- 返回：
+
+```json
+{
+  "code": 200,
+  "data": { "content": "识别结果文本" }
+}
+```
+
+---
+
+### POST `/OCRVLService/GetDOCVL`
+
+- 描述：版面分析识别，传入图片 Base64 编码（**启用版面分析时使用**）。
+- Content-Type：`application/json`
+- 请求体：
+
+```json
+{
+  "Base64String": "<图片Base64字符串>"
+}
+```
+
+- 返回：
+
+```json
+{
+  "code": 200,
+  "data": {
+    "content": "原始返回内容",
+    "markdown": "Markdown格式的版面分析结果",
+    "jsonText": "JSON格式的版面分析结果"
+  }
+}
+```
+
+---
+
+### POST `/OCRVLService/GetDOCVLFile`
+
+- 描述：版面分析识别，上传图片文件（**启用版面分析时使用**）。
+- Content-Type：`multipart/form-data`
+- 请求参数：
+  - `file`：图片文件（必填）
+- 返回：
+
+```json
+{
+  "code": 200,
+  "data": {
+    "content": "原始返回内容",
+    "markdown": "Markdown格式的版面分析结果",
+    "jsonText": "JSON格式的版面分析结果"
+  }
+}
+```
+
+---
