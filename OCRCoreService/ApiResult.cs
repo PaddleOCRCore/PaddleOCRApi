@@ -230,4 +230,20 @@ namespace OCRCoreService
         /// </summary>
         public bool use_tensorrt { get; set; } = false;
     }
+
+    /// <summary>
+    /// OCR-VL 视觉语言识别服务配置
+    /// </summary>
+    public class OCRVLConfig
+    {
+        /// <summary>
+        /// 是否启用OCR-VL服务
+        /// </summary>
+        public bool enabled { get; set; } = false;
+
+        /// <summary>
+        /// yaml配置文件路径
+        /// </summary>
+        public string yaml_path { get; set; } = "configs/PaddleOCR-VL-1.5.yaml";
+    }
 }

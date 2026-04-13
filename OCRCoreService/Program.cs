@@ -78,6 +78,47 @@ try
         }
     }
 
+    // OCR-VL 视觉语言识别服务依赖注入（条件注入）
+    var ocrvlConfig = builder.Configuration.GetSection("OCRVLConfig").Get<OCRVLConfig>();
+    if (ocrvlConfig != null)
+    {
+        builder.Services.AddSingleton(ocrvlConfig);
+        if (ocrvlConfig.enabled)
+        {
+            logger.Info("OCR-VL服务已启用");
+            builder.Services.AddSingleton<IOCRVLService>(sp =>
+            {
+                var vlService = new OCRVLService();
+                string yamlPath = Path.IsPathRooted(ocrvlConfig.yaml_path)
+                    ? ocrvlConfig.yaml_path
+                    : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ocrvlConfig.yaml_path);
+                try
+                {
+                    vlService.Init(yamlPath);
+                    logger.Info("OCR-VL引擎初始化成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, $"OCR-VL引擎初始化失败: {ex.Message}");
+                }
+                try
+                {
+                    vlService.InitDoc(yamlPath);
+                    logger.Info("OCR-VL版面分析引擎初始化成功");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, $"OCR-VL版面分析引擎初始化失败: {ex.Message}");
+                }
+                return vlService;
+            });
+        }
+        else
+        {
+            logger.Info("OCR-VL服务未启用");
+        }
+    }
+
     // 网页显示中文
     builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
