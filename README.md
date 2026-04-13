@@ -90,9 +90,6 @@ PaddleOCRWebApi/
 │   │   └── OCRTablePythonDemo.py # 表格识别示例
 │   ├── GoDemo/                  # Go调用示例
 │   │   └── OCRGoDemo.go        # Go示例代码
-│   ├── PaddleVisionWinForm/    # 文本图像矫正WinForms示例
-│   │   ├── MainForm.cs         # 主窗体
-│   │   └── ...                 # 文档扭曲矫正、透视变换演示
 │   └── WinFormsApp/            # OCR识别WinForms示例
 │       ├── MainForm.cs         # 主窗体
 │       └── Services/           # 服务层
@@ -108,8 +105,8 @@ PaddleOCRWebApi/
 使用paddle_inference3.3+版本推理库：
 
 ```xml
-<PackageReference Include="PaddleOCRSDK" Version="4.1.1" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.1.1" />
+<PackageReference Include="PaddleOCRSDK" Version="4.2.0" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.2.0" />
 ```
 
 若使用paddle_inference2.6.2版本推理库：

@@ -86,9 +86,6 @@ PaddleOCRWebApi/
 │   │   └── OCRTablePythonDemo.py # Table recognition example
 │   ├── GoDemo/                  # Go calling example
 │   │   └── OCRGoDemo.go        # Go example code
-│   ├── PaddleVisionWinForm/    # Document correction WinForms demo
-│   │   ├── MainForm.cs         # Main form
-│   │   └── ...                 # Document distortion correction, perspective transform demo
 │   └── WinFormsApp/            # OCR recognition WinForms demo
 │       ├── MainForm.cs         # Main form
 │       └── Services/           # Service layer
@@ -104,8 +101,8 @@ PaddleOCRWebApi/
 For paddle_inference 3.3+ version:
 
 ```xml
-<PackageReference Include="PaddleOCRSDK" Version="4.1.1" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.1.1" />
+<PackageReference Include="PaddleOCRSDK" Version="4.2.0" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.2.0" />
 ```
 
 For paddle_inference 2.6.2 version:

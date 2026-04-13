@@ -1,5 +1,14 @@
 # 📝 更新日志
 
+## v4.2.0 `2026.4.13`
+- ✅ 新增 OCR-VL 视觉语言识别模块，基于 Llama 推理引擎（llamaocr-vl.dll），支持 PaddleOCR-VL-1.5-GGUF、DeepSeek-OCR-GGUF、Qwen2-VL-OCR-GGUF、FireRed-OCR-GGUF 等主流视觉语言 OCR 模型，更多 GGUF 格式模型可访问：https://www.modelscope.cn/models?name=OCR%20GGUF
+- ✅ OCRCoreService 新增 `OCRVLServiceController`，提供四个 WebAPI 接口：`GetOCRVL`（通用识别 + Base64）、`GetOCRVLFile`（通用识别 + 文件）、`GetDOCVL`（版面分析 + Base64）、`GetDOCVLFile`（版面分析 + 文件）。
+- ✅ `appsettings.json` 新增 `OCRVLConfig` 配置节，支持配置是否启用服务及 yaml 模型路径。
+- ✅ WinFormsApp Demo 新增 OCR-VL 识别界面，支持指定提示词进行通用识别和版面分析识别。
+- ✅ 发布 NuGet 包 PaddleOCRSDK v4.2.0，对齐最新接口。
+- ✅ 发布 NuGet 包 PaddleOCRRuntime_x64 v4.2.0，包含 paddle 3.3.0 CPU 推理库、PaddleOCR.dll、llamaocr-vl.dll 及全部依赖。
+- ✅ OCR-VL识别请自行下载PP-DocLayoutV2_infer及GGUF模型
+
 ## v4.1.1 `2026.2.3`
 - ✅ 优化PaddleOCR.dll，增加PaddleOCR多实例识别引擎，数量自定义，适合高并发情况使用，优化内存，修复有时识别为空问题，增加截图传入图片识别。
 - ✅ 发布Nuget引用包PaddleocrSDK v4.1.1，.net项目可直接引用此包，也可Copy开源项目自行修改。

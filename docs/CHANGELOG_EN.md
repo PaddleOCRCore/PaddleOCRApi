@@ -1,5 +1,13 @@
 # 📝 Changelog
 
+## v4.2.0 `2026.4.13`
+- ✅ Added OCR-VL vision-language recognition module powered by the Llama inference engine (llamaocr-vl.dll). Supports mainstream VLM-based OCR models including PaddleOCR-VL-1.5-GGUF, DeepSeek-OCR-GGUF, Qwen2-VL-OCR-GGUF, and FireRed-OCR-GGUF. More GGUF-format models available at: https://www.modelscope.cn/models?name=OCR%20GGUF
+- ✅ Added `OCRVLServiceController` to OCRCoreService, providing four WebAPI endpoints: `GetOCRVL` (general OCR + Base64), `GetOCRVLFile` (general OCR + file upload), `GetDOCVL` (layout analysis + Base64), `GetDOCVLFile` (layout analysis + file upload).
+- ✅ Added `OCRVLConfig` configuration section in `appsettings.json` for enabling the service and specifying the yaml model path.
+- ✅ WinFormsApp Demo added OCR-VL recognition UI, supporting general recognition with custom prompts and document layout analysis.
+- ✅ Released NuGet package PaddleOCRSDK v4.2.0, aligned with the latest interfaces.
+- ✅ Released NuGet package PaddleOCRRuntime_x64 v4.2.0, including the paddle 3.3.0 CPU inference library, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies.
+
 v4.1.1 2026.2.3
 - ✅ Optimized PaddleOCR.dll: added a multi-instance PaddleOCR recognition engine with a configurable number of instances, suitable for high-concurrency scenarios; optimized memory usage; fixed an issue where recognition results could occasionally be empty; added support for passing screenshots directly as images for recognition.
 - ✅ Released the NuGet package PaddleocrSDK v4.1.1. .NET projects can reference this package directly, or copy and modify the open-source project as needed.
