@@ -966,7 +966,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PaddleOCR识别Demo V4.1.1--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
+            Text = "PaddleOCR识别Demo --QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
             Load += MainForm_Load;
             tabPageImageCorrection.ResumeLayout(false);
             splitContainerUVDoc.Panel1.ResumeLayout(false);

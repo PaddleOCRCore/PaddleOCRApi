@@ -74,11 +74,12 @@ namespace WinFormsApp
                 textBoxOCRVLPrompt.Text = comboBoxPrompt.SelectedItem.ToString();
             }
         }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
             try
             {
+                string github = "--QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
+                this.Text = AssemblyHepler.AssemblyTitle + " V"+AssemblyHepler.AssemblyVersion + github;
                 comboBoxPrompt.Items.AddRange(new object[] {
                 "OCR:",
                 "Table Recognition:",
