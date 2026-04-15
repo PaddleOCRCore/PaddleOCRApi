@@ -3,21 +3,22 @@
 实现在线调用OCR识别的WebAPI服务
 
 ## 运行环境
-项目运行环境为.net8.0：
+项目运行环境为.net10.0：
 
 1、使用IIS：服务器环境推荐，建议操作系统Windows Server2016 Data Center，
-安装IIS，及.net8 环境，下载地址：
-https://dotnet.microsoft.com/zh-cn/download/dotnet/8.0，找到ASP.NET Core
-运行时 8.0.14，点击Windows 平台Hosting Bundle 下载：
-https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-8.0.14-win
-dows-hosting-bundle-installer
+安装IIS，及.net10 环境，下载地址：
+https://dotnet.microsoft.com/zh-cn/download/dotnet/10.0
+
+找到ASP.NET Core运行时 10.0.5，点击Windows 平台Hosting Bundle 下载：
+https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-10.0.5-windows-hosting-bundle-installer
+
 2、独立运行服务：建议操作系统Win10 以上64 位，
-安装ASP.NET Core 运行时 8.0.14：
-https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-as
-pnetcore-8.0.14-windows-x64-installer
+安装ASP.NET Core 运行时 10.0.5：
+https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-10.0.5-windows-x64-installer
+
 安装.NET 桌面运行时 8.0.14：
-https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-d
-esktop-8.0.14-windows-x64-installer
+https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-10.0.5-windows-x64-installer
+
 创建一个批处理文件：StartOCRApi.bat，输入以下内容：
 @echo off
 set CURRENT_DIR=%~dp0
@@ -66,6 +67,11 @@ pause
 |8| UVDoc| /UVDocService/UVDocFile| 文本图像矫正| 2026/01/11| 2026/01/11| 上传图片|
 |9| UVDoc| /UVDocService/UVDocFileToBase64| 文本图像矫正| 2026/01/11| 2026/01/11| 上传图片，返回Base64|
 |10| UVDoc| /UVDocService/UVDocBytes| 文本图像矫正| 2026/01/11| 2026/01/11| 上传字节数组|
+|11| OCRVL| /OCRVLService/Get| 检查服务状态| 2026/04/14| 2026/04/14| GET请求|
+|12| OCRVL| /OCRVLService/GetOCRVL| OCR-VL识别| 2026/04/14| 2026/04/14| 上传Base64+提示词|
+|13| OCRVL| /OCRVLService/GetOCRVLFile| OCR-VL识别| 2026/04/14| 2026/04/14| 上传图片+提示词|
+|14| OCRVL| /OCRVLService/GetDOCVL| DOC-VL版面分析| 2026/04/14| 2026/04/14| 上传Base64|
+|15| OCRVL| /OCRVLService/GetDOCVLFile| DOC-VL版面分析| 2026/04/14| 2026/04/14| 上传图片|
 
 图片OCR识别：/OCRService/GetOCRText 
 
@@ -289,3 +295,138 @@ pause
 传入参数：FormData，key为"file"，value为图片文件
 
 返回结果：直接返回矫正后的图片文件（image/jpeg）
+
+## OCRVL服务接口详细文档
+
+> 基于视觉语言模型（VLM）的OCR扩展服务，路由前缀：`/OCRVLService`。  
+> 需在`appsettings.json`中将`OCRVLConfig.enabled`设为`true`后方可使用。
+
+### 11. 检查服务状态：/OCRVLService/Get
+
+提交方式：GET
+
+传入参数：无
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "message": "OCR-VL视觉语言识别服务已启动",
+  "timestamp": "2026-04-14T10:00:00"
+ },
+ "errorMessage": ""
+}
+`
+
+### 12. OCR-VL识别（Base64）：/OCRVLService/GetOCRVL
+
+提交方式：POST
+
+请求Content-Type：`application/json`
+
+传入参数：
+
+`
+{
+ "Prompt": "请识别图片中的文字",
+ "Base64String": "<图片Base64字符串>"
+}
+`
+
+| 序号| 参数名称 | 描述 | 类型 | 是否必填 | 备注 |
+| --- | -------- | ---- | ---- | -------- | ---- |
+| 1 | Prompt | OCR-VL提示词 | 字符串 | 必填 | 未启用版面分析时使用 |
+| 2 | Base64String | 图片Base64编码 | 字符串 | 必填 | |
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "content": "识别结果文本"
+ },
+ "errorMessage": ""
+}
+`
+
+### 13. OCR-VL识别（文件上传）：/OCRVLService/GetOCRVLFile
+
+提交方式：POST
+
+请求Content-Type：`multipart/form-data`
+
+传入参数：FormData
+
+| 序号| 参数名称 | 描述 | 类型 | 是否必填 | 备注 |
+| --- | -------- | ---- | ---- | -------- | ---- |
+| 1 | file | 图片文件 | 文件 | 必填 | 未启用版面分析时使用 |
+| 2 | prompt | OCR-VL提示词 | 字符串 | 必填 | |
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "content": "识别结果文本"
+ },
+ "errorMessage": ""
+}
+`
+
+### 14. DOC-VL版面分析（Base64）：/OCRVLService/GetDOCVL
+
+提交方式：POST
+
+请求Content-Type：`application/json`
+
+传入参数：
+
+`
+{
+ "Base64String": "<图片Base64字符串>"
+}
+`
+
+| 序号| 参数名称 | 描述 | 类型 | 是否必填 | 备注 |
+| --- | -------- | ---- | ---- | -------- | ---- |
+| 1 | Base64String | 图片Base64编码 | 字符串 | 必填 | 启用版面分析时使用 |
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "content": "原始返回内容",
+  "markdown": "Markdown格式的版面分析结果",
+  "jsonText": "JSON格式的版面分析结果"
+ },
+ "errorMessage": ""
+}
+`
+
+### 15. DOC-VL版面分析（文件上传）：/OCRVLService/GetDOCVLFile
+
+提交方式：POST
+
+请求Content-Type：`multipart/form-data`
+
+传入参数：FormData，key为"file"，value为图片文件
+
+返回结果示例：
+
+`
+{
+ "status": 200,
+ "data": {
+  "content": "原始返回内容",
+  "markdown": "Markdown格式的版面分析结果",
+  "jsonText": "JSON格式的版面分析结果"
+ },
+ "errorMessage": ""
+}
+`
