@@ -2,7 +2,7 @@
   <PropertyGroup>
     <!-- Package Identity -->
     <PackageId>PaddleOCRSDK</PackageId>
-    <Version>4.2.0</Version>
+    <Version>5.0.0</Version>
     <Authors>PaddleOCRCore</Authors>
     <Company>PaddleOCRCore</Company>
     

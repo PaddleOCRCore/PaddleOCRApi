@@ -44,6 +44,11 @@ func main() {
 		fmt.Println("获取Detect函数失败:", err)
 		return
 	}
+	freeResultBufferFunc, err := ocrDLL.FindProc("FreeResultBuffer")
+	if err != nil {
+		fmt.Println("获取FreeResultBuffer函数失败:", err)
+		return
+	}
 	enableJsonFunc, err := ocrDLL.FindProc("EnableJsonResult")
 	if err != nil {
 		fmt.Println("获取EnableJsonResult函数失败:", err)
@@ -78,12 +83,17 @@ func main() {
 		// 调用OCR检测函数
 		imagePath := imageDir + "\\" + image.Name()
 		cString, _, _ := detectFunc.Call(stringToPointer(imagePath))
+		if cString == 0 {
+			fmt.Println("识别失败，返回空指针。")
+			continue
+		}
 		// 计算识别时间
 		elapsedTime := time.Since(startTime)
 		fmt.Printf("OCR耗时: %.2fms\n", float64(elapsedTime)/float64(time.Millisecond))
 
 		// 将返回的char* 指针转换为Go字符串
 		var result string = C.GoString((*C.char)(unsafe.Pointer(cString)))
+		freeResultBufferFunc.Call(cString)
 		fmt.Println("识别结果:", result)
 	}
 

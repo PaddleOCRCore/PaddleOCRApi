@@ -1,4 +1,5 @@
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
 import java.io.File;
 import java.util.Scanner;
@@ -24,7 +25,10 @@ public class OCRJavaDemo {
         boolean Initjson(String det_infer, String cls_infer, String rec_infer, String parameterjson);
         
         // 识别图片
-        String Detect(String imageFile);
+        Pointer Detect(String imageFile);
+
+        // 释放 Detect 返回的结果缓冲区
+        void FreeResultBuffer(Pointer resultPtr);
         
         // 释放引擎
         void FreeEngine();
@@ -87,11 +91,20 @@ public class OCRJavaDemo {
                         long startTime = System.currentTimeMillis();
                         
                         // 执行 OCR 识别
-                        String result = PaddleOCR.INSTANCE.Detect(img.getAbsolutePath());
+                        Pointer resultPtr = PaddleOCR.INSTANCE.Detect(img.getAbsolutePath());
+                        String result = "";
+                        if (resultPtr != null) {
+                            result = resultPtr.getString(0, "UTF-8");
+                            PaddleOCR.INSTANCE.FreeResultBuffer(resultPtr);
+                        }
                         
                         long endTime = System.currentTimeMillis();
                         System.out.println("OCR 耗时: " + (endTime - startTime) + "ms");
-                        System.out.println("识别内容: \n" + result);
+                        if (!result.isEmpty()) {
+                            System.out.println("识别内容: \n" + result);
+                        } else {
+                            System.out.println("识别失败，返回空指针。");
+                        }
                     }
                 } else {
                     System.out.println("在 images 目录下未找到图片文件。");

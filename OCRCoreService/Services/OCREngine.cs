@@ -111,7 +111,9 @@ namespace OCRCoreService.Services
             //改为相对路径，避免中文路径问题
             para.det_infer = $"models/{_ocrConfig.det_infer}";
             para.cls_infer = $"models/{_ocrConfig.cls_infer}";
+            para.doc_cls_infer = $"models/{_ocrConfig.doc_cls_infer}";
             para.rec_infer = $"models/{_ocrConfig.rec_infer}";
+            para.layout_model_dir = $"models/{_ocrConfig.layout_model_dir}";
             para.table_model_dir = $"models/{_ocrConfig.table_model_dir}";
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = _ocrConfig.use_gpu;

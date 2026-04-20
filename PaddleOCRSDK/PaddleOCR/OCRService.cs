@@ -167,11 +167,11 @@ namespace PaddleOCRSDK
                 }
                 else if (para.paraType == EnumParaType.TableClass)
                 {
-                    ret = OCRSDK.InitTable(para.det_infer, para.cls_infer, para.rec_infer, para.table_model_dir,para.tablepara);
+                    ret = OCRSDK.InitStructure(para.det_infer, para.cls_infer, para.doc_cls_infer, para.rec_infer, para.layout_model_dir, para.table_model_dir,para.tablepara);
                 }
                 else if (para.paraType == EnumParaType.TableJson)
                 {
-                    ret = OCRSDK.InitTablejson(para.det_infer, para.cls_infer, para.rec_infer, para.table_model_dir, para.json);
+                    ret = OCRSDK.InitStructurejson(para.det_infer, para.cls_infer, para.doc_cls_infer, para.rec_infer, para.layout_model_dir, para.table_model_dir, para.json);
                 }
                 else
                 {

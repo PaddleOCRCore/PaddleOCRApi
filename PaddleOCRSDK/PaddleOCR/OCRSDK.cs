@@ -109,24 +109,28 @@ namespace PaddleOCRSDK
         /// 初始化OCR表格识别
         /// </summary>
         /// <param name="det_infer"></param>
-        /// <param name="cls_infer"></param>
+        /// <param name="cls_infer">文本行方向分类模型路径</param>
+        /// <param name="doc_cls_infer">文档方向分类模型路径</param>
         /// <param name="rec_infer"></param>
+        /// <param name="layout_model_dir"></param>
         /// <param name="table_model_dir"></param>
         /// <param name="tablepara"></param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool InitTable(string det_infer, string cls_infer, string rec_infer, string table_model_dir,TableParameter tablepara);
+        internal static extern bool InitStructure(string det_infer, string cls_infer, string doc_cls_infer, string rec_infer, string layout_model_dir, string table_model_dir, TableParameter tablepara);
         /// <summary>
         /// 初始化OCR表格识别
         /// </summary>
         /// <param name="det_infer"></param>
-        /// <param name="cls_infer"></param>
+        /// <param name="cls_infer">文本行方向分类模型路径</param>
+        /// <param name="doc_cls_infer">文档方向分类模型路径</param>
         /// <param name="rec_infer"></param>
+        /// <param name="layout_model_dir"></param>
         /// <param name="table_model_dir"></param>
         /// <param name="parjson">json参数</param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool InitTablejson(string det_infer, string cls_infer, string rec_infer, string table_model_dir,  string parjson);
+        internal static extern bool InitStructurejson(string det_infer, string cls_infer, string doc_cls_infer, string rec_infer, string layout_model_dir, string table_model_dir,  string parjson);
         /// <summary>
         /// OCR表格识别
         /// </summary>

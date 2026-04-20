@@ -120,21 +120,25 @@ namespace OCRCoreService
         /// </summary>
         public string det_infer { get; set; }
         /// <summary>
-        /// cls_infer模型路径
+        /// 文本行方向分类模型路径
         /// </summary>
         public string cls_infer { get; set; }
+        /// <summary>
+        /// 文档方向分类模型路径
+        /// </summary>
+        public string doc_cls_infer { get; set; }
         /// <summary>
         /// rec_infer模型路径
         /// </summary>
         public string rec_infer { get; set; }
         /// <summary>
+        /// 版面识别模型inference model地址
+        /// </summary>
+        public string layout_model_dir { get; set; }
+        /// <summary>
         /// 表格识别模型inference model地址
         /// </summary>
         public string table_model_dir { get; set; }
-        /// <summary>
-        /// 表格识别字典文件
-        /// </summary>
-        public string table_dict_path { get; set; }
         /// <summary>
         /// 是否使用GPU
         /// </summary>

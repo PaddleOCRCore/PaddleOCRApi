@@ -28,6 +28,8 @@ namespace WinFormsApp.Services
         public static string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
         public static string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
         public static string cls_infer = "PP-LCNet_x1_0_textline_ori";
+        public static string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
+        private static string layout_model_dir = "PP-DocLayoutV2_infer";//版面识别模型inference
         private static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
@@ -110,21 +112,17 @@ namespace WinFormsApp.Services
             InitParamater para = new InitParamater();
             string root = AppDomain.CurrentDomain.BaseDirectory;
             string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            //para.det_infer = Path.Combine(modelsPath, det_infer);
-            //para.cls_infer = Path.Combine(modelsPath, cls_infer);
-            //para.rec_infer = Path.Combine(modelsPath, rec_infer);
-            //para.keyFile = Path.Combine(modelsPath, keys);
-            //para.table_model_dir = Path.Combine(modelsPath, table_model_dir);
-            //para.table_dict_path = Path.Combine(modelsPath, table_dict_path);
 
             para.det_infer = $"models/{det_infer}";
             para.cls_infer = $"models/{cls_infer}";
+            para.doc_cls_infer = $"models/{doc_cls_infer}";
             para.rec_infer = $"models/{rec_infer}";
+            para.layout_model_dir = $"models/{layout_model_dir}";
             para.table_model_dir = $"models/{table_model_dir}";
 
             TableParameter oCRParameter = new TableParameter();
             oCRParameter.use_gpu = use_gpu;
-            oCRParameter.use_tensorrt = false;
+            oCRParameter.use_tensorrt = use_tensorrt;
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = gpu_mem;
             oCRParameter.cpu_mem = cpu_mem;
