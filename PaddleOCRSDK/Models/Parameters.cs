@@ -30,13 +30,13 @@ namespace PaddleOCRSDK
         /// </summary>
         Json,
         /// <summary>
-        /// 表格识别实体参数类型
+        /// 版面识别实体参数类型
         /// </summary>
-        TableClass,
+        StructureClass,
         /// <summary>
-        /// 表格识别Json类型
+        /// 版面识别Json类型
         /// </summary>
-        TableJson,
+        StructureJson,
     }
     public class InitParamater
     {
@@ -65,6 +65,22 @@ namespace PaddleOCRSDK
         /// </summary>
         public string table_model_dir { get; set; }
         /// <summary>
+        /// 公式识别模型路径（可选）
+        /// </summary>
+        public string formula_model_dir { get; set; }
+        /// <summary>
+        /// 印章识别模型路径（可选）
+        /// </summary>
+        public string seal_model_dir { get; set; }
+        /// <summary>
+        /// 图表转表模型路径（可选）
+        /// </summary>
+        public string chart_model_dir { get; set; }
+        /// <summary>
+        /// 文档图像矫正模型路径（可选）
+        /// </summary>
+        public string doc_unwarp_model { get; set; }
+        /// <summary>
         /// 参数类型
         /// </summary>
         public EnumParaType paraType { get; set; }
@@ -75,7 +91,7 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 参数列表
         /// </summary>
-        public TableParameter tablepara { get; set; }
+        public LayoutParameter layoutpara { get; set; }
         /// <summary>
         /// json字符串
         /// </summary>
@@ -223,25 +239,65 @@ namespace PaddleOCRSDK
         public int ocr_instance_count { get; set; } = 1;
     }
     /// <summary>
-    /// OCR表格识别模型参数
+    /// OCR版面结构识别模型参数（对应C++ LayoutParameter，字段顺序必须一致）
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TableParameter : OCRParameter
+    public class LayoutParameter
     {
-        /// <summary>
-        /// 表格识别模型输入图像长边大小，最终图像大小为（table_max_len，table_max_len）,默认488
-        /// </summary>
-        public int table_max_len { get; set; } = 488;
-        /// <summary>
-        /// 是否合并空单元格
-        /// </summary>
+        // 基础运行参数
         [field: MarshalAs(UnmanagedType.I1)]
-        public bool merge_empty_cell { get; set; } = true;
-        /// <summary>
-        /// 批量识别数量
-        /// </summary>
-        public int table_batch_num { get; set; } = 1;
+        public bool use_gpu { get; set; } = false;
+        public int gpu_id { get; set; } = 0;
+        public int gpu_mem { get; set; } = 500;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_tensorrt { get; set; } = false;
+        public int cpu_mem { get; set; } = 0;
+        public int cpu_threads { get; set; } = 8;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool enable_mkldnn { get; set; } = true;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool visualize { get; set; } = false;
 
+        // 文档预处理参数
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_doc_preprocessor { get; set; } = false;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_doc_orientation_classify { get; set; } = false;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_doc_unwarping { get; set; } = false;
+
+        // 版面检测参数
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_layout_detection { get; set; } = true;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool layout_nms { get; set; } = true;
+        public float layout_unclip_ratio_w { get; set; } = 1.0f;
+        public float layout_unclip_ratio_h { get; set; } = 1.0f;
+
+        // OCR参数
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool run_ocr_after_layout { get; set; } = true;
+        public float text_det_thresh { get; set; } = 0.3f;
+        public float text_rec_score_thresh { get; set; } = 0.5f;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_textline_orientation { get; set; } = true;
+        public int text_det_limit_side_len { get; set; } = 960;
+
+        // 条件识别参数
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_table_recognition { get; set; } = true;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_seal_recognition { get; set; } = false;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_formula_recognition { get; set; } = true;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_chart_recognition { get; set; } = false;
+
+        // 输出参数
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool format_block_content { get; set; } = false;
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool output_markdown { get; set; } = true;
     }
     /// <summary>
     /// OCR动态可修改参数

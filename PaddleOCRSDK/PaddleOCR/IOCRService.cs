@@ -29,100 +29,133 @@ namespace PaddleOCRSDK
         /// <returns>返回初始化结果</returns>
         string InitDefaultOCREngine(string modelsPath, bool useV5);
         /// <summary>
-        /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
+        /// 初始化版面识别引擎默认V5模型，使用CPU及mkldnn
         /// </summary>
         /// <param name="modelsPath">模型所在目录，如models</param>
         /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
         /// <returns></returns>
-        string InitDefaultTableEngine(string modelsPath, bool useV5);
+        string InitDefaultStructureEngine(string modelsPath, bool useV5);
         /// <summary>
-        /// 初如化OCR
+        /// 初始化 OCR 引擎
         /// </summary>
-        /// <param name="para"></param>
-        /// <param name="msg"></param>
-        /// <returns></returns>
+        /// <param name="para">初始化参数（支持结构体或JSON格式）</param>
+        /// <returns>初始化成功返回true，失败返回false</returns>
         bool Init(InitParamater para);
 
         /// <summary>
-        /// 对图像文件进行文本识别
+        /// 对输入图片文件执行 OCR 检测并返回结果
         /// </summary>
-        /// <param name="imagefile">图像文件</param>
-        /// <returns>OCR识别结果</returns>
+        /// <param name="imagefile">输入图片文件路径</param>
+        /// <returns>OCR识别结果，包含文本框和置信度</returns>
         OCRResult Detect(string imagefile);
 
         /// <summary>
-        /// 对图像文件进行文本识别
+        /// 对输入图片字节数组执行 OCR 检测并返回结果
         /// </summary>
-        /// <param name="imagebyte">图像文件</param>
-        /// <returns>OCR识别结果</returns>
+        /// <param name="imagebyte">图片字节数组</param>
+        /// <returns>OCR识别结果，包含文本框和置信度</returns>
         OCRResult Detect(byte[] imagebyte);
         /// <summary>
-        /// 对Mat进行文本识别
+        /// 对输入 OpenCV Mat 执行 OCR 检测并返回结果
         /// </summary>
-        /// <param name="ptr_cvmat">Mat</param>
-        /// <returns></returns>
+        /// <param name="ptr_cvmat">OpenCV Mat 指针</param>
+        /// <returns>OCR识别结果，包含文本框和置信度</returns>
         OCRResult DetectMat(IntPtr ptr_cvmat);
         /// <summary>
-        /// 对base64图像进行识别
+        /// 对 Base64 编码的图片执行 OCR 检测并返回结果
         /// </summary>
-        /// <param name="base64"></param>
-        /// <returns></returns>
+        /// <param name="base64">Base64 编码的图片字符串</param>
+        /// <returns>OCR识别结果，包含文本框和置信度</returns>
         OCRResult DetectBase64(string base64);
         /// <summary>
-        /// 获取错误原因
+        /// 获取上一次操作的错误信息
         /// </summary>
-        /// <returns></returns>
+        /// <returns>错误信息字符串，无错误时返回空字符串</returns>
         string GetError();
         /// <summary>
-        /// 是否生成日志，默认为true
+        /// 设置是否生成日志（默认为 true）
         /// </summary>
-        /// <param name="useLog"></param>
+        /// <param name="useLog">true 启用日志，false 禁用日志</param>
         void EnableLog(bool useLog);
         /// <summary>
-        /// 是否使用单字节编码，默认为false
+        /// 设置 JSON 输出是否使用 ASCII 编码（默认为 false）
         /// </summary>
-        /// <param name="useANSI"></param>
+        /// <param name="useANSI">true 使用 ASCII 编码，false 使用 UTF-8</param>
         void EnableASCIIResult(bool useANSI);
         /// <summary>
-        /// 是否使用json格式返回结果，默认true
+        /// 设置是否使用 JSON 格式返回结果（默认为 true）
         /// </summary>
-        /// <param name="enableJson"></param>
+        /// <param name="enableJson">true 使用 JSON 格式，false 使用其他格式</param>
         void EnableJsonResult(bool enableJson);
         /// <summary>
-        /// 对图像文件进行表格识别
+        /// 执行文档版面分析（包含版面检测、表格识别、公式识别等）
         /// </summary>
-        /// <param name="imagefile">图像文件</param>
-        /// <returns>OCR识别结果</returns>
-        string DetectTable(string imagefile);
+        /// <param name="imagefile">输入图片文件路径</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        string DetectLayout(string imagefile);
         /// <summary>
-        /// 对图像文件进行表格识别
+        /// 执行文档版面分析（字节数组输入）
         /// </summary>
-        /// <param name="imagebyte">图像文件</param>
-        /// <returns>OCR识别结果</returns>
-        string DetectTableByte(byte[] imagebyte);
+        /// <param name="imagebyte">图片字节数组</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        string DetectLayoutByte(byte[] imagebyte);
         /// <summary>
-        /// 对图像文件进行表格识别
+        /// 执行文档版面分析（Base64 编码输入）
         /// </summary>
-        /// <param name="base64">base64</param>
-        /// <returns>OCR识别结果</returns>
-        string DetectTableBase64(string base64);
+        /// <param name="base64">Base64 编码的图片字符串</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        string DetectLayoutBase64(string base64);
         /// <summary>
-        /// 释放OCR实例
+        /// 执行文档版面分析（OpenCV Mat 输入）
+        /// </summary>
+        /// <param name="ptr_cvmat">OpenCV Mat 指针</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        string DetectLayoutMat(IntPtr ptr_cvmat);
+        /// <summary>
+        /// 释放并关闭 OCR 引擎，释放所有相关资源
         /// </summary>
         void FreeEngine();
         /// <summary>
-        /// 释放OCR表格识别实例
+        /// 释放并关闭版面识别引擎，释放所有相关资源
         /// </summary>
-        void FreeTableEngine();
+        void FreeStructureEngine();
         /// <summary>
-        /// 以图找图：在大图中查找小图
+        /// 在大图中查找小图（图像匹配）
         /// </summary>
         /// <param name="bigImagePath">大图路径</param>
         /// <param name="smallImagePath">小图路径</param>
-        /// <param name="threshold">匹配阈值 [0, 1]，默认0.8。滑块找图建议0.2左右</param>
-        /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
-        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false</param>
-        /// <returns>返回FindImageResult对象，包含匹配结果和位置信息</returns>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认 0.8（滑块找图建议 0.2）</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认 true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认 false</param>
+        /// <returns>FindImageResult 对象，包含匹配结果和位置信息</returns>
         FindImageResult FindImage(string bigImagePath, string smallImagePath, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false);
+
+        /// <summary>
+        /// 解析文档版面识别 JSON 结果为结构化对象（对应最新版 DLL 返回格式）
+        /// </summary>
+        /// <param name="json">DetectLayout 返回的 JSON 字符串</param>
+        /// <returns>结构化的版面识别结果</returns>
+        LayoutDetectResult ParseLayoutResult(string json);
+
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（文件路径输入）
+        /// </summary>
+        /// <param name="imagefile">输入图片文件路径</param>
+        /// <returns>结构化的版面识别结果</returns>
+        LayoutDetectResult DetectLayoutParsed(string imagefile);
+
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（字节数组输入）
+        /// </summary>
+        /// <param name="imagebyte">图片字节数组</param>
+        /// <returns>结构化的版面识别结果</returns>
+        LayoutDetectResult DetectLayoutByteParsed(byte[] imagebyte);
+
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（Base64 输入）
+        /// </summary>
+        /// <param name="base64">Base64 编码的图片字符串</param>
+        /// <returns>结构化的版面识别结果</returns>
+        LayoutDetectResult DetectLayoutBase64Parsed(string base64);
     }
 }

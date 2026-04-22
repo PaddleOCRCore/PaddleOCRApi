@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace PaddleOCRSDK
 {
@@ -92,7 +93,7 @@ namespace PaddleOCRSDK
             EnsureDocumentInitialized();
             ValidateRequiredString(imagePath, nameof(imagePath));
 
-            return ExecuteDocument(() => OCRVLSDK.DocChat(imagePath, (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChat(imagePath), outputFormat);
         }
 
         public VLDocumentResult DocChatData(byte[] imageData, PocrOutputFormat outputFormat = PocrOutputFormat.Both)
@@ -100,7 +101,7 @@ namespace PaddleOCRSDK
             EnsureDocumentInitialized();
             ValidateImageData(imageData, nameof(imageData));
 
-            return ExecuteDocument(() => OCRVLSDK.DocChatData(imageData, new UIntPtr((uint)imageData.LongLength), (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChatData(imageData, new UIntPtr((uint)imageData.LongLength)), outputFormat);
         }
 
         public VLDocumentResult DocChatBase64(string base64Image, PocrOutputFormat outputFormat = PocrOutputFormat.Both)
@@ -108,7 +109,7 @@ namespace PaddleOCRSDK
             EnsureDocumentInitialized();
             ValidateRequiredString(base64Image, nameof(base64Image));
 
-            return ExecuteDocument(() => OCRVLSDK.DocChatBase64(base64Image, (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChatBase64(base64Image), outputFormat);
         }
 
         public VLDocumentResult DocChatMat(IntPtr cvMat, PocrOutputFormat outputFormat = PocrOutputFormat.Both)
@@ -119,7 +120,7 @@ namespace PaddleOCRSDK
                 throw new ArgumentException("cvMat 不能为空", nameof(cvMat));
             }
 
-            return ExecuteDocument(() => OCRVLSDK.DocChatMat(cvMat, (int)outputFormat), outputFormat);
+            return ExecuteDocument(() => OCRVLSDK.DocChatMat(cvMat), outputFormat);
         }
 
         public string GetLastError()
@@ -258,9 +259,12 @@ namespace PaddleOCRSDK
                 Content = content
             };
 
+            // 新版接口返回JSON文本，markdown位于JSON字段中。
+            string markdownFromJson = TryExtractMarkdown(content);
+
             if (outputFormat == PocrOutputFormat.Markdown)
             {
-                result.Markdown = content;
+                result.Markdown = markdownFromJson;
                 return result;
             }
 
@@ -278,10 +282,41 @@ namespace PaddleOCRSDK
             }
             else
             {
-                result.Markdown = content;
+                result.Markdown = markdownFromJson;
+                result.JsonText = content;
             }
 
             return result;
+        }
+
+        private static string TryExtractMarkdown(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                JToken root = JToken.Parse(content);
+                string markdown = root.SelectToken("markdown")?.ToString();
+                if (!string.IsNullOrWhiteSpace(markdown))
+                {
+                    return markdown;
+                }
+
+                markdown = root.SelectToken("data.markdown")?.ToString();
+                if (!string.IsNullOrWhiteSpace(markdown))
+                {
+                    return markdown;
+                }
+            }
+            catch
+            {
+                // 非JSON内容时，保持兼容，直接返回原文。
+            }
+
+            return content;
         }
 
         private static VLChatResult CreateChatErrorResult(string details, string message)

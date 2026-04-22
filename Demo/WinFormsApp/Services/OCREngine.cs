@@ -31,6 +31,8 @@ namespace WinFormsApp.Services
         public static string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
         private static string layout_model_dir = "PP-DocLayoutV2_infer";//版面识别模型inference
         private static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
+        private static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
+        private static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
         private static bool visualize = true;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。
@@ -119,28 +121,43 @@ namespace WinFormsApp.Services
             para.rec_infer = $"models/{rec_infer}";
             para.layout_model_dir = $"models/{layout_model_dir}";
             para.table_model_dir = $"models/{table_model_dir}";
+            para.formula_model_dir = $"models/{formula_model_dir}";
+            para.doc_unwarp_model = $"models/{doc_unwarp_model}";
 
-            TableParameter oCRParameter = new TableParameter();
+            LayoutParameter oCRParameter = new LayoutParameter();
             oCRParameter.use_gpu = use_gpu;
             oCRParameter.use_tensorrt = use_tensorrt;
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = gpu_mem;
             oCRParameter.cpu_mem = cpu_mem;
-            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
+            oCRParameter.cpu_threads = cpu_threads;
             oCRParameter.enable_mkldnn = enable_mkldnn;
-            oCRParameter.rec_batch_num = 6;
-            oCRParameter.cls = use_cls;
-            oCRParameter.det = use_det;
-            oCRParameter.use_angle_cls = use_angle_cls;
-            oCRParameter.det_db_score_mode = false;
-            oCRParameter.max_side_len = 960;
-            oCRParameter.rec_img_h = 48;
-            oCRParameter.rec_img_w = 320;
-            oCRParameter.det_db_thresh = 0.3f;
-            oCRParameter.det_db_box_thresh = 0.618f;
             oCRParameter.visualize = visualize;
-            para.tablepara = oCRParameter;
-            para.paraType = EnumParaType.TableClass;
+
+            oCRParameter.use_doc_preprocessor = false;
+            oCRParameter.use_doc_orientation_classify = false;
+            oCRParameter.use_doc_unwarping = false;
+
+            oCRParameter.use_layout_detection = true;
+            oCRParameter.layout_nms = true;
+            oCRParameter.layout_unclip_ratio_w = 1.0f;
+            oCRParameter.layout_unclip_ratio_h = 1.0f;
+
+            oCRParameter.run_ocr_after_layout = true;
+            oCRParameter.text_det_thresh = 0.3f;
+            oCRParameter.text_rec_score_thresh = 0.5f;
+            oCRParameter.use_textline_orientation = use_cls;
+            oCRParameter.text_det_limit_side_len = 960;
+
+            oCRParameter.use_table_recognition = true;
+            oCRParameter.use_seal_recognition = false;
+            oCRParameter.use_formula_recognition = true;
+            oCRParameter.use_chart_recognition = false;
+
+            oCRParameter.format_block_content = false;
+            oCRParameter.output_markdown = true;
+            para.layoutpara = oCRParameter;
+            para.paraType = EnumParaType.StructureClass;
             string msg = "表格识别初始化成功";
             try
             {
@@ -160,7 +177,7 @@ namespace WinFormsApp.Services
             try
             {
                 ocrService.FreeEngine();
-                ocrService.FreeTableEngine();
+                ocrService.FreeStructureEngine();
             }
             catch (Exception)
             {

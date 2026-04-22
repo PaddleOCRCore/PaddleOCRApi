@@ -100,12 +100,12 @@ namespace PaddleOCRSDK
             }
         }
 
-        internal static IntPtr DocChat(string imagePath, int outputFlags)
+        internal static IntPtr DocChat(string imagePath)
         {
             IntPtr imagePathPtr = Utf8StringHandle.Alloc(imagePath);
             try
             {
-                return NativeDocChat(imagePathPtr, outputFlags);
+                return NativeDocChat(imagePathPtr);
             }
             finally
             {
@@ -116,15 +116,14 @@ namespace PaddleOCRSDK
         [DllImport(DllFileName, EntryPoint = "DocChatData", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         internal static extern IntPtr DocChatData(
             byte[] imageData,
-            UIntPtr imageSize,
-            int outputFlags);
+            UIntPtr imageSize);
 
-        internal static IntPtr DocChatBase64(string base64Image, int outputFlags)
+        internal static IntPtr DocChatBase64(string base64Image)
         {
             IntPtr base64Ptr = Utf8StringHandle.Alloc(base64Image);
             try
             {
-                return NativeDocChatBase64(base64Ptr, outputFlags);
+                return NativeDocChatBase64(base64Ptr);
             }
             finally
             {
@@ -134,8 +133,7 @@ namespace PaddleOCRSDK
 
         [DllImport(DllFileName, EntryPoint = "DocChatMat", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         internal static extern IntPtr DocChatMat(
-            IntPtr cvMat,
-            int outputFlags);
+            IntPtr cvMat);
 
         [DllImport(DllFileName, EntryPoint = "FreeDocAnalyser", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         internal static extern void FreeDocAnalyser();
@@ -159,10 +157,10 @@ namespace PaddleOCRSDK
         private static extern int NativeInitDoc(IntPtr configPath);
 
         [DllImport(DllFileName, EntryPoint = "DocChat", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern IntPtr NativeDocChat(IntPtr imagePath, int outputFlags);
+        private static extern IntPtr NativeDocChat(IntPtr imagePath);
 
         [DllImport(DllFileName, EntryPoint = "DocChatBase64", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        private static extern IntPtr NativeDocChatBase64(IntPtr base64Image, int outputFlags);
+        private static extern IntPtr NativeDocChatBase64(IntPtr base64Image);
 
         private static class Utf8StringHandle
         {

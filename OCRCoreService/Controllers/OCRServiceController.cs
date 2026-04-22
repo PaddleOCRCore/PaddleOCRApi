@@ -297,5 +297,174 @@ namespace OCRCoreService.Controllers
             return OKResult(result);
         }
         #endregion
+
+        #region 版面识别
+        /// <summary>
+        /// 文档版面识别（Base64）
+        /// </summary>
+        /// <param name="request">版面识别请求参数</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetOCRLayout([FromBody] RequestLayoutOcr request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.Base64String))
+            {
+                return BadResult("识别失败:图片不存在！");
+            }
+
+            try
+            {
+                string initMessage = ocrEngine.EnsureStructureEngine();
+                if (!string.IsNullOrWhiteSpace(initMessage))
+                {
+                    return BadResult("版面识别引擎初始化失败:" + initMessage);
+                }
+
+                string layoutJson = ocrEngine.OcrService.DetectLayoutBase64(request.Base64String);
+                logger.LogTrace($"版面识别成功:{layoutJson}");
+                return BuildLayoutResponse(layoutJson, request.ResultType);
+            }
+            catch (Exception ex)
+            {
+                return BadResult("版面识别失败:" + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 文档版面识别（文件上传）
+        /// </summary>
+        /// <param name="request">上传文件</param>
+        /// <param name="resultType">返回类型：json / parsed / text</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> GetOCRLayoutFile(IFormFile request, [FromForm] string resultType = "parsed")
+        {
+            if (request == null || request.Length == 0)
+            {
+                return BadResult("识别失败:图片不存在！");
+            }
+
+            try
+            {
+                string initMessage = ocrEngine.EnsureStructureEngine();
+                if (!string.IsNullOrWhiteSpace(initMessage))
+                {
+                    return BadResult("版面识别引擎初始化失败:" + initMessage);
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await request.CopyToAsync(ms);
+                    byte[] imageByte = ms.ToArray();
+                    string layoutJson = ocrEngine.OcrService.DetectLayoutByte(imageByte);
+                    logger.LogTrace($"版面识别成功:{layoutJson}");
+                    return BuildLayoutResponse(layoutJson, resultType);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadResult("版面识别失败:" + ex.Message);
+            }
+        }
+
+        private ActionResult BuildLayoutResponse(string layoutJson, string resultType)
+        {
+            if (string.IsNullOrWhiteSpace(layoutJson))
+            {
+                return BadResult("版面识别失败:返回结果为空");
+            }
+
+            string normalizedType = (resultType ?? string.Empty).Trim().ToLowerInvariant();
+            if (normalizedType == "json")
+            {
+                return OKResult(layoutJson);
+            }
+
+            LayoutDetectResult layoutResult = ocrEngine.OcrService.ParseLayoutResult(layoutJson);
+            if (normalizedType == "text")
+            {
+                return OKResult(BuildLayoutText(layoutResult));
+            }
+
+            return OKResult(layoutResult);
+        }
+
+        private static string BuildLayoutText(LayoutDetectResult layoutResult)
+        {
+            if (layoutResult == null)
+            {
+                return string.Empty;
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
+            if (layoutResult.ParsingResList != null)
+            {
+                for (int i = 0; i < layoutResult.ParsingResList.Count; i++)
+                {
+                    var block = layoutResult.ParsingResList[i];
+                    if (block == null)
+                    {
+                        continue;
+                    }
+
+                    string label = (block.BlockLabel ?? string.Empty).Trim().ToLowerInvariant();
+                    if (label == "table")
+                    {
+                        var tableTexts = block.TableContent?.TableOcrPred?.RecTexts;
+                        if (tableTexts != null && tableTexts.Count > 0)
+                        {
+                            stringBuilder.AppendLine(string.Join(" ", tableTexts));
+                        }
+                        continue;
+                    }
+
+                    if (label == "formula" || label == "formula_number")
+                    {
+                        string formulaText = block.FormulaContent?.RecFormula;
+                        if (string.IsNullOrWhiteSpace(formulaText))
+                        {
+                            formulaText = block.TextContent;
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(formulaText))
+                        {
+                            stringBuilder.AppendLine(formulaText.Trim());
+                        }
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(block.TextContent) && !IsLikelyHtml(block.TextContent))
+                    {
+                        stringBuilder.AppendLine(block.TextContent.Trim());
+                    }
+                }
+            }
+
+            if (stringBuilder.Length > 0)
+            {
+                return stringBuilder.ToString().Trim();
+            }
+
+            if (layoutResult.OverallOcrRes?.RecTexts != null && layoutResult.OverallOcrRes.RecTexts.Count > 0)
+            {
+                return string.Join(Environment.NewLine, layoutResult.OverallOcrRes.RecTexts);
+            }
+
+            return string.Empty;
+        }
+
+        private static bool IsLikelyHtml(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return false;
+            }
+
+            string trimmed = text.TrimStart();
+            return trimmed.StartsWith("<html", StringComparison.OrdinalIgnoreCase)
+                || trimmed.StartsWith("<table", StringComparison.OrdinalIgnoreCase)
+                || trimmed.StartsWith("<tbody", StringComparison.OrdinalIgnoreCase);
+        }
+        #endregion
     }
 }

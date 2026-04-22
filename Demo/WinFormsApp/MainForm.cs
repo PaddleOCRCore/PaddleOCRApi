@@ -951,9 +951,33 @@ namespace WinFormsApp
             LogMessage($"开始时间: {startTime:HH:mm:ss.fff}");
             stopwatch.Start();
 
-            string ocrResult = ocrService.DetectTable(filePath);
+            string layoutJson = ocrService.DetectLayout(filePath);
+            LayoutDetectResult? layoutResult = null;
+            try
+            {
+                layoutResult = ocrService.ParseLayoutResult(layoutJson);
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"版面结果解析失败，已回退原始JSON: {ex.Message}");
+            }
+
+            string ocrResult = BuildLayoutSummary(layoutResult, layoutJson);
+            string tableHtml = TryGetFirstTableHtml(layoutResult);
+            if (string.IsNullOrWhiteSpace(tableHtml))
+            {
+                tableHtml = $"<html><body><pre>{System.Net.WebUtility.HtmlEncode(ocrResult)}</pre></body></html>";
+            }
+
             string css = "<style>table{ border-spacing: 0;} td { border: 1px solid black;}</style>";
-            ocrResult = ocrResult.Replace("<html>", "<html>" + css);
+            if (tableHtml.IndexOf("<style", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                int htmlStart = tableHtml.IndexOf("<html>", StringComparison.OrdinalIgnoreCase);
+                if (htmlStart >= 0)
+                {
+                    tableHtml = tableHtml.Insert(htmlStart + "<html>".Length, css);
+                }
+            }
 
             // 定义输出文件夹和文件名（使用RecFilepath变量，即output目录）
             string htmlfile = Path.Combine(RecFilepath, $"{Path.GetFileNameWithoutExtension(filePath)}.html");
@@ -969,7 +993,7 @@ namespace WinFormsApp
             {
                 using (StreamWriter sw = new StreamWriter(htmlfile, false, System.Text.Encoding.GetEncoding("utf-8")))
                 {
-                    sw.Write(ocrResult);
+                    sw.Write(tableHtml);
                 }
                 LogMessage($"表格识别结果已保存到: {htmlfile}");
 
@@ -992,6 +1016,93 @@ namespace WinFormsApp
 
             return ocrResult;
         }
+        private static string TryGetFirstTableHtml(LayoutDetectResult? layoutResult)
+        {
+            if (layoutResult == null)
+            {
+                return string.Empty;
+            }
+
+            if (layoutResult.ParsingResList != null)
+            {
+                for (int i = 0; i < layoutResult.ParsingResList.Count; i++)
+                {
+                    var block = layoutResult.ParsingResList[i];
+                    if (block == null)
+                    {
+                        continue;
+                    }
+
+                    if (!string.Equals(block.BlockLabel, "table", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(block.TableContent?.PredHtml))
+                    {
+                        return block.TableContent.PredHtml;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(block.TextContent)
+                        && block.TextContent.IndexOf("<table", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return block.TextContent;
+                    }
+                }
+            }
+
+            if (layoutResult.TableResList != null)
+            {
+                for (int i = 0; i < layoutResult.TableResList.Count; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(layoutResult.TableResList[i]?.PredHtml))
+                    {
+                        return layoutResult.TableResList[i].PredHtml;
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string BuildLayoutSummary(LayoutDetectResult? layoutResult, string layoutJson)
+        {
+            if (layoutResult == null)
+            {
+                return FormatJsonSafe(layoutJson);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            int blockCount = layoutResult.ParsingResList?.Count ?? 0;
+            int tableCount = layoutResult.TableResList?.Count ?? 0;
+            int formulaCount = layoutResult.FormulaResList?.Count ?? 0;
+
+            sb.AppendLine($"blocks: {blockCount}");
+            sb.AppendLine($"tables: {tableCount}, formulas: {formulaCount}");
+
+            int previewCount = 0;
+            if (layoutResult.ParsingResList != null)
+            {
+                for (int i = 0; i < layoutResult.ParsingResList.Count; i++)
+                {
+                    var block = layoutResult.ParsingResList[i];
+                    if (block == null || string.IsNullOrWhiteSpace(block.TextContent))
+                    {
+                        continue;
+                    }
+
+                    sb.AppendLine($"{block.BlockLabel}: {block.TextContent.Trim()}");
+                    previewCount++;
+                    if (previewCount >= 10)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return sb.ToString().Trim();
+        }
+
         private void buttonRecTable_Click(object sender, EventArgs e)
         {
             try

@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PaddleOCRSDK.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -30,6 +30,14 @@ namespace PaddleOCRSDK
     }
     public class OCRService : IOCRService
     {
+        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.None,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            MissingMemberHandling = MissingMemberHandling.Ignore,
+            NullValueHandling = NullValueHandling.Include
+        };
+
         /// <summary>
         /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
         /// </summary>
@@ -94,7 +102,7 @@ namespace PaddleOCRSDK
         /// <param name="modelsPath">模型所在目录，如models</param>
         /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
         /// <returns></returns>
-        public string InitDefaultTableEngine(string modelsPath = "models", bool useV5 = true)
+        public string InitDefaultStructureEngine(string modelsPath = "models", bool useV5 = true)
         {
             string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
             string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
@@ -103,8 +111,15 @@ namespace PaddleOCRSDK
                 det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
                 rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
             }
-            string cls_infer = "PP-LCNet_x1_0_textline_ori";//表格分类模块模型
-            string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
+            string cls_infer = "PP-LCNet_x1_0_textline_ori";
+            string layout_model_dir = "PP-DocLayoutV2_infer";
+            string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型
+            string formula_model_dir = "LaTeX_OCR_rec_infer";
+            string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";
+            string chart_model_dir = "PP-Chart2Table";
+            string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
+            string doc_unwarp_model = "UVDoc_infer";
+
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
             int gpu_id = 0;//GPUId
@@ -114,28 +129,50 @@ namespace PaddleOCRSDK
             para.det_infer = $"{modelsPath}/{det_infer}";
             para.cls_infer = $"{modelsPath}/{cls_infer}";
             para.rec_infer = $"{modelsPath}/{rec_infer}";
+
+            para.layout_model_dir = $"{modelsPath}/{layout_model_dir}";
             para.table_model_dir = $"{modelsPath}/{table_model_dir}";
-            TableParameter oCRParameter = new TableParameter();
+            para.formula_model_dir = $"{modelsPath}/{formula_model_dir}";
+            para.seal_model_dir = $"{modelsPath}/{seal_model_dir}";
+            para.chart_model_dir = $"{modelsPath}/{chart_model_dir}";
+            para.doc_cls_infer = $"{modelsPath}/{doc_cls_infer}";
+            para.doc_unwarp_model = $"{modelsPath}/{doc_unwarp_model}";
+
+            LayoutParameter oCRParameter = new LayoutParameter();
             oCRParameter.use_gpu = use_gpu;
             oCRParameter.use_tensorrt = true;
             oCRParameter.gpu_id = gpu_id;
             oCRParameter.gpu_mem = 4000;
             oCRParameter.cpu_mem = cpu_mem;
-            oCRParameter.cpu_threads = cpu_threads;//提升CPU速度，优化此参数
+            oCRParameter.cpu_threads = cpu_threads;
             oCRParameter.enable_mkldnn = enable_mkldnn;
-            oCRParameter.cls = false;
-            oCRParameter.det = true;
-            oCRParameter.use_angle_cls = false;
-            oCRParameter.det_db_score_mode = false;
-            oCRParameter.max_side_len = 960;
-            oCRParameter.rec_img_h = 48;
-            oCRParameter.rec_img_w = 320;
-            oCRParameter.det_db_thresh = 0.3f;
-            oCRParameter.det_db_box_thresh = 0.618f;
             oCRParameter.visualize = true;
-            para.tablepara = oCRParameter;
-            para.paraType = EnumParaType.TableClass;
-            string msg = "表格识别初始化成功";
+
+            oCRParameter.use_doc_preprocessor = false;
+            oCRParameter.use_doc_orientation_classify = false;
+            oCRParameter.use_doc_unwarping = false;
+
+            oCRParameter.use_layout_detection = true;
+            oCRParameter.layout_nms = true;
+            oCRParameter.layout_unclip_ratio_w = 1.0f;
+            oCRParameter.layout_unclip_ratio_h = 1.0f;
+
+            oCRParameter.run_ocr_after_layout = true;
+            oCRParameter.text_det_thresh = 0.3f;
+            oCRParameter.text_rec_score_thresh = 0.5f;
+            oCRParameter.use_textline_orientation = false;
+            oCRParameter.text_det_limit_side_len = 960;
+
+            oCRParameter.use_table_recognition = true;
+            oCRParameter.use_seal_recognition = false;
+            oCRParameter.use_formula_recognition = true;
+            oCRParameter.use_chart_recognition = false;
+
+            oCRParameter.format_block_content = false;
+            oCRParameter.output_markdown = true;
+            para.layoutpara = oCRParameter;
+            para.paraType = EnumParaType.StructureClass;
+            string msg = "版面识别初始化成功";
             try
             {
                 Init(para);
@@ -165,13 +202,35 @@ namespace PaddleOCRSDK
                 {
                     ret = OCRSDK.Initjson(para.det_infer, para.cls_infer, para.rec_infer, para.json);
                 }
-                else if (para.paraType == EnumParaType.TableClass)
+                else if (para.paraType == EnumParaType.StructureClass)
                 {
-                    ret = OCRSDK.InitStructure(para.det_infer, para.cls_infer, para.doc_cls_infer, para.rec_infer, para.layout_model_dir, para.table_model_dir,para.tablepara);
+                    ret = OCRSDK.InitStructure(
+                        para.det_infer,
+                        para.cls_infer,
+                        para.rec_infer,
+                        para.layout_model_dir,
+                        para.table_model_dir,
+                        para.formula_model_dir,
+                        para.seal_model_dir,
+                        para.chart_model_dir,
+                        para.doc_cls_infer,
+                        para.doc_unwarp_model,
+                        para.layoutpara);
                 }
-                else if (para.paraType == EnumParaType.TableJson)
+                else if (para.paraType == EnumParaType.StructureJson)
                 {
-                    ret = OCRSDK.InitStructurejson(para.det_infer, para.cls_infer, para.doc_cls_infer, para.rec_infer, para.layout_model_dir, para.table_model_dir, para.json);
+                    ret = OCRSDK.InitStructurejson(
+                        para.det_infer,
+                        para.cls_infer,
+                        para.rec_infer,
+                        para.layout_model_dir,
+                        para.table_model_dir,
+                        para.formula_model_dir,
+                        para.seal_model_dir,
+                        para.chart_model_dir,
+                        para.doc_cls_infer,
+                        para.doc_unwarp_model,
+                        para.json);
                 }
                 else
                 {
@@ -261,7 +320,7 @@ namespace PaddleOCRSDK
                     {
                         result.JsonText = json;
                         List<JsonResult> jonResult = DeObject<List<JsonResult>>(json);
-                        result.WordsResult = jonResult;
+                        result.WordsResult = jonResult ?? new List<JsonResult>();
                     }
                     catch (Exception e)
                     {
@@ -287,37 +346,110 @@ namespace PaddleOCRSDK
             return result;
         }
         /// <summary>
-        /// 对图像文件进行表格识别
+        /// 执行文档版面分析（包含版面检测、表格识别、公式识别等）
         /// </summary>
-        /// <param name="imagefile">图像文件</param>
-        /// <returns>OCR识别结果</returns>
-        public string DetectTable(string imagefile)
+        /// <param name="imagefile">输入图片文件路径</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        public string DetectLayout(string imagefile)
         {
-            var ptrResult = OCRSDK.DetectTable(imagefile);
-            return GetTableResult(ptrResult);
+            var ptrResult = OCRSDK.DetectLayout(imagefile);
+            return GetStructureResult(ptrResult);
         }
         /// <summary>
-        /// 对图像文件进行表格识别
+        /// 执行文档版面分析（字节数组输入）
         /// </summary>
-        /// <param name="imagebyte">图像文件</param>
-        /// <returns>OCR识别结果</returns>
-        public string DetectTableByte(byte[] imagebyte)
+        /// <param name="imagebyte">图片字节数组</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        public string DetectLayoutByte(byte[] imagebyte)
         {
-            var ptrResult = OCRSDK.DetectByte(imagebyte, imagebyte.LongLength);
-            return GetTableResult(ptrResult);
+            var ptrResult = OCRSDK.DetectLayoutByte(imagebyte, new UIntPtr((ulong)imagebyte.LongLength));
+            return GetStructureResult(ptrResult);
         }
         /// <summary>
-        /// 对图像文件进行表格识别
+        /// 执行文档版面分析（OpenCV Mat 输入）
         /// </summary>
-        /// <param name="imagebyte">图像文件</param>
-        /// <returns>OCR识别结果</returns>
-        public string DetectTableBase64(string base64)
+        /// <param name="ptr_cvmat">OpenCV Mat 指针</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        public string DetectLayoutMat(IntPtr ptr_cvmat)
         {
-            var ptrResult = OCRSDK.DetectBase64(base64);
-            return GetTableResult(ptrResult);
+            var ptrResult = OCRSDK.DetectLayoutMat(ptr_cvmat);
+            return GetStructureResult(ptrResult);
+        }
+        /// <summary>
+        /// 执行文档版面分析（Base64 编码输入）
+        /// </summary>
+        /// <param name="base64">Base64 编码的图片字符串</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        public string DetectLayoutBase64(string base64)
+        {
+            var ptrResult = OCRSDK.DetectLayoutBase64(base64);
+            return GetStructureResult(ptrResult);
         }
 
-        private string GetTableResult(IntPtr ptrResult)
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（文件路径输入）
+        /// </summary>
+        /// <param name="imagefile">输入图片文件路径</param>
+        /// <returns>结构化的版面识别结果</returns>
+        public LayoutDetectResult DetectLayoutParsed(string imagefile)
+        {
+            var json = DetectLayout(imagefile);
+            return ParseLayoutResult(json);
+        }
+
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（字节数组输入）
+        /// </summary>
+        /// <param name="imagebyte">图片字节数组</param>
+        /// <returns>结构化的版面识别结果</returns>
+        public LayoutDetectResult DetectLayoutByteParsed(byte[] imagebyte)
+        {
+            var json = DetectLayoutByte(imagebyte);
+            return ParseLayoutResult(json);
+        }
+
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（Base64 输入）
+        /// </summary>
+        /// <param name="base64">Base64 编码的图片字符串</param>
+        /// <returns>结构化的版面识别结果</returns>
+        public LayoutDetectResult DetectLayoutBase64Parsed(string base64)
+        {
+            var json = DetectLayoutBase64(base64);
+            return ParseLayoutResult(json);
+        }
+
+        /// <summary>
+        /// 解析文档版面识别 JSON 结果为结构化对象
+        /// 仅支持新版 DLL 输出结构
+        /// </summary>
+        /// <param name="json">DetectLayout 返回的 JSON 字符串</param>
+        /// <returns>结构化的版面识别结果</returns>
+        public LayoutDetectResult ParseLayoutResult(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                throw new OCRException("OCR版面识别结果为空");
+            }
+
+            try
+            {
+                var result = JsonConvert.DeserializeObject<LayoutDetectResult>(json, JsonSettings);
+                if (result == null)
+                {
+                    throw new OCRException("OCR版面识别结果解析失败: JSON对象为空");
+                }
+
+                NormalizeLayoutResult(result);
+                return result;
+            }
+            catch (JsonException ex)
+            {
+                throw new OCRException("OCR版面识别结果解析失败:" + ex.Message);
+            }
+        }
+
+        private string GetStructureResult(IntPtr ptrResult)
         {
             string result = string.Empty;
             if (ptrResult == IntPtr.Zero)
@@ -332,6 +464,11 @@ namespace PaddleOCRSDK
             try
             {
                 result = MarshalUtf8.PtrToStringUTF8(ptrResult);
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    // 与C接口文档对齐：版面结果至少应是可解析的JSON对象。
+                    ParseLayoutResult(result);
+                }
             }
             catch (Exception ex)
             {
@@ -346,6 +483,709 @@ namespace PaddleOCRSDK
                 }
             }
             return result;
+        }
+
+        private static void NormalizeLayoutResult(LayoutDetectResult result)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            if (result.ParsingResList == null)
+            {
+                result.ParsingResList = new List<LayoutBlockResult>();
+            }
+
+            if (result.TableResList == null)
+            {
+                result.TableResList = new List<LayoutTableContent>();
+            }
+
+            if (result.SealResList == null)
+            {
+                result.SealResList = new List<LayoutSealContent>();
+            }
+
+            if (result.FormulaResList == null)
+            {
+                result.FormulaResList = new List<LayoutFormulaContent>();
+            }
+
+            if (result.ChartResList == null)
+            {
+                result.ChartResList = new List<LayoutChartContent>();
+            }
+
+            NormalizeLayoutBlocks(result.ParsingResList, result);
+        }
+
+        private static void NormalizeLayoutBlocks(List<LayoutBlockResult> layoutBlocks, LayoutDetectResult result)
+        {
+            if (layoutBlocks == null || layoutBlocks.Count == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < layoutBlocks.Count; i++)
+            {
+                var block = layoutBlocks[i];
+                if (block == null)
+                {
+                    continue;
+                }
+
+                // 新版 DLL 的 block_content 主要是字符串，先统一填充文本内容。
+                block.TextContent = ConvertTextBlockContent(block.BlockContent);
+                if (block.BlockContent == null || block.BlockContent.Type == JTokenType.Null)
+                {
+                    continue;
+                }
+
+                var label = (block.BlockLabel ?? string.Empty).Trim().ToLowerInvariant();
+                if (block.BlockContent.Type != JTokenType.Object)
+                {
+                    continue;
+                }
+
+                switch (label)
+                {
+                    case "table":
+                        block.TableContent = TryConvertJToken<LayoutTableContent>(block.BlockContent);
+                        break;
+                    case "formula":
+                    case "formula_number":
+                        block.FormulaContent = TryConvertJToken<LayoutFormulaContent>(block.BlockContent);
+                        break;
+                    case "seal":
+                        block.SealContent = TryConvertJToken<LayoutSealContent>(block.BlockContent);
+                        break;
+                    case "chart":
+                        block.ChartContent = TryConvertJToken<LayoutChartContent>(block.BlockContent);
+                        break;
+                }
+            }
+
+            AttachStandaloneResults(layoutBlocks, result);
+        }
+
+        private static void AttachStandaloneResults(List<LayoutBlockResult> layoutBlocks, LayoutDetectResult result)
+        {
+            if (layoutBlocks == null || layoutBlocks.Count == 0 || result == null)
+            {
+                return;
+            }
+
+            var tableUsed = new bool[result.TableResList.Count];
+            var formulaUsed = new bool[result.FormulaResList.Count];
+            var sealUsed = new bool[result.SealResList.Count];
+            var chartUsed = new bool[result.ChartResList.Count];
+
+            for (int i = 0; i < layoutBlocks.Count; i++)
+            {
+                var block = layoutBlocks[i];
+                if (block == null)
+                {
+                    continue;
+                }
+
+                var label = (block.BlockLabel ?? string.Empty).Trim().ToLowerInvariant();
+                switch (label)
+                {
+                    case "table":
+                        AttachTableContent(block, result.TableResList, tableUsed);
+                        break;
+                    case "formula":
+                    case "formula_number":
+                        AttachFormulaContent(block, result.FormulaResList, formulaUsed);
+                        break;
+                    case "seal":
+                        AttachSealContent(block, result.SealResList, sealUsed);
+                        break;
+                    case "chart":
+                        AttachChartContent(block, result.ChartResList, chartUsed);
+                        break;
+                }
+            }
+        }
+
+        private static void AttachTableContent(LayoutBlockResult block, List<LayoutTableContent> tableResults, bool[] used)
+        {
+            if (block == null)
+            {
+                return;
+            }
+
+            if (block.TableContent != null)
+            {
+                MarkMatchedTable(block.TableContent, tableResults, used);
+            }
+            else
+            {
+                block.TableContent = FindAndMarkTableContent(block, tableResults, used);
+            }
+
+            if (block.TableContent == null && LooksLikeHtml(block.TextContent))
+            {
+                block.TableContent = new LayoutTableContent
+                {
+                    PredHtml = block.TextContent
+                };
+            }
+            else if (block.TableContent != null && string.IsNullOrWhiteSpace(block.TableContent.PredHtml) && LooksLikeHtml(block.TextContent))
+            {
+                block.TableContent.PredHtml = block.TextContent;
+            }
+        }
+
+        private static void AttachFormulaContent(LayoutBlockResult block, List<LayoutFormulaContent> formulaResults, bool[] used)
+        {
+            if (block == null)
+            {
+                return;
+            }
+
+            if (block.FormulaContent != null)
+            {
+                MarkMatchedFormula(block.FormulaContent, formulaResults, used);
+            }
+            else
+            {
+                block.FormulaContent = FindAndMarkFormulaContent(block, formulaResults, used);
+            }
+
+            if (block.FormulaContent == null && !string.IsNullOrWhiteSpace(block.TextContent))
+            {
+                block.FormulaContent = new LayoutFormulaContent
+                {
+                    RecFormula = block.TextContent
+                };
+            }
+            else if (block.FormulaContent != null && string.IsNullOrWhiteSpace(block.FormulaContent.RecFormula) && !string.IsNullOrWhiteSpace(block.TextContent))
+            {
+                block.FormulaContent.RecFormula = block.TextContent;
+            }
+        }
+
+        private static void AttachSealContent(LayoutBlockResult block, List<LayoutSealContent> sealResults, bool[] used)
+        {
+            if (block == null)
+            {
+                return;
+            }
+
+            if (block.SealContent == null)
+            {
+                block.SealContent = FindAndMarkNextUnused(sealResults, used);
+            }
+            else
+            {
+                MarkFirstUnused(used);
+            }
+
+            if (block.SealContent == null && !string.IsNullOrWhiteSpace(block.TextContent))
+            {
+                block.SealContent = new LayoutSealContent
+                {
+                    RecTexts = SplitNonEmptyLines(block.TextContent)
+                };
+            }
+            else if (block.SealContent != null && (block.SealContent.RecTexts == null || block.SealContent.RecTexts.Count == 0) && !string.IsNullOrWhiteSpace(block.TextContent))
+            {
+                block.SealContent.RecTexts = SplitNonEmptyLines(block.TextContent);
+            }
+        }
+
+        private static void AttachChartContent(LayoutBlockResult block, List<LayoutChartContent> chartResults, bool[] used)
+        {
+            if (block == null)
+            {
+                return;
+            }
+
+            if (block.ChartContent == null)
+            {
+                block.ChartContent = FindAndMarkNextUnused(chartResults, used);
+            }
+            else
+            {
+                MarkFirstUnused(used);
+            }
+
+            if (block.ChartContent == null && !string.IsNullOrWhiteSpace(block.TextContent))
+            {
+                block.ChartContent = new LayoutChartContent
+                {
+                    Description = block.TextContent
+                };
+            }
+            else if (block.ChartContent != null && string.IsNullOrWhiteSpace(block.ChartContent.Description) && !string.IsNullOrWhiteSpace(block.TextContent))
+            {
+                block.ChartContent.Description = block.TextContent;
+            }
+        }
+
+        private static LayoutTableContent FindAndMarkTableContent(LayoutBlockResult block, List<LayoutTableContent> tableResults, bool[] used)
+        {
+            if (tableResults == null || tableResults.Count == 0 || used == null || used.Length == 0)
+            {
+                return null;
+            }
+
+            string blockText = NormalizeComparableText(block?.TextContent);
+            if (!string.IsNullOrEmpty(blockText))
+            {
+                for (int i = 0; i < tableResults.Count && i < used.Length; i++)
+                {
+                    if (used[i])
+                    {
+                        continue;
+                    }
+
+                    string html = NormalizeComparableText(tableResults[i]?.PredHtml);
+                    if (!string.IsNullOrEmpty(html) && string.Equals(html, blockText, StringComparison.Ordinal))
+                    {
+                        used[i] = true;
+                        return tableResults[i];
+                    }
+                }
+            }
+
+            return FindAndMarkNextUnused(tableResults, used);
+        }
+
+        private static void MarkMatchedTable(LayoutTableContent currentTable, List<LayoutTableContent> tableResults, bool[] used)
+        {
+            if (currentTable == null || tableResults == null || tableResults.Count == 0 || used == null || used.Length == 0)
+            {
+                return;
+            }
+
+            string currentHtml = NormalizeComparableText(currentTable.PredHtml);
+            if (!string.IsNullOrEmpty(currentHtml))
+            {
+                for (int i = 0; i < tableResults.Count && i < used.Length; i++)
+                {
+                    if (used[i])
+                    {
+                        continue;
+                    }
+
+                    if (string.Equals(NormalizeComparableText(tableResults[i]?.PredHtml), currentHtml, StringComparison.Ordinal))
+                    {
+                        used[i] = true;
+                        return;
+                    }
+                }
+            }
+
+            MarkFirstUnused(used);
+        }
+
+        private static LayoutFormulaContent FindAndMarkFormulaContent(LayoutBlockResult block, List<LayoutFormulaContent> formulaResults, bool[] used)
+        {
+            if (formulaResults == null || formulaResults.Count == 0 || used == null || used.Length == 0)
+            {
+                return null;
+            }
+
+            int index = FindFormulaMatchIndex(block, formulaResults, used);
+            if (index < 0)
+            {
+                index = FindFirstUnused(used);
+            }
+
+            if (index < 0 || index >= formulaResults.Count || index >= used.Length)
+            {
+                return null;
+            }
+
+            used[index] = true;
+            return formulaResults[index];
+        }
+
+        private static void MarkMatchedFormula(LayoutFormulaContent currentFormula, List<LayoutFormulaContent> formulaResults, bool[] used)
+        {
+            if (currentFormula == null || formulaResults == null || formulaResults.Count == 0 || used == null || used.Length == 0)
+            {
+                return;
+            }
+
+            int index = -1;
+            if (currentFormula.FormulaRegionId.HasValue)
+            {
+                for (int i = 0; i < formulaResults.Count && i < used.Length; i++)
+                {
+                    if (used[i])
+                    {
+                        continue;
+                    }
+
+                    if (formulaResults[i]?.FormulaRegionId == currentFormula.FormulaRegionId)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
+            if (index < 0)
+            {
+                string recFormula = NormalizeComparableText(currentFormula.RecFormula);
+                if (!string.IsNullOrEmpty(recFormula))
+                {
+                    for (int i = 0; i < formulaResults.Count && i < used.Length; i++)
+                    {
+                        if (used[i])
+                        {
+                            continue;
+                        }
+
+                        if (string.Equals(NormalizeComparableText(formulaResults[i]?.RecFormula), recFormula, StringComparison.Ordinal))
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (index >= 0)
+            {
+                used[index] = true;
+            }
+            else
+            {
+                MarkFirstUnused(used);
+            }
+        }
+
+        private static int FindFormulaMatchIndex(LayoutBlockResult block, List<LayoutFormulaContent> formulaResults, bool[] used)
+        {
+            if (block == null || formulaResults == null || used == null)
+            {
+                return -1;
+            }
+
+            if (block.BlockId.HasValue)
+            {
+                for (int i = 0; i < formulaResults.Count && i < used.Length; i++)
+                {
+                    if (used[i])
+                    {
+                        continue;
+                    }
+
+                    if (formulaResults[i]?.FormulaRegionId == block.BlockId)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            for (int i = 0; i < formulaResults.Count && i < used.Length; i++)
+            {
+                if (used[i])
+                {
+                    continue;
+                }
+
+                var bbox = GetBboxFromPolygonToken(formulaResults[i]?.DtPolys);
+                if (IsSimilarBbox(block.BlockBbox, bbox))
+                {
+                    return i;
+                }
+            }
+
+            string blockText = NormalizeComparableText(block.TextContent);
+            if (!string.IsNullOrEmpty(blockText))
+            {
+                for (int i = 0; i < formulaResults.Count && i < used.Length; i++)
+                {
+                    if (used[i])
+                    {
+                        continue;
+                    }
+
+                    if (string.Equals(NormalizeComparableText(formulaResults[i]?.RecFormula), blockText, StringComparison.Ordinal))
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
+        }
+
+        private static bool IsSimilarBbox(List<double> left, List<double> right, double tolerance = 12.0d)
+        {
+            if (left == null || right == null || left.Count < 4 || right.Count < 4)
+            {
+                return false;
+            }
+
+            return Math.Abs(left[0] - right[0]) <= tolerance
+                && Math.Abs(left[1] - right[1]) <= tolerance
+                && Math.Abs(left[2] - right[2]) <= tolerance
+                && Math.Abs(left[3] - right[3]) <= tolerance;
+        }
+
+        private static List<double> GetBboxFromPolygonToken(JToken token)
+        {
+            if (token == null || token.Type == JTokenType.Null || token.Type != JTokenType.Array)
+            {
+                return null;
+            }
+
+            var array = (JArray)token;
+            if (array.Count == 0)
+            {
+                return null;
+            }
+
+            if (IsNumericToken(array[0]))
+            {
+                var values = new List<double>();
+                for (int i = 0; i < array.Count; i++)
+                {
+                    if (IsNumericToken(array[i]))
+                    {
+                        values.Add(array[i].Value<double>());
+                    }
+                }
+
+                if (values.Count >= 4)
+                {
+                    if (values.Count == 4)
+                    {
+                        return new List<double> { values[0], values[1], values[2], values[3] };
+                    }
+
+                    double minX = double.MaxValue;
+                    double minY = double.MaxValue;
+                    double maxX = double.MinValue;
+                    double maxY = double.MinValue;
+                    for (int i = 0; i + 1 < values.Count; i += 2)
+                    {
+                        double x = values[i];
+                        double y = values[i + 1];
+                        minX = Math.Min(minX, x);
+                        minY = Math.Min(minY, y);
+                        maxX = Math.Max(maxX, x);
+                        maxY = Math.Max(maxY, y);
+                    }
+
+                    return new List<double> { minX, minY, maxX, maxY };
+                }
+            }
+
+            var xs = new List<double>();
+            var ys = new List<double>();
+            CollectPointPairs(token, xs, ys);
+            if (xs.Count == 0 || ys.Count == 0)
+            {
+                return null;
+            }
+
+            double minPx = xs[0];
+            double minPy = ys[0];
+            double maxPx = xs[0];
+            double maxPy = ys[0];
+            for (int i = 1; i < xs.Count; i++)
+            {
+                minPx = Math.Min(minPx, xs[i]);
+                minPy = Math.Min(minPy, ys[i]);
+                maxPx = Math.Max(maxPx, xs[i]);
+                maxPy = Math.Max(maxPy, ys[i]);
+            }
+
+            return new List<double> { minPx, minPy, maxPx, maxPy };
+        }
+
+        private static void CollectPointPairs(JToken token, List<double> xs, List<double> ys)
+        {
+            if (token == null || token.Type != JTokenType.Array)
+            {
+                return;
+            }
+
+            var array = (JArray)token;
+            if (array.Count == 2 && IsNumericToken(array[0]) && IsNumericToken(array[1]))
+            {
+                xs.Add(array[0].Value<double>());
+                ys.Add(array[1].Value<double>());
+                return;
+            }
+
+            for (int i = 0; i < array.Count; i++)
+            {
+                CollectPointPairs(array[i], xs, ys);
+            }
+        }
+
+        private static bool IsNumericToken(JToken token)
+        {
+            if (token == null)
+            {
+                return false;
+            }
+
+            return token.Type == JTokenType.Integer || token.Type == JTokenType.Float;
+        }
+
+        private static string NormalizeComparableText(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return string.Empty;
+            }
+
+            var sb = new StringBuilder(content.Length);
+            bool inWhitespace = false;
+            for (int i = 0; i < content.Length; i++)
+            {
+                char ch = content[i];
+                if (char.IsWhiteSpace(ch))
+                {
+                    if (!inWhitespace)
+                    {
+                        sb.Append(' ');
+                        inWhitespace = true;
+                    }
+
+                    continue;
+                }
+
+                sb.Append(ch);
+                inWhitespace = false;
+            }
+
+            return sb.ToString().Trim();
+        }
+
+        private static bool LooksLikeHtml(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return false;
+            }
+
+            string text = content.TrimStart();
+            return text.StartsWith("<html", StringComparison.OrdinalIgnoreCase)
+                || text.StartsWith("<table", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static List<string> SplitNonEmptyLines(string content)
+        {
+            var lines = new List<string>();
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return lines;
+            }
+
+            var parts = content.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < parts.Length; i++)
+            {
+                string line = parts[i]?.Trim();
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    lines.Add(line);
+                }
+            }
+
+            if (lines.Count == 0)
+            {
+                lines.Add(content.Trim());
+            }
+
+            return lines;
+        }
+
+        private static T FindAndMarkNextUnused<T>(List<T> items, bool[] used) where T : class
+        {
+            if (items == null || items.Count == 0 || used == null || used.Length == 0)
+            {
+                return null;
+            }
+
+            int index = FindFirstUnused(used);
+            if (index < 0 || index >= items.Count)
+            {
+                return null;
+            }
+
+            used[index] = true;
+            return items[index];
+        }
+
+        private static void MarkFirstUnused(bool[] used)
+        {
+            int index = FindFirstUnused(used);
+            if (index >= 0 && index < used.Length)
+            {
+                used[index] = true;
+            }
+        }
+
+        private static int FindFirstUnused(bool[] used)
+        {
+            if (used == null || used.Length == 0)
+            {
+                return -1;
+            }
+
+            for (int i = 0; i < used.Length; i++)
+            {
+                if (!used[i])
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static T TryConvertJToken<T>(JToken token) where T : class
+        {
+            if (token == null || token.Type == JTokenType.Null)
+            {
+                return null;
+            }
+
+            try
+            {
+                return token.ToObject<T>();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string ConvertTextBlockContent(JToken blockContent)
+        {
+            if (blockContent == null || blockContent.Type == JTokenType.Null)
+            {
+                return string.Empty;
+            }
+
+            if (blockContent.Type == JTokenType.String)
+            {
+                return blockContent.Value<string>() ?? string.Empty;
+            }
+
+            if (blockContent.Type == JTokenType.Array)
+            {
+                var lines = blockContent.ToObject<List<string>>();
+                if (lines == null || lines.Count == 0)
+                {
+                    return string.Empty;
+                }
+
+                return string.Join(Environment.NewLine, lines);
+            }
+
+            return blockContent.ToString(Formatting.None);
         }
 
         /// <summary>
@@ -404,11 +1244,7 @@ namespace PaddleOCRSDK
         private static T DeObject<T>(string json)
         {
             if (string.IsNullOrEmpty(json)) return default(T);
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-            };
-            return (T)JsonConvert.DeserializeObject(json, typeof(T), settings);
+            return (T)JsonConvert.DeserializeObject(json, typeof(T), JsonSettings);
         }
         /// <summary>
         /// 释放OCR实例
@@ -418,11 +1254,11 @@ namespace PaddleOCRSDK
             OCRSDK.FreeEngine();
         }
         /// <summary>
-        /// 释放OCR表格识别实例
+        /// 释放并关闭版面识别引擎，释放所有相关资源
         /// </summary>
-        public void FreeTableEngine()
+        public void FreeStructureEngine()
         {
-            OCRSDK.FreeTableEngine();
+            OCRSDK.FreeStructureEngine();
         }
 
         /// <summary>

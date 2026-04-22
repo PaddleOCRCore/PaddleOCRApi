@@ -24,140 +24,32 @@ namespace PaddleOCRSDK
     {
         internal const string dllFileName = "PaddleOCR";
 
+        #region OCR识别全局公共方法
         /// <summary>
         /// 是否生成日志
         /// </summary>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern void EnableLog(bool useLog);
+
         /// <summary>
         /// JSON输出是否使用ASCII编码，为true是返回Ascii编码
         /// </summary>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern void EnableASCIIResult(bool useASCII);
+
         /// <summary>
         /// 是否使用json格式返回结果，默认true
         /// </summary>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern void EnableJsonResult(bool enable);
+
         /// <summary>
         /// 获取错误提示
         /// </summary>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern IntPtr GetError();
-        /// <summary>
-        /// 初始化OCR文字识别
-        /// </summary>
-        /// <param name="det_infer"></param>
-        /// <param name="cls_infer"></param>
-        /// <param name="rec_infer"></param>
-        /// <param name="ocrpara"></param>
-        /// <returns></returns>
 
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool Init(string det_infer, string cls_infer, string rec_infer, OCRParameter ocrpara);
-        /// <summary>
-        /// 初始化OCR文字识别
-        /// </summary>
-        /// <param name="det_infer"></param>
-        /// <param name="cls_infer"></param>
-        /// <param name="rec_infer"></param>
-        /// <param name="keyfile"></param>
-        /// <param name="parjson">json参数</param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool Initjson(string det_infer, string cls_infer, string rec_infer, string parjson);
-        /// <summary>
-        /// OCR识别
-        /// </summary>
-        /// <param name="filename">文件路径</param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr Detect(string filename);
-        /// <summary>
-        /// OCR识别Mat
-        /// </summary>
-        /// <param name="cvmat">Mat</param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectMat(IntPtr cvmat);
-        /// <summary>
-        /// OCR文字识别
-        /// </summary>
-        /// <param name="imagebyte">图片字节码</param>
-        /// <param name="size">大小</param>
-        /// <returns></returns>
-
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectByte(byte[] imagebyte, long size);
-        /// <summary>
-        /// OCR文字识别
-        /// </summary>
-        /// <param name="base64"></param>
-        /// <returns></returns>
-
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectBase64(string base64);
-        /// <summary>
-        /// 释放OCR实例
-        /// </summary>
-        /// <returns></returns>
-
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern int FreeEngine();
-        /// <summary>
-        /// 初始化OCR表格识别
-        /// </summary>
-        /// <param name="det_infer"></param>
-        /// <param name="cls_infer">文本行方向分类模型路径</param>
-        /// <param name="doc_cls_infer">文档方向分类模型路径</param>
-        /// <param name="rec_infer"></param>
-        /// <param name="layout_model_dir"></param>
-        /// <param name="table_model_dir"></param>
-        /// <param name="tablepara"></param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool InitStructure(string det_infer, string cls_infer, string doc_cls_infer, string rec_infer, string layout_model_dir, string table_model_dir, TableParameter tablepara);
-        /// <summary>
-        /// 初始化OCR表格识别
-        /// </summary>
-        /// <param name="det_infer"></param>
-        /// <param name="cls_infer">文本行方向分类模型路径</param>
-        /// <param name="doc_cls_infer">文档方向分类模型路径</param>
-        /// <param name="rec_infer"></param>
-        /// <param name="layout_model_dir"></param>
-        /// <param name="table_model_dir"></param>
-        /// <param name="parjson">json参数</param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern bool InitStructurejson(string det_infer, string cls_infer, string doc_cls_infer, string rec_infer, string layout_model_dir, string table_model_dir,  string parjson);
-        /// <summary>
-        /// OCR表格识别
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectTable(string filename);
-        /// <summary>
-        /// OCR表格识别
-        /// </summary>
-        /// <param name="imagebyte"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectTableByte(byte[] imagebyte, long size);
-        /// <summary>
-        /// OCR表格识别
-        /// </summary>
-        /// <param name="base64"></param>
-        /// <returns></returns>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectTableBase64(string base64);
-        /// <summary>
-        /// 释放OCR表格识别实例
-        /// </summary>
-        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern void FreeTableEngine();
         /// <summary>
         /// OCR识别动态修改参数
         /// </summary>
@@ -171,8 +63,185 @@ namespace PaddleOCRSDK
         /// <param name="buffer"></param>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern void FreeResultBuffer(IntPtr buffer);
+        #endregion
 
-        // ==================== 以图找图API ====================
+        #region 通用OCR识别PP-OCRV4/PP-OCRV5
+        /// <summary>
+        /// 初始化OCR文字识别
+        /// </summary>
+        /// <param name="det_infer"></param>
+        /// <param name="cls_infer"></param>
+        /// <param name="rec_infer"></param>
+        /// <param name="ocrpara"></param>
+        /// <returns></returns>
+
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern bool Init(string det_infer, string cls_infer, string rec_infer, OCRParameter ocrpara);
+
+        /// <summary>
+        /// 初始化OCR文字识别
+        /// </summary>
+        /// <param name="det_infer"></param>
+        /// <param name="cls_infer"></param>
+        /// <param name="rec_infer"></param>
+        /// <param name="keyfile"></param>
+        /// <param name="parjson">json参数</param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern bool Initjson(string det_infer, string cls_infer, string rec_infer, string parjson);
+
+        /// <summary>
+        /// OCR识别
+        /// </summary>
+        /// <param name="filename">文件路径</param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr Detect(string filename);
+
+        /// <summary>
+        /// OCR识别Mat
+        /// </summary>
+        /// <param name="cvmat">Mat</param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectMat(IntPtr cvmat);
+
+        /// <summary>
+        /// OCR文字识别
+        /// </summary>
+        /// <param name="imagebyte">图片字节码</param>
+        /// <param name="size">大小</param>
+        /// <returns></returns>
+
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectByte(byte[] imagebyte, long size);
+
+        /// <summary>
+        /// OCR文字识别
+        /// </summary>
+        /// <param name="base64"></param>
+        /// <returns></returns>
+
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectBase64(string base64);
+
+        /// <summary>
+        /// 释放OCR实例
+        /// </summary>
+        /// <returns></returns>
+
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern int FreeEngine();
+        #endregion
+
+        #region 版面结构识别PP-Structure
+        // ==================== 扩展的版面结构识别API (支持20类文档元素) ====================
+        // 包含：文档预处理、版面检测、全局OCR、条件识别(表格/公式/印章/图表)、结果融合、版面排序
+
+        /// <summary>
+        /// 初始化结构化文档识别引擎（扩展版本）
+        /// 支持20类文档元素识别：版面检测、表格识别、公式识别、印章识别、图表转表等
+        /// </summary>
+        /// <param name="det_infer">文本检测模型路径</param>
+        /// <param name="cls_infer">文本行方向分类模型路径(可选，NULL表示不使用)</param>
+        /// <param name="rec_infer">文本识别模型路径</param>
+        /// <param name="layout_model_dir">版面分析模型目录路径</param>
+        /// <param name="table_model_dir">表格识别模型目录路径</param>
+        /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
+        /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
+        /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
+        /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
+        /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
+        /// <param name="tablepara"></param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern bool InitStructure(
+            string det_infer,
+            string cls_infer,
+            string rec_infer,
+            string layout_model_dir,
+            string table_model_dir,
+            string formula_model_dir,
+            string seal_model_dir,
+            string chart_model_dir,
+            string doc_cls_infer,
+            string doc_unwarp_model,
+            LayoutParameter tablepara);
+        // ==================== 扩展的版面结构识别API (支持20类文档元素) ====================
+        // 包含：文档预处理、版面检测、全局OCR、条件识别(表格/公式/印章/图表)、结果融合、版面排序
+
+        /// <summary>
+        /// 初始化结构化文档识别引擎（扩展版本）
+        /// 支持20类文档元素识别：版面检测、表格识别、公式识别、印章识别、图表转表等
+        /// </summary>
+        /// <param name="det_infer">文本检测模型路径</param>
+        /// <param name="cls_infer">文本行方向分类模型路径(可选，NULL表示不使用)</param>
+        /// <param name="rec_infer">文本识别模型路径</param>
+        /// <param name="layout_model_dir">版面分析模型目录路径</param>
+        /// <param name="table_model_dir">表格识别模型目录路径</param>
+        /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
+        /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
+        /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
+        /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
+        /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
+        /// <param name="parjson">json参数</param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern bool InitStructurejson(
+            string det_infer,
+            string cls_infer,
+            string rec_infer,
+            string layout_model_dir,
+            string table_model_dir,
+            string formula_model_dir,
+            string seal_model_dir,
+            string chart_model_dir,
+            string doc_cls_infer,
+            string doc_unwarp_model,
+            string parjson);
+        /// <summary>
+        /// 执行文档版面分析（扩展版本）
+        /// 包含：文档预处理→版面检测→全局OCR→条件识别(表格/公式/印章/图表)→结果融合→版面排序
+        /// 返回包含20类文档元素识别结果的JSON
+        /// </summary>
+        /// <param name="imageFile">输入图片文件路径</param>
+        /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectLayout(string filename);
+        /// <summary>
+        /// 执行文档版面分析 - OpenCV Mat输入
+        /// </summary>
+        /// <param name="cvmat">OpenCV Mat引用</param>
+        /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectLayoutMat(IntPtr cvmat);
+
+        /// <summary>
+        /// 执行文档版面分析 - 字节数组输入
+        /// </summary>
+        /// <param name="imagebytedata">图片字节数组指针</param>
+        /// <param name="size">字节数组长度(字节数)</param>
+        /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectLayoutByte(byte[] imagebyte, UIntPtr size);
+
+        /// <summary>
+        /// 执行文档版面分析 - Base64编码输入
+        /// </summary>
+        /// <param name="imagebase64">Base64编码的图片字符串</param>
+        /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectLayoutBase64(string base64);
+
+        /// <summary>
+        /// 释放文档版面分析引擎及所有相关资源
+        /// </summary>
+        /// <returns>成功返回0，失败返回非0</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern int FreeStructureEngine();
+        #endregion
+
+        #region 以图找图
         /// <summary>
         /// 以图找图：在大图中查找小图，返回JSON字符串
         /// </summary>
@@ -184,5 +253,6 @@ namespace PaddleOCRSDK
         /// <returns>返回JSON格式的匹配结果</returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern IntPtr FindImage(string bigImagePath, string smallImagePath, double threshold, bool toGray, bool useSlideMatch);
+        #endregion
     }
 }

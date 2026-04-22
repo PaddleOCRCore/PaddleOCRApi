@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using PaddleOCRSDK;
+using System;
 
 namespace OCRCoreService.Services
 {
@@ -24,6 +25,8 @@ namespace OCRCoreService.Services
     {
         private readonly IOCRService _ocrService;
         private readonly OCRConfig _ocrConfig;
+        private readonly object _structureEngineLock = new object();
+        private bool _structureEngineInitialized;
         public IOCRService OcrService => _ocrService;
 
         public OCREngine(IOCRService ocrService, OCRConfig ocrConfig)
@@ -97,56 +100,86 @@ namespace OCRCoreService.Services
         /// <returns></returns>
         public string GetOCRTableEngine()
         {
-            InitParamater para = new InitParamater();
-            //string root = AppDomain.CurrentDomain.BaseDirectory;
-            //string root = AppContext.BaseDirectory;
-            //string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            //para.det_infer = Path.Combine(modelsPath, _ocrConfig.det_infer);
-            //para.cls_infer = Path.Combine(modelsPath, _ocrConfig.cls_infer);
-            //para.rec_infer = Path.Combine(modelsPath, _ocrConfig.rec_infer);
-            //para.keyFile = Path.Combine(modelsPath, _ocrConfig.keyFile);
-            //para.table_model_dir = Path.Combine(modelsPath, _ocrConfig.table_model_dir);
-            //para.table_dict_path = Path.Combine(modelsPath, _ocrConfig.table_dict_path);
+            lock (_structureEngineLock)
+            {
+                if (_structureEngineInitialized)
+                {
+                    return "初始化成功";
+                }
 
-            //改为相对路径，避免中文路径问题
-            para.det_infer = $"models/{_ocrConfig.det_infer}";
-            para.cls_infer = $"models/{_ocrConfig.cls_infer}";
-            para.doc_cls_infer = $"models/{_ocrConfig.doc_cls_infer}";
-            para.rec_infer = $"models/{_ocrConfig.rec_infer}";
-            para.layout_model_dir = $"models/{_ocrConfig.layout_model_dir}";
-            para.table_model_dir = $"models/{_ocrConfig.table_model_dir}";
-            TableParameter oCRParameter = new TableParameter();
-            oCRParameter.use_gpu = _ocrConfig.use_gpu;
-            oCRParameter.use_tensorrt = false;
-            oCRParameter.gpu_id = _ocrConfig.gpu_id;
-            oCRParameter.gpu_mem = _ocrConfig.gpu_mem;
-            oCRParameter.cpu_mem = _ocrConfig.cpu_mem;
-            oCRParameter.cpu_threads = _ocrConfig.cpu_threads;//提升CPU速度，优化此参数
-            oCRParameter.enable_mkldnn = _ocrConfig.enable_mkldnn;
-            oCRParameter.rec_batch_num = _ocrConfig.rec_batch_num;
-            oCRParameter.det = true;
-            oCRParameter.cls = _ocrConfig.use_cls;
-            oCRParameter.use_angle_cls = _ocrConfig.use_cls;
-            oCRParameter.det_db_score_mode = true;
-            oCRParameter.max_side_len = 960;
-            oCRParameter.rec_img_h = 48;
-            oCRParameter.rec_img_w = 320;
-            oCRParameter.det_db_thresh = 0.3f;
-            oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.visualize = false;
-            para.ocrpara = oCRParameter;
-            para.paraType = EnumParaType.TableClass;
-            string msg = "初始化成功";
-            try
-            {
-                _ocrService.EnableLog(_ocrConfig.enableLog);
-                _ocrService.Init(para);
+                InitParamater para = new InitParamater();
+
+                //改为相对路径，避免中文路径问题
+                para.det_infer = $"models/{_ocrConfig.det_infer}";
+                para.cls_infer = $"models/{_ocrConfig.cls_infer}";
+                para.doc_cls_infer = $"models/{_ocrConfig.doc_cls_infer}";
+                para.rec_infer = $"models/{_ocrConfig.rec_infer}";
+                para.layout_model_dir = $"models/{_ocrConfig.layout_model_dir}";
+                para.table_model_dir = $"models/{_ocrConfig.table_model_dir}";
+                LayoutParameter oCRParameter = new LayoutParameter();
+                oCRParameter.use_gpu = _ocrConfig.use_gpu;
+                oCRParameter.use_tensorrt = false;
+                oCRParameter.gpu_id = _ocrConfig.gpu_id;
+                oCRParameter.gpu_mem = _ocrConfig.gpu_mem;
+                oCRParameter.cpu_mem = _ocrConfig.cpu_mem;
+                oCRParameter.cpu_threads = _ocrConfig.cpu_threads;
+                oCRParameter.enable_mkldnn = _ocrConfig.enable_mkldnn;
+                oCRParameter.visualize = false;
+
+                oCRParameter.use_doc_preprocessor = false;
+                oCRParameter.use_doc_orientation_classify = false;
+                oCRParameter.use_doc_unwarping = false;
+
+                oCRParameter.use_layout_detection = true;
+                oCRParameter.layout_nms = true;
+                oCRParameter.layout_unclip_ratio_w = 1.0f;
+                oCRParameter.layout_unclip_ratio_h = 1.0f;
+
+                oCRParameter.run_ocr_after_layout = true;
+                oCRParameter.text_det_thresh = 0.3f;
+                oCRParameter.text_rec_score_thresh = 0.5f;
+                oCRParameter.use_textline_orientation = _ocrConfig.use_cls;
+                oCRParameter.text_det_limit_side_len = 960;
+
+                oCRParameter.use_table_recognition = true;
+                oCRParameter.use_seal_recognition = false;
+                oCRParameter.use_formula_recognition = true;
+                oCRParameter.use_chart_recognition = false;
+
+                oCRParameter.format_block_content = false;
+                oCRParameter.output_markdown = true;
+
+                para.layoutpara = oCRParameter;
+                para.paraType = EnumParaType.StructureClass;
+                string msg = "初始化成功";
+                try
+                {
+                    _ocrService.EnableLog(_ocrConfig.enableLog);
+                    _ocrService.Init(para);
+                    _structureEngineInitialized = true;
+                }
+                catch (Exception ex)
+                {
+                    msg = ex.Message;
+                }
+
+                return msg;
             }
-            catch (Exception ex)
+        }
+
+        /// <summary>
+        /// 确保版面识别引擎已初始化
+        /// </summary>
+        /// <returns>成功返回空字符串，失败返回错误信息</returns>
+        public string EnsureStructureEngine()
+        {
+            string message = GetOCRTableEngine();
+            if (string.IsNullOrWhiteSpace(message) || message.Contains("初始化成功", StringComparison.OrdinalIgnoreCase))
             {
-                msg = ex.Message;
+                return string.Empty;
             }
-            return msg;
+
+            return message;
         }
     }
 }
