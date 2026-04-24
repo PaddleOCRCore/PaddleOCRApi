@@ -58,9 +58,10 @@ namespace PaddleOCRSDK
         /// 文本图像矫正-传入Mat
         /// </summary>
         /// <param name="cvmat">Mat</param>
+        /// <param name="outputfilepath">输出文件路径</param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern void UVDocMat(IntPtr cvmat);
+        internal static extern void UVDocMat(IntPtr cvmat, string outputfilepath);
         /// <summary>
         /// 文本图像矫正-传入Byte
         /// </summary>

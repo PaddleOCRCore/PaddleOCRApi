@@ -272,7 +272,7 @@ namespace PaddleOCRSDK
         /// <returns>OCR识别结果</returns>
         public OCRResult Detect(byte[] imagebyte)
         {
-            var ptrResult = OCRSDK.DetectByte(imagebyte, imagebyte.LongLength);
+            var ptrResult = OCRSDK.DetectByte(imagebyte, new UIntPtr((ulong)imagebyte.LongLength));
             return GetResult(ptrResult);
         }
         /// <summary>
@@ -288,6 +288,25 @@ namespace PaddleOCRSDK
         public OCRResult DetectBase64(string base64)
         {
             var ptrResult = OCRSDK.DetectBase64(base64);
+            return GetResult(ptrResult);
+        }
+        /// <summary>
+        /// 对内存截图数据进行文本识别
+        /// </summary>
+        /// <param name="screenshotData">截图字节数组</param>
+        /// <returns>OCR识别结果</returns>
+        public OCRResult DetectScreenShot(byte[] screenshotData)
+        {
+            if (screenshotData == null || screenshotData.Length == 0)
+            {
+                return new OCRResult
+                {
+                    Code = 0,
+                    ErrorMsg = "截图数据为空"
+                };
+            }
+
+            var ptrResult = OCRSDK.DetectScreenShot(screenshotData, screenshotData.Length);
             return GetResult(ptrResult);
         }
         private OCRResult GetResult(IntPtr ptrResult)

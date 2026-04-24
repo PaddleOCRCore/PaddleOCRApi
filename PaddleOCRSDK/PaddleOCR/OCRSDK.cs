@@ -114,7 +114,7 @@ namespace PaddleOCRSDK
         /// <returns></returns>
 
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectByte(byte[] imagebyte, long size);
+        internal static extern IntPtr DetectByte(byte[] imagebyte, UIntPtr size);
 
         /// <summary>
         /// OCR文字识别
@@ -124,6 +124,15 @@ namespace PaddleOCRSDK
 
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern IntPtr DetectBase64(string base64);
+
+        /// <summary>
+        /// OCR文字识别（内存截图）
+        /// </summary>
+        /// <param name="data">截图字节数据</param>
+        /// <param name="size">截图字节长度</param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectScreenShot(byte[] data, int size);
 
         /// <summary>
         /// 释放OCR实例

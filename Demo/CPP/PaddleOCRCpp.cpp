@@ -1,101 +1,173 @@
-﻿#include <iostream>
-#include <string.h>
-#include <windows.h>
-#include <PaddleOCR.h>
-#include <locale>
-#include <codecvt>
+#include <iostream>
 #include <string>
-#include <filesystem>
 #include <vector>
 #include <chrono>
+#include <windows.h>
+
+#include <PaddleOCR.h>
+
 using namespace std;
 
-void GetFileList(string directoryPath, vector<string>& files)
-{
-    WIN32_FIND_DATA ffd;
+void GetFileList(const string& directoryPath, vector<string>& files) {
+    WIN32_FIND_DATAA ffd;
     HANDLE hFind = INVALID_HANDLE_VALUE;
-    string pt;
-    // 打开目录句柄
-    hFind = FindFirstFile(pt.assign(directoryPath).append("/*").c_str(), &ffd);
-    if (INVALID_HANDLE_VALUE == hFind)
-    {
-        cerr << "FindFirstFile failed (" << GetLastError() << ")" << endl;
+    string pattern = directoryPath + "/*";
+
+    hFind = FindFirstFileA(pattern.c_str(), &ffd);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        cerr << "FindFirstFile failed (" << GetLastError() << "): " << directoryPath << endl;
+        return;
     }
-    // 遍历目录
-    do
-    {
-        if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-        {
-            // 跳过"."和".."目录
-            if (strcmp(ffd.cFileName, ".") != 0 && strcmp(ffd.cFileName, "..") != 0)
-            {
-                GetFileList(pt.assign(directoryPath).append("\\").append(ffd.cFileName), files);
+
+    do {
+        string name = ffd.cFileName;
+        if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+            if (name != "." && name != "..") {
+                GetFileList(directoryPath + "\\" + name, files);
             }
-            else
-            {
-                continue;
-            }
+        } else {
+            files.push_back(directoryPath + "\\" + name);
         }
-        else
-        {
-            files.push_back(pt.assign(directoryPath).append("\\") + ffd.cFileName);
-        }
-    } while (FindNextFile(hFind, &ffd) != 0);
-    // 关闭目录句柄
+    } while (FindNextFileA(hFind, &ffd) != 0);
+
     FindClose(hFind);
 }
-int main()
-{
-    SetConsoleOutputCP(CP_UTF8);//解决控制台中文乱码，使用UTF-8编码
-    char path[MAX_PATH];
-    GetCurrentDirectoryA(MAX_PATH, path);
+
+static string TakeResultAndFree(const char* buffer) {
+    if (buffer == nullptr) {
+        return "";
+    }
+
+    string text(buffer);
+    FreeResultBuffer(const_cast<void*>(static_cast<const void*>(buffer)));
+    return text;
+}
+
+static string GetLastErrorAndFree() {
+    char* err = GetError();
+    if (err == nullptr) {
+        return "";
+    }
+
+    string text(err);
+    FreeResultBuffer(err);
+    return text;
+}
+
+int main() {
+    SetConsoleOutputCP(CP_UTF8);
+
+    char cwd[MAX_PATH] = { 0 };
+    GetCurrentDirectoryA(MAX_PATH, cwd);
+
     string det_infer = "models/PP-OCRv5_mobile_det_infer";
     string rec_infer = "models/PP-OCRv5_mobile_rec_infer";
     string cls_infer = "models/PP-LCNet_x1_0_textline_ori";
-    OCRParameter parameter;
-    parameter.use_gpu = false;//是否使用GPU
-    parameter.cpu_threads = 30;//CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快，默认10
-    parameter.cpu_mem = 0;//CPU内存占用上限，单位MB。 - 1表示不限制
-    parameter.enable_mkldnn = true;
-    parameter.cls = false;
-    parameter.det = true;
-    parameter.use_angle_cls = false;
-    parameter.det_db_score_mode = true;
-    parameter.max_side_len = 960;
-    parameter.rec_img_h = 48;
-    parameter.rec_img_w = 320;
-    parameter.visualize = false;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的图像上。
-    parameter.ocr_instance_count = 1;//默认使用OCR实例，多线程时可以增大
-    string imagespath(path);
-    imagespath += "\\images";//请将图片放至此目录
+
+    string layout_model_dir = "models/PP-DocLayoutV2_infer";
+    string table_model_dir = "models/PP-SLANet_plus_infer";
+
+    OCRParameter ocr_param;
+    ocr_param.use_gpu = false;
+    ocr_param.cpu_threads = 8;
+    ocr_param.enable_mkldnn = true;
+    ocr_param.det = true;
+    ocr_param.rec = true;
+    ocr_param.cls = false;
+    ocr_param.use_angle_cls = false;
+    ocr_param.visualize = false;
+    ocr_param.ocr_instance_count = 1;
+
+    LayoutParameter layout_param;
+    layout_param.use_gpu = false;
+    layout_param.cpu_threads = 8;
+    layout_param.enable_mkldnn = true;
+    layout_param.use_table_recognition = true;
+    layout_param.use_formula_recognition = true;
+    layout_param.use_seal_recognition = false;
+    layout_param.use_chart_recognition = false;
+    layout_param.output_markdown = true;
+    layout_param.format_block_content = false;
+
+    string imagespath(cwd);
+    imagespath += "\\images";
+
     vector<string> images;
     GetFileList(imagespath, images);
+    if (images.empty()) {
+        cerr << "No image found under: " << imagespath << endl;
+        system("pause");
+        return 1;
+    }
+
     EnableJsonResult(true);
 
-    Init(const_cast<char*>(det_infer.c_str()), const_cast<char*>(cls_infer.c_str()), 
-        const_cast<char*>(rec_infer.c_str()), parameter);
-    for (const auto image : images) 
-    {
-        for (int i = 0; i < 1; i++) {//模拟单张图片循环识别
-            cout << "images:" << image << endl;
-            auto	starttime = chrono::steady_clock::now();
-            cv::Mat imgMat = cv::imread(const_cast<char*>(image.c_str()), cv::IMREAD_COLOR);
-            string cstr = DetectMat(imgMat);
-            //string cstr = Detect(const_cast<char*>(image.c_str()));
-            auto	endtime = chrono::steady_clock::now();
-            auto duration = chrono::duration_cast<chrono::milliseconds>(endtime - starttime);
-            std::cout << "Detect:" << duration.count() << "ms" << endl;
-            cout << cstr << endl;
+    if (!Init(det_infer.c_str(), cls_infer.c_str(), rec_infer.c_str(), ocr_param)) {
+        cerr << "Init OCR failed: " << GetLastErrorAndFree() << endl;
+        system("pause");
+        return 1;
+    }
+
+    cout << "========== OCR ==========" << endl;
+    for (const auto& image : images) {
+        cout << "Image: " << image << endl;
+        auto start = chrono::steady_clock::now();
+
+        cv::Mat imgMat = cv::imread(image, cv::IMREAD_COLOR);
+        const char* raw = nullptr;
+        if (!imgMat.empty()) {
+            raw = DetectMat(imgMat);
+        } else {
+            raw = Detect(image.c_str());
         }
+
+        auto end = chrono::steady_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+        cout << "Detect: " << duration.count() << "ms" << endl;
+
+        if (raw == nullptr) {
+            cerr << "Detect failed: " << GetLastErrorAndFree() << endl;
+            continue;
+        }
+
+        cout << TakeResultAndFree(raw) << endl << endl;
     }
-    try
-    {
-        FreeEngine();
+
+    cout << "======= Layout =========" << endl;
+    if (!InitStructure(
+        det_infer.c_str(),
+        cls_infer.c_str(),
+        rec_infer.c_str(),
+        layout_model_dir.c_str(),
+        table_model_dir.c_str(),
+        nullptr,  // formula_model_dir
+        nullptr,  // seal_model_dir
+        nullptr,  // chart_model_dir
+        nullptr,  // doc_cls_infer
+        nullptr,  // doc_unwarp_model
+        layout_param)) {
+        cerr << "InitStructure failed: " << GetLastErrorAndFree() << endl;
+    } else {
+        for (const auto& image : images) {
+            cout << "Layout Image: " << image << endl;
+            auto start = chrono::steady_clock::now();
+            const char* raw = DetectLayout(image.c_str());
+            auto end = chrono::steady_clock::now();
+            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+            cout << "DetectLayout: " << duration.count() << "ms" << endl;
+
+            if (raw == nullptr) {
+                cerr << "DetectLayout failed: " << GetLastErrorAndFree() << endl;
+                continue;
+            }
+
+            cout << TakeResultAndFree(raw) << endl << endl;
+        }
+
+        FreeStructureEngine();
     }
-    catch (const exception& e)
-    {
-        wcout << e.what();
-    }
+
+    FreeEngine();
     system("pause");
     return 0;
 }

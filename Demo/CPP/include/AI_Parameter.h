@@ -60,13 +60,47 @@ struct OCRParameter
 	int ocr_instance_count = 1; // OCR引擎实例数量，默认1，最大10
 };
 /// <summary>
-/// 表格识别参数
+/// 版面结构识别参数（对应当前 DLL LayoutParameter）
 /// </summary>
-struct TableParameter :OCRParameter
+struct LayoutParameter
 {
-	int table_max_len = 488;//输入图像长宽大于488时，等比例缩放图像,默认488
-	bool merge_empty_cell = true; //是否合并空单元格
-	int table_batch_num = 1; //批量识别数量
+	// 基础运行参数
+	bool use_gpu = false;
+	int gpu_id = 0;
+	int gpu_mem = 500;
+	bool use_tensorrt = false;
+	int cpu_mem = 0;
+	int cpu_threads = 8;
+	bool enable_mkldnn = true;
+	bool visualize = false;
+
+	// 文档预处理参数
+	bool use_doc_preprocessor = false;
+	bool use_doc_orientation_classify = false;
+	bool use_doc_unwarping = false;
+
+	// 版面检测参数
+	bool use_layout_detection = true;
+	bool layout_nms = true;
+	float layout_unclip_ratio_w = 1.0f;
+	float layout_unclip_ratio_h = 1.0f;
+
+	// OCR参数
+	bool run_ocr_after_layout = true;
+	float text_det_thresh = 0.3f;
+	float text_rec_score_thresh = 0.5f;
+	bool use_textline_orientation = true;
+	int text_det_limit_side_len = 960;
+
+	// 条件识别参数
+	bool use_table_recognition = true;
+	bool use_seal_recognition = false;
+	bool use_formula_recognition = true;
+	bool use_chart_recognition = false;
+
+	// 输出参数
+	bool format_block_content = false;
+	bool output_markdown = true;
 };
 /// <summary>
 /// OCR动态修改参数
@@ -88,5 +122,6 @@ struct UVDocParameter {
 	int gpu_id;         // GPU id
 	int gpu_mem;        // GPU内存
 	bool use_tensorrt;  // 是否启动tensorrt
+	int uvdoc_instance_count = 1; // UVDoc引擎实例数量
 };
 #pragma pack(pop)  

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 PaddleOCRCore All Rights Reserved.
+﻿// Copyright (c) 2026 PaddleOCRCore All Rights Reserved.
 // https://github.com/PaddleOCRCore/PaddleOCRApi.git
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,9 @@
 
 #pragma once
 #include <string>
-#include <opencv2/opencv.hpp>//使用OpenCV4.10，若不使用DetectMat方法，可不依赖OpenCV
+#include <opencv2/opencv.hpp>  // 使用OpenCV，若不使用DetectMat/DetectLayoutMat可不依赖OpenCV
 #include <include/AI_Parameter.h>
-#pragma comment (lib,"PaddleOCR.lib")
-#pragma once
+#pragma comment(lib, "PaddleOCR.lib")
 
 extern "C" {
     /// <summary>
@@ -44,7 +43,7 @@ extern "C" {
     /// </summary>
     /// <returns>指向错误字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
     __declspec(dllimport) char* __stdcall GetError();
-    
+
     // ==================== 文字识别API ====================
 
     /// <summary>
@@ -55,7 +54,8 @@ extern "C" {
     /// <param name="rec_infer">文本识别模型的推理文件路径（rec）</param>
     /// <param name="parameter">OCR 参数结构体（见 AI_Parameter.h）</param>
     /// <returns>初始化成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall Init(const char* det_infer,
+    __declspec(dllimport) bool __stdcall Init(
+        const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
         const OCRParameter parameter);
@@ -68,7 +68,8 @@ extern "C" {
     /// <param name="rec_infer">文本识别模型路径</param>
     /// <param name="parameterjson">JSON 格式的参数字符串</param>
     /// <returns>初始化成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall Initjson(const char* det_infer,
+    __declspec(dllimport) bool __stdcall Initjson(
+        const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
         const char* parameterjson);
@@ -112,12 +113,13 @@ extern "C" {
     /// <param name="imagebase64">Base64 编码的图片字符串</param>
     /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
     __declspec(dllimport) const char* __stdcall DetectBase64(const char* imagebase64);
+
     /// <summary>
-    /// 对内存截图执行OCR检测并返回结果字符串
+    /// 对内存截图执行OCR检测并返回结果字符串。
     /// </summary>
     /// <param name="data">内存截图数据指针</param>
     /// <param name="size">内存截图数据长度（字节数）</param>
-    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
+    /// <returns>返回指向结果字符串的指针（内部分配，使用 FreeResultBuffer 释放）。</returns>
     __declspec(dllimport) const char* __stdcall DetectScreenShot(unsigned char* data, int size);
 
     /// <summary>
@@ -126,67 +128,6 @@ extern "C" {
     /// <returns>成功返回 0，失败返回非 0。</returns>
     __declspec(dllimport) int __stdcall FreeEngine();
 
-    // ==================== 表格识别API ====================
-
-    /// <summary>
-    /// 初始化表格识别引擎并加载模型（传入结构体参数）。
-    /// </summary>
-    /// <param name="det_infer">文本/表格检测模型路径</param>
-    /// <param name="cls_infer">方向分类模型路径（可选）</param>
-    /// <param name="rec_infer">文本识别模型路径</param>
-    /// <param name="table_model_dir">表格识别模型目录路径</param>
-    /// <param name="parameter">表格识别参数结构体</param>
-    /// <returns>初始化成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall InitTable(const char* det_infer,
-        const char* cls_infer,
-        const char* rec_infer,
-        const char* table_model_dir,TableParameter parameter);
-
-    /// <summary>
-    /// 初始化表格识别引擎并加载模型（传入 JSON 参数字符串）。
-    /// </summary>
-    /// <param name="det_infer">文本/表格检测模型路径</param>
-    /// <param name="cls_infer">方向分类模型路径（可选）</param>
-    /// <param name="rec_infer">文本识别模型路径</param>
-    /// <param name="table_model_dir">表格识别模型目录路径</param>
-    /// <param name="parameterjson">JSON 格式的参数字符串</param>
-    /// <returns>初始化成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall InitTablejson(const char* det_infer,
-        const char* cls_infer,
-        const char* rec_infer,
-        const char* table_model_dir, const char* parameterjson);
-
-    /// <summary>
-    /// 对输入图片文件执行表格识别并返回结果字符串（JSON 或自定义格式）。
-    /// 返回值为库内部分配的缓冲区指针，调用者需使用 FreeResultBuffer 释放。
-    /// </summary>
-    /// <param name="imageFile">输入图片文件路径</param>
-    /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) const char* __stdcall DetectTable(const char* imageFile);
-
-    /// <summary>
-    /// 对输入图片字节数组执行表格识别并返回结果字符串。
-    /// 返回值为库内部分配的缓冲区指针，调用者需使用 FreeResultBuffer 释放。
-    /// </summary>
-    /// <param name="imagebytedata">图片字节数组指针</param>
-    /// <param name="size">字节数组长度（字节数）</param>
-    /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) const char* __stdcall DetectTableByte(const unsigned char* imagebytedata, size_t size);
-
-    /// <summary>
-    /// 对 Base64 编码的图片字符串执行表格识别并返回结果字符串。
-    /// 返回值为库内部分配的缓冲区指针，调用者需使用 FreeResultBuffer 释放。
-    /// </summary>
-    /// <param name="imagebase64">Base64 编码的图片字符串</param>
-    /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) const char* __stdcall DetectTableBase64(const char* imagebase64);
-
-    /// <summary>
-    /// 释放并关闭表格识别引擎，释放所有相关资源。
-    /// </summary>
-    /// <returns>成功返回 0，失败返回非 0。</returns>
-    __declspec(dllimport) int __stdcall FreeTableEngine();
-
     /// <summary>
     /// 释放由 Detect* / GetError 等函数返回的字符串缓冲区（跨平台安全）。
     /// </summary>
@@ -194,13 +135,14 @@ extern "C" {
     __declspec(dllimport) void __stdcall FreeResultBuffer(void* buffer);
 
     // ==================== 文档图像矫正API ====================
+
     /// <summary>
     /// 初始化文本图像矫正模块，传入参数结构体。
     /// </summary>
     /// <param name="uvdoc_infer">UVDoc 模型路径</param>
     /// <param name="uvdocpara">UVDoc 参数结构体</param>
     /// <returns>成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool InitUVDoc(const char* uvdoc_infer, UVDocParameter uvdocpara);
+    __declspec(dllimport) bool __stdcall InitUVDoc(const char* uvdoc_infer, UVDocParameter uvdocpara);
 
     /// <summary>
     /// 初始化文本图像矫正模块，传入 JSON 参数字符串。
@@ -208,21 +150,21 @@ extern "C" {
     /// <param name="uvdoc_infer">UVDoc 模型路径</param>
     /// <param name="parjson">JSON 参数字符串</param>
     /// <returns>成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool InitUVDocjson(const char* uvdoc_infer, const char* parjson);
+    __declspec(dllimport) bool __stdcall InitUVDocjson(const char* uvdoc_infer, const char* parjson);
 
     /// <summary>
     /// 文本图像矫正：传入图像文件路径并输出到指定路径。
     /// </summary>
     /// <param name="filename">输入文件路径</param>
     /// <param name="outputfilepath">输出文件路径</param>
-    __declspec(dllimport) void UVDocImageFile(const char* filename, const char* outputfilepath);
+    __declspec(dllimport) void __stdcall UVDocImageFile(const char* filename, const char* outputfilepath);
 
     /// <summary>
     /// 文本图像矫正：传入 OpenCV Mat 指针并输出到指定路径（输出路径必须指定）。
     /// </summary>
     /// <param name="cvmat">OpenCV Mat 指针</param>
     /// <param name="outputfilepath">输出文件路径（必须）</param>
-    __declspec(dllimport) void UVDocMat(void* cvmat, const char* outputfilepath);
+    __declspec(dllimport) void __stdcall UVDocMat(void* cvmat, const char* outputfilepath);
 
     /// <summary>
     /// 文本图像矫正：传入图片字节数组并输出到指定路径（输出路径必须指定）。
@@ -230,24 +172,82 @@ extern "C" {
     /// <param name="imagebyte">图片字节数组</param>
     /// <param name="size">字节数组大小</param>
     /// <param name="outputfilepath">输出文件路径（必须）</param>
-    __declspec(dllimport) void UVDocByte(const unsigned char* imagebyte, long long size, const char* outputfilepath);
+    __declspec(dllimport) void __stdcall UVDocByte(const unsigned char* imagebyte, long long size, const char* outputfilepath);
 
     /// <summary>
     /// 文本图像矫正：传入 Base64 编码的图片并输出到指定路径（输出路径必须指定）。
     /// </summary>
     /// <param name="base64">Base64 编码字符串</param>
     /// <param name="outputfilepath">输出文件路径（必须）</param>
-    __declspec(dllimport) void UVDocBase64(const char* base64, const char* outputfilepath);
+    __declspec(dllimport) void __stdcall UVDocBase64(const char* base64, const char* outputfilepath);
 
     /// <summary>
     /// 释放文本图像矫正实例并回收资源。
     /// </summary>
     /// <returns>成功返回 0，失败返回 -1。</returns>
-    __declspec(dllimport) int FreeUVDocEngine();
+    __declspec(dllimport) int __stdcall FreeUVDocEngine();
 
+    // ==================== 版面结构识别API ====================
 
-    // ==================== 以图找图API ====================
     /// <summary>
+    /// 初始化结构化文档识别引擎（扩展版本）。
+    /// 支持版面检测、表格识别、公式识别、印章识别、图表转表等。
+    /// </summary>
+    __declspec(dllimport) bool __stdcall InitStructure(
+        const char* det_infer,
+        const char* cls_infer,
+        const char* rec_infer,
+        const char* layout_model_dir,
+        const char* table_model_dir,
+        const char* formula_model_dir,
+        const char* seal_model_dir,
+        const char* chart_model_dir,
+        const char* doc_cls_infer,
+        const char* doc_unwarp_model,
+        const LayoutParameter parameter);
+
+    /// <summary>
+    /// 初始化结构化文档识别引擎（JSON 参数版本）。
+    /// </summary>
+    __declspec(dllimport) bool __stdcall InitStructurejson(
+        const char* det_infer,
+        const char* cls_infer,
+        const char* rec_infer,
+        const char* layout_model_dir,
+        const char* table_model_dir,
+        const char* formula_model_dir,
+        const char* seal_model_dir,
+        const char* chart_model_dir,
+        const char* doc_cls_infer,
+        const char* doc_unwarp_model,
+        const char* parameterjson);
+
+    /// <summary>
+    /// 执行文档版面分析（文件路径输入）。
+    /// </summary>
+    __declspec(dllimport) const char* __stdcall DetectLayout(const char* imageFile);
+
+    /// <summary>
+    /// 执行文档版面分析（OpenCV Mat 输入）。
+    /// </summary>
+    __declspec(dllimport) const char* __stdcall DetectLayoutMat(const cv::Mat& cvmat);
+
+    /// <summary>
+    /// 执行文档版面分析（字节数组输入）。
+    /// </summary>
+    __declspec(dllimport) const char* __stdcall DetectLayoutByte(const unsigned char* imagebytedata, size_t size);
+
+    /// <summary>
+    /// 执行文档版面分析（Base64 输入）。
+    /// </summary>
+    __declspec(dllimport) const char* __stdcall DetectLayoutBase64(const char* imagebase64);
+
+    /// <summary>
+    /// 释放文档版面分析引擎及所有相关资源。
+    /// </summary>
+    /// <returns>成功返回 0，失败返回非 0。</returns>
+    __declspec(dllimport) int __stdcall FreeStructureEngine();
+        /// <summary>
     /// 以图找图：在大图中查找小图，返回JSON字符串
     /// </summary>
     /// <param name="bigImagePath">大图路径</param>
