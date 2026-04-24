@@ -27,12 +27,13 @@ namespace WinFormsApp.Services
         public static IOCRService ocrService => _ocrService.Value;
         public static string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
         public static string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
-        public static string cls_infer = "PP-LCNet_x1_0_textline_ori";
-        public static string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
-        private static string layout_model_dir = "PP-DocLayoutV2_infer";//版面识别模型inference
-        private static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
-        private static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
-        private static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
+        public static string cls_infer = "PP-LCNet_x1_0_textline_ori";//文本方向分类模块
+        public static string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";//文档图像方向分类模块
+        public static string layout_model_dir = "PP-DocLayoutV2_infer";//版面识别模型inference
+        public static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
+        public static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
+        public static string chart_model_dir = "PP-Chart2Table";//图表转表模型        
+        public static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
         private static bool visualize = true;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。
@@ -54,13 +55,6 @@ namespace WinFormsApp.Services
         public static string GetOCREngine()
         {
             InitParamater para = new InitParamater();
-            //string root = AppDomain.CurrentDomain.BaseDirectory;
-            //string modelsPath = Path.Combine(root, "models");//存放模型的目录，不允许修改
-            //para.det_infer = Path.Combine(modelsPath, det_infer);
-            //para.cls_infer = Path.Combine(modelsPath, cls_infer);
-            //para.rec_infer = Path.Combine(modelsPath, rec_infer);
-            //para.keyFile = Path.Combine(modelsPath, keys);
-            //改为相对路径，避免中文路径问题
             para.det_infer = $"models/{det_infer}";
             para.cls_infer = $"models/{cls_infer}";
             para.rec_infer = $"models/{ rec_infer}";
@@ -121,6 +115,7 @@ namespace WinFormsApp.Services
             para.rec_infer = $"models/{rec_infer}";
             para.layout_model_dir = $"models/{layout_model_dir}";
             para.table_model_dir = $"models/{table_model_dir}";
+            para.chart_model_dir = $"models/{chart_model_dir}";
             para.formula_model_dir = $"models/{formula_model_dir}";
             para.doc_unwarp_model = $"models/{doc_unwarp_model}";
 

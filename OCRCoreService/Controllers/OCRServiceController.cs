@@ -322,7 +322,7 @@ namespace OCRCoreService.Controllers
 
                 string layoutJson = ocrEngine.OcrService.DetectLayoutBase64(request.Base64String);
                 logger.LogTrace($"版面识别成功:{layoutJson}");
-                return BuildLayoutResponse(layoutJson, request.ResultType);
+                return OKResult(layoutJson);
             }
             catch (Exception ex)
             {
@@ -334,10 +334,9 @@ namespace OCRCoreService.Controllers
         /// 文档版面识别（文件上传）
         /// </summary>
         /// <param name="request">上传文件</param>
-        /// <param name="resultType">返回类型：json / parsed / text</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetOCRLayoutFile(IFormFile request, [FromForm] string resultType = "parsed")
+        public async Task<ActionResult> GetOCRLayoutFile(IFormFile request)
         {
             if (request == null || request.Length == 0)
             {
@@ -358,112 +357,13 @@ namespace OCRCoreService.Controllers
                     byte[] imageByte = ms.ToArray();
                     string layoutJson = ocrEngine.OcrService.DetectLayoutByte(imageByte);
                     logger.LogTrace($"版面识别成功:{layoutJson}");
-                    return BuildLayoutResponse(layoutJson, resultType);
+                    return OKResult(layoutJson);
                 }
             }
             catch (Exception ex)
             {
                 return BadResult("版面识别失败:" + ex.Message);
             }
-        }
-
-        private ActionResult BuildLayoutResponse(string layoutJson, string resultType)
-        {
-            if (string.IsNullOrWhiteSpace(layoutJson))
-            {
-                return BadResult("版面识别失败:返回结果为空");
-            }
-
-            string normalizedType = (resultType ?? string.Empty).Trim().ToLowerInvariant();
-            if (normalizedType == "json")
-            {
-                return OKResult(layoutJson);
-            }
-
-            LayoutDetectResult layoutResult = ocrEngine.OcrService.ParseLayoutResult(layoutJson);
-            if (normalizedType == "text")
-            {
-                return OKResult(BuildLayoutText(layoutResult));
-            }
-
-            return OKResult(layoutResult);
-        }
-
-        private static string BuildLayoutText(LayoutDetectResult layoutResult)
-        {
-            if (layoutResult == null)
-            {
-                return string.Empty;
-            }
-
-            StringBuilder stringBuilder = new StringBuilder();
-            if (layoutResult.ParsingResList != null)
-            {
-                for (int i = 0; i < layoutResult.ParsingResList.Count; i++)
-                {
-                    var block = layoutResult.ParsingResList[i];
-                    if (block == null)
-                    {
-                        continue;
-                    }
-
-                    string label = (block.BlockLabel ?? string.Empty).Trim().ToLowerInvariant();
-                    if (label == "table")
-                    {
-                        var tableTexts = block.TableContent?.TableOcrPred?.RecTexts;
-                        if (tableTexts != null && tableTexts.Count > 0)
-                        {
-                            stringBuilder.AppendLine(string.Join(" ", tableTexts));
-                        }
-                        continue;
-                    }
-
-                    if (label == "formula" || label == "formula_number")
-                    {
-                        string formulaText = block.FormulaContent?.RecFormula;
-                        if (string.IsNullOrWhiteSpace(formulaText))
-                        {
-                            formulaText = block.TextContent;
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(formulaText))
-                        {
-                            stringBuilder.AppendLine(formulaText.Trim());
-                        }
-                        continue;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(block.TextContent) && !IsLikelyHtml(block.TextContent))
-                    {
-                        stringBuilder.AppendLine(block.TextContent.Trim());
-                    }
-                }
-            }
-
-            if (stringBuilder.Length > 0)
-            {
-                return stringBuilder.ToString().Trim();
-            }
-
-            if (layoutResult.OverallOcrRes?.RecTexts != null && layoutResult.OverallOcrRes.RecTexts.Count > 0)
-            {
-                return string.Join(Environment.NewLine, layoutResult.OverallOcrRes.RecTexts);
-            }
-
-            return string.Empty;
-        }
-
-        private static bool IsLikelyHtml(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return false;
-            }
-
-            string trimmed = text.TrimStart();
-            return trimmed.StartsWith("<html", StringComparison.OrdinalIgnoreCase)
-                || trimmed.StartsWith("<table", StringComparison.OrdinalIgnoreCase)
-                || trimmed.StartsWith("<tbody", StringComparison.OrdinalIgnoreCase);
         }
         #endregion
     }

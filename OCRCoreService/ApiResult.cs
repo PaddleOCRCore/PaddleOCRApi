@@ -119,11 +119,6 @@ namespace OCRCoreService
         /// 图片Base64字符串
         /// </summary>
         public string Base64String { get; set; }
-
-        /// <summary>
-        /// 返回类型：json / parsed / text
-        /// </summary>
-        public string ResultType { get; set; } = "parsed";
     }
 
     /// <summary>

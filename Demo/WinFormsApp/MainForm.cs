@@ -943,7 +943,7 @@ namespace WinFormsApp
             }
         }
 
-        private string RecOCRTable(string filePath)
+        private string RecOCRLayout(string filePath)
         {
             var stopwatch = new Stopwatch();
             var startTime = DateTime.Now;
@@ -961,148 +961,13 @@ namespace WinFormsApp
             {
                 LogMessage($"版面结果解析失败，已回退原始JSON: {ex.Message}");
             }
-
-            string ocrResult = BuildLayoutSummary(layoutResult, layoutJson);
-            string tableHtml = TryGetFirstTableHtml(layoutResult);
-            if (string.IsNullOrWhiteSpace(tableHtml))
-            {
-                tableHtml = $"<html><body><pre>{System.Net.WebUtility.HtmlEncode(ocrResult)}</pre></body></html>";
-            }
-
-            string css = "<style>table{ border-spacing: 0;} td { border: 1px solid black;}</style>";
-            if (tableHtml.IndexOf("<style", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                int htmlStart = tableHtml.IndexOf("<html>", StringComparison.OrdinalIgnoreCase);
-                if (htmlStart >= 0)
-                {
-                    tableHtml = tableHtml.Insert(htmlStart + "<html>".Length, css);
-                }
-            }
-
-            // 定义输出文件夹和文件名（使用RecFilepath变量，即output目录）
-            string htmlfile = Path.Combine(RecFilepath, $"{Path.GetFileNameWithoutExtension(filePath)}.html");
-
-            // 确保输出文件夹存在
-            if (!Directory.Exists(RecFilepath))
-            {
-                Directory.CreateDirectory(RecFilepath);
-            }
-
-            // 写入HTML文件
-            try
-            {
-                using (StreamWriter sw = new StreamWriter(htmlfile, false, System.Text.Encoding.GetEncoding("utf-8")))
-                {
-                    sw.Write(tableHtml);
-                }
-                LogMessage($"表格识别结果已保存到: {htmlfile}");
-
-                // 使用默认的浏览器打开HTML文件
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = htmlfile,
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                LogMessage($"保存或打开HTML文件失败：{ex.Message}");
-            }
-
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
-            LogMessage(ocrResult);
+            LogMessage($"版面识别结果: {layoutJson}");
 
-            return ocrResult;
+            return layoutJson;
         }
-        private static string TryGetFirstTableHtml(LayoutDetectResult? layoutResult)
-        {
-            if (layoutResult == null)
-            {
-                return string.Empty;
-            }
-
-            if (layoutResult.ParsingResList != null)
-            {
-                for (int i = 0; i < layoutResult.ParsingResList.Count; i++)
-                {
-                    var block = layoutResult.ParsingResList[i];
-                    if (block == null)
-                    {
-                        continue;
-                    }
-
-                    if (!string.Equals(block.BlockLabel, "table", StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(block.TableContent?.PredHtml))
-                    {
-                        return block.TableContent.PredHtml;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(block.TextContent)
-                        && block.TextContent.IndexOf("<table", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        return block.TextContent;
-                    }
-                }
-            }
-
-            if (layoutResult.TableResList != null)
-            {
-                for (int i = 0; i < layoutResult.TableResList.Count; i++)
-                {
-                    if (!string.IsNullOrWhiteSpace(layoutResult.TableResList[i]?.PredHtml))
-                    {
-                        return layoutResult.TableResList[i].PredHtml;
-                    }
-                }
-            }
-
-            return string.Empty;
-        }
-
-        private static string BuildLayoutSummary(LayoutDetectResult? layoutResult, string layoutJson)
-        {
-            if (layoutResult == null)
-            {
-                return FormatJsonSafe(layoutJson);
-            }
-
-            StringBuilder sb = new StringBuilder();
-            int blockCount = layoutResult.ParsingResList?.Count ?? 0;
-            int tableCount = layoutResult.TableResList?.Count ?? 0;
-            int formulaCount = layoutResult.FormulaResList?.Count ?? 0;
-
-            sb.AppendLine($"blocks: {blockCount}");
-            sb.AppendLine($"tables: {tableCount}, formulas: {formulaCount}");
-
-            int previewCount = 0;
-            if (layoutResult.ParsingResList != null)
-            {
-                for (int i = 0; i < layoutResult.ParsingResList.Count; i++)
-                {
-                    var block = layoutResult.ParsingResList[i];
-                    if (block == null || string.IsNullOrWhiteSpace(block.TextContent))
-                    {
-                        continue;
-                    }
-
-                    sb.AppendLine($"{block.BlockLabel}: {block.TextContent.Trim()}");
-                    previewCount++;
-                    if (previewCount >= 10)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return sb.ToString().Trim();
-        }
-
         private void buttonRecTable_Click(object sender, EventArgs e)
         {
             try
@@ -1118,7 +983,7 @@ namespace WinFormsApp
                     foreach (var regfile in OpenFileDialog1.FileNames)
                     {
                         string filePath = Path.GetFullPath(regfile);
-                        result = RecOCRTable(filePath);
+                        result = RecOCRLayout(filePath);
                         if (File.Exists(filePath))
                         {
                             pictureBoxImg.ImgPath = filePath;

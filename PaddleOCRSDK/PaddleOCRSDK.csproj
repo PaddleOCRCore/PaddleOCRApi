@@ -2,7 +2,7 @@
   <PropertyGroup>
     <!-- Package Identity -->
     <PackageId>PaddleOCRSDK</PackageId>
-    <Version>5.0.0</Version>
+    <Version>4.3.0</Version>
     <Authors>PaddleOCRCore</Authors>
     <Company>PaddleOCRCore</Company>
     
@@ -48,6 +48,9 @@
 	  <Compile Remove="OCRModels\**" />
 	  <EmbeddedResource Remove="OCRModels\**" />
 	  <None Remove="OCRModels\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Models\LayoutResult.cs~RF2b3b4e7.TMP" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="PaddleOCRSDK.targets">

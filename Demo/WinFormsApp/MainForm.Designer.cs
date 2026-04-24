@@ -603,7 +603,7 @@
             buttonRecTable.Name = "buttonRecTable";
             buttonRecTable.Size = new Size(109, 25);
             buttonRecTable.TabIndex = 17;
-            buttonRecTable.Text = "OCR表格识别";
+            buttonRecTable.Text = "OCR版面识别";
             buttonRecTable.UseVisualStyleBackColor = true;
             buttonRecTable.Click += buttonRecTable_Click;
             // 

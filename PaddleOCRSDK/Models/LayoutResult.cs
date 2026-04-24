@@ -80,27 +80,6 @@ namespace PaddleOCRSDK
 
         [JsonProperty("use_chart_recognition")]
         public bool? UseChartRecognition { get; set; }
-
-        [JsonProperty("text_rec_score_thresh")]
-        public double? TextRecScoreThresh { get; set; }
-
-        [JsonProperty("layout_threshold")]
-        public double? LayoutThreshold { get; set; }
-
-        [JsonProperty("layout_nms")]
-        public bool? LayoutNms { get; set; }
-
-        [JsonProperty("layout_unclip_ratio_w")]
-        public double? LayoutUnclipRatioW { get; set; }
-
-        [JsonProperty("layout_unclip_ratio_h")]
-        public double? LayoutUnclipRatioH { get; set; }
-
-        [JsonProperty("layout_shape_mode")]
-        public string LayoutShapeMode { get; set; }
-
-        [JsonProperty("format_block_content")]
-        public bool? FormatBlockContent { get; set; }
     }
 
     public class LayoutBlockResult
@@ -131,21 +110,6 @@ namespace PaddleOCRSDK
 
         [JsonProperty("parent_block_id")]
         public int? ParentBlockId { get; set; }
-
-        [JsonIgnore]
-        public string TextContent { get; set; }
-
-        [JsonIgnore]
-        public LayoutTableContent TableContent { get; set; }
-
-        [JsonIgnore]
-        public LayoutFormulaContent FormulaContent { get; set; }
-
-        [JsonIgnore]
-        public LayoutSealContent SealContent { get; set; }
-
-        [JsonIgnore]
-        public LayoutChartContent ChartContent { get; set; }
     }
 
     public class LayoutPoint
@@ -219,9 +183,6 @@ namespace PaddleOCRSDK
         [JsonProperty("text_type")]
         public string TextType { get; set; }
 
-        [JsonProperty("textline_orientation_angles")]
-        public List<double> TextlineOrientationAngles { get; set; } = new List<double>();
-
         [JsonProperty("text_rec_score_thresh")]
         public double? TextRecScoreThresh { get; set; }
 
@@ -230,21 +191,6 @@ namespace PaddleOCRSDK
 
         [JsonProperty("rec_scores")]
         public List<double> RecScores { get; set; } = new List<double>();
-
-        [JsonProperty("scores")]
-        private List<double> LegacyScores
-        {
-            set
-            {
-                if ((RecScores == null || RecScores.Count == 0) && value != null)
-                {
-                    RecScores = value;
-                }
-            }
-        }
-
-        [JsonProperty("rec_polys")]
-        public JToken RecPolys { get; set; }
 
         [JsonProperty("rec_boxes")]
         public JToken RecBoxes { get; set; }
@@ -273,8 +219,6 @@ namespace PaddleOCRSDK
 
     public class LayoutTableContent
     {
-        [JsonProperty("cell_box_list")]
-        public JToken CellBoxList { get; set; }
 
         [JsonProperty("pred_html")]
         public string PredHtml { get; set; }
@@ -284,48 +228,10 @@ namespace PaddleOCRSDK
 
         [JsonProperty("row_count")]
         public int? RowCount { get; set; }
-
-        [JsonProperty("col_count")]
-        public int? ColCount { get; set; }
-
-        [JsonProperty("table_ocr_pred")]
-        public LayoutTableOcrPrediction TableOcrPred { get; set; }
-    }
-
-    public class LayoutTableOcrPrediction
-    {
-        [JsonProperty("rec_polys")]
-        public JToken RecPolys { get; set; }
-
-        [JsonProperty("rec_texts")]
-        public List<string> RecTexts { get; set; } = new List<string>();
-
-        [JsonProperty("rec_scores")]
-        public List<double> RecScores { get; set; } = new List<double>();
-
-        [JsonProperty("scores")]
-        private List<double> LegacyScores
-        {
-            set
-            {
-                if ((RecScores == null || RecScores.Count == 0) && value != null)
-                {
-                    RecScores = value;
-                }
-            }
-        }
-
-        [JsonProperty("rec_boxes")]
-        public JToken RecBoxes { get; set; }
     }
 
     public class LayoutFormulaContent
     {
-        [JsonProperty("input_path")]
-        public string InputPath { get; set; }
-
-        [JsonProperty("page_index")]
-        public int? PageIndex { get; set; }
 
         [JsonProperty("rec_formula")]
         public string RecFormula { get; set; }
@@ -334,13 +240,7 @@ namespace PaddleOCRSDK
         public double? Confidence { get; set; }
 
         [JsonProperty("formula_type")]
-        public string FormulaType { get; set; }
-
-        [JsonProperty("formula_region_id")]
-        public int? FormulaRegionId { get; set; }
-
-        [JsonProperty("dt_polys")]
-        public JToken DtPolys { get; set; }
+        public double? FormulaType { get; set; }
     }
 
     public class LayoutSealContent
