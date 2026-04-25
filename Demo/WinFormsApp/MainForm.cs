@@ -264,32 +264,27 @@ namespace WinFormsApp
 
             if (isOCRVLLayoutAnalysis)
             {
-                VLDocumentResult docResult = await Task.Run(() => ocrvlService.DocChat(filePath, PocrOutputFormat.Both));
+                string layoutJson = await Task.Run(() => ocrvlService.DetectLayout(filePath));
+                LayoutDetectResult layoutResult = ocrvlService.ParseLayoutResult(layoutJson);
                 var endTime = DateTime.Now;
                 LogOCRVLMessage($"结束时间: {endTime:HH:mm:ss.fff}");
                 LogOCRVLMessage($"用时: {stopwatch.ElapsedMilliseconds} 毫秒");
                 LogOCRVLMessage($"识别结果：");
-                if (docResult.Code != 1)
-                {
-                    LogOCRVLMessage(docResult.ErrorMsg);
-                    LogOCRVLMessage("===============================================");
-                    return docResult.ErrorMsg;
-                }
 
                 StringBuilder builder = new StringBuilder();
-                if (!string.IsNullOrWhiteSpace(docResult.Markdown))
+                if (!string.IsNullOrWhiteSpace(layoutResult.Markdown))
                 {
                     builder.AppendLine("Markdown:");
-                    builder.AppendLine(NormalizeOCRVLDisplayText(docResult.Markdown).Trim());
+                    builder.AppendLine(NormalizeOCRVLDisplayText(layoutResult.Markdown).Trim());
                 }
-                if (!string.IsNullOrWhiteSpace(docResult.JsonText))
+                if (!string.IsNullOrWhiteSpace(layoutJson))
                 {
                     if (builder.Length > 0)
                     {
                         builder.AppendLine();
                     }
                     builder.AppendLine("JSON:");
-                    builder.AppendLine(FormatJsonSafe(docResult.JsonText));
+                    builder.AppendLine(FormatJsonSafe(layoutJson));
                 }
 
                 string result = builder.ToString().Trim();

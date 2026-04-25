@@ -160,18 +160,14 @@ namespace OCRCoreService.Controllers
             try
             {
                 logger.LogInformation("开始处理DOC-VL Base64版面分析请求");
-                VLDocumentResult result = ocrvlService.DocChatBase64(request.Base64String);
-                if (result.Code != 1)
-                {
-                    logger.LogWarning($"DOC-VL版面分析失败: {result.ErrorMsg}");
-                    return BadResult($"识别失败: {result.ErrorMsg}");
-                }
+                string layoutJson = ocrvlService.DetectLayoutBase64(request.Base64String);
+                LayoutDetectResult layoutResult = ocrvlService.ParseLayoutResult(layoutJson);
                 logger.LogInformation("DOC-VL Base64版面分析成功");
                 return OKResult(new
                 {
-                    content = result.Content,
-                    markdown = result.Markdown,
-                    jsonText = result.JsonText
+                    content = layoutJson,
+                    markdown = layoutResult.Markdown,
+                    jsonText = layoutJson
                 });
             }
             catch (Exception ex)
@@ -206,18 +202,14 @@ namespace OCRCoreService.Controllers
                 await file.CopyToAsync(memStream);
                 byte[] imageData = memStream.ToArray();
 
-                VLDocumentResult result = ocrvlService.DocChatData(imageData);
-                if (result.Code != 1)
-                {
-                    logger.LogWarning($"DOC-VL文件版面分析失败: {result.ErrorMsg}");
-                    return BadResult($"识别失败: {result.ErrorMsg}");
-                }
+                string layoutJson = ocrvlService.DetectLayoutByte(imageData);
+                LayoutDetectResult layoutResult = ocrvlService.ParseLayoutResult(layoutJson);
                 logger.LogInformation("DOC-VL文件版面分析成功");
                 return OKResult(new
                 {
-                    content = result.Content,
-                    markdown = result.Markdown,
-                    jsonText = result.JsonText
+                    content = layoutJson,
+                    markdown = layoutResult.Markdown,
+                    jsonText = layoutJson
                 });
             }
             catch (Exception ex)

@@ -7,7 +7,6 @@ namespace PaddleOCRSDK
     internal static class OCRVLSDK
     {
         internal const string DllFileName = "llamaocr-vl";
-        internal const string OutputDelimiter = "\n---JSON---\n";
 
         internal static int Init(string configPath)
         {
@@ -78,8 +77,8 @@ namespace PaddleOCRSDK
             }
         }
 
-        [DllImport(DllFileName, EntryPoint = "FreeMemory", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-        internal static extern void FreeMemory(IntPtr ptr);
+        [DllImport(DllFileName, EntryPoint = "FreeResultBuffer", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        internal static extern void FreeResultBuffer(IntPtr ptr);
 
         [DllImport(DllFileName, EntryPoint = "FreeEngine", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         internal static extern void FreeEngine();
