@@ -24,15 +24,6 @@ namespace PaddleOCRSDK
         [JsonProperty("table_res_list")]
         public List<LayoutTableContent> TableResList { get; set; } = new List<LayoutTableContent>();
 
-        [JsonProperty("seal_res_list")]
-        public List<LayoutSealContent> SealResList { get; set; } = new List<LayoutSealContent>();
-
-        [JsonProperty("formula_res_list")]
-        public List<LayoutFormulaContent> FormulaResList { get; set; } = new List<LayoutFormulaContent>();
-
-        [JsonProperty("chart_res_list")]
-        public List<LayoutChartContent> ChartResList { get; set; } = new List<LayoutChartContent>();
-
         [JsonProperty("doc_preprocessor_res")]
         public LayoutDocPreprocessorResult DocPreprocessorRes { get; set; }
 

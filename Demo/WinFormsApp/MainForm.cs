@@ -554,10 +554,10 @@ namespace WinFormsApp
                 {
                     this.buttonRec.Enabled = false;
                 }
-                initmsg = OCREngine.GetOCRTableEngine();
+                initmsg = OCREngine.GetOCRStructureEngine();
                 if (string.IsNullOrEmpty(initmsg))
                 {
-                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:表格识别初始化成功！");
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}:版面识别初始化成功！");
                 }
                 else
                 {
@@ -565,12 +565,12 @@ namespace WinFormsApp
                 }
                 if (initmsg.IndexOf("初始化成功") >= 0)
                 {
-                    this.buttonRecTable.Enabled = true;
+                    this.buttonRecStructure.Enabled = true;
                     this.isInitSuccess = true;
                 }
                 else
                 {
-                    this.buttonRecTable.Enabled = false;
+                    this.buttonRecStructure.Enabled = false;
                 }
 
                 if (this.isInitSuccess)
@@ -943,7 +943,7 @@ namespace WinFormsApp
             }
         }
 
-        private string RecOCRLayout(string filePath)
+        private string RecOCRStructure(string filePath)
         {
             var stopwatch = new Stopwatch();
             var startTime = DateTime.Now;
@@ -952,23 +952,15 @@ namespace WinFormsApp
             stopwatch.Start();
 
             string layoutJson = ocrService.DetectLayout(filePath);
-            LayoutDetectResult? layoutResult = null;
-            try
-            {
-                layoutResult = ocrService.ParseLayoutResult(layoutJson);
-            }
-            catch (Exception ex)
-            {
-                LogMessage($"版面结果解析失败，已回退原始JSON: {ex.Message}");
-            }
             var endTime = DateTime.Now;
             LogMessage($"结束时间: {endTime:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
-            LogMessage($"版面识别结果: {layoutJson}");
+            LogMessage($"版面识别结果:");
+            LogMessage($"{FormatJsonSafe(layoutJson)}");
 
             return layoutJson;
         }
-        private void buttonRecTable_Click(object sender, EventArgs e)
+        private void buttonRecStructure_Click(object sender, EventArgs e)
         {
             try
             {
@@ -983,10 +975,29 @@ namespace WinFormsApp
                     foreach (var regfile in OpenFileDialog1.FileNames)
                     {
                         string filePath = Path.GetFullPath(regfile);
-                        result = RecOCRLayout(filePath);
-                        if (File.Exists(filePath))
+                        result = RecOCRStructure(filePath);
+                        LayoutDetectResult? layoutResult = null;
+                        try
                         {
-                            pictureBoxImg.ImgPath = filePath;
+                            layoutResult = ocrService.ParseLayoutResult(result);
+                            if (!string.IsNullOrEmpty(layoutResult.VisPath))
+                            {
+                                if (File.Exists(layoutResult.VisPath))
+                                {
+                                    pictureBoxImg.ImgPath = layoutResult.VisPath;
+                                }
+                            }
+                            else
+                            {
+                                if (File.Exists(filePath))
+                                {
+                                    pictureBoxImg.ImgPath = filePath;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogMessage($"版面识别结果解析失败:{ex.Message}");
                         }
                     }
                 }
@@ -1455,7 +1466,7 @@ namespace WinFormsApp
             this.buttonRec.Enabled = false;
             this.buttonRecClipboard.Enabled = false;
             this.buttonRecPDF.Enabled = false;
-            this.buttonRecTable.Enabled = false;
+            this.buttonRecStructure.Enabled = false;
             LogMessage($"{DateTime.Now:HH:mm:ss.fff}:OCR引擎已释放！");
         }
 

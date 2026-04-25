@@ -69,7 +69,7 @@
             label8 = new Label();
             label7 = new Label();
             comboBoxModel = new ComboBox();
-            buttonRecTable = new Button();
+            buttonRecStructure = new Button();
             buttonDownModels = new Button();
             numericUpDowncpu_mem = new NumericUpDown();
             label6 = new Label();
@@ -460,7 +460,7 @@
             groupBox1.Controls.Add(label8);
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(comboBoxModel);
-            groupBox1.Controls.Add(buttonRecTable);
+            groupBox1.Controls.Add(buttonRecStructure);
             groupBox1.Controls.Add(buttonDownModels);
             groupBox1.Controls.Add(numericUpDowncpu_mem);
             groupBox1.Controls.Add(label6);
@@ -598,14 +598,14 @@
             // 
             // buttonRecTable
             // 
-            buttonRecTable.Enabled = false;
-            buttonRecTable.Location = new Point(825, 58);
-            buttonRecTable.Name = "buttonRecTable";
-            buttonRecTable.Size = new Size(109, 25);
-            buttonRecTable.TabIndex = 17;
-            buttonRecTable.Text = "OCR版面识别";
-            buttonRecTable.UseVisualStyleBackColor = true;
-            buttonRecTable.Click += buttonRecTable_Click;
+            buttonRecStructure.Enabled = false;
+            buttonRecStructure.Location = new Point(825, 58);
+            buttonRecStructure.Name = "buttonRecTable";
+            buttonRecStructure.Size = new Size(109, 25);
+            buttonRecStructure.TabIndex = 17;
+            buttonRecStructure.Text = "OCR版面识别";
+            buttonRecStructure.UseVisualStyleBackColor = true;
+            buttonRecStructure.Click += buttonRecStructure_Click;
             // 
             // buttonDownModels
             // 
@@ -1042,7 +1042,7 @@
         private Label label8;
         private Label label7;
         private ComboBox comboBoxModel;
-        private Button buttonRecTable;
+        private Button buttonRecStructure;
         private Button buttonDownModels;
         private NumericUpDown numericUpDowncpu_mem;
         private Label label6;

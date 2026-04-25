@@ -269,6 +269,7 @@ namespace PaddleOCRSDK
         // 版面检测参数
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_layout_detection { get; set; } = true;
+        public float layout_threshold { get; set; } = 0.5f;
         [field: MarshalAs(UnmanagedType.I1)]
         public bool layout_nms { get; set; } = true;
         public float layout_unclip_ratio_w { get; set; } = 1.0f;
@@ -281,7 +282,7 @@ namespace PaddleOCRSDK
         public float text_rec_score_thresh { get; set; } = 0.5f;
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_textline_orientation { get; set; } = true;
-        public int text_det_limit_side_len { get; set; } = 960;
+        public int max_side_len { get; set; } = 960;
 
         // 条件识别参数
         [field: MarshalAs(UnmanagedType.I1)]
@@ -292,6 +293,12 @@ namespace PaddleOCRSDK
         public bool use_formula_recognition { get; set; } = true;
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_chart_recognition { get; set; } = false;
+        public int seal_det_limit_side_len { get; set; } = 736;
+        public int seal_det_limit_type { get; set; } = 0;
+        public float seal_det_thresh { get; set; } = 0.2f;
+        public float seal_det_box_thresh { get; set; } = 0.6f;
+        public float seal_det_unclip_ratio { get; set; } = 0.5f;
+        public float seal_rec_score_thresh { get; set; } = 0.0f;
 
         // 输出参数
         [field: MarshalAs(UnmanagedType.I1)]

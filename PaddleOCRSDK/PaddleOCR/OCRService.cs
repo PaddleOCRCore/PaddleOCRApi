@@ -161,7 +161,7 @@ namespace PaddleOCRSDK
             oCRParameter.text_det_thresh = 0.3f;
             oCRParameter.text_rec_score_thresh = 0.5f;
             oCRParameter.use_textline_orientation = false;
-            oCRParameter.text_det_limit_side_len = 960;
+            oCRParameter.max_side_len = 960;
 
             oCRParameter.use_table_recognition = true;
             oCRParameter.use_seal_recognition = false;

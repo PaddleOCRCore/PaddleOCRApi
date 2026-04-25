@@ -32,6 +32,7 @@ namespace WinFormsApp.Services
         public static string layout_model_dir = "PP-DocLayoutV2_infer";//版面识别模型inference
         public static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
         public static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
+        public static string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
         public static string chart_model_dir = "PP-Chart2Table";//图表转表模型        
         public static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
         private static bool enable_mkldnn = true;
@@ -99,11 +100,11 @@ namespace WinFormsApp.Services
             return msg;
         }
         /// <summary>
-        /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
+        /// 初始化版面识别引擎默认V5模型，使用CPU及mkldnn
         /// </summary>
         /// <param name="modelsPath"></param>
         /// <returns></returns>
-        public static string GetOCRTableEngine()
+        public static string GetOCRStructureEngine()
         {
             InitParamater para = new InitParamater();
             string root = AppDomain.CurrentDomain.BaseDirectory;
@@ -118,6 +119,7 @@ namespace WinFormsApp.Services
             para.chart_model_dir = $"models/{chart_model_dir}";
             para.formula_model_dir = $"models/{formula_model_dir}";
             para.doc_unwarp_model = $"models/{doc_unwarp_model}";
+            para.seal_model_dir = $"models/{seal_model_dir}";
 
             LayoutParameter oCRParameter = new LayoutParameter();
             oCRParameter.use_gpu = use_gpu;
@@ -142,18 +144,18 @@ namespace WinFormsApp.Services
             oCRParameter.text_det_thresh = 0.3f;
             oCRParameter.text_rec_score_thresh = 0.5f;
             oCRParameter.use_textline_orientation = use_cls;
-            oCRParameter.text_det_limit_side_len = 960;
+            oCRParameter.max_side_len = 960;
 
             oCRParameter.use_table_recognition = true;
             oCRParameter.use_seal_recognition = false;
-            oCRParameter.use_formula_recognition = true;
+            oCRParameter.use_formula_recognition = false;
             oCRParameter.use_chart_recognition = false;
 
             oCRParameter.format_block_content = false;
             oCRParameter.output_markdown = true;
             para.layoutpara = oCRParameter;
             para.paraType = EnumParaType.StructureClass;
-            string msg = "表格识别初始化成功";
+            string msg = "版面识别初始化成功";
             try
             {
                 ocrService.Init(para);

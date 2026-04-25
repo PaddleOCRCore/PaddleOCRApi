@@ -90,7 +90,7 @@ struct LayoutParameter
 	float text_det_thresh = 0.3f;
 	float text_rec_score_thresh = 0.5f;
 	bool use_textline_orientation = true;
-	int text_det_limit_side_len = 960;
+	int max_side_len = 960;
 
 	// 条件识别参数
 	bool use_table_recognition = true;
