@@ -240,7 +240,7 @@ namespace PaddleOCRSDK
                 if (!ret)
                 {
                     var error = GetError();
-                    throw new OCRException($"初始化失败:{error}");
+                    throw new OCRException($"{error}");
                 }
 
                 return ret;
@@ -252,7 +252,7 @@ namespace PaddleOCRSDK
             }
             catch (Exception ex)
             {
-                throw new OCRException($"初始化失败:{ex.Message}");
+                throw new OCRException($"{ex.Message}");
             }
         }
         /// <summary>
@@ -453,7 +453,7 @@ namespace PaddleOCRSDK
 
             try
             {
-                var result = JsonConvert.DeserializeObject<LayoutDetectResult>(json, JsonSettings);
+                var result = LayoutJsonHelper.DeserializeLayoutResult(json, JsonSettings);
                 if (result == null)
                 {
                     throw new OCRException("OCR版面识别结果解析失败: JSON对象为空");

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PaddleOCRSDK
 {
@@ -94,7 +95,7 @@ namespace PaddleOCRSDK
         public List<LayoutPoint> PolygonPoints { get; set; } = new List<LayoutPoint>();
 
         [JsonProperty("block_content")]
-        public JToken BlockContent { get; set; }
+        public string BlockContent { get; set; }
 
         [JsonProperty("is_sub_block")]
         public bool? IsSubBlock { get; set; }
@@ -166,7 +167,7 @@ namespace PaddleOCRSDK
         public LayoutModelSettings ModelSettings { get; set; }
 
         [JsonProperty("dt_polys")]
-        public JToken DtPolys { get; set; }
+        public List<List<List<double>>> DtPolys { get; set; }
 
         [JsonProperty("text_det_params")]
         public LayoutTextDetParams TextDetParams { get; set; }
@@ -184,7 +185,7 @@ namespace PaddleOCRSDK
         public List<double> RecScores { get; set; } = new List<double>();
 
         [JsonProperty("rec_boxes")]
-        public JToken RecBoxes { get; set; }
+        public List<List<double>> RecBoxes { get; set; }
     }
 
     public class LayoutTextDetParams
@@ -215,46 +216,95 @@ namespace PaddleOCRSDK
         public string PredHtml { get; set; }
 
         [JsonProperty("table_content")]
-        public JToken TableContent { get; set; }
+        public List<List<string>> TableContent { get; set; } = new List<List<string>>();
 
         [JsonProperty("row_count")]
         public int? RowCount { get; set; }
+
+        [JsonProperty("col_count")]
+        public int? ColCount { get; set; }
     }
 
-    public class LayoutFormulaContent
+    internal static class LayoutJsonHelper
     {
+        public static LayoutDetectResult DeserializeLayoutResult(string json, JsonSerializerSettings settings)
+        {
+            string normalizedJson = RemoveTrailingCommas(json);
+            return JsonConvert.DeserializeObject<LayoutDetectResult>(normalizedJson, settings);
+        }
 
-        [JsonProperty("rec_formula")]
-        public string RecFormula { get; set; }
+        private static string RemoveTrailingCommas(string json)
+        {
+            if (string.IsNullOrEmpty(json))
+            {
+                return json;
+            }
 
-        [JsonProperty("confidence")]
-        public double? Confidence { get; set; }
+            StringBuilder builder = null;
+            bool inString = false;
+            bool escaped = false;
 
-        [JsonProperty("formula_type")]
-        public double? FormulaType { get; set; }
-    }
+            for (int i = 0; i < json.Length; i++)
+            {
+                char current = json[i];
 
-    public class LayoutSealContent
-    {
-        [JsonProperty("rec_texts")]
-        public List<string> RecTexts { get; set; } = new List<string>();
+                if (inString)
+                {
+                    if (escaped)
+                    {
+                        escaped = false;
+                    }
+                    else if (current == '\\')
+                    {
+                        escaped = true;
+                    }
+                    else if (current == '"')
+                    {
+                        inString = false;
+                    }
 
-        [JsonProperty("scores")]
-        public List<double> Scores { get; set; } = new List<double>();
+                    builder?.Append(current);
+                    continue;
+                }
 
-        [JsonProperty("seal_type")]
-        public string SealType { get; set; }
-    }
+                if (current == '"')
+                {
+                    inString = true;
+                    builder?.Append(current);
+                    continue;
+                }
 
-    public class LayoutChartContent
-    {
-        [JsonProperty("table_data")]
-        public JToken TableData { get; set; }
+                if (current == ',' && IsTrailingComma(json, i + 1))
+                {
+                    if (builder == null)
+                    {
+                        builder = new StringBuilder(json.Length);
+                        builder.Append(json, 0, i);
+                    }
 
-        [JsonProperty("chart_type")]
-        public string ChartType { get; set; }
+                    continue;
+                }
 
-        [JsonProperty("description")]
-        public string Description { get; set; }
+                builder?.Append(current);
+            }
+
+            return builder?.ToString() ?? json;
+        }
+
+        private static bool IsTrailingComma(string json, int startIndex)
+        {
+            for (int i = startIndex; i < json.Length; i++)
+            {
+                char current = json[i];
+                if (char.IsWhiteSpace(current))
+                {
+                    continue;
+                }
+
+                return current == ']' || current == '}';
+            }
+
+            return false;
+        }
     }
 }

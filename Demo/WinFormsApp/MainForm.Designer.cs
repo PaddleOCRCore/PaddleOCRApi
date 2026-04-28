@@ -42,6 +42,7 @@
             btnUVDocUpload = new Button();
             btnUVDocInitialize = new Button();
             btnUVDocProcess = new Button();
+            btnUVDocCancel = new Button();
             btnUVDocFreeEngine = new Button();
             btnUVDocSave = new Button();
             chkUVDocUseGpu = new CheckBox();
@@ -64,6 +65,7 @@
             buttonRecPDF = new Button();
             chkReturnWordBox = new CheckBox();
             buttonFreeEngine = new Button();
+            buttonCancelOCR = new Button();
             buttonPostFile = new Button();
             textBoxApiAddress = new TextBox();
             label8 = new Label();
@@ -95,6 +97,7 @@
             textBoxOCRVLPrompt = new TextBox();
             buttonOCRVLRec = new Button();
             buttonOCRVLRecPDF = new Button();
+            buttonOCRVLCancel = new Button();
             buttonOCRVLFreeEngine = new Button();
             buttonOCRVLInit = new Button();
             checkBoxOCRVLDocAnalysis = new CheckBox();
@@ -228,6 +231,7 @@
             groupBoxUVDocControl.Controls.Add(btnUVDocUpload);
             groupBoxUVDocControl.Controls.Add(btnUVDocInitialize);
             groupBoxUVDocControl.Controls.Add(btnUVDocProcess);
+            groupBoxUVDocControl.Controls.Add(btnUVDocCancel);
             groupBoxUVDocControl.Controls.Add(btnUVDocFreeEngine);
             groupBoxUVDocControl.Controls.Add(btnUVDocSave);
             groupBoxUVDocControl.Controls.Add(chkUVDocUseGpu);
@@ -256,54 +260,65 @@
             chkUVDocUseTensorRT.UseVisualStyleBackColor = true;
             // 
             // btnUVDocUpload
-            // 
+            //
             btnUVDocUpload.Enabled = false;
-            btnUVDocUpload.Location = new Point(660, 22);
+            btnUVDocUpload.Location = new Point(642, 22);
             btnUVDocUpload.Name = "btnUVDocUpload";
-            btnUVDocUpload.Size = new Size(95, 28);
+            btnUVDocUpload.Size = new Size(82, 28);
             btnUVDocUpload.TabIndex = 1;
             btnUVDocUpload.Text = "上传图像";
             btnUVDocUpload.UseVisualStyleBackColor = true;
             btnUVDocUpload.Click += btnUVDocUpload_Click;
             // 
             // btnUVDocInitialize
-            // 
-            btnUVDocInitialize.Location = new Point(559, 22);
+            //
+            btnUVDocInitialize.Location = new Point(556, 22);
             btnUVDocInitialize.Name = "btnUVDocInitialize";
-            btnUVDocInitialize.Size = new Size(95, 28);
+            btnUVDocInitialize.Size = new Size(82, 28);
             btnUVDocInitialize.TabIndex = 0;
             btnUVDocInitialize.Text = "初始化模型";
             btnUVDocInitialize.UseVisualStyleBackColor = true;
             btnUVDocInitialize.Click += btnUVDocInitialize_Click;
             // 
             // btnUVDocProcess
-            // 
+            //
             btnUVDocProcess.Enabled = false;
-            btnUVDocProcess.Location = new Point(761, 22);
+            btnUVDocProcess.Location = new Point(728, 22);
             btnUVDocProcess.Name = "btnUVDocProcess";
-            btnUVDocProcess.Size = new Size(95, 28);
+            btnUVDocProcess.Size = new Size(82, 28);
             btnUVDocProcess.TabIndex = 2;
             btnUVDocProcess.Text = "开始矫正";
             btnUVDocProcess.UseVisualStyleBackColor = true;
             btnUVDocProcess.Click += btnUVDocProcess_Click;
-            // 
+            //
+            // btnUVDocCancel
+            //
+            btnUVDocCancel.Enabled = false;
+            btnUVDocCancel.Location = new Point(814, 22);
+            btnUVDocCancel.Name = "btnUVDocCancel";
+            btnUVDocCancel.Size = new Size(82, 28);
+            btnUVDocCancel.TabIndex = 12;
+            btnUVDocCancel.Text = "取消";
+            btnUVDocCancel.UseVisualStyleBackColor = true;
+            btnUVDocCancel.Click += btnUVDocCancel_Click;
+            //
             // btnUVDocFreeEngine
-            // 
+            //
             btnUVDocFreeEngine.Enabled = false;
-            btnUVDocFreeEngine.Location = new Point(963, 22);
+            btnUVDocFreeEngine.Location = new Point(986, 22);
             btnUVDocFreeEngine.Name = "btnUVDocFreeEngine";
-            btnUVDocFreeEngine.Size = new Size(95, 28);
+            btnUVDocFreeEngine.Size = new Size(82, 28);
             btnUVDocFreeEngine.TabIndex = 3;
             btnUVDocFreeEngine.Text = "释放模型";
             btnUVDocFreeEngine.UseVisualStyleBackColor = true;
             btnUVDocFreeEngine.Click += btnUVDocFreeEngine_Click;
             // 
             // btnUVDocSave
-            // 
+            //
             btnUVDocSave.Enabled = false;
-            btnUVDocSave.Location = new Point(862, 22);
+            btnUVDocSave.Location = new Point(900, 22);
             btnUVDocSave.Name = "btnUVDocSave";
-            btnUVDocSave.Size = new Size(95, 28);
+            btnUVDocSave.Size = new Size(82, 28);
             btnUVDocSave.TabIndex = 3;
             btnUVDocSave.Text = "保存结果";
             btnUVDocSave.UseVisualStyleBackColor = true;
@@ -455,6 +470,7 @@
             groupBox1.Controls.Add(buttonRecPDF);
             groupBox1.Controls.Add(chkReturnWordBox);
             groupBox1.Controls.Add(buttonFreeEngine);
+            groupBox1.Controls.Add(buttonCancelOCR);
             groupBox1.Controls.Add(buttonPostFile);
             groupBox1.Controls.Add(textBoxApiAddress);
             groupBox1.Controls.Add(label8);
@@ -547,6 +563,17 @@
             buttonFreeEngine.Text = "释放OCR";
             buttonFreeEngine.UseVisualStyleBackColor = true;
             buttonFreeEngine.Click += buttonFreeEngine_Click;
+            //
+            // buttonCancelOCR
+            //
+            buttonCancelOCR.Enabled = false;
+            buttonCancelOCR.Location = new Point(825, 88);
+            buttonCancelOCR.Name = "buttonCancelOCR";
+            buttonCancelOCR.Size = new Size(109, 25);
+            buttonCancelOCR.TabIndex = 30;
+            buttonCancelOCR.Text = "取消任务";
+            buttonCancelOCR.UseVisualStyleBackColor = true;
+            buttonCancelOCR.Click += buttonCancelOCR_Click;
             // 
             // buttonPostFile
             // 
@@ -562,7 +589,7 @@
             // 
             textBoxApiAddress.Location = new Point(613, 89);
             textBoxApiAddress.Name = "textBoxApiAddress";
-            textBoxApiAddress.Size = new Size(321, 23);
+            textBoxApiAddress.Size = new Size(202, 23);
             textBoxApiAddress.TabIndex = 21;
             textBoxApiAddress.Text = "http://localhost:5000/OCRService/GetOCRFile";
             // 
@@ -837,6 +864,7 @@
             groupBoxAI.Controls.Add(textBoxOCRVLPrompt);
             groupBoxAI.Controls.Add(buttonOCRVLRec);
             groupBoxAI.Controls.Add(buttonOCRVLRecPDF);
+            groupBoxAI.Controls.Add(buttonOCRVLCancel);
             groupBoxAI.Location = new Point(524, 15);
             groupBoxAI.Name = "groupBoxAI";
             groupBoxAI.Size = new Size(542, 94);
@@ -867,9 +895,9 @@
             // 
             buttonOCRVLRec.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOCRVLRec.Enabled = false;
-            buttonOCRVLRec.Location = new Point(456, 22);
+            buttonOCRVLRec.Location = new Point(456, 18);
             buttonOCRVLRec.Name = "buttonOCRVLRec";
-            buttonOCRVLRec.Size = new Size(80, 29);
+            buttonOCRVLRec.Size = new Size(80, 23);
             buttonOCRVLRec.TabIndex = 8;
             buttonOCRVLRec.Text = "图片识别";
             buttonOCRVLRec.UseVisualStyleBackColor = true;
@@ -879,14 +907,26 @@
             // 
             buttonOCRVLRecPDF.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOCRVLRecPDF.Enabled = false;
-            buttonOCRVLRecPDF.Location = new Point(456, 59);
+            buttonOCRVLRecPDF.Location = new Point(456, 43);
             buttonOCRVLRecPDF.Name = "buttonOCRVLRecPDF";
-            buttonOCRVLRecPDF.Size = new Size(80, 29);
+            buttonOCRVLRecPDF.Size = new Size(80, 23);
             buttonOCRVLRecPDF.TabIndex = 9;
             buttonOCRVLRecPDF.Text = "PDF识别";
             buttonOCRVLRecPDF.UseVisualStyleBackColor = true;
             buttonOCRVLRecPDF.Click += buttonOCRVLRecPDF_Click;
-            // 
+            //
+            // buttonOCRVLCancel
+            //
+            buttonOCRVLCancel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonOCRVLCancel.Enabled = false;
+            buttonOCRVLCancel.Location = new Point(456, 68);
+            buttonOCRVLCancel.Name = "buttonOCRVLCancel";
+            buttonOCRVLCancel.Size = new Size(80, 20);
+            buttonOCRVLCancel.TabIndex = 20;
+            buttonOCRVLCancel.Text = "取消";
+            buttonOCRVLCancel.UseVisualStyleBackColor = true;
+            buttonOCRVLCancel.Click += buttonOCRVLCancel_Click;
+            //
             // buttonOCRVLFreeEngine
             // 
             buttonOCRVLFreeEngine.Enabled = false;
@@ -1025,6 +1065,7 @@
         private Button btnUVDocUpload;
         private Button btnUVDocInitialize;
         private Button btnUVDocProcess;
+        private Button btnUVDocCancel;
         private Button btnUVDocSave;
         private CheckBox chkUVDocUseGpu;
         private Label lblUVDocCpuThreads;
@@ -1037,6 +1078,7 @@
         private TabPage tabPageOCR;
         private GroupBox groupBox1;
         private Button buttonFreeEngine;
+        private Button buttonCancelOCR;
         private Button buttonPostFile;
         private TextBox textBoxApiAddress;
         private Label label8;
@@ -1074,6 +1116,7 @@
         private TextBox textBoxOCRVLResult;
         private GroupBox groupBoxOCRVLControl;
         private Button buttonOCRVLFreeEngine;
+        private Button buttonOCRVLCancel;
         private Button buttonOCRVLRecPDF;
         private Button buttonOCRVLRec;
         private Button buttonOCRVLInit;
