@@ -56,7 +56,6 @@
             tabPageOCR = new TabPage();
             splitContainerOCR = new SplitContainer();
             groupBoxOCRImage = new GroupBox();
-            pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             textBoxResult = new TextBox();
             groupBox1 = new GroupBox();
             chkUseTensorRT = new CheckBox();
@@ -89,7 +88,6 @@
             tabPageOCRVL = new TabPage();
             splitContainerOCRVL = new SplitContainer();
             groupBoxOCRVLImage = new GroupBox();
-            pictureBoxOCRVL = new WinFormsApp.UserControl.PictureView();
             textBoxOCRVLResult = new TextBox();
             groupBoxOCRVLControl = new GroupBox();
             groupBoxAI = new GroupBox();
@@ -123,8 +121,6 @@
             splitContainerOCR.Panel1.SuspendLayout();
             splitContainerOCR.Panel2.SuspendLayout();
             splitContainerOCR.SuspendLayout();
-            groupBoxOCRImage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
@@ -136,8 +132,6 @@
             splitContainerOCRVL.Panel1.SuspendLayout();
             splitContainerOCRVL.Panel2.SuspendLayout();
             splitContainerOCRVL.SuspendLayout();
-            groupBoxOCRVLImage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxOCRVL).BeginInit();
             groupBoxOCRVLControl.SuspendLayout();
             groupBoxAI.SuspendLayout();
             SuspendLayout();
@@ -260,7 +254,7 @@
             chkUVDocUseTensorRT.UseVisualStyleBackColor = true;
             // 
             // btnUVDocUpload
-            //
+            // 
             btnUVDocUpload.Enabled = false;
             btnUVDocUpload.Location = new Point(642, 22);
             btnUVDocUpload.Name = "btnUVDocUpload";
@@ -271,7 +265,7 @@
             btnUVDocUpload.Click += btnUVDocUpload_Click;
             // 
             // btnUVDocInitialize
-            //
+            // 
             btnUVDocInitialize.Location = new Point(556, 22);
             btnUVDocInitialize.Name = "btnUVDocInitialize";
             btnUVDocInitialize.Size = new Size(82, 28);
@@ -281,7 +275,7 @@
             btnUVDocInitialize.Click += btnUVDocInitialize_Click;
             // 
             // btnUVDocProcess
-            //
+            // 
             btnUVDocProcess.Enabled = false;
             btnUVDocProcess.Location = new Point(728, 22);
             btnUVDocProcess.Name = "btnUVDocProcess";
@@ -290,9 +284,9 @@
             btnUVDocProcess.Text = "开始矫正";
             btnUVDocProcess.UseVisualStyleBackColor = true;
             btnUVDocProcess.Click += btnUVDocProcess_Click;
-            //
+            // 
             // btnUVDocCancel
-            //
+            // 
             btnUVDocCancel.Enabled = false;
             btnUVDocCancel.Location = new Point(814, 22);
             btnUVDocCancel.Name = "btnUVDocCancel";
@@ -301,9 +295,9 @@
             btnUVDocCancel.Text = "取消";
             btnUVDocCancel.UseVisualStyleBackColor = true;
             btnUVDocCancel.Click += btnUVDocCancel_Click;
-            //
+            // 
             // btnUVDocFreeEngine
-            //
+            // 
             btnUVDocFreeEngine.Enabled = false;
             btnUVDocFreeEngine.Location = new Point(986, 22);
             btnUVDocFreeEngine.Name = "btnUVDocFreeEngine";
@@ -314,7 +308,7 @@
             btnUVDocFreeEngine.Click += btnUVDocFreeEngine_Click;
             // 
             // btnUVDocSave
-            //
+            // 
             btnUVDocSave.Enabled = false;
             btnUVDocSave.Location = new Point(900, 22);
             btnUVDocSave.Name = "btnUVDocSave";
@@ -430,7 +424,6 @@
             // 
             // groupBoxOCRImage
             // 
-            groupBoxOCRImage.Controls.Add(pictureBoxImg);
             groupBoxOCRImage.Dock = DockStyle.Fill;
             groupBoxOCRImage.Location = new Point(0, 0);
             groupBoxOCRImage.Name = "groupBoxOCRImage";
@@ -438,16 +431,6 @@
             groupBoxOCRImage.TabIndex = 7;
             groupBoxOCRImage.TabStop = false;
             groupBoxOCRImage.Text = "图片";
-            // 
-            // pictureBoxImg
-            // 
-            pictureBoxImg.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pictureBoxImg.Location = new Point(3, 19);
-            pictureBoxImg.Name = "pictureBoxImg";
-            pictureBoxImg.Size = new Size(512, 497);
-            pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxImg.TabIndex = 0;
-            pictureBoxImg.TabStop = false;
             // 
             // textBoxResult
             // 
@@ -563,11 +546,11 @@
             buttonFreeEngine.Text = "释放OCR";
             buttonFreeEngine.UseVisualStyleBackColor = true;
             buttonFreeEngine.Click += buttonFreeEngine_Click;
-            //
+            // 
             // buttonCancelOCR
-            //
+            // 
             buttonCancelOCR.Enabled = false;
-            buttonCancelOCR.Location = new Point(825, 88);
+            buttonCancelOCR.Location = new Point(380, 89);
             buttonCancelOCR.Name = "buttonCancelOCR";
             buttonCancelOCR.Size = new Size(109, 25);
             buttonCancelOCR.TabIndex = 30;
@@ -589,7 +572,7 @@
             // 
             textBoxApiAddress.Location = new Point(613, 89);
             textBoxApiAddress.Name = "textBoxApiAddress";
-            textBoxApiAddress.Size = new Size(202, 23);
+            textBoxApiAddress.Size = new Size(327, 23);
             textBoxApiAddress.TabIndex = 21;
             textBoxApiAddress.Text = "http://localhost:5000/OCRService/GetOCRFile";
             // 
@@ -623,11 +606,11 @@
             comboBoxModel.TabIndex = 18;
             comboBoxModel.SelectedIndexChanged += comboBoxModel_SelectedIndexChanged;
             // 
-            // buttonRecTable
+            // buttonRecStructure
             // 
             buttonRecStructure.Enabled = false;
             buttonRecStructure.Location = new Point(825, 58);
-            buttonRecStructure.Name = "buttonRecTable";
+            buttonRecStructure.Name = "buttonRecStructure";
             buttonRecStructure.Size = new Size(109, 25);
             buttonRecStructure.TabIndex = 17;
             buttonRecStructure.Text = "OCR版面识别";
@@ -811,7 +794,6 @@
             // 
             // groupBoxOCRVLImage
             // 
-            groupBoxOCRVLImage.Controls.Add(pictureBoxOCRVL);
             groupBoxOCRVLImage.Dock = DockStyle.Fill;
             groupBoxOCRVLImage.Location = new Point(0, 0);
             groupBoxOCRVLImage.Name = "groupBoxOCRVLImage";
@@ -819,16 +801,6 @@
             groupBoxOCRVLImage.TabIndex = 0;
             groupBoxOCRVLImage.TabStop = false;
             groupBoxOCRVLImage.Text = "图片预览";
-            // 
-            // pictureBoxOCRVL
-            // 
-            pictureBoxOCRVL.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pictureBoxOCRVL.Location = new Point(3, 19);
-            pictureBoxOCRVL.Name = "pictureBoxOCRVL";
-            pictureBoxOCRVL.Size = new Size(512, 471);
-            pictureBoxOCRVL.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxOCRVL.TabIndex = 0;
-            pictureBoxOCRVL.TabStop = false;
             // 
             // textBoxOCRVLResult
             // 
@@ -847,6 +819,7 @@
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLFreeEngine);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLInit);
             groupBoxOCRVLControl.Controls.Add(checkBoxOCRVLDocAnalysis);
+            groupBoxOCRVLControl.Controls.Add(buttonOCRVLCancel);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLBrowseConfig);
             groupBoxOCRVLControl.Controls.Add(textBoxOCRVLConfigPath);
             groupBoxOCRVLControl.Controls.Add(labelOCRVLConfigPath);
@@ -864,7 +837,6 @@
             groupBoxAI.Controls.Add(textBoxOCRVLPrompt);
             groupBoxAI.Controls.Add(buttonOCRVLRec);
             groupBoxAI.Controls.Add(buttonOCRVLRecPDF);
-            groupBoxAI.Controls.Add(buttonOCRVLCancel);
             groupBoxAI.Location = new Point(524, 15);
             groupBoxAI.Name = "groupBoxAI";
             groupBoxAI.Size = new Size(542, 94);
@@ -897,7 +869,7 @@
             buttonOCRVLRec.Enabled = false;
             buttonOCRVLRec.Location = new Point(456, 18);
             buttonOCRVLRec.Name = "buttonOCRVLRec";
-            buttonOCRVLRec.Size = new Size(80, 23);
+            buttonOCRVLRec.Size = new Size(80, 28);
             buttonOCRVLRec.TabIndex = 8;
             buttonOCRVLRec.Text = "图片识别";
             buttonOCRVLRec.UseVisualStyleBackColor = true;
@@ -907,30 +879,30 @@
             // 
             buttonOCRVLRecPDF.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOCRVLRecPDF.Enabled = false;
-            buttonOCRVLRecPDF.Location = new Point(456, 43);
+            buttonOCRVLRecPDF.Location = new Point(456, 62);
             buttonOCRVLRecPDF.Name = "buttonOCRVLRecPDF";
-            buttonOCRVLRecPDF.Size = new Size(80, 23);
+            buttonOCRVLRecPDF.Size = new Size(80, 26);
             buttonOCRVLRecPDF.TabIndex = 9;
             buttonOCRVLRecPDF.Text = "PDF识别";
             buttonOCRVLRecPDF.UseVisualStyleBackColor = true;
             buttonOCRVLRecPDF.Click += buttonOCRVLRecPDF_Click;
-            //
+            // 
             // buttonOCRVLCancel
-            //
+            // 
             buttonOCRVLCancel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             buttonOCRVLCancel.Enabled = false;
-            buttonOCRVLCancel.Location = new Point(456, 68);
+            buttonOCRVLCancel.Location = new Point(438, 65);
             buttonOCRVLCancel.Name = "buttonOCRVLCancel";
-            buttonOCRVLCancel.Size = new Size(80, 20);
+            buttonOCRVLCancel.Size = new Size(80, 31);
             buttonOCRVLCancel.TabIndex = 20;
             buttonOCRVLCancel.Text = "取消";
             buttonOCRVLCancel.UseVisualStyleBackColor = true;
             buttonOCRVLCancel.Click += buttonOCRVLCancel_Click;
-            //
+            // 
             // buttonOCRVLFreeEngine
             // 
             buttonOCRVLFreeEngine.Enabled = false;
-            buttonOCRVLFreeEngine.Location = new Point(438, 69);
+            buttonOCRVLFreeEngine.Location = new Point(352, 64);
             buttonOCRVLFreeEngine.Name = "buttonOCRVLFreeEngine";
             buttonOCRVLFreeEngine.Size = new Size(80, 32);
             buttonOCRVLFreeEngine.TabIndex = 10;
@@ -942,7 +914,7 @@
             // 
             buttonOCRVLInit.BackColor = Color.FromArgb(0, 192, 0);
             buttonOCRVLInit.ForeColor = Color.Transparent;
-            buttonOCRVLInit.Location = new Point(352, 70);
+            buttonOCRVLInit.Location = new Point(266, 65);
             buttonOCRVLInit.Name = "buttonOCRVLInit";
             buttonOCRVLInit.Size = new Size(80, 33);
             buttonOCRVLInit.TabIndex = 7;
@@ -1028,8 +1000,6 @@
             splitContainerOCR.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerOCR).EndInit();
             splitContainerOCR.ResumeLayout(false);
-            groupBoxOCRImage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).EndInit();
@@ -1043,8 +1013,6 @@
             splitContainerOCRVL.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerOCRVL).EndInit();
             splitContainerOCRVL.ResumeLayout(false);
-            groupBoxOCRVLImage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBoxOCRVL).EndInit();
             groupBoxOCRVLControl.ResumeLayout(false);
             groupBoxOCRVLControl.PerformLayout();
             groupBoxAI.ResumeLayout(false);

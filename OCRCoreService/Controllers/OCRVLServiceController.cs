@@ -86,7 +86,14 @@ namespace OCRCoreService.Controllers
                     return BadResult($"识别失败: {result.ErrorMsg}");
                 }
                 logger.LogInformation("OCR-VL Base64识别成功");
-                return OKResult(new { content = result.Content });
+                if (result.Code == 1)
+                {
+                    return OKResult(result.Content);
+                }
+                else
+                {
+                    return BadResult(result.ErrorMsg);
+                }
             }
             catch (Exception ex)
             {
@@ -132,7 +139,14 @@ namespace OCRCoreService.Controllers
                     return BadResult($"识别失败: {result.ErrorMsg}");
                 }
                 logger.LogInformation("OCR-VL文件识别成功");
-                return OKResult(new { content = result.Content });
+                if (result.Code == 1)
+                {
+                    return OKResult(result.Content);
+                }
+                else
+                {
+                    return BadResult(result.ErrorMsg);
+                }
             }
             catch (Exception ex)
             {
@@ -163,12 +177,7 @@ namespace OCRCoreService.Controllers
                 string layoutJson = ocrvlService.DetectLayoutBase64(request.Base64String);
                 LayoutDetectResult layoutResult = ocrvlService.ParseLayoutResult(layoutJson);
                 logger.LogInformation("DOC-VL Base64版面分析成功");
-                return OKResult(new
-                {
-                    content = layoutJson,
-                    markdown = layoutResult.Markdown,
-                    jsonText = layoutJson
-                });
+                return OKResult(layoutResult);
             }
             catch (Exception ex)
             {
@@ -205,12 +214,7 @@ namespace OCRCoreService.Controllers
                 string layoutJson = ocrvlService.DetectLayoutByte(imageData);
                 LayoutDetectResult layoutResult = ocrvlService.ParseLayoutResult(layoutJson);
                 logger.LogInformation("DOC-VL文件版面分析成功");
-                return OKResult(new
-                {
-                    content = layoutJson,
-                    markdown = layoutResult.Markdown,
-                    jsonText = layoutJson
-                });
+                return OKResult(layoutResult);
             }
             catch (Exception ex)
             {

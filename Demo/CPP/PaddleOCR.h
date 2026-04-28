@@ -19,181 +19,195 @@
 #include <include/AI_Parameter.h>
 #pragma comment(lib, "PaddleOCR.lib")
 
+#ifdef _WIN32
+#ifdef Paddle_Export
+#define Paddle_API __declspec(dllexport)
+#define CALL_CONV __stdcall
+#else
+#define Paddle_API __declspec(dllexport)
+#define CALL_CONV __stdcall
+#endif
+#else
+#define Paddle_API
+#define CALL_CONV
+#endif
+
 extern "C" {
     /// <summary>
-    /// 是否生成库内部日志，便于调试。
+    /// 是否生成日志
     /// </summary>
-    /// <param name="useLog">为 true 则开启日志，false 则关闭。</param>
-    __declspec(dllimport) void __stdcall EnableLog(bool useLog);
+    /// <param name="useLog"></param>
+    /// <returns></returns>
+    Paddle_API void CALL_CONV EnableLog(bool useLog);
+    /// <summary>
+    /// JSON输出是否使用ASCII编码，为true是返回Ascii编码
+    /// </summary>
+    /// <param name="useANSI"></param>
+    Paddle_API void CALL_CONV EnableASCIIResult(bool useASCII);
 
     /// <summary>
-    /// 控制返回 JSON 中是否将非 ASCII 字符转为 ASCII 编码（如 \uXXXX）。
+    /// 是否使用json格式返回结果，默认false
     /// </summary>
-    /// <param name="useASCII">为 true 时返回 ASCII 编码，否则返回原始 UTF-8 字符串。</param>
-    __declspec(dllimport) void __stdcall EnableASCIIResult(bool useASCII);
-
+    /// <param name="useANSI"></param>
+    Paddle_API void CALL_CONV EnableJsonResult(bool enable);
     /// <summary>
-    /// 设置库返回结果的格式是否为 JSON。默认值为 true（返回 JSON）。
-    /// </summary>
-    /// <param name="enable">为 true 则以 JSON 格式返回结果，false 则使用自定义文本格式。</param>
-    __declspec(dllimport) void __stdcall EnableJsonResult(bool enable);
-
-    /// <summary>
-    /// 获取上一次操作的错误信息。
-    /// </summary>
-    /// <returns>指向错误字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) char* __stdcall GetError();
-
-    // ==================== 文字识别API ====================
-
-    /// <summary>
-    /// 初始化 OCR 引擎并加载模型（传入结构体参数）。
-    /// </summary>
-    /// <param name="det_infer">文本检测模型的推理引擎文件路径（det）</param>
-    /// <param name="cls_infer">方向分类模型的推理文件路径（可选，cls）</param>
-    /// <param name="rec_infer">文本识别模型的推理文件路径（rec）</param>
-    /// <param name="parameter">OCR 参数结构体（见 AI_Parameter.h）</param>
-    /// <returns>初始化成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall Init(
-        const char* det_infer,
-        const char* cls_infer,
-        const char* rec_infer,
-        const OCRParameter parameter);
-
-    /// <summary>
-    /// 初始化 OCR 引擎并加载模型（传入 JSON 参数字符串）。
+    /// 初始化OCR引擎并加载模型（传入结构体参数）
     /// </summary>
     /// <param name="det_infer">文本检测模型路径</param>
     /// <param name="cls_infer">方向分类模型路径（可选）</param>
     /// <param name="rec_infer">文本识别模型路径</param>
-    /// <param name="parameterjson">JSON 格式的参数字符串</param>
-    /// <returns>初始化成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall Initjson(
-        const char* det_infer,
-        const char* cls_infer,
-        const char* rec_infer,
-        const char* parameterjson);
+    /// <param name="parameter">OCR参数结构体</param>
+    /// <returns>初始化成功返回true，失败返回false</returns>
+    Paddle_API bool CALL_CONV Init(const char* det_infer, const char* cls_infer,
+        const char* rec_infer, const OCRParameter parameter);
 
     /// <summary>
-    /// 使用同步参数动态初始化引擎，适用于运行时根据配置调整参数并重新初始化。
+    /// 初始化OCR引擎并加载模型（传入JSON参数字符串）
     /// </summary>
-    /// <param name="parameter">同步初始化参数结构体</param>
-    /// <returns>成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall DynamicInit(SyncParameter parameter);
+    /// <param name="det_infer">文本检测模型路径</param>
+    /// <param name="cls_infer">方向分类模型路径（可选）</param>
+    /// <param name="rec_infer">文本识别模型路径</param>
+    /// <param name="parameterjson">JSON格式的参数字符串</param>
+    /// <returns>初始化成功返回true，失败返回false</returns>
+    Paddle_API bool CALL_CONV Initjson(const char* det_infer, const char* cls_infer,
+        const char* rec_infer, const char* parameterjson);
 
     /// <summary>
-    /// 对输入图片文件执行 OCR 检测并返回结果字符串（JSON 或自定义格式）。
-    /// 返回值为库内部分配的缓冲区指针，调用者需使用 FreeResultBuffer 释放。
+    /// 使用同步参数动态初始化引擎（适用于运行时配置）
+    /// </summary>
+    /// <param name="parameter">同步初始化参数</param>
+    /// <returns>初始化成功返回true，失败返回false</returns>
+    Paddle_API bool CALL_CONV DynamicInit(SyncParameter parameter);
+
+    /// <summary>
+    /// 对输入图片文件执行OCR检测并返回结果字符串（JSON或自定义格式）
     /// </summary>
     /// <param name="imageFile">输入图片文件路径</param>
-    /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) const char* __stdcall Detect(const char* imageFile);
+    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
+    Paddle_API const char* CALL_CONV Detect(const char* imageFile);
 
     /// <summary>
-    /// 对输入 OpenCV `cv::Mat` 执行 OCR 检测并返回结果字符串。
-    /// 返回值为库内部分配的缓冲区指针，调用者需使用 FreeResultBuffer 释放。
+    /// 对输入OpenCV `cv::Mat` 执行OCR检测并返回结果字符串
     /// </summary>
-    /// <param name="cvmat">输入的 OpenCV Mat 引用</param>
-    /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) const char* __stdcall DetectMat(const cv::Mat& cvmat);
+    /// <param name="cvmat">输入的OpenCV Mat引用</param>
+    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
+    Paddle_API const char* CALL_CONV DetectMat(const cv::Mat& cvmat);
 
     /// <summary>
-    /// 对输入图片字节数组执行 OCR 检测并返回结果字符串。
-    /// 返回值为库内部分配的缓冲区指针，调用者需使用 FreeResultBuffer 释放。
+    /// 对输入图片字节数组执行OCR检测并返回结果字符串
     /// </summary>
     /// <param name="imagebytedata">图片字节数组指针</param>
     /// <param name="size">字节数组长度（字节数）</param>
-    /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) const char* __stdcall DetectByte(const unsigned char* imagebytedata, size_t size);
+    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
+    Paddle_API const char* CALL_CONV DetectByte(const unsigned char* imagebytedata,
+        size_t size);
 
     /// <summary>
-    /// 对 Base64 编码的图片字符串执行 OCR 检测并返回结果字符串。
-    /// 返回值为库内部分配的缓冲区指针，调用者需使用 FreeResultBuffer 释放。
+    /// 对Base64编码的图片字符串执行OCR检测并返回结果字符串
     /// </summary>
-    /// <param name="imagebase64">Base64 编码的图片字符串</param>
-    /// <returns>指向结果字符串的指针（UTF-8），失败时可能返回 NULL。</returns>
-    __declspec(dllimport) const char* __stdcall DetectBase64(const char* imagebase64);
+    /// <param name="imagebase64">Base64编码的图片字符串</param>
+    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
+    Paddle_API const char* CALL_CONV DetectBase64(const char* imagebase64);
+
 
     /// <summary>
-    /// 对内存截图执行OCR检测并返回结果字符串。
+    /// 对内存截图执行OCR检测并返回结果字符串
     /// </summary>
     /// <param name="data">内存截图数据指针</param>
     /// <param name="size">内存截图数据长度（字节数）</param>
-    /// <returns>返回指向结果字符串的指针（内部分配，使用 FreeResultBuffer 释放）。</returns>
-    __declspec(dllimport) const char* __stdcall DetectScreenShot(unsigned char* data, int size);
+    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
+    Paddle_API const char* CALL_CONV DetectScreenShot(unsigned char* data, int size);
 
     /// <summary>
-    /// 释放并关闭 OCR 引擎，释放所有相关资源。
+    /// 释放并关闭OCR引擎，释放所有相关资源
     /// </summary>
-    /// <returns>成功返回 0，失败返回非 0。</returns>
-    __declspec(dllimport) int __stdcall FreeEngine();
+    /// <returns>成功返回0，失败返回非0</returns>
+    Paddle_API int CALL_CONV FreeEngine();
 
     /// <summary>
-    /// 释放由 Detect* / GetError 等函数返回的字符串缓冲区（跨平台安全）。
+    /// 获取上一次操作的错误信息（调用者负责使用FreeResultBuffer释放返回的缓冲区）
+    /// </summary>
+    /// <returns>指向错误字符串的指针</returns>
+    Paddle_API char* CALL_CONV GetError();
+
+    /// <summary>
+    /// 释放由 Detect* 函数返回的字符串缓冲区（跨平台安全）
     /// </summary>
     /// <param name="buffer">由 Detect 系列函数返回的指针</param>
-    __declspec(dllimport) void __stdcall FreeResultBuffer(void* buffer);
+    Paddle_API void CALL_CONV FreeResultBuffer(void* buffer);
 
     // ==================== 文档图像矫正API ====================
-
     /// <summary>
-    /// 初始化文本图像矫正模块，传入参数结构体。
+    /// 初始化文本图像矫正模块-传入参数结构体
     /// </summary>
-    /// <param name="uvdoc_infer">UVDoc 模型路径</param>
-    /// <param name="uvdocpara">UVDoc 参数结构体</param>
-    /// <returns>成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall InitUVDoc(const char* uvdoc_infer, UVDocParameter uvdocpara);
+    /// <param name="uvdoc_infer">UVDoc模型路径</param>
+    /// <param name="uvdocpara">参数结构体</param>
+    /// <returns>成功返回true，失败返回false</returns>
+    Paddle_API bool CALL_CONV InitUVDoc(const char* uvdoc_infer, UVDocParameter uvdocpara);
 
     /// <summary>
-    /// 初始化文本图像矫正模块，传入 JSON 参数字符串。
+    /// 初始化文本图像矫正模块-传入JSON参数
     /// </summary>
-    /// <param name="uvdoc_infer">UVDoc 模型路径</param>
-    /// <param name="parjson">JSON 参数字符串</param>
-    /// <returns>成功返回 true，失败返回 false。</returns>
-    __declspec(dllimport) bool __stdcall InitUVDocjson(const char* uvdoc_infer, const char* parjson);
+    /// <param name="uvdoc_infer">UVDoc模型路径</param>
+    /// <param name="parjson">json参数字符串</param>
+    /// <returns>成功返回true，失败返回false</returns>
+    Paddle_API bool CALL_CONV InitUVDocjson(const char* uvdoc_infer, const char* parjson);
 
     /// <summary>
-    /// 文本图像矫正：传入图像文件路径并输出到指定路径。
+    /// 文本图像矫正-传入图像文件路径
     /// </summary>
     /// <param name="filename">输入文件路径</param>
     /// <param name="outputfilepath">输出文件路径</param>
-    __declspec(dllimport) void __stdcall UVDocImageFile(const char* filename, const char* outputfilepath);
+    Paddle_API void CALL_CONV UVDocImageFile(const char* filename, const char* outputfilepath);
 
     /// <summary>
-    /// 文本图像矫正：传入 OpenCV Mat 指针并输出到指定路径（输出路径必须指定）。
+    /// 文本图像矫正-传入OpenCV Mat指针
     /// </summary>
-    /// <param name="cvmat">OpenCV Mat 指针</param>
-    /// <param name="outputfilepath">输出文件路径（必须）</param>
-    __declspec(dllimport) void __stdcall UVDocMat(void* cvmat, const char* outputfilepath);
+    /// <param name="cvmat">OpenCV Mat指针</param>
+    /// <param name="outputfilepath">输出文件路径(必须)</param>
+    Paddle_API void CALL_CONV UVDocMat(void* cvmat, const char* outputfilepath);
 
     /// <summary>
-    /// 文本图像矫正：传入图片字节数组并输出到指定路径（输出路径必须指定）。
+    /// 文本图像矫正-传入图片字节数组
     /// </summary>
     /// <param name="imagebyte">图片字节数组</param>
     /// <param name="size">字节数组大小</param>
-    /// <param name="outputfilepath">输出文件路径（必须）</param>
-    __declspec(dllimport) void __stdcall UVDocByte(const unsigned char* imagebyte, long long size, const char* outputfilepath);
+    /// <param name="outputfilepath">输出文件路径(必须)</param>
+    Paddle_API void CALL_CONV UVDocByte(const unsigned char* imagebyte, long long size, const char* outputfilepath);
 
     /// <summary>
-    /// 文本图像矫正：传入 Base64 编码的图片并输出到指定路径（输出路径必须指定）。
+    /// 文本图像矫正-传入Base64编码的图片
     /// </summary>
-    /// <param name="base64">Base64 编码字符串</param>
-    /// <param name="outputfilepath">输出文件路径（必须）</param>
-    __declspec(dllimport) void __stdcall UVDocBase64(const char* base64, const char* outputfilepath);
+    /// <param name="base64">Base64编码字符串</param>
+    /// <param name="outputfilepath">输出文件路径(必须)</param>
+    Paddle_API void CALL_CONV UVDocBase64(const char* base64, const char* outputfilepath);
 
     /// <summary>
-    /// 释放文本图像矫正实例并回收资源。
+    /// 释放文本图像矫正实例
     /// </summary>
-    /// <returns>成功返回 0，失败返回 -1。</returns>
-    __declspec(dllimport) int __stdcall FreeUVDocEngine();
+    /// <returns>成功返回0，失败返回-1</returns>
+    Paddle_API int CALL_CONV FreeUVDocEngine();
 
-    // ==================== 版面结构识别API ====================
+    // ==================== 扩展的版面结构识别API (支持20类文档元素) ====================
+    // 包含：文档预处理、版面检测、全局OCR、条件识别(表格/公式/印章/图表)、结果融合、版面排序
 
     /// <summary>
-    /// 初始化结构化文档识别引擎（扩展版本）。
-    /// 支持版面检测、表格识别、公式识别、印章识别、图表转表等。
+    /// 初始化结构化文档识别引擎（扩展版本）
+    /// 支持20类文档元素识别：版面检测、表格识别、公式识别、印章识别、图表转表等
     /// </summary>
-    __declspec(dllimport) bool __stdcall InitStructure(
+    /// <param name="det_infer">文本检测模型路径</param>
+    /// <param name="cls_infer">文本行方向分类模型路径(可选，NULL表示不使用)</param>
+    /// <param name="rec_infer">文本识别模型路径</param>
+    /// <param name="layout_model_dir">版面分析模型目录路径</param>
+    /// <param name="table_model_dir">表格识别模型目录路径</param>
+    /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
+    /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
+    /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
+    /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
+    /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
+    /// <param name="parameter">LayoutParameter参数结构体（值传递，参考Init中OCRParameter的模式）</param>
+    /// <returns>初始化成功返回true，失败返回false</returns>
+    Paddle_API bool CALL_CONV InitStructure(
         const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
@@ -204,12 +218,13 @@ extern "C" {
         const char* chart_model_dir,
         const char* doc_cls_infer,
         const char* doc_unwarp_model,
-        const LayoutParameter parameter);
+        const LayoutParameter parameter
+    );
 
     /// <summary>
-    /// 初始化结构化文档识别引擎（JSON 参数版本）。
+    /// 初始化结构化文档识别引擎（JSON参数版本）
     /// </summary>
-    __declspec(dllimport) bool __stdcall InitStructurejson(
+    Paddle_API bool CALL_CONV InitStructurejson(
         const char* det_infer,
         const char* cls_infer,
         const char* rec_infer,
@@ -220,47 +235,46 @@ extern "C" {
         const char* chart_model_dir,
         const char* doc_cls_infer,
         const char* doc_unwarp_model,
-        const char* parameterjson);
+        const char* parameterjson
+    );
 
     /// <summary>
-    /// 执行文档版面分析（文件路径输入）。
+    /// 执行文档版面分析（扩展版本）
+    /// 包含：文档预处理→版面检测→全局OCR→条件识别(表格/公式/印章/图表)→结果融合→版面排序
+    /// 返回包含20类文档元素识别结果的JSON
     /// </summary>
-    __declspec(dllimport) const char* __stdcall DetectLayout(const char* imageFile);
+    /// <param name="imageFile">输入图片文件路径</param>
+    /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+    Paddle_API const char* CALL_CONV DetectLayout(const char* imageFile);
 
     /// <summary>
-    /// 执行文档版面分析（OpenCV Mat 输入）。
+    /// 执行文档版面分析 - OpenCV Mat输入
     /// </summary>
-    __declspec(dllimport) const char* __stdcall DetectLayoutMat(const cv::Mat& cvmat);
+    /// <param name="cvmat">OpenCV Mat引用</param>
+    /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+    Paddle_API const char* CALL_CONV DetectLayoutMat(const cv::Mat& cvmat);
 
     /// <summary>
-    /// 执行文档版面分析（字节数组输入）。
+    /// 执行文档版面分析 - 字节数组输入
     /// </summary>
-    __declspec(dllimport) const char* __stdcall DetectLayoutByte(const unsigned char* imagebytedata, size_t size);
+    /// <param name="imagebytedata">图片字节数组指针</param>
+    /// <param name="size">字节数组长度(字节数)</param>
+    /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+    Paddle_API const char* CALL_CONV DetectLayoutByte(
+        const unsigned char* imagebytedata,
+        size_t size
+    );
 
     /// <summary>
-    /// 执行文档版面分析（Base64 输入）。
+    /// 执行文档版面分析 - Base64编码输入
     /// </summary>
-    __declspec(dllimport) const char* __stdcall DetectLayoutBase64(const char* imagebase64);
+    /// <param name="imagebase64">Base64编码的图片字符串</param>
+    /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+    Paddle_API const char* CALL_CONV DetectLayoutBase64(const char* imagebase64);
 
     /// <summary>
-    /// 释放文档版面分析引擎及所有相关资源。
+    /// 释放文档版面分析引擎及所有相关资源
     /// </summary>
-    /// <returns>成功返回 0，失败返回非 0。</returns>
-    __declspec(dllimport) int __stdcall FreeStructureEngine();
-        /// <summary>
-    /// 以图找图：在大图中查找小图，返回JSON字符串
-    /// </summary>
-    /// <param name="bigImagePath">大图路径</param>
-    /// <param name="smallImagePath">小图路径</param>
-    /// <param name="threshold">匹配阈值 [0, 1]，默认0.8</param>
-    /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
-    /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false，滑块找图请将threshold改为0.2左右</param>
-    /// <returns></returns>
-
-    __declspec(dllimport) const char* __stdcall FindImage(
-        const char* bigImagePath,
-        const char* smallImagePath,
-        double threshold = 0.8,
-        bool toGray = true,
-        bool useSlideMatch = false);
+    /// <returns>成功返回0，失败返回非0</returns>
+    Paddle_API int CALL_CONV FreeStructureEngine();
 }

@@ -131,8 +131,8 @@ namespace WinFormsApp.Services
             oCRParameter.enable_mkldnn = enable_mkldnn;
             oCRParameter.visualize = visualize;
 
-            oCRParameter.use_doc_preprocessor = false;
-            oCRParameter.use_doc_orientation_classify = false;
+            oCRParameter.use_doc_preprocessor = true;
+            oCRParameter.use_doc_orientation_classify = true;
             oCRParameter.use_doc_unwarping = false;
 
             oCRParameter.use_layout_detection = true;
@@ -147,9 +147,9 @@ namespace WinFormsApp.Services
             oCRParameter.max_side_len = 960;
 
             oCRParameter.use_table_recognition = true;
-            oCRParameter.use_seal_recognition = false;
-            oCRParameter.use_formula_recognition = false;
-            oCRParameter.use_chart_recognition = false;
+            oCRParameter.use_seal_recognition = true;
+            oCRParameter.use_formula_recognition = true;
+            oCRParameter.use_chart_recognition = true;
 
             oCRParameter.format_block_content = false;
             oCRParameter.output_markdown = true;

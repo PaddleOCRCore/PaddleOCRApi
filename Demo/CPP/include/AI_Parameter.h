@@ -64,43 +64,51 @@ struct OCRParameter
 /// </summary>
 struct LayoutParameter
 {
-	// 基础运行参数
-	bool use_gpu = false;
-	int gpu_id = 0;
-	int gpu_mem = 500;
-	bool use_tensorrt = false;
-	int cpu_mem = 0;
-	int cpu_threads = 8;
-	bool enable_mkldnn = true;
-	bool visualize = false;
+	// 基础运行参数（与 Init/Initjson 保持一致）
+	bool use_gpu = false;                    // 是否使用GPU推理；false时走CPU
+	int gpu_id = 0;                          // GPU设备编号（use_gpu=true时生效）
+	int gpu_mem = 500;                       // GPU显存上限（MB，供推理引擎分配参考）
+	bool use_tensorrt = false;               // 是否启用TensorRT加速（通常需GPU）
+	int cpu_mem = 0;                         // CPU内存阈值（MB，0表示不限制）
+	int cpu_threads = 30;                    // CPU推理线程数
+	bool enable_mkldnn = true;               // CPU场景是否启用MKLDNN加速
+	bool visualize = false;                  // 是否输出可视化结果图
 
 	// 文档预处理参数
-	bool use_doc_preprocessor = false;
-	bool use_doc_orientation_classify = false;
-	bool use_doc_unwarping = false;
+	bool use_doc_preprocessor = false;       // 是否启用文档预处理总开关
+	bool use_doc_orientation_classify = false; // 文档方向分类开关（0/90/180/270）
+	bool use_doc_unwarping = false;          // 文档去畸变/展平开关
 
 	// 版面检测参数
-	bool use_layout_detection = true;
-	bool layout_nms = true;
-	float layout_unclip_ratio_w = 1.0f;
-	float layout_unclip_ratio_h = 1.0f;
+	bool use_layout_detection = true;        // 是否执行版面检测；false时不产出版面框
+	float layout_threshold = 0.5f;           // 版面检测全局阈值（初始化可传入）
+	bool layout_nms = true;                  // 版面框后处理NMS开关
+	float layout_unclip_ratio_w = 1.0f;      // 版面框宽度扩张系数
+	float layout_unclip_ratio_h = 1.0f;      // 版面框高度扩张系数
 
 	// OCR参数
-	bool run_ocr_after_layout = true;
-	float text_det_thresh = 0.3f;
-	float text_rec_score_thresh = 0.5f;
-	bool use_textline_orientation = true;
-	int max_side_len = 960;
+	bool run_ocr_after_layout = true;        // 是否执行整图OCR（供版面块文本融合使用）
+	float text_det_thresh = 0.3f;            // OCR检测阈值（越高召回越低、精度通常更高）
+	float text_rec_score_thresh = 0.5f;      // OCR识别分数阈值（低于该值的文本会被过滤）
+	bool use_textline_orientation = true;    // 文本行方向分类开关
+	int max_side_len = 960;                  // OCR检测缩放最大长边限制
+	// int text_det_limit_type = 1;             // OCR检测的图像边长限制类型: 0=min, 1=max min表示保证图像最短边不小于limit_side_len,max表示保证图像最长边不大于limit_side_len
 
-	// 条件识别参数
-	bool use_table_recognition = true;
-	bool use_seal_recognition = false;
-	bool use_formula_recognition = true;
-	bool use_chart_recognition = false;
+	// 条件识别参数,run_ocr_after_layout=true时才生效
+	bool use_table_recognition = true;       // 是否启用表格结构识别    
+	bool use_seal_recognition = false;       // 是否启用印章识别    
+	bool use_formula_recognition = true;     // 是否启用公式识别（输出LaTeX）    
+	bool use_chart_recognition = false;      // 是否启用图表转表识别
+	int seal_det_limit_side_len = 736;       // 印章检测限边长
+	int seal_det_limit_type = 0;             // 印章检测限边方式: 0=min, 1=max
+	float seal_det_thresh = 0.2f;            // 印章检测阈值
+	float seal_det_box_thresh = 0.6f;        // 印章检测框阈值
+	float seal_det_unclip_ratio = 0.5f;      // 印章检测扩框系数
+	float seal_rec_score_thresh = 0.0f;      // 印章识别分数阈值
 
 	// 输出参数
-	bool format_block_content = false;
-	bool output_markdown = true;
+	bool format_block_content = false;       // block_content是否按可读格式输出（如Markdown片段）
+	bool output_markdown = true;            // 是否在DetectLayout返回的JSON中附带markdown字段
 };
 /// <summary>
 /// OCR动态修改参数

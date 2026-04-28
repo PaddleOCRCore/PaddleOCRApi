@@ -66,6 +66,11 @@ int main() {
 
     string layout_model_dir = "models/PP-DocLayoutV2_infer";
     string table_model_dir = "models/PP-SLANet_plus_infer";
+    string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";//文档图像方向分类模块
+    string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
+    string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
+    string chart_model_dir = "PP-Chart2Table";//图表转表模型        
+    string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
 
     OCRParameter ocr_param;
     ocr_param.use_gpu = false;
@@ -140,11 +145,11 @@ int main() {
         rec_infer.c_str(),
         layout_model_dir.c_str(),
         table_model_dir.c_str(),
-        nullptr,  // formula_model_dir
-        nullptr,  // seal_model_dir
-        nullptr,  // chart_model_dir
-        nullptr,  // doc_cls_infer
-        nullptr,  // doc_unwarp_model
+        formula_model_dir.c_str(),  // formula_model_dir
+        seal_model_dir.c_str(),  // seal_model_dir
+        chart_model_dir.c_str(),  // chart_model_dir
+        doc_cls_infer.c_str(),  // doc_cls_infer
+        doc_unwarp_model.c_str(),  // doc_unwarp_model
         layout_param)) {
         cerr << "InitStructure failed: " << GetLastErrorAndFree() << endl;
     } else {
