@@ -17,14 +17,22 @@ namespace WinFormsApp.UserControl
 
         private void InitPictureView()
         {
+            SetStyle(ControlStyles.Selectable, true);
             this.Location = new Point(0, 0);
-            this.Dock = DockStyle.None;
+            PrepareZoomLayout();
             this.SizeMode = PictureBoxSizeMode.Zoom;
             this.MouseDown += PictureView_MouseDown;
             this.MouseUp += PictureView_MouseUp;
             this.MouseMove += PictureView_MouseMove;
+            this.MouseEnter += PictureView_MouseEnter;
             this.MouseDoubleClick += PictureView_MouseDoubleClick;
             this.MouseWheel += PictureView_MouseWheel;
+        }
+
+        private void PrepareZoomLayout()
+        {
+            this.Dock = DockStyle.None;
+            this.Anchor = AnchorStyles.Top | AnchorStyles.Left;
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -34,9 +42,12 @@ namespace WinFormsApp.UserControl
             {
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    this.Size = this.Parent?.Size ?? this.Size;
+                    PrepareZoomLayout();
+                    this.Size = this.Parent?.ClientSize ?? this.Size;
                     this.Location = new Point(0, 0);
+                    Image? oldImage = this.Image;
                     this.Image = ImageTools.LoadImage(value);
+                    oldImage?.Dispose();
                     if (!parentEventAttached && this.Parent != null)
                     {
                         parentEventAttached = true;
@@ -46,12 +57,20 @@ namespace WinFormsApp.UserControl
             }
         }
 
-        private void Parent_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void PictureView_MouseEnter(object? sender, EventArgs e)
+        {
+            if (this.CanFocus)
+            {
+                this.Focus();
+            }
+        }
+
+        private void Parent_MouseDoubleClick(object? sender, MouseEventArgs e)
         {
             ResetView();
         }
 
-        private void PictureView_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void PictureView_MouseDoubleClick(object? sender, MouseEventArgs e)
         {
             ResetView();
         }
@@ -60,14 +79,19 @@ namespace WinFormsApp.UserControl
         {
             if (this.Image == null || this.Parent == null)
                 return;
-            this.Size = this.Parent.Size;
+            PrepareZoomLayout();
+            this.Size = this.Parent.ClientSize;
             this.Location = new Point(0, 0);
         }
 
-        private void PictureView_MouseDown(object sender, MouseEventArgs e)
+        private void PictureView_MouseDown(object? sender, MouseEventArgs e)
         {
             if (this.Image == null)
                 return;
+            if (this.CanFocus)
+            {
+                this.Focus();
+            }
             if (e.Button == MouseButtons.Left)
             {
                 dragging = true;
@@ -76,7 +100,7 @@ namespace WinFormsApp.UserControl
             }
         }
 
-        private void PictureView_MouseUp(object sender, MouseEventArgs e)
+        private void PictureView_MouseUp(object? sender, MouseEventArgs e)
         {
             if (this.Image == null)
                 return;
@@ -86,7 +110,7 @@ namespace WinFormsApp.UserControl
             }
         }
 
-        private void PictureView_MouseMove(object sender, MouseEventArgs e)
+        private void PictureView_MouseMove(object? sender, MouseEventArgs e)
         {
             if (this.Image == null || !dragging)
                 return;
@@ -96,11 +120,12 @@ namespace WinFormsApp.UserControl
             this.Location = new Point(dragStartLocation.X + offsetX, dragStartLocation.Y + offsetY);
         }
 
-        private void PictureView_MouseWheel(object sender, MouseEventArgs e)
+        private void PictureView_MouseWheel(object? sender, MouseEventArgs e)
         {
             if (this.Image == null)
                 return;
 
+            PrepareZoomLayout();
             int zoomStep = Math.Max(this.Width, this.Height) / 10;
             if (zoomStep < 1) zoomStep = 1;
 

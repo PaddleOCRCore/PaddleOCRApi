@@ -147,9 +147,9 @@ namespace WinFormsApp.Services
             oCRParameter.max_side_len = 960;
 
             oCRParameter.use_table_recognition = true;
-            oCRParameter.use_seal_recognition = false;
-            oCRParameter.use_formula_recognition = false;
-            oCRParameter.use_chart_recognition = false;
+            oCRParameter.use_seal_recognition = true;
+            oCRParameter.use_formula_recognition = true;
+            oCRParameter.use_chart_recognition = true;
 
             oCRParameter.format_block_content = false;
             oCRParameter.output_markdown = true;

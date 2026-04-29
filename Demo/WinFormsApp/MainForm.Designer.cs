@@ -439,7 +439,6 @@
             // 
             pictureBoxImg.BackColor = Color.FromArgb(240, 240, 240);
             pictureBoxImg.BorderStyle = BorderStyle.FixedSingle;
-            pictureBoxImg.Dock = DockStyle.Fill;
             pictureBoxImg.Location = new Point(3, 19);
             pictureBoxImg.Name = "pictureBoxImg";
             pictureBoxImg.Size = new Size(512, 497);
@@ -822,7 +821,6 @@
             // 
             pictureBoxOCRVL.BackColor = Color.FromArgb(240, 240, 240);
             pictureBoxOCRVL.BorderStyle = BorderStyle.FixedSingle;
-            pictureBoxOCRVL.Dock = DockStyle.Fill;
             pictureBoxOCRVL.Location = new Point(3, 19);
             pictureBoxOCRVL.Name = "pictureBoxOCRVL";
             pictureBoxOCRVL.Size = new Size(512, 471);
