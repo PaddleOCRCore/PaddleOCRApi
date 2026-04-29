@@ -134,6 +134,21 @@ namespace WinFormsApp
             }
         }
 
+        private static string? ResolveExistingImagePath(string? imagePath)
+        {
+            if (string.IsNullOrWhiteSpace(imagePath))
+            {
+                return null;
+            }
+
+            string fullPath = Path.IsPathRooted(imagePath)
+                ? imagePath
+                : Path.Combine(Application.StartupPath, imagePath);
+
+            fullPath = Path.GetFullPath(fullPath);
+            return File.Exists(fullPath) ? fullPath : null;
+        }
+
         public void LogMessage(string infoValue)
         {
             if (InvokeRequired)
@@ -551,11 +566,21 @@ namespace WinFormsApp
                 string result = await RecOCRFromPDFAsync(filePath, cancellationToken);
                 if (!string.IsNullOrEmpty(result))
                 {
-                    string uploadFileName = Path.GetFileNameWithoutExtension(filePath) + "_page1.png";
-                    string recFileName = Path.Combine(RecFilepath, uploadFileName);
-                    if (File.Exists(recFileName))
+                    
+                    LayoutDetectResult layoutResult = ocrService.ParseLayoutResult(result);
+                    string? resultPath = ResolveExistingImagePath(layoutResult.VisPath);
+                    if (!string.IsNullOrEmpty(resultPath))
                     {
-                        pictureBoxImg.ImgPath = recFileName;
+                        pictureBoxImg.ImgPath = resultPath;
+                    }
+                    else
+                    {
+                        string uploadFileName = Path.GetFileNameWithoutExtension(filePath) + "_page1.png";
+                        string recFileName = Path.Combine(RecFilepath, uploadFileName);
+                        if (File.Exists(recFileName))
+                        {
+                            pictureBoxImg.ImgPath = recFileName;
+                        }
                     }
                 }
             }
@@ -616,9 +641,10 @@ namespace WinFormsApp
                     try
                     {
                         LayoutDetectResult layoutResult = ocrService.ParseLayoutResult(result);
-                        if (!string.IsNullOrEmpty(layoutResult.VisPath))
+                        string? resultPath = ResolveExistingImagePath(layoutResult.VisPath);
+                        if (!string.IsNullOrEmpty(resultPath))
                         {
-                            pictureBoxImg.ImgPath = layoutResult.VisPath;
+                            pictureBoxImg.ImgPath = resultPath;
                         }
                         else if (File.Exists(filePath))
                         {
@@ -1023,13 +1049,14 @@ namespace WinFormsApp
                 string result = builder.ToString().Trim();
                 LogOCRVLMessage(result);
                 LogOCRVLMessage("===============================================");
-                if (!string.IsNullOrEmpty(layoutResult.VisPath))
+                string? resultPath = ResolveExistingImagePath(layoutResult.VisPath);
+                if (!string.IsNullOrEmpty(resultPath))
                 {
-                    pictureBoxImg.ImgPath = layoutResult.VisPath;
+                    pictureBoxOCRVL.ImgPath = resultPath;
                 }
                 else if (File.Exists(filePath))
                 {
-                    pictureBoxImg.ImgPath = filePath;
+                    pictureBoxOCRVL.ImgPath = filePath;
                 }
                 return result;
             }
@@ -1105,7 +1132,7 @@ namespace WinFormsApp
         {
             UpdateOCRVLPromptState();
             UpdateOCRVLStatus(checkBoxOCRVLDocAnalysis.Checked
-                ? "已启用版面分析，识别后优先预览 output/layout_overlay_page_0.png"
+                ? "已启用版面分析，识别后优先预览 output/xxx.png"
                 : "已切换为普通 OCR-VL 模式");
         }
 

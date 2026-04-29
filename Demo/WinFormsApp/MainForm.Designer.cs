@@ -56,6 +56,7 @@
             tabPageOCR = new TabPage();
             splitContainerOCR = new SplitContainer();
             groupBoxOCRImage = new GroupBox();
+            pictureBoxImg = new UserControl.PictureView();
             textBoxResult = new TextBox();
             groupBox1 = new GroupBox();
             chkUseTensorRT = new CheckBox();
@@ -88,6 +89,7 @@
             tabPageOCRVL = new TabPage();
             splitContainerOCRVL = new SplitContainer();
             groupBoxOCRVLImage = new GroupBox();
+            pictureBoxOCRVL = new UserControl.PictureView();
             textBoxOCRVLResult = new TextBox();
             groupBoxOCRVLControl = new GroupBox();
             groupBoxAI = new GroupBox();
@@ -424,6 +426,7 @@
             // 
             // groupBoxOCRImage
             // 
+            groupBoxOCRImage.Controls.Add(pictureBoxImg);
             groupBoxOCRImage.Dock = DockStyle.Fill;
             groupBoxOCRImage.Location = new Point(0, 0);
             groupBoxOCRImage.Name = "groupBoxOCRImage";
@@ -431,6 +434,18 @@
             groupBoxOCRImage.TabIndex = 7;
             groupBoxOCRImage.TabStop = false;
             groupBoxOCRImage.Text = "图片";
+            // 
+            // pictureBoxImg
+            // 
+            pictureBoxImg.BackColor = Color.FromArgb(240, 240, 240);
+            pictureBoxImg.BorderStyle = BorderStyle.FixedSingle;
+            pictureBoxImg.Dock = DockStyle.Fill;
+            pictureBoxImg.Location = new Point(3, 19);
+            pictureBoxImg.Name = "pictureBoxImg";
+            pictureBoxImg.Size = new Size(512, 497);
+            pictureBoxImg.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxImg.TabIndex = 0;
+            pictureBoxImg.TabStop = false;
             // 
             // textBoxResult
             // 
@@ -794,6 +809,7 @@
             // 
             // groupBoxOCRVLImage
             // 
+            groupBoxOCRVLImage.Controls.Add(pictureBoxOCRVL);
             groupBoxOCRVLImage.Dock = DockStyle.Fill;
             groupBoxOCRVLImage.Location = new Point(0, 0);
             groupBoxOCRVLImage.Name = "groupBoxOCRVLImage";
@@ -801,6 +817,18 @@
             groupBoxOCRVLImage.TabIndex = 0;
             groupBoxOCRVLImage.TabStop = false;
             groupBoxOCRVLImage.Text = "图片预览";
+            // 
+            // pictureBoxOCRVL
+            // 
+            pictureBoxOCRVL.BackColor = Color.FromArgb(240, 240, 240);
+            pictureBoxOCRVL.BorderStyle = BorderStyle.FixedSingle;
+            pictureBoxOCRVL.Dock = DockStyle.Fill;
+            pictureBoxOCRVL.Location = new Point(3, 19);
+            pictureBoxOCRVL.Name = "pictureBoxOCRVL";
+            pictureBoxOCRVL.Size = new Size(512, 471);
+            pictureBoxOCRVL.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxOCRVL.TabIndex = 0;
+            pictureBoxOCRVL.TabStop = false;
             // 
             // textBoxOCRVLResult
             // 
