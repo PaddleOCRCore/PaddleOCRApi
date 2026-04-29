@@ -160,7 +160,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | cls_model_dir                | -      | 方向分类器inference model地址                                                            |
 | rec_infer                    | -      | 文字识别模型inference model地址                                                          |
 | table_model_dir              | -      | 表格识别模型inference model地址                                                          |
-| 通用参数                 | --     | -- |
+| 通用参数                      | --     | -- |
 | det                          | true   | 是否执行文字检测                                                                         |
 | rec                          | true   | 是否执行文字识别                                                                         |
 | cls                          | false  | 是否执行文字方向分类                                                                     |
@@ -169,7 +169,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | gpu_mem                      | 4000   | 使用GPU时内存                                                                            |
 | use_tensorrt                 | false  | 使用GPU预测时，是否启动tensorrt                                                          |
 | cpu_mem                      | 4000   | CPU内存占用上限，单位MB。-1表示不限制                                                    |
-| cpu_math_library_num_threads | 10     | CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快                        |
+| cpu_threads                  | 30     | CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快                        |
 | enable_mkldnn                | true   | 是否使用mkldnn库，关掉可以减少内存占用，但会降低速度                                     |
 | 检测模型相关                 | --     | -- |
 | max_side_len                 | 960    | 输入图像长宽大于960时，等比例缩放图像，使得图像最长边为960                               |
@@ -193,6 +193,48 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | table_batch_num              | 1      | table_batch_num                                                                          |
 | return_word_box              | false  | 是否返回单字坐标                                                                         |
 | ocr_instance_count           | false  | OCR引擎实例数量，默认1，最大10，适用于高并发时使用。                                     |
+
+
+| **版面结构识别参数 (LayoutParameter)** | -- | **PP-Structure专用** |
+| ---------------------------- | ------ | ---------------------------------------------------------------------------------------- |
+| use_gpu                      | false  | 是否使用GPU                                                                              |
+| gpu_id                       | 0      | GPU id，使用GPU时有效                                                                    |
+| gpu_mem                      | 4000    | 使用GPU时内存                                                                            |
+| use_tensorrt                 | false  | 使用GPU预测时，是否启动tensorrt                                                          |
+| cpu_mem                      | 0      | CPU内存占用上限，单位MB。0表示不限制                                                     |
+| cpu_threads                  | 30      | CPU预测时的线程数                                                                        |
+| enable_mkldnn                | true   | 是否使用mkldnn库                                                                         |
+| visualize                    | false  | 是否对结果进行可视化                                                                     |
+| **文档预处理参数**           | --     | -- |
+| use_doc_preprocessor         | true   | 是否使用文档预处理                                                                       |
+| use_doc_orientation_classify | true   | 是否使用文档方向分类                                                                     |
+| use_doc_unwarping            | false  | 是否使用文档矫正                                                                         |
+| **版面检测参数**             | --     | -- |
+| use_layout_detection         | true   | 是否使用版面检测                                                                         |
+| layout_threshold             | 0.5    | 版面检测阈值                                                                             |
+| layout_nms                   | true   | 是否使用版面非极大值抑制                                                                 |
+| layout_unclip_ratio_w        | 1.0    | 版面框水平扩展比例                                                                       |
+| layout_unclip_ratio_h        | 1.0    | 版面框垂直扩展比例                                                                       |
+| **OCR参数**                  | --     | -- |
+| run_ocr_after_layout         | true   | 版面检测后是否执行OCR                                                                    |
+| text_det_thresh              | 0.3    | 文本检测阈值                                                                             |
+| text_rec_score_thresh        | 0.5    | 文本识别得分阈值                                                                         |
+| use_textline_orientation     | true   | 是否使用文本行方向分类                                                                   |
+| max_side_len                 | 960    | 输入图像最长边限制                                                                       |
+| **条件识别参数**             | --     | -- |
+| use_table_recognition        | true   | 是否使用表格识别                                                                         |
+| use_seal_recognition         | false  | 是否使用印章识别                                                                         |
+| use_formula_recognition      | true   | 是否使用公式识别                                                                         |
+| use_chart_recognition        | false  | 是否使用图表转表识别                                                                     |
+| seal_det_limit_side_len      | 736    | 印章检测图像长边限制                                                                     |
+| seal_det_limit_type          | 0      | 印章检测限制类型                                                                         |
+| seal_det_thresh              | 0.2    | 印章检测阈值                                                                             |
+| seal_det_box_thresh          | 0.6    | 印章检测框阈值                                                                           |
+| seal_det_unclip_ratio        | 0.5    | 印章检测框扩展比例                                                                       |
+| seal_rec_score_thresh        | 0.0    | 印章识别得分阈값                                                                         |
+| **输出参数**                 | --     | -- |
+| format_block_content         | false  | 是否格式化块内容                                                                         |
+| output_markdown              | true   | 是否输出Markdown格式                                                                     |
 
 完整示例请查看 `Demo/` 目录下的各语言示例代码。
 

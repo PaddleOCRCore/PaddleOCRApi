@@ -149,9 +149,9 @@ namespace PaddleOCRSDK
         [field: MarshalAs(UnmanagedType.I4)]
         public int cpu_mem { get; set; } = 2000;
         /// <summary>
-        /// CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快，默认10
+        /// CPU预测时的线程数，在机器核数充足的情况下，该值越大，预测速度越快，默认30
         /// </summary>
-        public int cpu_threads { get; set; } = 10;
+        public int cpu_threads { get; set; } = 30;
         /// <summary>
         /// 是否使用mkldnn库
         /// </summary>
@@ -248,11 +248,11 @@ namespace PaddleOCRSDK
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_gpu { get; set; } = false;
         public int gpu_id { get; set; } = 0;
-        public int gpu_mem { get; set; } = 500;
+        public int gpu_mem { get; set; } = 4000;
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_tensorrt { get; set; } = false;
         public int cpu_mem { get; set; } = 0;
-        public int cpu_threads { get; set; } = 8;
+        public int cpu_threads { get; set; } = 30;
         [field: MarshalAs(UnmanagedType.I1)]
         public bool enable_mkldnn { get; set; } = true;
         [field: MarshalAs(UnmanagedType.I1)]
@@ -260,9 +260,9 @@ namespace PaddleOCRSDK
 
         // 文档预处理参数
         [field: MarshalAs(UnmanagedType.I1)]
-        public bool use_doc_preprocessor { get; set; } = false;
+        public bool use_doc_preprocessor { get; set; } = true;
         [field: MarshalAs(UnmanagedType.I1)]
-        public bool use_doc_orientation_classify { get; set; } = false;
+        public bool use_doc_orientation_classify { get; set; } = true;
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_doc_unwarping { get; set; } = false;
 

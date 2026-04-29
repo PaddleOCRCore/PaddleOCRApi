@@ -1,5 +1,16 @@
 # 📝 更新日志
 
+## v4.3.0 `2026.4.29`
+- ✅ **重大更新**: PaddleOCR.dll新增PP-Structure版面结构识别模块，支持20类文档元素综合识别（版面检测、表格识别、公式识别、印章识别、图表转表等）
+- ✅ **新增接口**: PaddleOCR.dll新增`InitStructure`/`InitStructurejson`初始化接口，支持11个模型路径参数（文本检测、方向分类、文本识别、版面分析、表格、公式、印章、图表、文档方向、文档矫正）,删除原有表格识别接口
+- ✅ **新增接口**: 新增`DetectLayout`/`DetectLayoutMat`/`DetectLayoutByte`/`DetectLayoutBase64`四个版面分析接口，支持File/Mat/Byte/Base64四种输入方式
+- ✅ **新增接口**: OCR标准识别新增`DetectScreenShot`接口，专门用于内存截图场景的OCR识别
+- ✅ **架构优化**: 优化VL视觉语言模型`llamaocr-vl.dll`，同时支持版面检测、表格识别、公式识别、印章识别、图表转表等，提升模块化程度
+- ✅ **文档更新**: 全面更新`PaddleOCR.dll接口清单.md`，补充所有接口的详细参数说明和使用注意事项
+- ✅ **代码优化**: PaddleOCRSDK发布 v4.3.0,OCRSDK.cs、UVDocSDK.cs、OCRVLSDK.cs三个SDK文件对齐新接口
+- ✅ **发布NuGet包**: PaddleOCRRuntime_x64 v4.3.0，包含 paddle 3.3.0 CPU 推理库、PaddleOCR.dll、llamaocr-vl.dll 及全部依赖。
+- ⚠️ **重要提示**: PP-Structure需要自行下载相关模型（PP-DocLayoutV2_infer、SLANet_plus、公式/印章/图表模型等）
+
 ## v4.2.0 `2026.4.13`
 - ✅ 新增 OCR-VL 视觉语言识别模块，基于 Llama 推理引擎（llamaocr-vl.dll），支持 PaddleOCR-VL-1.5-GGUF、DeepSeek-OCR-GGUF、Qwen2-VL-OCR-GGUF、FireRed-OCR-GGUF 等主流视觉语言 OCR 模型，更多 GGUF 格式模型可访问：https://www.modelscope.cn/models?name=OCR%20GGUF
 - ✅ OCRCoreService 新增 `OCRVLServiceController`，提供四个 WebAPI 接口：`GetOCRVL`（通用识别 + Base64）、`GetOCRVLFile`（通用识别 + 文件）、`GetDOCVL`（版面分析 + Base64）、`GetDOCVLFile`（版面分析 + 文件）。

@@ -1,5 +1,16 @@
 # 📝 Changelog
 
+## v4.3.0 `2026.4.29`
+- ✅ **Major Update**: Added PP-Structure document layout analysis module to PaddleOCR.dll, supporting comprehensive recognition of 20 document element types (layout detection, table recognition, formula recognition, seal recognition, chart-to-table conversion, etc.)
+- ✅ **New Interfaces**: Added `InitStructure`/`InitStructurejson` initialization interfaces to PaddleOCR.dll, supporting 11 model path parameters (text detection, orientation classification, text recognition, layout analysis, table, formula, seal, chart, document orientation, document rectification); removed the original table recognition interface
+- ✅ **New Interfaces**: Added four layout analysis interfaces: `DetectLayout`/`DetectLayoutMat`/`DetectLayoutByte`/`DetectLayoutBase64`, supporting File/Mat/Byte/Base64 input methods
+- ✅ **New Interface**: Added `DetectScreenShot` interface to standard OCR recognition, specifically designed for memory screenshot scenarios
+- ✅ **Architecture Optimization**: Optimized VL vision-language model `llamaocr-vl.dll`, now also supporting layout detection, table recognition, formula recognition, seal recognition, chart-to-table conversion, enhancing modularity
+- ✅ **Documentation Update**: Comprehensively updated `PaddleOCR.dll接口清单.md`, adding detailed parameter descriptions and usage notes for all interfaces
+- ✅ **Code Optimization**: Released PaddleOCRSDK v4.3.0; aligned OCRSDK.cs, UVDocSDK.cs, and OCRVLSDK.cs with new interfaces
+- ✅ **NuGet Package Release**: Released PaddleOCRRuntime_x64 v4.3.0, including paddle 3.3.0 CPU inference library, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies
+- ⚠️ **Important Note**: PP-Structure requires downloading related models separately (PP-DocLayoutV2_infer, SLANet_plus, formula/seal/chart models, etc.)
+
 ## v4.2.0 `2026.4.13`
 - ✅ Added OCR-VL vision-language recognition module powered by the Llama inference engine (llamaocr-vl.dll). Supports mainstream VLM-based OCR models including PaddleOCR-VL-1.5-GGUF, DeepSeek-OCR-GGUF, Qwen2-VL-OCR-GGUF, and FireRed-OCR-GGUF. More GGUF-format models available at: https://www.modelscope.cn/models?name=OCR%20GGUF
 - ✅ Added `OCRVLServiceController` to OCRCoreService, providing four WebAPI endpoints: `GetOCRVL` (general OCR + Base64), `GetOCRVLFile` (general OCR + file upload), `GetDOCVL` (layout analysis + Base64), `GetDOCVLFile` (layout analysis + file upload).

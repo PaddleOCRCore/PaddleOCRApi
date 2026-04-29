@@ -167,7 +167,7 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | gpu_mem                      | 4000    | GPU memory usage                                                                              |
 | use_tensorrt                 | false   | Whether to enable TensorRT when using GPU prediction                                          |
 | cpu_mem                      | 4000    | CPU memory usage limit in MB. -1 means no limit                                               |
-| cpu_math_library_num_threads | 10      | Number of threads for CPU prediction, larger value means faster prediction with sufficient cores |
+| cpu_threads                  | 30      | Number of threads for CPU prediction, larger value means faster prediction with sufficient cores |
 | enable_mkldnn                | true    | Whether to use mkldnn library, disabling reduces memory usage but decreases speed             |
 | **Detection Model**          | --      | --                                                                                            |
 | max_side_len                 | 960     | When input image is larger than 960, scale proportionally to make longest side 960            |
@@ -191,6 +191,45 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | table_batch_num              | 1       | table_batch_num                                                                               |
 | return_word_box              | false   | Whether to return per-character coordinates                                                   |
 | ocr_instance_count           | false   | Number of OCR engine instances: default is 1, maximum is 10, suitable for high-concurrency scenarios.  |
+| **Layout Structure Recognition Parameters (LayoutParameter)** | -- | **For PP-StructureV3** |
+| use_gpu                      | false   | Whether to use GPU                                                                            |
+| gpu_id                       | 0       | GPU id, effective when using GPU                                                              |
+| gpu_mem                      | 4000     | GPU memory usage                                                                              |
+| use_tensorrt                 | false   | Whether to enable TensorRT when using GPU prediction                                          |
+| cpu_mem                      | 0       | CPU memory usage limit in MB. 0 means no limit                                                |
+| cpu_threads                  | 30       | Number of threads for CPU prediction                                                          |
+| enable_mkldnn                | true    | Whether to use mkldnn library                                                                 |
+| visualize                    | false   | Whether to visualize results                                                                  |
+| **Document Preprocessing**   | --      | --                                                                                            |
+| use_doc_preprocessor         | false   | Whether to use document preprocessing                                                         |
+| use_doc_orientation_classify | false   | Whether to use document orientation classification                                            |
+| use_doc_unwarping            | false   | Whether to use document unwarping                                                             |
+| **Layout Detection**         | --      | --                                                                                            |
+| use_layout_detection         | true    | Whether to use layout detection                                                               |
+| layout_threshold             | 0.5     | Layout detection threshold                                                                    |
+| layout_nms                   | true    | Whether to use layout non-maximum suppression                                                 |
+| layout_unclip_ratio_w        | 1.0     | Layout box horizontal expansion ratio                                                         |
+| layout_unclip_ratio_h        | 1.0     | Layout box vertical expansion ratio                                                           |
+| **OCR Parameters**           | --      | --                                                                                            |
+| run_ocr_after_layout         | true    | Whether to execute OCR after layout detection                                                 |
+| text_det_thresh              | 0.3     | Text detection threshold                                                                      |
+| text_rec_score_thresh        | 0.5     | Text recognition score threshold                                                              |
+| use_textline_orientation     | true    | Whether to use text line orientation                                                          |
+| max_side_len                 | 960     | Input image longest side limit                                                                |
+| **Conditional Recognition**  | --      | --                                                                                            |
+| use_table_recognition        | true    | Whether to use table recognition                                                              |
+| use_seal_recognition         | false   | Whether to use seal recognition                                                               |
+| use_formula_recognition      | true    | Whether to use formula recognition                                                            |
+| use_chart_recognition        | false   | Whether to use chart-to-table recognition                                                     |
+| seal_det_limit_side_len      | 736     | Seal detection image long side limit                                                          |
+| seal_det_limit_type          | 0       | Seal detection limit type                                                                     |
+| seal_det_thresh              | 0.2     | Seal detection threshold                                                                      |
+| seal_det_box_thresh          | 0.6     | Seal detection box threshold                                                                  |
+| seal_det_unclip_ratio        | 0.5     | Seal detection box expansion ratio                                                            |
+| seal_rec_score_thresh        | 0.0     | Seal recognition score threshold                                                              |
+| **Output Parameters**        | --      | --                                                                                            |
+| format_block_content         | false   | Whether to format block content                                                               |
+| output_markdown              | true    | Whether to output Markdown format                                                             |
 
 For more complete examples, please check the `Demo/` directory for each language example code.
 
