@@ -97,7 +97,7 @@
 ```xml
 <!-- paddle_inference 3.3.0 版本 -->
 <PackageReference Include="PaddleOCRSDK" Version="4.3.0" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.0" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.1" />
 
 <!-- 或 paddle_inference 2.6.2 版本 -->
 <PackageReference Include="PaddleOCRSDK" Version="1.0.5" />
@@ -625,7 +625,7 @@ nssm start PaddleOCRApi
 **安装NuGet包**
    ```xml
    <PackageReference Include="PaddleOCRSDK" Version="4.3.0" />
-   <PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.0" />
+   <PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.1" />
    ```
 
 ### 完整示例：

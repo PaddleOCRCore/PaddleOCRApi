@@ -97,7 +97,7 @@ The current open-source version only supports **Windows x64** platform. For Linu
 ```xml
 <!-- paddle_inference 3.3.0 version -->
 <PackageReference Include="PaddleOCRSDK" Version="4.3.0" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.0" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.1" />
 
 <!-- or paddle_inference 2.6.2 version -->
 <PackageReference Include="PaddleOCRSDK" Version="1.0.5" />
@@ -625,7 +625,7 @@ For detailed configuration, refer to: [Scheduled Task Configuration Guide](../OC
 **Install NuGet Packages**
    ```xml
    <PackageReference Include="PaddleOCRSDK" Version="4.3.0" />
-   <PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.0" />
+   <PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.1" />
    ```
 
 ### Complete Example:

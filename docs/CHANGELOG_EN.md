@@ -8,7 +8,7 @@
 - ✅ **Architecture Optimization**: Optimized VL vision-language model `llamaocr-vl.dll`, now also supporting layout detection, table recognition, formula recognition, seal recognition, chart-to-table conversion, enhancing modularity
 - ✅ **Documentation Update**: Comprehensively updated `PaddleOCR.dll接口清单.md`, adding detailed parameter descriptions and usage notes for all interfaces
 - ✅ **Code Optimization**: Released PaddleOCRSDK v4.3.0; aligned OCRSDK.cs, UVDocSDK.cs, and OCRVLSDK.cs with new interfaces
-- ✅ **NuGet Package Release**: Released PaddleOCRRuntime_x64 v4.3.0, including paddle 3.3.0 CPU inference library, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies
+- ✅ **NuGet Package Release**: Released PaddleOCRRuntime_x64 v4.3.1, including paddle 3.3.0 CPU inference library, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies
 - ⚠️ **Important Note**: PP-Structure requires downloading related models separately (PP-DocLayoutV2_infer, SLANet_plus, formula/seal/chart models, etc.)
 
 ## v4.2.0 `2026.4.13`
