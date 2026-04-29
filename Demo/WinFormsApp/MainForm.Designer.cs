@@ -56,7 +56,7 @@
             tabPageOCR = new TabPage();
             splitContainerOCR = new SplitContainer();
             groupBoxOCRImage = new GroupBox();
-            pictureBoxImg = new UserControl.PictureView();
+            pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             textBoxResult = new TextBox();
             groupBox1 = new GroupBox();
             chkUseTensorRT = new CheckBox();
@@ -89,7 +89,7 @@
             tabPageOCRVL = new TabPage();
             splitContainerOCRVL = new SplitContainer();
             groupBoxOCRVLImage = new GroupBox();
-            pictureBoxOCRVL = new UserControl.PictureView();
+            pictureBoxOCRVL = new WinFormsApp.UserControl.PictureView();
             textBoxOCRVLResult = new TextBox();
             groupBoxOCRVLControl = new GroupBox();
             groupBoxAI = new GroupBox();
@@ -97,10 +97,10 @@
             textBoxOCRVLPrompt = new TextBox();
             buttonOCRVLRec = new Button();
             buttonOCRVLRecPDF = new Button();
-            buttonOCRVLCancel = new Button();
             buttonOCRVLFreeEngine = new Button();
             buttonOCRVLInit = new Button();
             checkBoxOCRVLDocAnalysis = new CheckBox();
+            buttonOCRVLCancel = new Button();
             buttonOCRVLBrowseConfig = new Button();
             textBoxOCRVLConfigPath = new TextBox();
             labelOCRVLConfigPath = new Label();
@@ -123,6 +123,8 @@
             splitContainerOCR.Panel1.SuspendLayout();
             splitContainerOCR.Panel2.SuspendLayout();
             splitContainerOCR.SuspendLayout();
+            groupBoxOCRImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
@@ -134,6 +136,8 @@
             splitContainerOCRVL.Panel1.SuspendLayout();
             splitContainerOCRVL.Panel2.SuspendLayout();
             splitContainerOCRVL.SuspendLayout();
+            groupBoxOCRVLImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxOCRVL).BeginInit();
             groupBoxOCRVLControl.SuspendLayout();
             groupBoxAI.SuspendLayout();
             SuspendLayout();
@@ -913,18 +917,6 @@
             buttonOCRVLRecPDF.UseVisualStyleBackColor = true;
             buttonOCRVLRecPDF.Click += buttonOCRVLRecPDF_Click;
             // 
-            // buttonOCRVLCancel
-            // 
-            buttonOCRVLCancel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonOCRVLCancel.Enabled = false;
-            buttonOCRVLCancel.Location = new Point(438, 65);
-            buttonOCRVLCancel.Name = "buttonOCRVLCancel";
-            buttonOCRVLCancel.Size = new Size(80, 31);
-            buttonOCRVLCancel.TabIndex = 20;
-            buttonOCRVLCancel.Text = "取消";
-            buttonOCRVLCancel.UseVisualStyleBackColor = true;
-            buttonOCRVLCancel.Click += buttonOCRVLCancel_Click;
-            // 
             // buttonOCRVLFreeEngine
             // 
             buttonOCRVLFreeEngine.Enabled = false;
@@ -958,6 +950,17 @@
             checkBoxOCRVLDocAnalysis.Text = "启用版面分析";
             checkBoxOCRVLDocAnalysis.UseVisualStyleBackColor = true;
             checkBoxOCRVLDocAnalysis.CheckedChanged += checkBoxOCRVLDocAnalysis_CheckedChanged;
+            // 
+            // buttonOCRVLCancel
+            // 
+            buttonOCRVLCancel.Enabled = false;
+            buttonOCRVLCancel.Location = new Point(438, 65);
+            buttonOCRVLCancel.Name = "buttonOCRVLCancel";
+            buttonOCRVLCancel.Size = new Size(80, 31);
+            buttonOCRVLCancel.TabIndex = 20;
+            buttonOCRVLCancel.Text = "取消";
+            buttonOCRVLCancel.UseVisualStyleBackColor = true;
+            buttonOCRVLCancel.Click += buttonOCRVLCancel_Click;
             // 
             // buttonOCRVLBrowseConfig
             // 
@@ -1026,6 +1029,8 @@
             splitContainerOCR.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerOCR).EndInit();
             splitContainerOCR.ResumeLayout(false);
+            groupBoxOCRImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxImg).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).EndInit();
@@ -1039,6 +1044,8 @@
             splitContainerOCRVL.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerOCRVL).EndInit();
             splitContainerOCRVL.ResumeLayout(false);
+            groupBoxOCRVLImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxOCRVL).EndInit();
             groupBoxOCRVLControl.ResumeLayout(false);
             groupBoxOCRVLControl.PerformLayout();
             groupBoxAI.ResumeLayout(false);

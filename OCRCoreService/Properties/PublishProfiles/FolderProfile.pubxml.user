@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>D:\Develop\OCRDevSource\PaddleOCRWebApi\OCRCoreService\bin\Deploy</_PublishTargetUrl>
-    <History>True|2026-04-13T07:53:22.6265677Z||;True|2026-02-25T22:03:01.7921953+08:00||;</History>
+    <History>True|2026-04-29T01:38:08.6359298Z||;True|2026-04-13T15:53:22.6265677+08:00||;True|2026-02-25T22:03:01.7921953+08:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>
