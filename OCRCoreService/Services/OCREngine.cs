@@ -25,14 +25,16 @@ namespace OCRCoreService.Services
     {
         private readonly IOCRService _ocrService;
         private readonly OCRConfig _ocrConfig;
+        private readonly LayoutConfig _layoutConfig;
         private readonly object _structureEngineLock = new object();
         private bool _structureEngineInitialized;
         public IOCRService OcrService => _ocrService;
 
-        public OCREngine(IOCRService ocrService, OCRConfig ocrConfig)
+        public OCREngine(IOCRService ocrService, OCRConfig ocrConfig, LayoutConfig layoutConfig)
         {
             _ocrService = ocrService;
             _ocrConfig = ocrConfig;
+            _layoutConfig = layoutConfig;
             GetOCREngine();
         }
         /// <summary>
@@ -43,13 +45,6 @@ namespace OCRCoreService.Services
         {
             //自带轻量版中英文模型V5模型
             InitParamater para=new InitParamater();
-            //string root = AppContext.BaseDirectory;
-            //string modelPathroot = Path.Combine(root, "models");
-            //para.det_infer = Path.Combine(modelPathroot, _ocrConfig.det_infer);
-            //para.cls_infer = Path.Combine(modelPathroot, _ocrConfig.cls_infer);
-            //para.rec_infer = Path.Combine(modelPathroot, _ocrConfig.rec_infer);
-            //para.keyFile = Path.Combine(modelPathroot, _ocrConfig.keyFile);
-
             //改为相对路径，避免中文路径问题
             para.det_infer = $"models/{_ocrConfig.det_infer}";
             para.cls_infer = $"models/{_ocrConfig.cls_infer}";
@@ -110,44 +105,48 @@ namespace OCRCoreService.Services
                 InitParamater para = new InitParamater();
 
                 //改为相对路径，避免中文路径问题
-                para.det_infer = $"models/{_ocrConfig.det_infer}";
-                para.cls_infer = $"models/{_ocrConfig.cls_infer}";
-                para.doc_cls_infer = $"models/{_ocrConfig.doc_cls_infer}";
-                para.rec_infer = $"models/{_ocrConfig.rec_infer}";
-                para.layout_model_dir = $"models/{_ocrConfig.layout_model_dir}";
-                para.table_model_dir = $"models/{_ocrConfig.table_model_dir}";
+                para.det_infer = $"models/{_layoutConfig.det_infer}";
+                para.cls_infer = $"models/{_layoutConfig.cls_infer}";
+                para.doc_cls_infer = $"models/{_layoutConfig.doc_cls_infer}";
+                para.rec_infer = $"models/{_layoutConfig.rec_infer}";
+                para.layout_model_dir = $"models/{_layoutConfig.layout_model_dir}";
+                para.table_model_dir = $"models/{_layoutConfig.table_model_dir}";
+                para.chart_model_dir = $"models/{_layoutConfig.chart_model_dir}";
+                para.formula_model_dir = $"models/{_layoutConfig.formula_model_dir}";
+                para.doc_unwarp_model = $"models/{_layoutConfig.doc_unwarp_model}";
+                para.seal_model_dir = $"models/{_layoutConfig.seal_model_dir}";
                 LayoutParameter oCRParameter = new LayoutParameter();
-                oCRParameter.use_gpu = _ocrConfig.use_gpu;
-                oCRParameter.use_tensorrt = false;
-                oCRParameter.gpu_id = _ocrConfig.gpu_id;
-                oCRParameter.gpu_mem = _ocrConfig.gpu_mem;
-                oCRParameter.cpu_mem = _ocrConfig.cpu_mem;
-                oCRParameter.cpu_threads = _ocrConfig.cpu_threads;
-                oCRParameter.enable_mkldnn = _ocrConfig.enable_mkldnn;
-                oCRParameter.visualize = false;
+                oCRParameter.use_gpu = _layoutConfig.use_gpu;
+                oCRParameter.use_tensorrt = _layoutConfig.use_tensorrt;
+                oCRParameter.gpu_id = _layoutConfig.gpu_id;
+                oCRParameter.gpu_mem = _layoutConfig.gpu_mem;
+                oCRParameter.cpu_mem = _layoutConfig.cpu_mem;
+                oCRParameter.cpu_threads = _layoutConfig.cpu_threads;
+                oCRParameter.enable_mkldnn = _layoutConfig.enable_mkldnn;
+                oCRParameter.visualize = _layoutConfig.visualize;
 
-                oCRParameter.use_doc_preprocessor = false;
-                oCRParameter.use_doc_orientation_classify = false;
-                oCRParameter.use_doc_unwarping = false;
+                oCRParameter.use_doc_preprocessor = _layoutConfig.use_doc_preprocessor;
+                oCRParameter.use_doc_orientation_classify = _layoutConfig.use_doc_orientation_classify;
+                oCRParameter.use_doc_unwarping = _layoutConfig.use_doc_unwarping;
 
-                oCRParameter.use_layout_detection = true;
-                oCRParameter.layout_nms = true;
-                oCRParameter.layout_unclip_ratio_w = 1.0f;
-                oCRParameter.layout_unclip_ratio_h = 1.0f;
+                oCRParameter.use_layout_detection = _layoutConfig.use_layout_detection;
+                oCRParameter.layout_nms = _layoutConfig.layout_nms;
+                oCRParameter.layout_unclip_ratio_w = _layoutConfig.layout_unclip_ratio_w;
+                oCRParameter.layout_unclip_ratio_h = _layoutConfig.layout_unclip_ratio_h;
 
-                oCRParameter.run_ocr_after_layout = true;
-                oCRParameter.text_det_thresh = 0.3f;
-                oCRParameter.text_rec_score_thresh = 0.5f;
-                oCRParameter.use_textline_orientation = _ocrConfig.use_cls;
-                oCRParameter.max_side_len = 960;
+                oCRParameter.run_ocr_after_layout = _layoutConfig.run_ocr_after_layout;
+                oCRParameter.text_det_thresh = _layoutConfig.text_det_thresh;
+                oCRParameter.text_rec_score_thresh = _layoutConfig.text_rec_score_thresh;
+                oCRParameter.use_textline_orientation = _layoutConfig.use_textline_orientation;
+                oCRParameter.max_side_len = _layoutConfig.max_side_len;
 
-                oCRParameter.use_table_recognition = true;
-                oCRParameter.use_seal_recognition = false;
-                oCRParameter.use_formula_recognition = true;
-                oCRParameter.use_chart_recognition = false;
+                oCRParameter.use_table_recognition = _layoutConfig.use_table_recognition;
+                oCRParameter.use_seal_recognition = _layoutConfig.use_seal_recognition;
+                oCRParameter.use_formula_recognition = _layoutConfig.use_formula_recognition;
+                oCRParameter.use_chart_recognition = _layoutConfig.use_chart_recognition;
 
-                oCRParameter.format_block_content = false;
-                oCRParameter.output_markdown = true;
+                oCRParameter.format_block_content = _layoutConfig.format_block_content;
+                oCRParameter.output_markdown = _layoutConfig.output_markdown;
 
                 para.layoutpara = oCRParameter;
                 para.paraType = EnumParaType.StructureClass;

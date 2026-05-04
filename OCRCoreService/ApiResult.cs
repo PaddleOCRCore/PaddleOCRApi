@@ -201,6 +201,185 @@ namespace OCRCoreService
     }
 
     /// <summary>
+    /// 版面识别配置
+    /// </summary>
+    public class LayoutConfig
+    {
+        /// <summary>
+        /// det_infer模型路径
+        /// </summary>
+        public string det_infer { get; set; } = "PP-OCRv5_mobile_det_infer";
+        /// <summary>
+        /// 文本行方向分类模型路径
+        /// </summary>
+        public string cls_infer { get; set; } = "PP-LCNet_x1_0_textline_ori";
+        /// <summary>
+        /// 文档方向分类模型路径
+        /// </summary>
+        public string doc_cls_infer { get; set; } = "PP-LCNet_x1_0_doc_ori_infer";
+        /// <summary>
+        /// rec_infer模型路径
+        /// </summary>
+        public string rec_infer { get; set; } = "PP-OCRv5_mobile_rec_infer";
+        /// <summary>
+        /// 版面识别模型inference model地址
+        /// </summary>
+        public string layout_model_dir { get; set; } = "PP-DocLayoutV2_infer";
+        /// <summary>
+        /// 表格识别模型inference model地址
+        /// </summary>
+        public string table_model_dir { get; set; } = "PP-SLANet_plus_infer";
+        /// <summary>
+        /// 公式识别模型路径
+        /// </summary>
+        public string formula_model_dir { get; set; } = "LaTeX_OCR_rec_infer";
+        /// <summary>
+        /// 印章检测模型路径
+        /// </summary>
+        public string seal_model_dir { get; set; } = "PP-OCRv4_mobile_seal_det_infer";
+        /// <summary>
+        /// 图表转表模型路径
+        /// </summary>
+        public string chart_model_dir { get; set; } = "PP-Chart2Table";
+        /// <summary>
+        /// 文档图像矫正模型路径
+        /// </summary>
+        public string doc_unwarp_model { get; set; } = "UVDoc_infer";
+        /// <summary>
+        /// 是否使用GPU
+        /// </summary>
+        public bool use_gpu { get; set; } = false;
+        /// <summary>
+        /// 使用GPU预测时，是否启动tensorrt
+        /// </summary>
+        public bool use_tensorrt { get; set; } = false;
+        /// <summary>
+        /// GPU id，使用GPU时有效
+        /// </summary>
+        public int gpu_id { get; set; } = 0;
+        /// <summary>
+        /// 使用GPU时内存
+        /// </summary>
+        public int gpu_mem { get; set; } = 4000;
+        /// <summary>
+        /// CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
+        /// </summary>
+        public int cpu_mem { get; set; } = 0;
+        /// <summary>
+        /// CPU预测时的线程数
+        /// </summary>
+        public int cpu_threads { get; set; } = 30;
+        /// <summary>
+        /// 是否使用mkldnn库
+        /// </summary>
+        public bool enable_mkldnn { get; set; } = true;
+        /// <summary>
+        /// 是否对结果进行可视化
+        /// </summary>
+        public bool visualize { get; set; } = false;
+        /// <summary>
+        /// 是否启用文档预处理
+        /// </summary>
+        public bool use_doc_preprocessor { get; set; } = true;
+        /// <summary>
+        /// 是否启用文档方向分类
+        /// </summary>
+        public bool use_doc_orientation_classify { get; set; } = true;
+        /// <summary>
+        /// 是否启用文档图像矫正
+        /// </summary>
+        public bool use_doc_unwarping { get; set; } = false;
+        /// <summary>
+        /// 是否启用版面检测
+        /// </summary>
+        public bool use_layout_detection { get; set; } = true;
+        /// <summary>
+        /// 是否启用版面NMS
+        /// </summary>
+        public bool layout_nms { get; set; } = true;
+        /// <summary>
+        /// 版面检测框宽度扩张比例
+        /// </summary>
+        public float layout_unclip_ratio_w { get; set; } = 1.0f;
+        /// <summary>
+        /// 版面检测框高度扩张比例
+        /// </summary>
+        public float layout_unclip_ratio_h { get; set; } = 1.0f;
+        /// <summary>
+        /// 是否在版面识别后运行OCR
+        /// </summary>
+        public bool run_ocr_after_layout { get; set; } = true;
+        /// <summary>
+        /// 文本检测阈值
+        /// </summary>
+        public float text_det_thresh { get; set; } = 0.3f;
+        /// <summary>
+        /// 文本识别得分阈值
+        /// </summary>
+        public float text_rec_score_thresh { get; set; } = 0.5f;
+        /// <summary>
+        /// 是否启用文本行方向分类
+        /// </summary>
+        public bool use_textline_orientation { get; set; } = true;
+        /// <summary>
+        /// 输入图像最长边
+        /// </summary>
+        public int max_side_len { get; set; } = 960;
+        /// <summary>
+        /// 是否启用表格识别
+        /// </summary>
+        public bool use_table_recognition { get; set; } = true;
+        /// <summary>
+        /// 是否启用印章识别
+        /// </summary>
+        public bool use_seal_recognition { get; set; } = true;
+        /// <summary>
+        /// 是否启用公式识别
+        /// </summary>
+        public bool use_formula_recognition { get; set; } = true;
+        /// <summary>
+        /// 是否启用图表识别
+        /// </summary>
+        public bool use_chart_recognition { get; set; } = true;
+        /// <summary>
+        /// 是否格式化块内容
+        /// </summary>
+        public bool format_block_content { get; set; } = false;
+        /// <summary>
+        /// 是否输出markdown
+        /// </summary>
+        public bool output_markdown { get; set; } = true;
+
+        /// <summary>
+        /// 在未配置LayoutConfig时兼容复用OCRConfig的通用模型和硬件参数
+        /// </summary>
+        public static LayoutConfig FromOCRConfig(OCRConfig? ocrConfig)
+        {
+            LayoutConfig config = new LayoutConfig();
+            if (ocrConfig == null)
+            {
+                return config;
+            }
+
+            config.det_infer = ocrConfig.det_infer ?? config.det_infer;
+            config.cls_infer = ocrConfig.cls_infer ?? config.cls_infer;
+            config.doc_cls_infer = ocrConfig.doc_cls_infer ?? config.doc_cls_infer;
+            config.rec_infer = ocrConfig.rec_infer ?? config.rec_infer;
+            config.layout_model_dir = ocrConfig.layout_model_dir ?? config.layout_model_dir;
+            config.table_model_dir = ocrConfig.table_model_dir ?? config.table_model_dir;
+            config.use_gpu = ocrConfig.use_gpu;
+            config.use_tensorrt = ocrConfig.use_tensorrt;
+            config.gpu_id = ocrConfig.gpu_id;
+            config.gpu_mem = ocrConfig.gpu_mem;
+            config.cpu_mem = ocrConfig.cpu_mem;
+            config.cpu_threads = ocrConfig.cpu_threads;
+            config.enable_mkldnn = ocrConfig.enable_mkldnn;
+            config.use_textline_orientation = ocrConfig.use_cls;
+            return config;
+        }
+    }
+
+    /// <summary>
     /// UVDoc文档矫正配置
     /// </summary>
     public class UVDocConfig

@@ -35,6 +35,11 @@ try
     builder.Services.AddEndpointsApiExplorer();
     var ocrConfig = builder.Configuration.GetSection("OCRConfig").Get<OCRConfig>();
     if (ocrConfig != null) builder.Services.AddSingleton(ocrConfig);
+    var layoutConfigSection = builder.Configuration.GetSection("LayoutConfig");
+    var layoutConfig = layoutConfigSection.Exists()
+        ? layoutConfigSection.Get<LayoutConfig>() ?? new LayoutConfig()
+        : LayoutConfig.FromOCRConfig(ocrConfig);
+    builder.Services.AddSingleton(layoutConfig);
     //检测模型依赖注入
     builder.Services.AddSingleton<IOCRService, OCRService>();
     builder.Services.AddSingleton<OCREngine>();
