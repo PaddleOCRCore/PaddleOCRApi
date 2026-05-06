@@ -16,6 +16,7 @@
 using OCRCoreService.Authorization;
 using OCRCoreService;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.FileProviders;
 using NLog;
 using NLog.Web;
 using System.Text.Encodings.Web;
@@ -161,6 +162,15 @@ try
         app.UseDeveloperExceptionPage();
         app.UseSwaggerApp(pathBase);
     }
+
+    string outputPath = Path.Combine(AppContext.BaseDirectory, "output");
+    Directory.CreateDirectory(outputPath);
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(outputPath),
+        RequestPath = "/output"
+    });
+
     app.UseStaticFiles();
     app.UseRouting();
 

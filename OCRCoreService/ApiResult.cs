@@ -111,6 +111,21 @@ namespace OCRCoreService
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public class RequestOcrByte
+    {
+        /// <summary>
+        /// 图片byte[]字节码
+        /// </summary>
+        public byte[] ImageByte { get; set; } = Array.Empty<byte>();
+        /// <summary>
+        /// 返回类型
+        /// </summary>
+        public string ResultType { get; set; } = "text";
+    }
+
+    /// <summary>
     /// 版面识别请求参数
     /// </summary>
     public class RequestLayoutOcr

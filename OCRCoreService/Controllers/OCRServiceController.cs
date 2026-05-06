@@ -213,7 +213,45 @@ namespace OCRCoreService.Controllers
             }
             OCRResult ocrResult = ocrEngine.OcrService.DetectBase64(request.Base64String);
             logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
-            if (request.ResultType.Equals("text", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(request.ResultType, "text", StringComparison.OrdinalIgnoreCase))
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                foreach (var item in ocrResult.WordsResult)
+                {
+                    if (!string.IsNullOrEmpty(item.Words))
+                    {
+                        if (stringBuilder.Length > 0)
+                        {
+                            stringBuilder.Append(Environment.NewLine);
+                        }
+                        stringBuilder.Append(item.Words);
+                    }
+                }
+                result = stringBuilder.ToString();
+            }
+            else
+            {
+                result = ocrResult.JsonText;
+            }
+            return OKResult(result);
+        }
+
+        /// <summary>
+        /// 通用文字识别，上传图片byte[]字节码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetOCRByte([FromBody] RequestOcrByte request)
+        {
+            string result = "";
+            if (request == null || request.ImageByte == null || request.ImageByte.Length == 0)
+            {
+                return (BadResult("识别失败:图片不存在！"));
+            }
+
+            OCRResult ocrResult = ocrEngine.OcrService.Detect(request.ImageByte);
+            logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
+            if (string.Equals(request.ResultType, "text", StringComparison.OrdinalIgnoreCase))
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 foreach (var item in ocrResult.WordsResult)

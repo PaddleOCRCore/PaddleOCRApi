@@ -947,7 +947,24 @@
             showToast("已复制");
         });
 
-        previewImage.addEventListener("load", () => renderBoxes());
+        previewImage.addEventListener("load", () => {
+            previewImage.dataset.fallbackUsed = "";
+            renderBoxes();
+        });
+        previewImage.addEventListener("error", () => {
+            const fallback = previewImage.dataset.fallbackSource || "";
+            const primary = previewImage.dataset.primarySource || "";
+            if (fallback && previewImage.dataset.fallbackUsed !== "true" && fallback !== primary) {
+                previewImage.dataset.fallbackUsed = "true";
+                previewImage.src = fallback;
+                return;
+            }
+
+            overlay.innerHTML = "";
+            previewImage.removeAttribute("src");
+            imageWrap.hidden = true;
+            placeholder.hidden = false;
+        });
         window.addEventListener("resize", () => renderBoxes());
 
         function setFile(file) {
@@ -1051,8 +1068,9 @@
             renderMarkdownResult(markdown);
             jsonView.textContent = formatJson(result.jsonText || result.raw || result);
 
-            if (result.previewImage) {
-                previewImage.src = result.previewImage;
+            const previewSource = getPreviewImageSource(result);
+            if (previewSource) {
+                setPreviewImageSource(previewSource, result.previewImage || state.objectUrl || "");
                 placeholder.hidden = true;
                 imageWrap.hidden = false;
             }
@@ -1061,6 +1079,102 @@
             state.pageCount = result.pageCount || 1;
             updatePager();
             renderBoxes();
+        }
+
+        function getPreviewImageSource(result) {
+            const visPath = findVisPath(result);
+            return visPath || result.previewImage || "";
+        }
+
+        function setPreviewImageSource(primarySource, fallbackSource) {
+            const primary = normalizeImageSource(primarySource);
+            const fallback = normalizeImageSource(fallbackSource);
+            previewImage.dataset.primarySource = primary;
+            previewImage.dataset.fallbackSource = fallback;
+            previewImage.dataset.fallbackUsed = "";
+            previewImage.src = primary;
+        }
+
+        function findVisPath(value) {
+            const parsed = parseJsonValue(value);
+            if (!parsed || typeof parsed !== "object") {
+                return "";
+            }
+
+            const direct = readStringProperty(parsed, "vis_path") || readStringProperty(parsed, "visPath");
+            if (direct) {
+                return direct;
+            }
+
+            for (const key of ["jsonText", "raw"]) {
+                const nested = findVisPath(parsed[key]);
+                if (nested) {
+                    return nested;
+                }
+            }
+
+            if (Array.isArray(parsed)) {
+                for (const item of parsed) {
+                    const nested = findVisPath(item);
+                    if (nested) {
+                        return nested;
+                    }
+                }
+                return "";
+            }
+
+            for (const item of Object.values(parsed)) {
+                if (!item || typeof item !== "object") {
+                    continue;
+                }
+
+                const nested = findVisPath(item);
+                if (nested) {
+                    return nested;
+                }
+            }
+
+            return "";
+        }
+
+        function parseJsonValue(value) {
+            if (typeof value !== "string") {
+                return value;
+            }
+
+            const trimmed = value.trim();
+            if (!trimmed || !/^[\[{]/.test(trimmed)) {
+                return value;
+            }
+
+            try {
+                return JSON.parse(trimmed);
+            } catch {
+                return value;
+            }
+        }
+
+        function readStringProperty(source, key) {
+            const value = source && source[key];
+            return typeof value === "string" && value.trim() ? value.trim() : "";
+        }
+
+        function normalizeImageSource(source) {
+            const value = String(source || "").trim().replaceAll("\\", "/");
+            if (/^(?:data:|https?:\/\/|blob:|\/)/i.test(value)) {
+                return value;
+            }
+
+            const outputIndex = value.toLowerCase().lastIndexOf("/output/");
+            if (outputIndex >= 0) {
+                return `/${value.slice(outputIndex + 1)}`;
+            }
+
+            if (value.toLowerCase().startsWith("output/")) {
+                return `/${value}`;
+            }
+
+            return value;
         }
 
         function renderLocalPreview(file) {
@@ -1081,7 +1195,7 @@
             }
 
             state.objectUrl = URL.createObjectURL(file);
-            previewImage.src = state.objectUrl;
+            setPreviewImageSource(state.objectUrl, "");
             placeholder.hidden = true;
             imageWrap.hidden = false;
         }
