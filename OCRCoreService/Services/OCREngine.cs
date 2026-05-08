@@ -114,6 +114,7 @@ namespace OCRCoreService.Services
                 para.chart_model_dir = $"models/{_layoutConfig.chart_model_dir}";
                 para.formula_model_dir = $"models/{_layoutConfig.formula_model_dir}";
                 para.doc_unwarp_model = $"models/{_layoutConfig.doc_unwarp_model}";
+                para.region_model_dir = $"models/{_layoutConfig.region_model_dir}";
                 para.seal_model_dir = $"models/{_layoutConfig.seal_model_dir}";
                 LayoutParameter oCRParameter = new LayoutParameter();
                 oCRParameter.use_gpu = _layoutConfig.use_gpu;
@@ -130,6 +131,7 @@ namespace OCRCoreService.Services
                 oCRParameter.use_doc_unwarping = _layoutConfig.use_doc_unwarping;
 
                 oCRParameter.use_layout_detection = _layoutConfig.use_layout_detection;
+                oCRParameter.use_region_detection = _layoutConfig.use_region_detection;
                 oCRParameter.layout_nms = _layoutConfig.layout_nms;
                 oCRParameter.layout_unclip_ratio_w = _layoutConfig.layout_unclip_ratio_w;
                 oCRParameter.layout_unclip_ratio_h = _layoutConfig.layout_unclip_ratio_h;

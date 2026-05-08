@@ -35,6 +35,7 @@ namespace WinFormsApp.Services
         public static string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
         public static string chart_model_dir = "PP-Chart2Table";//图表转表模型        
         public static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
+        public static string region_model_dir = "PP-DocBlockLayout_infer";//区域检测模型
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
         private static bool visualize = true;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。
@@ -119,6 +120,7 @@ namespace WinFormsApp.Services
             para.chart_model_dir = $"models/{chart_model_dir}";
             para.formula_model_dir = $"models/{formula_model_dir}";
             para.doc_unwarp_model = $"models/{doc_unwarp_model}";
+            para.region_model_dir = $"models/{region_model_dir}";
             para.seal_model_dir = $"models/{seal_model_dir}";
 
             LayoutParameter oCRParameter = new LayoutParameter();
@@ -136,6 +138,7 @@ namespace WinFormsApp.Services
             oCRParameter.use_doc_unwarping = false;
 
             oCRParameter.use_layout_detection = true;
+            oCRParameter.use_region_detection = false;
             oCRParameter.layout_nms = true;
             oCRParameter.layout_unclip_ratio_w = 1.0f;
             oCRParameter.layout_unclip_ratio_h = 1.0f;

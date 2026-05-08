@@ -119,6 +119,7 @@ namespace PaddleOCRSDK
             string chart_model_dir = "PP-Chart2Table";
             string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
             string doc_unwarp_model = "UVDoc_infer";
+            string region_model_dir = "PP-DocBlockLayout_infer";
 
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
@@ -137,6 +138,7 @@ namespace PaddleOCRSDK
             para.chart_model_dir = $"{modelsPath}/{chart_model_dir}";
             para.doc_cls_infer = $"{modelsPath}/{doc_cls_infer}";
             para.doc_unwarp_model = $"{modelsPath}/{doc_unwarp_model}";
+            para.region_model_dir = $"{modelsPath}/{region_model_dir}";
 
             LayoutParameter oCRParameter = new LayoutParameter();
             oCRParameter.use_gpu = use_gpu;
@@ -153,6 +155,7 @@ namespace PaddleOCRSDK
             oCRParameter.use_doc_unwarping = false;
 
             oCRParameter.use_layout_detection = true;
+            oCRParameter.use_region_detection = false;
             oCRParameter.layout_nms = true;
             oCRParameter.layout_unclip_ratio_w = 1.0f;
             oCRParameter.layout_unclip_ratio_h = 1.0f;
@@ -215,6 +218,7 @@ namespace PaddleOCRSDK
                         para.chart_model_dir,
                         para.doc_cls_infer,
                         para.doc_unwarp_model,
+                        para.region_model_dir,
                         para.layoutpara);
                 }
                 else if (para.paraType == EnumParaType.StructureJson)
@@ -230,6 +234,7 @@ namespace PaddleOCRSDK
                         para.chart_model_dir,
                         para.doc_cls_infer,
                         para.doc_unwarp_model,
+                        para.region_model_dir,
                         para.json);
                 }
                 else

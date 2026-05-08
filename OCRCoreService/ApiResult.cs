@@ -150,21 +150,9 @@ namespace OCRCoreService
         /// </summary>
         public string cls_infer { get; set; }
         /// <summary>
-        /// 文档方向分类模型路径
-        /// </summary>
-        public string doc_cls_infer { get; set; }
-        /// <summary>
         /// rec_infer模型路径
         /// </summary>
         public string rec_infer { get; set; }
-        /// <summary>
-        /// 版面识别模型inference model地址
-        /// </summary>
-        public string layout_model_dir { get; set; }
-        /// <summary>
-        /// 表格识别模型inference model地址
-        /// </summary>
-        public string table_model_dir { get; set; }
         /// <summary>
         /// 是否使用GPU
         /// </summary>
@@ -261,6 +249,10 @@ namespace OCRCoreService
         /// </summary>
         public string doc_unwarp_model { get; set; } = "UVDoc_infer";
         /// <summary>
+        /// 文档图像版面子模块检测模型路径
+        /// </summary>
+        public string region_model_dir { get; set; } = "PP-DocBlockLayout_infer";
+        /// <summary>
         /// 是否使用GPU
         /// </summary>
         public bool use_gpu { get; set; } = false;
@@ -308,6 +300,10 @@ namespace OCRCoreService
         /// 是否启用版面检测
         /// </summary>
         public bool use_layout_detection { get; set; } = true;
+        /// <summary>
+        /// 是否启用文档图像版面子模块检测
+        /// </summary>
+        public bool use_region_detection { get; set; } = false;
         /// <summary>
         /// 是否启用版面NMS
         /// </summary>
@@ -364,34 +360,6 @@ namespace OCRCoreService
         /// 是否输出markdown
         /// </summary>
         public bool output_markdown { get; set; } = true;
-
-        /// <summary>
-        /// 在未配置LayoutConfig时兼容复用OCRConfig的通用模型和硬件参数
-        /// </summary>
-        public static LayoutConfig FromOCRConfig(OCRConfig? ocrConfig)
-        {
-            LayoutConfig config = new LayoutConfig();
-            if (ocrConfig == null)
-            {
-                return config;
-            }
-
-            config.det_infer = ocrConfig.det_infer ?? config.det_infer;
-            config.cls_infer = ocrConfig.cls_infer ?? config.cls_infer;
-            config.doc_cls_infer = ocrConfig.doc_cls_infer ?? config.doc_cls_infer;
-            config.rec_infer = ocrConfig.rec_infer ?? config.rec_infer;
-            config.layout_model_dir = ocrConfig.layout_model_dir ?? config.layout_model_dir;
-            config.table_model_dir = ocrConfig.table_model_dir ?? config.table_model_dir;
-            config.use_gpu = ocrConfig.use_gpu;
-            config.use_tensorrt = ocrConfig.use_tensorrt;
-            config.gpu_id = ocrConfig.gpu_id;
-            config.gpu_mem = ocrConfig.gpu_mem;
-            config.cpu_mem = ocrConfig.cpu_mem;
-            config.cpu_threads = ocrConfig.cpu_threads;
-            config.enable_mkldnn = ocrConfig.enable_mkldnn;
-            config.use_textline_orientation = ocrConfig.use_cls;
-            return config;
-        }
     }
 
     /// <summary>
@@ -454,5 +422,26 @@ namespace OCRCoreService
         /// yaml配置文件路径
         /// </summary>
         public string yaml_path { get; set; } = "configs/PaddleOCR-VL-1.5.yaml";
+    }
+
+    /// <summary>
+    /// API认证配置
+    /// </summary>
+    public class ApiAuthConfig
+    {
+        /// <summary>
+        /// 是否启用API认证鉴权
+        /// </summary>
+        public bool enabled { get; set; } = false;
+
+        /// <summary>
+        /// API Key请求头名称
+        /// </summary>
+        public string header_name { get; set; } = "PaddleOCR-Api-Key";
+
+        /// <summary>
+        /// API Key密钥
+        /// </summary>
+        public string api_key { get; set; } = "";
     }
 }

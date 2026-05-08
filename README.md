@@ -211,6 +211,7 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | use_doc_unwarping            | false  | 是否使用文档矫正                                                                         |
 | **版面检测参数**             | --     | -- |
 | use_layout_detection         | true   | 是否使用版面检测                                                                         |
+| use_region_detection         | false  | 是否使用区域检测                                                                         |
 | layout_threshold             | 0.5    | 版面检测阈值                                                                             |
 | layout_nms                   | true   | 是否使用版面非极大值抑制                                                                 |
 | layout_unclip_ratio_w        | 1.0    | 版面框水平扩展比例                                                                       |

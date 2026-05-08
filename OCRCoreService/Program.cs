@@ -36,11 +36,8 @@ try
     builder.Services.AddEndpointsApiExplorer();
     var ocrConfig = builder.Configuration.GetSection("OCRConfig").Get<OCRConfig>();
     if (ocrConfig != null) builder.Services.AddSingleton(ocrConfig);
-    var layoutConfigSection = builder.Configuration.GetSection("LayoutConfig");
-    var layoutConfig = layoutConfigSection.Exists()
-        ? layoutConfigSection.Get<LayoutConfig>() ?? new LayoutConfig()
-        : LayoutConfig.FromOCRConfig(ocrConfig);
-    builder.Services.AddSingleton(layoutConfig);
+    var layoutConfig = builder.Configuration.GetSection("LayoutConfig").Get<LayoutConfig>();
+    if (layoutConfig != null) builder.Services.AddSingleton(layoutConfig);
     //检测模型依赖注入
     builder.Services.AddSingleton<IOCRService, OCRService>();
     builder.Services.AddSingleton<OCREngine>();
@@ -128,6 +125,9 @@ try
     // 网页显示中文
     builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
     builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+    var apiAuthConfig = builder.Configuration.GetSection("ApiAuth").Get<ApiAuthConfig>() ?? new ApiAuthConfig();
+    builder.Services.AddSingleton(apiAuthConfig);
+    builder.Services.AddAuthorization();
 
     //使用本地缓存必须添加
     builder.Services.AddMemoryCache();
@@ -137,7 +137,7 @@ try
         //options.Filters.Add<WebApiActionAttribute>();//改为在接口中单独引用，上传文件接口无法使用此方法
         options.Filters.Add<ApiErrorHandleAttribute>();
     });
-    builder.Services.AddSwagger();
+    builder.Services.AddSwagger(builder.Configuration);
 
     var app = builder.Build();
 
@@ -174,7 +174,7 @@ try
     app.UseStaticFiles();
     app.UseRouting();
 
-    app.UseAuthentication();
+    app.UseMiddleware<ApiKeyAuthMiddleware>();
     app.UseAuthorization();
 
     app.MapDefaultControllerRoute();

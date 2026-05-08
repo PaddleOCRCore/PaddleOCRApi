@@ -206,6 +206,7 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | use_doc_unwarping            | false   | Whether to use document unwarping                                                             |
 | **Layout Detection**         | --      | --                                                                                            |
 | use_layout_detection         | true    | Whether to use layout detection                                                               |
+| use_region_detection         | false   | Whether to use region detection                                                               |
 | layout_threshold             | 0.5     | Layout detection threshold                                                                    |
 | layout_nms                   | true    | Whether to use layout non-maximum suppression                                                 |
 | layout_unclip_ratio_w        | 1.0     | Layout box horizontal expansion ratio                                                         |

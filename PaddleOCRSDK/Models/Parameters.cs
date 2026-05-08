@@ -81,6 +81,10 @@ namespace PaddleOCRSDK
         /// </summary>
         public string doc_unwarp_model { get; set; }
         /// <summary>
+        /// 文档图像版面子模块检测模型路径（可选）
+        /// </summary>
+        public string region_model_dir { get; set; }
+        /// <summary>
         /// 参数类型
         /// </summary>
         public EnumParaType paraType { get; set; }
@@ -212,7 +216,6 @@ namespace PaddleOCRSDK
         public int cls_batch_num { get; set; } = 1;
         #endregion
 
-
         #region 文字识别模型设置
         /// <summary>
         /// 文字识别模型批量识别数量
@@ -266,9 +269,13 @@ namespace PaddleOCRSDK
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_doc_unwarping { get; set; } = false;
 
-        // 版面检测参数
+        // 是否启用版面检测
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_layout_detection { get; set; } = true;
+
+        // 是否启用文档图像版面子模块检测
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_region_detection { get; set; } = false;
         public float layout_threshold { get; set; } = 0.5f;
         [field: MarshalAs(UnmanagedType.I1)]
         public bool layout_nms { get; set; } = true;

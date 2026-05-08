@@ -161,6 +161,7 @@ namespace PaddleOCRSDK
         /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
+        /// <param name="region_model_dir">区域检测模型目录路径(可选，NULL表示不使用)</param>
         /// <param name="tablepara"></param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
@@ -175,6 +176,7 @@ namespace PaddleOCRSDK
             string chart_model_dir,
             string doc_cls_infer,
             string doc_unwarp_model,
+            string region_model_dir,
             LayoutParameter tablepara);
         // ==================== 扩展的版面结构识别API (支持20类文档元素) ====================
         // 包含：文档预处理、版面检测、全局OCR、条件识别(表格/公式/印章/图表)、结果融合、版面排序
@@ -193,6 +195,7 @@ namespace PaddleOCRSDK
         /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
+        /// <param name="region_model_dir">区域检测模型目录路径(可选，NULL表示不使用)</param>
         /// <param name="parjson">json参数</param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
@@ -207,6 +210,7 @@ namespace PaddleOCRSDK
             string chart_model_dir,
             string doc_cls_infer,
             string doc_unwarp_model,
+            string region_model_dir,
             string parjson);
         /// <summary>
         /// 执行文档版面分析（扩展版本）

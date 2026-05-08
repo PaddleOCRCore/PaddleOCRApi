@@ -205,6 +205,7 @@ extern "C" {
     /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
     /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
     /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
+    /// <param name="region_model_dir">区域检测模型目录路径(可选，NULL表示不使用)</param>
     /// <param name="parameter">LayoutParameter参数结构体（值传递，参考Init中OCRParameter的模式）</param>
     /// <returns>初始化成功返回true，失败返回false</returns>
     Paddle_API bool CALL_CONV InitStructure(
@@ -218,6 +219,7 @@ extern "C" {
         const char* chart_model_dir,
         const char* doc_cls_infer,
         const char* doc_unwarp_model,
+        const char* region_model_dir,
         const LayoutParameter parameter
     );
 
@@ -235,6 +237,7 @@ extern "C" {
         const char* chart_model_dir,
         const char* doc_cls_infer,
         const char* doc_unwarp_model,
+        const char* region_model_dir,
         const char* parameterjson
     );
 

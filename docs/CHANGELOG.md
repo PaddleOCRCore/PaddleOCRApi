@@ -2,7 +2,7 @@
 
 ## v4.3.0 `2026.4.29`
 - ✅ **重大更新**: PaddleOCR.dll新增PP-Structure版面结构识别模块，支持20类文档元素综合识别（版面检测、表格识别、公式识别、印章识别、图表转表等）
-- ✅ **新增接口**: PaddleOCR.dll新增`InitStructure`/`InitStructurejson`初始化接口，支持11个模型路径参数（文本检测、方向分类、文本识别、版面分析、表格、公式、印章、图表、文档方向、文档矫正）,删除原有表格识别接口
+- ✅ **新增接口**: PaddleOCR.dll新增`InitStructure`/`InitStructurejson`初始化接口，支持12个模型路径参数（文本检测、方向分类、文本识别、版面分析、表格、公式、印章、图表、文档方向、文档矫正、区域检测）,删除原有表格识别接口
 - ✅ **新增接口**: 新增`DetectLayout`/`DetectLayoutMat`/`DetectLayoutByte`/`DetectLayoutBase64`四个版面分析接口，支持File/Mat/Byte/Base64四种输入方式
 - ✅ **新增接口**: OCR标准识别新增`DetectScreenShot`接口，专门用于内存截图场景的OCR识别
 - ✅ **架构优化**: 优化VL视觉语言模型`llamaocr-vl.dll`，同时支持版面检测、表格识别、公式识别、印章识别、图表转表等，提升模块化程度

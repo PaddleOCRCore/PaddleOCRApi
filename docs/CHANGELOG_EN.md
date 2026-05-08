@@ -2,7 +2,7 @@
 
 ## v4.3.0 `2026.4.29`
 - ✅ **Major Update**: Added PP-Structure document layout analysis module to PaddleOCR.dll, supporting comprehensive recognition of 20 document element types (layout detection, table recognition, formula recognition, seal recognition, chart-to-table conversion, etc.)
-- ✅ **New Interfaces**: Added `InitStructure`/`InitStructurejson` initialization interfaces to PaddleOCR.dll, supporting 11 model path parameters (text detection, orientation classification, text recognition, layout analysis, table, formula, seal, chart, document orientation, document rectification); removed the original table recognition interface
+- ✅ **New Interfaces**: Added `InitStructure`/`InitStructurejson` initialization interfaces to PaddleOCR.dll, supporting 12 model path parameters (text detection, orientation classification, text recognition, layout analysis, table, formula, seal, chart, document orientation, document rectification, region detection); removed the original table recognition interface
 - ✅ **New Interfaces**: Added four layout analysis interfaces: `DetectLayout`/`DetectLayoutMat`/`DetectLayoutByte`/`DetectLayoutBase64`, supporting File/Mat/Byte/Base64 input methods
 - ✅ **New Interface**: Added `DetectScreenShot` interface to standard OCR recognition, specifically designed for memory screenshot scenarios
 - ✅ **Architecture Optimization**: Optimized VL vision-language model `llamaocr-vl.dll`, now also supporting layout detection, table recognition, formula recognition, seal recognition, chart-to-table conversion, enhancing modularity
