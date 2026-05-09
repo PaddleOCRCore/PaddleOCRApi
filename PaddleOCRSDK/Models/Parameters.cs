@@ -247,71 +247,177 @@ namespace PaddleOCRSDK
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class LayoutParameter
     {
-        // 基础运行参数
+        #region 基础运行参数
+        /// <summary>
+        /// 是否使用GPU推理；false时使用CPU。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_gpu { get; set; } = false;
+        /// <summary>
+        /// GPU设备编号，use_gpu为true时生效。
+        /// </summary>
         public int gpu_id { get; set; } = 0;
+        /// <summary>
+        /// GPU显存上限，单位MB，供推理引擎分配参考。
+        /// </summary>
         public int gpu_mem { get; set; } = 4000;
+        /// <summary>
+        /// 是否启用TensorRT加速，通常需要GPU。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_tensorrt { get; set; } = false;
+        /// <summary>
+        /// CPU内存阈值，单位MB，0表示不限制。
+        /// </summary>
         public int cpu_mem { get; set; } = 0;
+        /// <summary>
+        /// CPU推理线程数。
+        /// </summary>
         public int cpu_threads { get; set; } = 30;
+        /// <summary>
+        /// CPU场景是否启用MKLDNN加速。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool enable_mkldnn { get; set; } = true;
+        /// <summary>
+        /// 是否输出可视化结果图。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool visualize { get; set; } = false;
+        #endregion
 
-        // 文档预处理参数
+        #region 文档预处理参数
+        /// <summary>
+        /// 是否启用文档预处理总开关。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_doc_preprocessor { get; set; } = true;
+        /// <summary>
+        /// 是否启用文档方向分类，支持0/90/180/270度方向。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_doc_orientation_classify { get; set; } = true;
+        /// <summary>
+        /// 是否启用文档去畸变或展平。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_doc_unwarping { get; set; } = false;
+        #endregion
 
-        // 是否启用版面检测
+        #region 版面检测参数
+        /// <summary>
+        /// 是否执行版面检测；false时不产出版面框。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_layout_detection { get; set; } = true;
-
-        // 是否启用文档图像版面子模块检测
+        /// <summary>
+        /// 是否执行PaddleX RegionDetection大区块检测。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_region_detection { get; set; } = false;
+        /// <summary>
+        /// 版面检测全局阈值。
+        /// </summary>
         public float layout_threshold { get; set; } = 0.5f;
+        /// <summary>
+        /// 版面框后处理NMS开关。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool layout_nms { get; set; } = true;
+        /// <summary>
+        /// 版面框宽度扩张系数。
+        /// </summary>
         public float layout_unclip_ratio_w { get; set; } = 1.0f;
+        /// <summary>
+        /// 版面框高度扩张系数。
+        /// </summary>
         public float layout_unclip_ratio_h { get; set; } = 1.0f;
+        #endregion
 
-        // OCR参数
+        #region OCR参数
+        /// <summary>
+        /// 是否执行整图OCR，供版面块文本融合使用。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool run_ocr_after_layout { get; set; } = true;
+        /// <summary>
+        /// OCR检测阈值，越高召回越低，精度通常更高。
+        /// </summary>
         public float text_det_thresh { get; set; } = 0.3f;
+        /// <summary>
+        /// OCR识别分数阈值，低于该值的文本会被过滤。
+        /// </summary>
         public float text_rec_score_thresh { get; set; } = 0.5f;
+        /// <summary>
+        /// 文本行方向分类开关。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_textline_orientation { get; set; } = true;
+        /// <summary>
+        /// OCR检测缩放最大长边限制。
+        /// </summary>
         public int max_side_len { get; set; } = 960;
+        #endregion
 
-        // 条件识别参数
+        #region 条件识别参数
+        /// <summary>
+        /// 是否启用表格结构识别，run_ocr_after_layout为true时生效。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_table_recognition { get; set; } = true;
+        /// <summary>
+        /// 是否启用印章识别，run_ocr_after_layout为true时生效。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_seal_recognition { get; set; } = false;
+        /// <summary>
+        /// 是否启用公式识别并输出LaTeX，run_ocr_after_layout为true时生效。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_formula_recognition { get; set; } = true;
+        /// <summary>
+        /// 是否启用图表转表识别，run_ocr_after_layout为true时生效。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_chart_recognition { get; set; } = false;
+        /// <summary>
+        /// 印章检测限边长。
+        /// </summary>
         public int seal_det_limit_side_len { get; set; } = 736;
+        /// <summary>
+        /// 印章检测限边方式：0=min，1=max。
+        /// </summary>
         public int seal_det_limit_type { get; set; } = 0;
+        /// <summary>
+        /// 印章检测阈值。
+        /// </summary>
         public float seal_det_thresh { get; set; } = 0.2f;
+        /// <summary>
+        /// 印章检测框阈值。
+        /// </summary>
         public float seal_det_box_thresh { get; set; } = 0.6f;
+        /// <summary>
+        /// 印章检测扩框系数。
+        /// </summary>
         public float seal_det_unclip_ratio { get; set; } = 0.5f;
+        /// <summary>
+        /// 印章识别分数阈值。
+        /// </summary>
         public float seal_rec_score_thresh { get; set; } = 0.0f;
+        #endregion
 
-        // 输出参数
+        #region 输出参数
+        /// <summary>
+        /// block_content是否按可读格式输出，例如Markdown片段。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool format_block_content { get; set; } = false;
+        /// <summary>
+        /// 是否在DetectLayout返回的JSON中附带markdown字段。
+        /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool output_markdown { get; set; } = true;
+        #endregion
     }
     /// <summary>
     /// OCR动态可修改参数
