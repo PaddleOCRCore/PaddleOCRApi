@@ -29,7 +29,7 @@ namespace WinFormsApp.Services
         public static string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
         public static string cls_infer = "PP-LCNet_x1_0_textline_ori";//文本方向分类模块
         public static string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";//文档图像方向分类模块
-        public static string layout_model_dir = "PP-DocLayoutV2_infer";//版面识别模型inference
+        public static string layout_model_dir = "PP-DocLayoutV3_infer";//版面识别模型inference
         public static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
         public static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
         public static string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  

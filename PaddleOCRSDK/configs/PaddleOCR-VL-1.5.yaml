@@ -1,4 +1,4 @@
-pipeline_name: PaddleOCR-VL-1.5 # 流水线名称（当前 DLL 不使用）
+﻿pipeline_name: PaddleOCR-VL-1.5 # 流水线名称（当前 DLL 不使用）
 batch_size: 64 # 文档级批处理大小（当前 DLL 不使用）
 use_queues: true # 是否启用流水线队列并行（当前 DLL 不使用）
 
@@ -6,12 +6,13 @@ use_queues: true # 是否启用流水线队列并行（当前 DLL 不使用）
 use_gpu: true # 是否使用 GPU
 
 # 流水线功能开关
-use_doc_preprocessor: true # 是否启用文档预处理子流水线（方向分类+去畸变）总开关，仅 DocAnalyser 路径生效
+use_doc_preprocessor: false # 是否启用文档预处理子流水线（方向分类+去畸变）总开关，仅 DocAnalyser 路径生效
 use_layout_detection: true # 是否启用版面检测
-use_seal_recognition: true # 是否启用印章识别
+use_seal_recognition: false # 是否启用印章识别
 use_ocr_for_image_block: false # 是否对 image 类块执行 OCR
+output_markdown: true # 是否在版面识别返回的JSON中附带markdown字段
 format_block_content: false # 是否格式化块内容
-save_debug_artifacts: true # 是否保存调试中间产物
+visualize: true # 是否对结果进行可视化
 enable_log: true # 是否启用日志（true：调试信息输出到控制台+Log目录日志文件；false：仅警告/错误输出到控制台）
 
 # Markdown 输出中要忽略的版面标签
@@ -31,12 +32,13 @@ SubModules:
     model_dir: models/PP-DocLayoutV2_infer # 版面检测模型目录
     batch_size: 8 # 子模块批大小（当前 DLL 不使用）
     threshold: 0.3 # 检测阈值
-    formula_threshold: 0.01 # 公式类单独检测阈值；试卷场景下小公式/行内公式通常需要低于总阈值
     layout_nms: true # 是否开启同类框 NMS
+    layout_shape_mode: auto # 坐标形态模式（auto/rect/quad/poly）
+    use_textline_orientation: true # Spotting 为空时启用180度兜底重试，类似PaddleOCR角度分类兜底语义
+    text_det_limit_side_len: 960 # Spotting 前长边限制，过大图像按比例缩放到该上限
     merge_layout_blocks: true # 是否启用版面块合并后处理
     sort_layout_elements: false # 版面识别后按阅读顺序排序（从上到下、从左到右，基于行重叠聚类）
     sort_col_tol: 10.0 # 中间步骤排序时判断"同行"的 Y 轴容差（像素），仅影响 merge/filter 步骤；最终阅读顺序排序使用重叠聚类
-    split_nested_formulas: true # 公式分离：true 时保留文本块内的公式块并单独识别，JSON 中标记 is_sub_block 和 parent_block_id
     layout_unclip_ratio: [1.0, 1.0] # 检测框扩张比例 [x, y]
     layout_merge_bboxes_mode: # 各类框合并策略（union / large）
       0: "union" # abstract
@@ -101,10 +103,11 @@ SubPipelines:
       DocOrientationClassify:
         module_name: doc_text_orientation # 子模块类型（当前 DLL 不使用该字段）
         model_name: PP-LCNet_x1_0_doc_ori # 模型名（当前 DLL 不使用该字段）
-        model_dir: models/PP-LCNet_x1_0_doc_ori_infer # 方向分类模型目录（仅 DocAnalyser 路径读取）
+        model_dir: models/PP-LCNet_x1_0_doc_ori_infer # 方向分类模型目录
         batch_size: 8 # 子模块批大小（当前 DLL 不使用）
       DocUnwarping:
         module_name: image_unwarping # 子模块类型（当前 DLL 不使用该字段）
         model_name: UVDoc # 模型名（当前 DLL 不使用该字段）
-        model_dir: models/UVDoc_infer # 去畸变模型目录（仅 DocAnalyser 路径读取）
+        model_dir: models/UVDoc_infer # 去畸变模型目录
+
 

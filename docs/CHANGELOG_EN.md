@@ -9,7 +9,7 @@
 - ✅ **Documentation Update**: Comprehensively updated `PaddleOCR.dll接口清单.md`, adding detailed parameter descriptions and usage notes for all interfaces
 - ✅ **Code Optimization**: Released PaddleOCRSDK v4.3.0; aligned OCRSDK.cs, UVDocSDK.cs, and OCRVLSDK.cs with new interfaces
 - ✅ **NuGet Package Release**: Released PaddleOCRRuntime_x64 v4.3.1, including paddle 3.3.0 CPU inference library, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies
-- ⚠️ **Important Note**: PP-Structure requires downloading related models separately (PP-DocLayoutV2_infer, SLANet_plus, formula/seal/chart models, etc.)
+- ⚠️ **Important Note**: PP-Structure requires downloading related models separately (PP-DocLayoutV3_infer, SLANet_plus, formula/seal/chart models, etc.)
 
 ## v4.2.0 `2026.4.13`
 - ✅ Added OCR-VL vision-language recognition module powered by the Llama inference engine (llamaocr-vl.dll). Supports mainstream VLM-based OCR models including PaddleOCR-VL-1.5-GGUF, DeepSeek-OCR-GGUF, Qwen2-VL-OCR-GGUF, and FireRed-OCR-GGUF. More GGUF-format models available at: https://www.modelscope.cn/models?name=OCR%20GGUF

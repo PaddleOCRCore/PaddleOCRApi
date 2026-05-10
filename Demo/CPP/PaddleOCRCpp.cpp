@@ -64,7 +64,7 @@ int main() {
     string rec_infer = "models/PP-OCRv5_mobile_rec_infer";
     string cls_infer = "models/PP-LCNet_x1_0_textline_ori";
 
-    string layout_model_dir = "models/PP-DocLayoutV2_infer";
+    string layout_model_dir = "models/PP-DocLayoutV3_infer";
     string table_model_dir = "models/PP-SLANet_plus_infer";
     string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";//文档图像方向分类模块
     string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型

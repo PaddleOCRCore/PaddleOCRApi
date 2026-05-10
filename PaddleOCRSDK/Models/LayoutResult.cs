@@ -93,12 +93,6 @@ namespace PaddleOCRSDK
 
         [JsonProperty("block_content")]
         public string BlockContent { get; set; }
-
-        [JsonProperty("is_sub_block")]
-        public bool? IsSubBlock { get; set; }
-
-        [JsonProperty("parent_block_id")]
-        public int? ParentBlockId { get; set; }
     }
 
     public class LayoutPoint

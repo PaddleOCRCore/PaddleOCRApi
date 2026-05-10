@@ -1,4 +1,4 @@
-﻿pipeline_name: Qwen3VL-2B # 流水线名称（当前 DLL 不使用）
+﻿pipeline_name: FireRed-OCR # 流水线名称
 batch_size: 64 # 文档级批处理大小（当前 DLL 不使用）
 use_queues: true # 是否启用流水线队列并行（当前 DLL 不使用）
 
@@ -69,9 +69,9 @@ SubModules:
 
   VLRecognition:
     module_name: vl_recognition # 子模块类型（当前 DLL 不使用该字段）
-    model_name: Qwen3VL-4B-Instruct-GGUF # VL 模型名（当前 DLL 不使用该字段）
-    model_dir: models/Qwen3VL-4B-Instruct-Q8_0.gguf # VL 主模型路径（GGUF 格式）
-    mmproj_path: models/mmproj-Qwen3VL-4B-Instruct-Q8_0.gguf # VL 视觉投影模型路径（GGUF 格式）
+    model_name: FireRed-OCR-gguf # VL 模型名（当前 DLL 不使用该字段）
+    model_dir: models/FireRed-OCR.Q8_0.gguf # VL 主模型路径（GGUF 格式）
+    mmproj_path: models/FireRed-OCR.mmproj-q8_0.gguf # VL 视觉投影模型路径（GGUF 格式）
     batch_size: -1 # 子模块批大小（当前 DLL 不使用）
     prompts: # 各类型区块的识别提示词（PaddleX 标准 YAML 中内置，此处可自定义覆盖）
       text_prompt: "OCR,只返回识别的内容。" # 普通文本识别提示词

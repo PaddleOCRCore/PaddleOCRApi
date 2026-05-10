@@ -9,7 +9,7 @@
 - ✅ **文档更新**: 全面更新`PaddleOCR.dll接口清单.md`，补充所有接口的详细参数说明和使用注意事项
 - ✅ **代码优化**: PaddleOCRSDK发布 v4.3.0,OCRSDK.cs、UVDocSDK.cs、OCRVLSDK.cs三个SDK文件对齐新接口
 - ✅ **发布NuGet包**: PaddleOCRRuntime_x64 v4.3.1，包含 paddle 3.3.0 CPU 推理库、PaddleOCR.dll、llamaocr-vl.dll 及全部依赖。
-- ⚠️ **重要提示**: PP-Structure需要自行下载相关模型（PP-DocLayoutV2_infer、SLANet_plus、公式/印章/图表模型等）
+- ⚠️ **重要提示**: PP-Structure需要自行下载相关模型（PP-DocLayoutV3_infer、SLANet_plus、公式/印章/图表模型等）
 
 ## v4.2.0 `2026.4.13`
 - ✅ 新增 OCR-VL 视觉语言识别模块，基于 Llama 推理引擎（llamaocr-vl.dll），支持 PaddleOCR-VL-1.5-GGUF、DeepSeek-OCR-GGUF、Qwen2-VL-OCR-GGUF、FireRed-OCR-GGUF 等主流视觉语言 OCR 模型，更多 GGUF 格式模型可访问：https://www.modelscope.cn/models?name=OCR%20GGUF
@@ -18,7 +18,7 @@
 - ✅ WinFormsApp Demo 新增 OCR-VL 识别界面，支持指定提示词进行通用识别和版面分析识别。
 - ✅ 发布 NuGet 包 PaddleOCRSDK v4.2.0，对齐最新接口。
 - ✅ 发布 NuGet 包 PaddleOCRRuntime_x64 v4.2.0，包含 paddle 3.3.0 CPU 推理库、PaddleOCR.dll、llamaocr-vl.dll 及全部依赖。
-- ✅ OCR-VL识别请自行下载PP-DocLayoutV2_infer及GGUF模型
+- ✅ OCR-VL识别请自行下载PP-DocLayoutV3_infer及GGUF模型
 
 ## v4.1.1 `2026.2.3`
 - ✅ 优化PaddleOCR.dll，增加PaddleOCR多实例识别引擎，数量自定义，适合高并发情况使用，优化内存，修复有时识别为空问题，增加截图传入图片识别。

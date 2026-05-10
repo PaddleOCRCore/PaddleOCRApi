@@ -112,7 +112,7 @@ namespace PaddleOCRSDK
                 rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
             }
             string cls_infer = "PP-LCNet_x1_0_textline_ori";
-            string layout_model_dir = "PP-DocLayoutV2_infer";
+            string layout_model_dir = "PP-DocLayoutV3_infer";
             string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型
             string formula_model_dir = "LaTeX_OCR_rec_infer";
             string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";

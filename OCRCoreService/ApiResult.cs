@@ -227,7 +227,7 @@ namespace OCRCoreService
         /// <summary>
         /// 版面识别模型inference model地址
         /// </summary>
-        public string layout_model_dir { get; set; } = "PP-DocLayoutV2_infer";
+        public string layout_model_dir { get; set; } = "PP-DocLayoutV3_infer";
         /// <summary>
         /// 表格识别模型inference model地址
         /// </summary>
