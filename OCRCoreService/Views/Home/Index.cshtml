@@ -831,12 +831,20 @@
                 processEscapes: true
             },
             options: {
+                enableMenu: false,
+                enableExplorer: false,
                 skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]
             },
-            chtml: {
-                linebreaks: {
-                    automatic: true
-                }
+            sre: {
+                speech: "none"
+            },
+            a11y: {
+                speech: false,
+                voicing: false,
+                braille: false,
+                brailleSpeech: false,
+                explorer: false,
+                assistiveMml: false
             },
             startup: {
                 typeset: false
@@ -1268,7 +1276,7 @@
         }
 
         function parseMarkdown(markdown) {
-            const protectedSource = protectMath(normalizeRenderableHtml(String(markdown || "")));
+            const protectedSource = protectMath(normalizeMathDelimiters(normalizeRenderableHtml(String(markdown || ""))));
             const source = protectedSource.text;
             let html = "";
             if (window.marked && typeof window.marked.parse === "function") {
@@ -1283,6 +1291,11 @@
 
             html = `<pre><code>${escapeHtml(source)}</code></pre>`;
             return restoreMath(html, protectedSource.tokens);
+        }
+
+        function normalizeMathDelimiters(source) {
+            return String(source || "")
+                .replace(/\\{2}([()[\]])/g, "\\$1");
         }
 
         function protectMath(source) {
@@ -1312,12 +1325,24 @@
                 tex = source.slice(1, -1);
             }
 
+            tex = normalizeMathTex(tex);
+
             return {
                 source,
                 tex,
+                normalizedSource: buildMathSource(tex, display),
                 display,
                 valid: isRenderableMath(tex)
             };
+        }
+
+        function buildMathSource(tex, display) {
+            return display ? `\\[${tex}\\]` : `\\(${tex}\\)`;
+        }
+
+        function normalizeMathTex(tex) {
+            return String(tex || "")
+                .replace(/\\{2}(?=[A-Za-z{}])/g, "\\");
         }
 
         function isRenderableMath(tex) {
@@ -1351,7 +1376,7 @@
         function restoreMath(html, tokens) {
             return tokens.reduce((result, token, index) => {
                 const replacement = token.valid
-                    ? `<span class="mathjax-source" data-math-tex="${escapeAttribute(token.tex)}" data-math-display="${token.display ? "true" : "false"}">${escapeHtml(token.source)}</span>`
+                    ? `<span class="mathjax-source">${escapeHtml(token.normalizedSource)}</span>`
                     : escapeHtml(token.source);
                 return result.replaceAll(`@@MATH_${index}@@`, replacement);
             }, html);
@@ -1410,27 +1435,13 @@
 
         function renderMathContent(element) {
             const sources = Array.from(element.querySelectorAll(".mathjax-source"));
-            if (sources.length && typeof MathJax.tex2chtmlPromise === "function") {
-                clearMath(element);
-                if (typeof MathJax.texReset === "function") {
-                    MathJax.texReset();
+            if (sources.length) {
+                for (const source of sources) {
+                    source.replaceWith(document.createTextNode(source.textContent || ""));
                 }
-
-                return Promise.all(sources.map(renderMathSource)).then(() => {});
             }
 
             return typesetMath(element);
-        }
-
-        function renderMathSource(node) {
-            const tex = node.getAttribute("data-math-tex") || "";
-            const display = node.getAttribute("data-math-display") === "true";
-            return MathJax.tex2chtmlPromise(tex, { display }).then(math => {
-                node.replaceWith(math);
-            }).catch(error => {
-                console.warn("MathJax formula render failed", error);
-                node.replaceWith(document.createTextNode(node.textContent || ""));
-            });
         }
 
         function clearMath(element) {
