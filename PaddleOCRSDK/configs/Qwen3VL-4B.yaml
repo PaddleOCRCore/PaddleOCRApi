@@ -8,7 +8,6 @@ use_gpu: true # 是否使用 GPU
 # 流水线功能开关
 use_doc_preprocessor: true # 是否启用文档预处理子流水线（方向分类+去畸变）总开关，仅 DocAnalyser 路径生效
 use_layout_detection: true # 是否启用版面检测
-use_chart_recognition: true # 是否启用图表识别
 use_seal_recognition: true # 是否启用印章识别
 use_ocr_for_image_block: false # 是否对 image 类块执行 OCR
 format_block_content: false # 是否格式化块内容

@@ -158,7 +158,6 @@ namespace PaddleOCRSDK
         /// <param name="table_model_dir">表格识别模型目录路径</param>
         /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
         /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
-        /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
         /// <param name="region_model_dir">区域检测模型目录路径(可选，NULL表示不使用)</param>
@@ -173,7 +172,6 @@ namespace PaddleOCRSDK
             string table_model_dir,
             string formula_model_dir,
             string seal_model_dir,
-            string chart_model_dir,
             string doc_cls_infer,
             string doc_unwarp_model,
             string region_model_dir,
@@ -192,7 +190,6 @@ namespace PaddleOCRSDK
         /// <param name="table_model_dir">表格识别模型目录路径</param>
         /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
         /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
-        /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
         /// <param name="region_model_dir">区域检测模型目录路径(可选，NULL表示不使用)</param>
@@ -207,7 +204,6 @@ namespace PaddleOCRSDK
             string table_model_dir,
             string formula_model_dir,
             string seal_model_dir,
-            string chart_model_dir,
             string doc_cls_infer,
             string doc_unwarp_model,
             string region_model_dir,

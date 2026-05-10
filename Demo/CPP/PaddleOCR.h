@@ -202,7 +202,6 @@ extern "C" {
     /// <param name="table_model_dir">表格识别模型目录路径</param>
     /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
     /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
-    /// <param name="chart_model_dir">图表转表模型路径(可选，NULL表示不使用)</param>
     /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
     /// <param name="doc_unwarp_model">文档图像矫正模型路径(可选，NULL表示不使用)</param>
     /// <param name="region_model_dir">区域检测模型目录路径(可选，NULL表示不使用)</param>
@@ -216,7 +215,6 @@ extern "C" {
         const char* table_model_dir,
         const char* formula_model_dir,
         const char* seal_model_dir,
-        const char* chart_model_dir,
         const char* doc_cls_infer,
         const char* doc_unwarp_model,
         const char* region_model_dir,
@@ -234,7 +232,6 @@ extern "C" {
         const char* table_model_dir,
         const char* formula_model_dir,
         const char* seal_model_dir,
-        const char* chart_model_dir,
         const char* doc_cls_infer,
         const char* doc_unwarp_model,
         const char* region_model_dir,

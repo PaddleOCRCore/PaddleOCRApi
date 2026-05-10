@@ -69,9 +69,6 @@ namespace PaddleOCRSDK
 
         [JsonProperty("use_formula_recognition")]
         public bool? UseFormulaRecognition { get; set; }
-
-        [JsonProperty("use_chart_recognition")]
-        public bool? UseChartRecognition { get; set; }
     }
 
     public class LayoutBlockResult

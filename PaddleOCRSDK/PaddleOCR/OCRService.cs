@@ -116,7 +116,6 @@ namespace PaddleOCRSDK
             string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型
             string formula_model_dir = "LaTeX_OCR_rec_infer";
             string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";
-            string chart_model_dir = "PP-Chart2Table";
             string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
             string doc_unwarp_model = "UVDoc_infer";
             string region_model_dir = "PP-DocBlockLayout_infer";
@@ -135,7 +134,6 @@ namespace PaddleOCRSDK
             para.table_model_dir = $"{modelsPath}/{table_model_dir}";
             para.formula_model_dir = $"{modelsPath}/{formula_model_dir}";
             para.seal_model_dir = $"{modelsPath}/{seal_model_dir}";
-            para.chart_model_dir = $"{modelsPath}/{chart_model_dir}";
             para.doc_cls_infer = $"{modelsPath}/{doc_cls_infer}";
             para.doc_unwarp_model = $"{modelsPath}/{doc_unwarp_model}";
             para.region_model_dir = $"{modelsPath}/{region_model_dir}";
@@ -169,7 +167,6 @@ namespace PaddleOCRSDK
             oCRParameter.use_table_recognition = true;
             oCRParameter.use_seal_recognition = false;
             oCRParameter.use_formula_recognition = true;
-            oCRParameter.use_chart_recognition = false;
 
             oCRParameter.format_block_content = false;
             oCRParameter.output_markdown = true;
@@ -215,7 +212,6 @@ namespace PaddleOCRSDK
                         para.table_model_dir,
                         para.formula_model_dir,
                         para.seal_model_dir,
-                        para.chart_model_dir,
                         para.doc_cls_infer,
                         para.doc_unwarp_model,
                         para.region_model_dir,
@@ -231,7 +227,6 @@ namespace PaddleOCRSDK
                         para.table_model_dir,
                         para.formula_model_dir,
                         para.seal_model_dir,
-                        para.chart_model_dir,
                         para.doc_cls_infer,
                         para.doc_unwarp_model,
                         para.region_model_dir,

@@ -73,10 +73,6 @@ namespace PaddleOCRSDK
         /// </summary>
         public string seal_model_dir { get; set; }
         /// <summary>
-        /// 图表转表模型路径（可选）
-        /// </summary>
-        public string chart_model_dir { get; set; }
-        /// <summary>
         /// 文档图像矫正模型路径（可选）
         /// </summary>
         public string doc_unwarp_model { get; set; }
@@ -375,11 +371,6 @@ namespace PaddleOCRSDK
         /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_formula_recognition { get; set; } = true;
-        /// <summary>
-        /// 是否启用图表转表识别，run_ocr_after_layout为true时生效。
-        /// </summary>
-        [field: MarshalAs(UnmanagedType.I1)]
-        public bool use_chart_recognition { get; set; } = false;
         /// <summary>
         /// 印章检测限边长。
         /// </summary>

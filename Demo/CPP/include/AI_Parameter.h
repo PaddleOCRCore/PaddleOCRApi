@@ -98,7 +98,6 @@ struct LayoutParameter
 	bool use_table_recognition = true;       // 是否启用表格结构识别    
 	bool use_seal_recognition = false;       // 是否启用印章识别    
 	bool use_formula_recognition = true;     // 是否启用公式识别（输出LaTeX）    
-	bool use_chart_recognition = false;      // 是否启用图表转表识别
 	int seal_det_limit_side_len = 736;       // 印章检测限边长
 	int seal_det_limit_type = 0;             // 印章检测限边方式: 0=min, 1=max
 	float seal_det_thresh = 0.2f;            // 印章检测阈值

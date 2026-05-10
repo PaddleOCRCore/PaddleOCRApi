@@ -69,7 +69,6 @@ int main() {
     string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";//文档图像方向分类模块
     string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
     string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
-    string chart_model_dir = "PP-Chart2Table";//图表转表模型        
     string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
     string region_model_dir = "PP-DocBlockLayout_infer";
 
@@ -91,7 +90,6 @@ int main() {
     layout_param.use_table_recognition = true;
     layout_param.use_formula_recognition = true;
     layout_param.use_seal_recognition = false;
-    layout_param.use_chart_recognition = false;
     layout_param.output_markdown = true;
     layout_param.format_block_content = false;
 
@@ -148,7 +146,6 @@ int main() {
         table_model_dir.c_str(),
         formula_model_dir.c_str(),  // formula_model_dir
         seal_model_dir.c_str(),  // seal_model_dir
-        chart_model_dir.c_str(),  // chart_model_dir
         doc_cls_infer.c_str(),  // doc_cls_infer
         doc_unwarp_model.c_str(),  // doc_unwarp_model
         region_model_dir.c_str(),  // region_model_dir

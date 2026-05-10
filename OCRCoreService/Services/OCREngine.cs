@@ -111,7 +111,6 @@ namespace OCRCoreService.Services
                 para.rec_infer = $"models/{_layoutConfig.rec_infer}";
                 para.layout_model_dir = $"models/{_layoutConfig.layout_model_dir}";
                 para.table_model_dir = $"models/{_layoutConfig.table_model_dir}";
-                para.chart_model_dir = $"models/{_layoutConfig.chart_model_dir}";
                 para.formula_model_dir = $"models/{_layoutConfig.formula_model_dir}";
                 para.doc_unwarp_model = $"models/{_layoutConfig.doc_unwarp_model}";
                 para.region_model_dir = $"models/{_layoutConfig.region_model_dir}";
@@ -145,7 +144,6 @@ namespace OCRCoreService.Services
                 oCRParameter.use_table_recognition = _layoutConfig.use_table_recognition;
                 oCRParameter.use_seal_recognition = _layoutConfig.use_seal_recognition;
                 oCRParameter.use_formula_recognition = _layoutConfig.use_formula_recognition;
-                oCRParameter.use_chart_recognition = _layoutConfig.use_chart_recognition;
 
                 oCRParameter.format_block_content = _layoutConfig.format_block_content;
                 oCRParameter.output_markdown = _layoutConfig.output_markdown;

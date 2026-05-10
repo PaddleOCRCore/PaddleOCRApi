@@ -241,10 +241,6 @@ namespace OCRCoreService
         /// </summary>
         public string seal_model_dir { get; set; } = "PP-OCRv4_mobile_seal_det_infer";
         /// <summary>
-        /// 图表转表模型路径
-        /// </summary>
-        public string chart_model_dir { get; set; } = "PP-Chart2Table";
-        /// <summary>
         /// 文档图像矫正模型路径
         /// </summary>
         public string doc_unwarp_model { get; set; } = "UVDoc_infer";
@@ -348,10 +344,6 @@ namespace OCRCoreService
         /// 是否启用公式识别
         /// </summary>
         public bool use_formula_recognition { get; set; } = true;
-        /// <summary>
-        /// 是否启用图表识别
-        /// </summary>
-        public bool use_chart_recognition { get; set; } = true;
         /// <summary>
         /// 是否格式化块内容
         /// </summary>

@@ -33,7 +33,6 @@ namespace WinFormsApp.Services
         public static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
         public static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
         public static string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
-        public static string chart_model_dir = "PP-Chart2Table";//图表转表模型        
         public static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
         public static string region_model_dir = "PP-DocBlockLayout_infer";//区域检测模型
         private static bool enable_mkldnn = true;
@@ -117,7 +116,6 @@ namespace WinFormsApp.Services
             para.rec_infer = $"models/{rec_infer}";
             para.layout_model_dir = $"models/{layout_model_dir}";
             para.table_model_dir = $"models/{table_model_dir}";
-            para.chart_model_dir = $"models/{chart_model_dir}";
             para.formula_model_dir = $"models/{formula_model_dir}";
             para.doc_unwarp_model = $"models/{doc_unwarp_model}";
             para.region_model_dir = $"models/{region_model_dir}";
@@ -152,7 +150,6 @@ namespace WinFormsApp.Services
             oCRParameter.use_table_recognition = true;
             oCRParameter.use_seal_recognition = true;
             oCRParameter.use_formula_recognition = true;
-            oCRParameter.use_chart_recognition = false;
 
             oCRParameter.format_block_content = false;
             oCRParameter.output_markdown = true;
