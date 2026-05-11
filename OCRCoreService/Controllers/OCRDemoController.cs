@@ -336,6 +336,8 @@ namespace OCRCoreService.Controllers
                         continue;
                     }
 
+                    box.BlockId = block.BlockId;
+                    box.BlockOrder = block.BlockOrder;
                     box.Label = block.BlockLabel ?? "block";
                     box.Text = block.BlockContent ?? string.Empty;
                     box.Score = block.Score;
@@ -461,6 +463,10 @@ namespace OCRCoreService.Controllers
         public string Label { get; set; } = string.Empty;
 
         public string Text { get; set; } = string.Empty;
+
+        public int? BlockId { get; set; }
+
+        public int? BlockOrder { get; set; }
 
         public double X { get; set; }
 

@@ -17,11 +17,9 @@ enable_log: true # 是否启用日志（true：调试信息输出到控制台+Lo
 
 # Markdown 输出中要忽略的版面标签
 markdown_ignore_labels:
-  - number
   - footnote
   - header
   - header_image
-  - footer
   - footer_image
   - aside_text
 

@@ -364,8 +364,19 @@
 
         .box {
             position: absolute;
-            border: 2px solid rgba(61, 99, 255, .84);
-            background: rgba(61, 99, 255, .08);
+            border: 1.5px solid rgba(61, 99, 255, .34);
+            background: rgba(61, 99, 255, .035);
+            opacity: .42;
+            pointer-events: auto;
+            transition: opacity .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease;
+        }
+
+        .box.active {
+            z-index: 5;
+            border-color: rgba(61, 99, 255, .95);
+            background: rgba(61, 99, 255, .10);
+            box-shadow: 0 0 0 2px rgba(61, 99, 255, .14);
+            opacity: 1;
         }
 
         .box-label {
@@ -381,6 +392,12 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            opacity: 0;
+            transition: opacity .14s ease;
+        }
+
+        .box.active .box-label {
+            opacity: 1;
         }
 
         .placeholder {
@@ -563,6 +580,42 @@
 
         .markdown-body p {
             margin: .65em 0;
+        }
+
+        .markdown-block {
+            position: relative;
+            display: block;
+            margin: .25em -8px;
+            padding: .25em 8px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: background .14s ease, border-color .14s ease;
+        }
+
+        .markdown-block:hover,
+        .markdown-block.active {
+            border-color: rgba(61, 99, 255, .55);
+            background: rgba(61, 99, 255, .055);
+        }
+
+        .markdown-block::before {
+            content: attr(data-block-label);
+            position: absolute;
+            top: -18px;
+            left: 6px;
+            display: none;
+            padding: 1px 6px;
+            border-radius: 3px;
+            color: #fff;
+            background: var(--blue);
+            font-size: 11px;
+            line-height: 1.4;
+            z-index: 1;
+        }
+
+        .markdown-block:hover::before,
+        .markdown-block.active::before {
+            display: block;
         }
 
         .markdown-body ul,
@@ -798,7 +851,7 @@
                 <div class="model-row">
                     <label class="model-label" for="modelSelect">解析模型</label>
                     <select class="model-select" id="modelSelect">
-                        <option value="pp-structure">PP-Structure</option>
+                        <option value="pp-structure">PP-StructureV3</option>
                         <option value="pp-ocrv5">PP-OCRv5</option>
                         <option value="paddleocr-vl-1.5">PaddleOCR-VL-1.5</option>
                     </select>
@@ -863,7 +916,8 @@
             isPdf: false,
             markdownText: "",
             tab: "doc",
-            busy: false
+            busy: false,
+            activeBlockId: null
         };
 
         const app = document.getElementById("app");
@@ -1078,7 +1132,7 @@
 
             const previewSource = getPreviewImageSource(result);
             if (previewSource) {
-                setPreviewImageSource(previewSource, result.previewImage || state.objectUrl || "");
+                setPreviewImageSource(previewSource, "");
                 placeholder.hidden = true;
                 imageWrap.hidden = false;
             }
@@ -1090,8 +1144,7 @@
         }
 
         function getPreviewImageSource(result) {
-            const visPath = findVisPath(result);
-            return visPath || result.previewImage || "";
+            return result.previewImage || state.objectUrl || "";
         }
 
         function setPreviewImageSource(primarySource, fallbackSource) {
@@ -1101,48 +1154,6 @@
             previewImage.dataset.fallbackSource = fallback;
             previewImage.dataset.fallbackUsed = "";
             previewImage.src = primary;
-        }
-
-        function findVisPath(value) {
-            const parsed = parseJsonValue(value);
-            if (!parsed || typeof parsed !== "object") {
-                return "";
-            }
-
-            const direct = readStringProperty(parsed, "vis_path") || readStringProperty(parsed, "visPath");
-            if (direct) {
-                return direct;
-            }
-
-            for (const key of ["jsonText", "raw"]) {
-                const nested = findVisPath(parsed[key]);
-                if (nested) {
-                    return nested;
-                }
-            }
-
-            if (Array.isArray(parsed)) {
-                for (const item of parsed) {
-                    const nested = findVisPath(item);
-                    if (nested) {
-                        return nested;
-                    }
-                }
-                return "";
-            }
-
-            for (const item of Object.values(parsed)) {
-                if (!item || typeof item !== "object") {
-                    continue;
-                }
-
-                const nested = findVisPath(item);
-                if (nested) {
-                    return nested;
-                }
-            }
-
-            return "";
         }
 
         function parseJsonValue(value) {
@@ -1160,11 +1171,6 @@
             } catch {
                 return value;
             }
-        }
-
-        function readStringProperty(source, key) {
-            const value = source && source[key];
-            return typeof value === "string" && value.trim() ? value.trim() : "";
         }
 
         function normalizeImageSource(source) {
@@ -1222,13 +1228,16 @@
 
             const scaleX = displayWidth / previewImage.naturalWidth;
             const scaleY = displayHeight / previewImage.naturalHeight;
-            for (const item of state.result.boxes) {
+            for (let index = 0; index < state.result.boxes.length; index++) {
+                const item = state.result.boxes[index];
                 if (!item || item.width <= 0 || item.height <= 0) {
                     continue;
                 }
 
                 const box = document.createElement("div");
                 box.className = "box";
+                const blockId = getBlockId(item, index);
+                box.dataset.blockId = blockId;
                 box.style.left = `${item.x * scaleX}px`;
                 box.style.top = `${item.y * scaleY}px`;
                 box.style.width = `${item.width * scaleX}px`;
@@ -1236,10 +1245,139 @@
 
                 const label = document.createElement("div");
                 label.className = "box-label";
-                label.textContent = item.label || "block";
+                label.textContent = `${item.label || "block"} #${blockId}`;
                 box.appendChild(label);
+                box.addEventListener("mouseenter", () => setActiveBlock(blockId));
+                box.addEventListener("mouseleave", () => setActiveBlock(null));
                 overlay.appendChild(box);
             }
+            updateActiveBlock();
+        }
+
+        function getBlockId(item, fallbackIndex) {
+            const value = item && (item.blockId ?? item.BlockId ?? item.block_id ?? item.id);
+            return value !== undefined && value !== null ? String(value) : String(fallbackIndex);
+        }
+
+        function getBlockOrder(item, fallbackIndex) {
+            const value = item && (item.blockOrder ?? item.BlockOrder ?? item.block_order);
+            const number = Number(value);
+            return Number.isFinite(number) ? number : fallbackIndex;
+        }
+
+        function getBlockLabel(item) {
+            return (item && (item.label ?? item.Label ?? item.block_label)) || "block";
+        }
+
+        function getBlockText(item) {
+            return (item && (item.text ?? item.Text ?? item.block_content)) || "";
+        }
+
+        function getOrderedBoxes() {
+            const boxes = state.result && Array.isArray(state.result.boxes) ? state.result.boxes : [];
+            return boxes
+                .map((box, index) => ({ box, index }))
+                .filter(item => item.box && getBlockText(item.box))
+                .sort((a, b) => {
+                    const ao = getBlockOrder(a.box, a.index);
+                    const bo = getBlockOrder(b.box, b.index);
+                    return ao - bo;
+                });
+        }
+
+        function getOrderedResultBlocks() {
+            const boxes = getOrderedBoxes().map(item => ({
+                source: item.box,
+                index: item.index
+            }));
+            if (boxes.length) {
+                return boxes;
+            }
+
+            const raw = parseJsonValue(state.result && (state.result.raw || state.result.jsonText));
+            const blocks = raw && (Array.isArray(raw.parsing_res_list) ? raw.parsing_res_list : raw.parsingResList);
+            const blockList = Array.isArray(blocks) ? blocks : [];
+            return blockList
+                .map((block, index) => ({ source: block, index }))
+                .filter(item => item.source && getBlockText(item.source))
+                .sort((a, b) => getBlockOrder(a.source, a.index) - getBlockOrder(b.source, b.index));
+        }
+
+        function renderBlockMarkdown(blocks) {
+            const fragment = document.createDocumentFragment();
+            for (const item of blocks) {
+                const block = item.source;
+                const blockId = getBlockId(block, item.index);
+                const label = getBlockLabel(block);
+                const content = formatBlockMarkdown(getBlockText(block), label);
+                const wrapper = document.createElement("div");
+                wrapper.className = "markdown-block";
+                wrapper.dataset.blockId = blockId;
+                wrapper.dataset.blockLabel = `${label} #${blockId}`;
+                wrapper.innerHTML = sanitizeMarkdownHtml(parseMarkdown(content));
+                wrapper.addEventListener("mouseenter", () => setActiveBlock(blockId, true));
+                wrapper.addEventListener("mouseleave", () => setActiveBlock(null));
+                fragment.appendChild(wrapper);
+            }
+
+            docView.replaceChildren(fragment);
+        }
+
+        function formatBlockMarkdown(content, label) {
+            const text = String(content || "").trim();
+            if (!text) {
+                return "";
+            }
+
+            if (/^\s{0,3}#{1,6}\s/.test(text) || startsWithRenderableHtml(text)) {
+                return text;
+            }
+
+            if (label === "doc_title") {
+                return `# ${text}`;
+            }
+
+            if (label === "paragraph_title") {
+                return `# ${text}`;
+            }
+
+            return text;
+        }
+
+        function setActiveBlock(blockId, scrollPreview = false) {
+            state.activeBlockId = blockId == null ? null : String(blockId);
+            updateActiveBlock();
+
+            if (scrollPreview && state.activeBlockId) {
+                const activeBox = overlay.querySelector(`.box[data-block-id="${cssEscape(state.activeBlockId)}"]`);
+                if (activeBox) {
+                    activeBox.scrollIntoView({ block: "nearest", inline: "nearest" });
+                }
+            }
+
+            if (!scrollPreview && state.activeBlockId) {
+                const activeBlock = docView.querySelector(`.markdown-block[data-block-id="${cssEscape(state.activeBlockId)}"]`);
+                if (activeBlock) {
+                    activeBlock.scrollIntoView({ block: "nearest", inline: "nearest" });
+                }
+            }
+        }
+
+        function updateActiveBlock() {
+            const activeId = state.activeBlockId;
+            for (const box of overlay.querySelectorAll(".box")) {
+                box.classList.toggle("active", !!activeId && box.dataset.blockId === activeId);
+            }
+            for (const block of docView.querySelectorAll(".markdown-block")) {
+                block.classList.toggle("active", !!activeId && block.dataset.blockId === activeId);
+            }
+        }
+
+        function cssEscape(value) {
+            if (window.CSS && typeof window.CSS.escape === "function") {
+                return window.CSS.escape(value);
+            }
+            return String(value).replace(/["\\]/g, "\\$&");
         }
 
         function updateFileSummary(file) {
@@ -1271,12 +1409,20 @@
             clearMath(docView);
             docView.classList.remove("plain-text");
             docView.classList.add("markdown-body");
-            docView.innerHTML = sanitizeMarkdownHtml(parseMarkdown(markdown));
+            const blocks = getOrderedResultBlocks();
+            if (blocks.length) {
+                renderBlockMarkdown(blocks);
+            } else {
+                docView.innerHTML = sanitizeMarkdownHtml(parseMarkdown(markdown));
+            }
             renderMath(docView);
         }
 
         function parseMarkdown(markdown) {
-            const protectedSource = protectMath(normalizeMathDelimiters(normalizeRenderableHtml(String(markdown || ""))));
+            const normalizedSource = normalizeBareOptionMath(
+                normalizeMathDelimiters(normalizeRenderableHtml(String(markdown || "")))
+            );
+            const protectedSource = protectMath(normalizedSource);
             const source = protectedSource.text;
             let html = "";
             if (window.marked && typeof window.marked.parse === "function") {
@@ -1296,6 +1442,44 @@
         function normalizeMathDelimiters(source) {
             return String(source || "")
                 .replace(/\\{2}([()[\]])/g, "\\$1");
+        }
+
+        function normalizeBareOptionMath(source) {
+            return String(source || "")
+                .split(/\n/)
+                .map(normalizeBareOptionMathLine)
+                .join("\n");
+        }
+
+        function normalizeBareOptionMathLine(line) {
+            if (!/[\\](?:d?frac|leq?|geq?|sqrt|times|cdot|div|infty|pi)|[<>≤≥]/.test(line)) {
+                return line;
+            }
+
+            const optionPattern = /(^|\s+)([A-D])\.\s*([\s\S]*?)(?=(?:\s+[A-D]\.\s*)|$)/g;
+            let matched = false;
+            const normalized = line.replace(optionPattern, (match, prefix, label, body) => {
+                matched = true;
+                const trimmed = body.trim();
+                if (!shouldWrapBareOptionMath(trimmed)) {
+                    return match;
+                }
+
+                return `${prefix}${label}. ${buildMathSource(trimmed, false)}`;
+            });
+
+            return matched ? normalized : line;
+        }
+
+        function shouldWrapBareOptionMath(value) {
+            const text = String(value || "").trim();
+            if (!text || /\\\(|\\\[|\$\$|\$/.test(text)) {
+                return false;
+            }
+
+            return /\\(?:d?frac|leq?|geq?|sqrt|times|cdot|div|infty|pi)\b/.test(text)
+                || /[≤≥]/.test(text)
+                || /(?:^|[\s(])-?[\dA-Za-z]+(?:\s*[<>]\s*-?[\dA-Za-z\\{}\/]+)+/.test(text);
         }
 
         function protectMath(source) {
@@ -1325,7 +1509,7 @@
                 tex = source.slice(1, -1);
             }
 
-            tex = normalizeMathTex(tex);
+            tex = normalizeMathTex(decodeHtmlEntities(tex));
 
             return {
                 source,
@@ -1342,7 +1526,8 @@
 
         function normalizeMathTex(tex) {
             return String(tex || "")
-                .replace(/\\{2}(?=[A-Za-z{}])/g, "\\");
+                .replace(/\\{2}(?=[A-Za-z{}])/g, "\\")
+                .replace(/&(?!(?:amp|lt|gt|quot|apos|nbsp|#\d+|#x[0-9a-f]+);)/gi, "\\&");
         }
 
         function isRenderableMath(tex) {
@@ -1495,7 +1680,17 @@
             ]);
             const allowedAttributes = new Map([
                 ["A", new Set(["href", "title", "target", "rel"])],
-                ["SPAN", new Set(["class", "data-math-tex", "data-math-display"])],
+                ["OL", new Set(["start", "type", "reversed"])],
+                ["LI", new Set(["value"])],
+                ["DIV", new Set(["class", "data-block-id", "data-block-label"])],
+                ["P", new Set(["class", "data-block-id", "data-block-label"])],
+                ["H1", new Set(["class", "data-block-id", "data-block-label"])],
+                ["H2", new Set(["class", "data-block-id", "data-block-label"])],
+                ["H3", new Set(["class", "data-block-id", "data-block-label"])],
+                ["H4", new Set(["class", "data-block-id", "data-block-label"])],
+                ["H5", new Set(["class", "data-block-id", "data-block-label"])],
+                ["H6", new Set(["class", "data-block-id", "data-block-label"])],
+                ["SPAN", new Set(["class", "data-math-tex", "data-math-display", "data-block-id", "data-block-label"])],
                 ["TD", new Set(["colspan", "rowspan", "align"])],
                 ["TH", new Set(["colspan", "rowspan", "align"])]
             ]);

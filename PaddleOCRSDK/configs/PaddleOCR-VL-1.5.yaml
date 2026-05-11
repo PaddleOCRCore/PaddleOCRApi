@@ -3,7 +3,7 @@ batch_size: 64 # 文档级批处理大小（当前 DLL 不使用）
 use_queues: true # 是否启用流水线队列并行（当前 DLL 不使用）
 
 # 顶层设备开关：对子模块统一生效
-use_gpu: true # 是否使用 GPU
+use_gpu: false # 是否使用 GPU
 
 # 流水线功能开关
 use_doc_preprocessor: false # 是否启用文档预处理子流水线（方向分类+去畸变）总开关，仅 DocAnalyser 路径生效
@@ -17,19 +17,17 @@ enable_log: true # 是否启用日志（true：调试信息输出到控制台+Lo
 
 # Markdown 输出中要忽略的版面标签
 markdown_ignore_labels:
-  - number
   - footnote
   - header
   - header_image
-  - footer
   - footer_image
   - aside_text
 
 SubModules:
   LayoutDetection:
     module_name: layout_detection # 子模块类型（当前 DLL 不使用该字段）
-    model_name: PP-DocLayoutV2 # 模型名（当前 DLL 不使用该字段）
-    model_dir: models/PP-DocLayoutV2_infer # 版面检测模型目录
+    model_name: PP-DocLayoutV3 # 模型名（当前 DLL 不使用该字段）
+    model_dir: models/PP-DocLayoutV3_infer # 版面检测模型目录
     batch_size: 8 # 子模块批大小（当前 DLL 不使用）
     threshold: 0.3 # 检测阈值
     layout_nms: true # 是否开启同类框 NMS
