@@ -1,5 +1,5 @@
 [<img src="https://img.shields.io/badge/Language-简体中文-red.svg">](README.md) [<img src="https://img.shields.io/badge/Language-English-blue.svg">](README_EN.md)
-# PaddleOCRApi离线OCR组件，支持C#/C++/java/Python/Go语言开发
+# PaddleOCRApi离线OCR组件，支持C#、C++、java、Python、Go语言开发
 
 <p align="center">    
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
@@ -19,6 +19,10 @@
 - [开发交流](#开发交流群)
 - [更新日志](./docs/CHANGELOG.md "查看更新日志")
 - [常见问题](./docs/FAQ.md "查看常见问题")
+
+### WinFormDemo预览
+
+<img src="./PaddleOCRSDK/Images/ocrDemo.png" width="800px;" />
 
 ## 🚀 简介
 
@@ -148,11 +152,6 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 
 支持框架：netstandard2.0; net45; net461; net47; net48; net6.0; net7.0; net8.0; net9.0; net10.0
 
-### WinFormDemo预览
-
-<img src="./PaddleOCRSDK/Images/ocrDemo.png" width="800px;" />
-
-
 ## 📋 调用参数说明
 | 参数名称                     | 默认值 | 值说明                                                                                   |
 | ---------------------------- | ------ | ---------------------------------------------------------------------------------------- |
@@ -187,14 +186,8 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | rec_batch_num                | 6      | 文字识别模型批量识别数量                                                                 |
 | rec_img_h                    | 48     | 文字识别模型输入图像高度                                                                 |
 | rec_img_w                    | 320    | 文字识别模型输入图像宽度                                                                 |
-| 表格识别模型相关             | --     | -- |
-| table_max_len                | 488    | 表格识别模型输入图像长边大小，最终网络输入图像大小为（table_max_len，table_max_len）     |
-| merge_empty_cell             | true   | 是否合并空单元格                                                                         |
-| table_batch_num              | 1      | table_batch_num                                                                          |
 | return_word_box              | false  | 是否返回单字坐标                                                                         |
 | ocr_instance_count           | false  | OCR引擎实例数量，默认1，最大10，适用于高并发时使用。                                     |
-
-
 | **版面结构识别参数 (LayoutParameter)** | -- | **PP-Structure专用** |
 | ---------------------------- | ------ | ---------------------------------------------------------------------------------------- |
 | use_gpu                      | false  | 是否使用GPU                                                                              |

@@ -1,5 +1,5 @@
 [<img src="https://img.shields.io/badge/Language-简体中文-red.svg">](README.md) [<img src="https://img.shields.io/badge/Language-English-blue.svg">](README_EN.md)
-# PaddleOCRApi Offline OCR SDK - Support C#/C++/Java/Python/Go
+# PaddleOCRApi Offline OCR SDK - Support C#、C++、Java、Python、Go
 
 <p align="center">
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-dfd.svg"></a>
@@ -18,6 +18,10 @@
 - [GPU Configuration](#-gpu-configuration)
 - [Community](#-community)
 - [Changelog](#-changelog)
+
+### WinFormDemo Preview
+
+<img src="./PaddleOCRSDK/Images/ocrDemo.png" width="800px;" />
 
 ## 🚀 Introduction
 
@@ -145,11 +149,6 @@ OCRCoreService (WebAPI) and WinForms project require VS2026 + .NET10.0
 
 Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.0; net8.0; net9.0; net10.0
 
-### WinFormDemo Preview
-
-<img src="./PaddleOCRSDK/Images/ocrDemo.png" width="800px;" />
-
-
 ## 📋 Parameter Description
 
 | Parameter Name               | Default | Description                                                                                   |
@@ -185,10 +184,6 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | rec_batch_num                | 6       | Text recognition model batch recognition quantity                                             |
 | rec_img_h                    | 48      | Text recognition model input image height                                                     |
 | rec_img_w                    | 320     | Text recognition model input image width                                                      |
-| **Table Recognition Model**  | --      | --                                                                                            |
-| table_max_len                | 488     | Table recognition model input image long side size, final network input size is (table_max_len, table_max_len) |
-| merge_empty_cell             | true    | Whether to merge empty cells                                                                  |
-| table_batch_num              | 1       | table_batch_num                                                                               |
 | return_word_box              | false   | Whether to return per-character coordinates                                                   |
 | ocr_instance_count           | false   | Number of OCR engine instances: default is 1, maximum is 10, suitable for high-concurrency scenarios.  |
 | **Layout Structure Recognition Parameters (LayoutParameter)** | -- | **For PP-StructureV3** |
