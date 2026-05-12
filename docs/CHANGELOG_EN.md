@@ -1,5 +1,14 @@
 # 📝 Changelog
 
+## v4.4.0 `2026.5.11`
+- ✅ **PaddleOCR.dll**: Optimized layout analysis; improved GPU dependency detection to avoid initialization pop-ups.
+- ✅ **PaddleOCR.dll**: Formula recognition now supports PP-FormulaNet series models; added document image layout sub-module detection; fixed layout sub-module recognition errors and layout analysis result sorting issues.
+- ✅ **PaddleOCR.dll**: Removed `use_chart_recognition` and `chart_model_dir` parameters, as this feature depends on PaddleX and is not encapsulated for now.
+- ✅ **llamaocr-vl.dll**: Optimized memory recycling mechanism; improved exam paper recognition and layout analysis accuracy, aligned with PaddleX.
+- ✅ **Code Optimization**: Released PaddleOCRSDK v4.4.0, aligned OCRSDK.cs and OCRVLSDK.cs with new interfaces.
+- ✅ **OCRCoreService**: Added web-based online OCR demo, supporting PaddleOCRv5, PP-StructureV3, and PaddleOCR-VL1.5, with Markdown display support.
+- ✅ **NuGet Package Release**: Released PaddleOCRRuntime_x64 v4.4.0, including paddle 3.4.0 CPU inference library, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies.
+
 ## v4.3.0 `2026.4.29`
 - ✅ **Major Update**: Added PP-Structure document layout analysis module to PaddleOCR.dll, supporting comprehensive recognition of 20 document element types (layout detection, table recognition, formula recognition, seal recognition, chart-to-table conversion, etc.)
 - ✅ **New Interfaces**: Added `InitStructure`/`InitStructurejson` initialization interfaces to PaddleOCR.dll, supporting 12 model path parameters (text detection, orientation classification, text recognition, layout analysis, table, formula, seal, chart, document orientation, document rectification, region detection); removed the original table recognition interface
@@ -29,7 +38,7 @@ v4.0.1 2026.1.22
 - ✅ Upgraded the project to VS 2026 + .NET 10
 - ✅ Optimized PaddleOCR.dll and added image-to-image search functionality
 - ✅ Released the NuGet package PaddleocrSDK v4.0.1 — .NET projects can reference this package directly; it already includes PaddleOCRRuntime_x64
-- ✅ Released the NuGet package PaddleOCRRuntime_x64 v4.0.1, which includes the Paddle 3.2.2 inference library, PaddleOCR.dll, and all required dependencies
+- ✅ Released the NuGet package PaddleOCRRuntime_x64 v4.0.1, which includes the Paddle 3.2.2 inference library, PaddleOCR.dll, and all required dependencies.
 
 ## v4.0.0 2026.1.17
 - ✅ Optimized PaddleOCR.dll by integrating the UVDOC text image rectification feature, adding per-character (single-word) bounding box output controlled by the return_word_box parameter, and removing the Keys parameter from Init.

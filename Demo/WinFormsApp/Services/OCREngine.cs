@@ -34,7 +34,7 @@ namespace WinFormsApp.Services
         public static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
         public static string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
         public static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
-        public static string region_model_dir = "PP-DocBlockLayout_infer";//区域检测模型
+        public static string region_model_dir = "PP-DocBlockLayout";//区域检测模型
         private static bool enable_mkldnn = true;
         public static int cpu_threads = 30; //CPU预测时的线程数
         private static bool visualize = true;//是否对结果进行可视化，为true时，预测结果会保存在output文件夹下和输入图像同名的文件上。

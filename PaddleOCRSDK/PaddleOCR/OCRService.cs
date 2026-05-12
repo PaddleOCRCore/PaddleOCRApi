@@ -118,7 +118,7 @@ namespace PaddleOCRSDK
             string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";
             string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
             string doc_unwarp_model = "UVDoc_infer";
-            string region_model_dir = "PP-DocBlockLayout_infer";
+            string region_model_dir = "PP-DocBlockLayout";
 
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收

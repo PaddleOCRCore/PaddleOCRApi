@@ -70,7 +70,7 @@ int main() {
     string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
     string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
     string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
-    string region_model_dir = "PP-DocBlockLayout_infer";
+    string region_model_dir = "PP-DocBlockLayout";
 
     OCRParameter ocr_param;
     ocr_param.use_gpu = false;

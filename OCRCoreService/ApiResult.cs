@@ -247,7 +247,7 @@ namespace OCRCoreService
         /// <summary>
         /// 文档图像版面子模块检测模型路径
         /// </summary>
-        public string region_model_dir { get; set; } = "PP-DocBlockLayout_infer";
+        public string region_model_dir { get; set; } = "PP-DocBlockLayout";
         /// <summary>
         /// 是否使用GPU
         /// </summary>

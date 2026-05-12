@@ -1131,6 +1131,8 @@ namespace WinFormsApp
         private void checkBoxOCRVLDocAnalysis_CheckedChanged(object? sender, EventArgs e)
         {
             UpdateOCRVLPromptState();
+            if(checkBoxOCRVLDocAnalysis.Checked)
+                LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:CPU模式不建议使用版面分析，可使用小图体验");
             UpdateOCRVLStatus(checkBoxOCRVLDocAnalysis.Checked
                 ? "已启用版面分析，识别后优先预览 output/xxx.png"
                 : "已切换为普通 OCR-VL 模式");

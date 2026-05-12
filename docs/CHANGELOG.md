@@ -1,11 +1,20 @@
 # 📝 更新日志
 
+## v4.4.0 `2026.5.11`
+- ✅ **PaddleOCR.dll**: 优化版面分析；优化GPU依赖检测，避免初始化弹窗。
+- ✅ **PaddleOCR.dll**: 公式识别新增支持 PP-FormulaNet 系列模型；新增文档图像版面子模块检测；修复版面子模块识别错误和版面分析结果排序问题。
+- ✅ **PaddleOCR.dll**: 删除 `use_chart_recognition` 及 `chart_model_dir` 参数，此功能依赖PaddleX，暂不封装。
+- ✅ **llamaocr-vl.dll**: 优化内存回收机制；优化试卷识别和版面分析精度，对齐PaddleX。
+- ✅ **代码优化**: PaddleOCRSDK发布 v4.4.0,OCRSDK.cs、OCRVLSDK.cs对齐新接口
+- ✅ **OCRCoreService**: 增加网页版在线OCR识别Demo,支持PaddleOCRv5、PP-StructureV3、PaddleOCR-VL1.5，支持MarkDown显示
+- ✅ **发布NuGet包**: PaddleOCRRuntime_x64 v4.4.0，包含 paddle 3.4.0 CPU 推理库、PaddleOCR.dll、llamaocr-vl.dll 及全部依赖。
+
 ## v4.3.0 `2026.4.29`
 - ✅ **重大更新**: PaddleOCR.dll新增PP-Structure版面结构识别模块，支持20类文档元素综合识别（版面检测、表格识别、公式识别、印章识别、图表转表等）
 - ✅ **新增接口**: PaddleOCR.dll新增`InitStructure`/`InitStructurejson`初始化接口，支持12个模型路径参数（文本检测、方向分类、文本识别、版面分析、表格、公式、印章、图表、文档方向、文档矫正、区域检测）,删除原有表格识别接口
 - ✅ **新增接口**: 新增`DetectLayout`/`DetectLayoutMat`/`DetectLayoutByte`/`DetectLayoutBase64`四个版面分析接口，支持File/Mat/Byte/Base64四种输入方式
 - ✅ **新增接口**: OCR标准识别新增`DetectScreenShot`接口，专门用于内存截图场景的OCR识别
-- ✅ **架构优化**: 优化VL视觉语言模型`llamaocr-vl.dll`，同时支持版面检测、表格识别、公式识别、印章识别、图表转表等，提升模块化程度
+- ✅ **架构优化**: 优化VL视觉语言模型`llamaocr-vl.dll`，同时支持版面检测、表格识别、公式识别、印章识别等，提升模块化程度
 - ✅ **文档更新**: 全面更新`PaddleOCR.dll接口清单.md`，补充所有接口的详细参数说明和使用注意事项
 - ✅ **代码优化**: PaddleOCRSDK发布 v4.3.0,OCRSDK.cs、UVDocSDK.cs、OCRVLSDK.cs三个SDK文件对齐新接口
 - ✅ **发布NuGet包**: PaddleOCRRuntime_x64 v4.3.1，包含 paddle 3.3.0 CPU 推理库、PaddleOCR.dll、llamaocr-vl.dll 及全部依赖。

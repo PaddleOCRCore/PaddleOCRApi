@@ -98,7 +98,7 @@
 
 ### 初始化接口
 
-- `bool InitStructure(const char* det_infer, const char* cls_infer, const char* rec_infer, const char* layout_model_dir, const char* table_model_dir, const char* formula_model_dir, const char* seal_model_dir, const char* chart_model_dir, const char* doc_cls_infer, const char* doc_unwarp_model, const char* region_model_dir, const LayoutParameter tablepara)`
+- `bool InitStructure(const char* det_infer, const char* cls_infer, const char* rec_infer, const char* layout_model_dir, const char* table_model_dir, const char* formula_model_dir, const char* seal_model_dir, const char* doc_cls_infer, const char* doc_unwarp_model, const char* region_model_dir, const LayoutParameter tablepara)`
   - 描述:初始化结构化文档识别引擎(扩展版本),支持多种文档元素的综合识别。
   - 参数:
     - `det_infer`:文本检测模型路径
@@ -108,14 +108,13 @@
     - `table_model_dir`:表格识别模型目录路径
     - `formula_model_dir`:公式识别模型路径(可选,NULL表示不使用)
     - `seal_model_dir`:印章识别模型路径(可选,NULL表示不使用)
-    - `chart_model_dir`:图表转表模型路径(可选,NULL表示不使用)
     - `doc_cls_infer`:文档方向分类模型路径(可选,NULL表示不使用)
     - `doc_unwarp_model`:文档图像矫正模型路径(可选,NULL表示不使用)
     - `region_model_dir`: 区域检测模型目录路径，可选
     - `tablepara`:LayoutParameter 结构体参数
   - 返回:初始化成功返回 `true`,失败返回 `false`。
 
-- `bool InitStructurejson(const char* det_infer, const char* cls_infer, const char* rec_infer, const char* layout_model_dir, const char* table_model_dir, const char* formula_model_dir, const char* seal_model_dir, const char* chart_model_dir, const char* doc_cls_infer, const char* doc_unwarp_model, const char* region_model_dir, const char* parjson)`
+- `bool InitStructurejson(const char* det_infer, const char* cls_infer, const char* rec_infer, const char* layout_model_dir, const char* table_model_dir, const char* formula_model_dir, const char* seal_model_dir, const char* doc_cls_infer, const char* doc_unwarp_model, const char* region_model_dir, const char* parjson)`
   - 描述:使用 JSON 参数字符串初始化结构化文档识别引擎。
   - 参数:同上,最后一个参数为 JSON 格式的参数字符串。
   - 返回:初始化成功返回 `true`,失败返回 `false`。
@@ -426,6 +425,6 @@
 
 ## 版本信息
 
-- **SDK 版本**:4.3.0 (paddle_inference 3.3+)
+- **SDK 版本**:4.4.0 (paddle_inference 3.3+)
 - **支持平台**:Windows x64
-- **更新日期**:2026-04-28
+- **更新日期**:2026-05-12
