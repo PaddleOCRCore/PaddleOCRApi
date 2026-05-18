@@ -48,6 +48,56 @@ namespace WinFormsApp.Services
         public static bool use_angle_cls = true;//是否使用方向分类器
         public static bool return_word_box = false;//是否返回单字坐标
         public static bool use_tensorrt = false;//使用GPU预测时，是否启动tensorrt
+        public static string gpu_license = @"models\paddleocr.lic";//GPU授权文件
+        private static bool gpuLicenseActivated;
+
+        /// <summary>
+        /// 激活GPU授权文件
+        /// </summary>
+        /// <param name="licenseFile"></param>
+        /// <returns></returns>
+        public static bool ActivateLicense(string licenseFile)
+        {
+            if (string.IsNullOrWhiteSpace(licenseFile))
+            {
+                return false;
+            }
+
+            return ocrService.ActivateLicense(licenseFile);
+        }
+
+        /// <summary>
+        /// 初始化前自动激活GPU授权文件
+        /// </summary>
+        /// <returns></returns>
+        public static bool ActivateGpuLicenseIfExists()
+        {
+            if (gpuLicenseActivated)
+            {
+                return true;
+            }
+
+            string licensePath = ResolvePath(gpu_license);
+            if (string.IsNullOrWhiteSpace(licensePath) || !File.Exists(licensePath))
+            {
+                return false;
+            }
+
+            gpuLicenseActivated = ActivateLicense(licensePath);
+            return gpuLicenseActivated;
+        }
+
+        private static string ResolvePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return string.Empty;
+            }
+
+            return Path.IsPathRooted(path)
+                ? path
+                : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+        }
 
         /// <summary>
         /// 初始化OCR引擎
@@ -91,6 +141,7 @@ namespace WinFormsApp.Services
             try
             {
                 ocrService.EnableLog(true);//关闭Log日志
+                ActivateGpuLicenseIfExists();
                 ocrService.Init(para);
             }
             catch (Exception ex)
@@ -158,6 +209,7 @@ namespace WinFormsApp.Services
             string msg = "版面识别初始化成功";
             try
             {
+                ActivateGpuLicenseIfExists();
                 ocrService.Init(para);
             }
             catch (Exception ex)

@@ -255,6 +255,48 @@ namespace PaddleOCRSDK
                 throw new OCRException($"{ex.Message}");
             }
         }
+
+        /// <summary>
+        /// 获取当前机器的加密授权申请码
+        /// </summary>
+        /// <returns></returns>
+        public string GetLicenseRequestCode()
+        {
+            IntPtr ptrResult = IntPtr.Zero;
+            try
+            {
+                ptrResult = OCRSDK.GetLicenseRequestCode();
+                if (ptrResult == IntPtr.Zero)
+                {
+                    return string.Empty;
+                }
+
+                return MarshalUtf8.PtrToStringUTF8(ptrResult);
+            }
+            finally
+            {
+                if (ptrResult != IntPtr.Zero)
+                {
+                    OCRSDK.FreeResultBuffer(ptrResult);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 激活授权文件
+        /// </summary>
+        /// <param name="licenseFile">授权文件路径</param>
+        /// <returns></returns>
+        public bool ActivateLicense(string licenseFile)
+        {
+            if (string.IsNullOrWhiteSpace(licenseFile))
+            {
+                return false;
+            }
+
+            return OCRSDK.ActivateLicense(licenseFile);
+        }
+
         /// <summary>
         /// 对图像文件进行文本识别
         /// </summary>

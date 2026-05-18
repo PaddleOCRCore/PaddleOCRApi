@@ -43,6 +43,19 @@ namespace PaddleOCRSDK
         bool Init(InitParamater para);
 
         /// <summary>
+        /// 获取当前机器的加密授权申请码
+        /// </summary>
+        /// <returns>授权申请码</returns>
+        string GetLicenseRequestCode();
+
+        /// <summary>
+        /// 激活授权文件
+        /// </summary>
+        /// <param name="licenseFile">授权文件路径</param>
+        /// <returns>激活成功返回true，失败返回false</returns>
+        bool ActivateLicense(string licenseFile);
+
+        /// <summary>
         /// 对输入图片文件执行 OCR 检测并返回结果
         /// </summary>
         /// <param name="imagefile">输入图片文件路径</param>

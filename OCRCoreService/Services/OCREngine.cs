@@ -15,6 +15,7 @@
 
 using PaddleOCRSDK;
 using System;
+using System.IO;
 
 namespace OCRCoreService.Services
 {
@@ -28,6 +29,7 @@ namespace OCRCoreService.Services
         private readonly LayoutConfig _layoutConfig;
         private readonly object _structureEngineLock = new object();
         private bool _structureEngineInitialized;
+        private bool _gpuLicenseActivated;
         public IOCRService OcrService => _ocrService;
 
         public OCREngine(IOCRService ocrService, OCRConfig ocrConfig, LayoutConfig layoutConfig)
@@ -37,6 +39,40 @@ namespace OCRCoreService.Services
             _layoutConfig = layoutConfig;
             GetOCREngine();
         }
+
+        /// <summary>
+        /// 初始化前自动激活GPU授权文件
+        /// </summary>
+        /// <returns></returns>
+        public bool ActivateGpuLicenseIfExists()
+        {
+            if (_gpuLicenseActivated)
+            {
+                return true;
+            }
+
+            string licensePath = ResolvePath(_ocrConfig.GPULicense);
+            if (string.IsNullOrWhiteSpace(licensePath) || !File.Exists(licensePath))
+            {
+                return false;
+            }
+
+            _gpuLicenseActivated = _ocrService.ActivateLicense(licensePath);
+            return _gpuLicenseActivated;
+        }
+
+        private static string ResolvePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return string.Empty;
+            }
+
+            return Path.IsPathRooted(path)
+                ? path
+                : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+        }
+
         /// <summary>
         /// 初始化OCR引擎
         /// </summary>
@@ -79,6 +115,7 @@ namespace OCRCoreService.Services
             try
             {
                 _ocrService.EnableLog(_ocrConfig.enableLog);
+                ActivateGpuLicenseIfExists();
                 _ocrService.Init(para);
             }
             catch (Exception ex)
@@ -154,6 +191,7 @@ namespace OCRCoreService.Services
                 try
                 {
                     _ocrService.EnableLog(_ocrConfig.enableLog);
+                    ActivateGpuLicenseIfExists();
                     _ocrService.Init(para);
                     _structureEngineInitialized = true;
                 }

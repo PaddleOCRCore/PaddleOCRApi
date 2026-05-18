@@ -80,7 +80,7 @@ int main() {
     ocr_param.rec = true;
     ocr_param.cls = false;
     ocr_param.use_angle_cls = false;
-    ocr_param.visualize = false;
+    ocr_param.visualize = true;
     ocr_param.ocr_instance_count = 1;
 
     LayoutParameter layout_param;
@@ -92,6 +92,7 @@ int main() {
     layout_param.use_seal_recognition = false;
     layout_param.output_markdown = true;
     layout_param.format_block_content = false;
+    layout_param.visualize = true;
 
     string imagespath(cwd);
     imagespath += "\\images";

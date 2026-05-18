@@ -19,7 +19,7 @@
 using namespace std;
 
 /// <summary>
-/// PaddleOCR.dll C++识别参数
+/// PaddleOCR.dll C++识别参数,不可变更顺序
 /// </summary>
 struct OCRParameter
 {
@@ -60,7 +60,7 @@ struct OCRParameter
 	int ocr_instance_count = 1; // OCR引擎实例数量，默认1，最大10
 };
 /// <summary>
-/// 版面结构识别参数（对应当前 DLL LayoutParameter）
+/// 版面结构识别参数（对应当前 DLL LayoutParameter,不可变更顺序）
 /// </summary>
 struct LayoutParameter
 {
@@ -92,7 +92,6 @@ struct LayoutParameter
 	float text_rec_score_thresh = 0.5f;      // OCR识别分数阈值（低于该值的文本会被过滤）
 	bool use_textline_orientation = true;    // 文本行方向分类开关
 	int max_side_len = 960;                  // OCR检测缩放最大长边限制
-	// int text_det_limit_type = 1;             // OCR检测的图像边长限制类型: 0=min, 1=max min表示保证图像最短边不小于limit_side_len,max表示保证图像最长边不大于limit_side_len
 
 	// 条件识别参数,run_ocr_after_layout=true时才生效
 	bool use_table_recognition = true;       // 是否启用表格结构识别    

@@ -63,6 +63,21 @@ namespace PaddleOCRSDK
         /// <param name="buffer"></param>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern void FreeResultBuffer(IntPtr buffer);
+
+        /// <summary>
+        /// 获取加密授权申请码，返回值需调用FreeResultBuffer释放
+        /// </summary>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr GetLicenseRequestCode();
+
+        /// <summary>
+        /// 激活授权文件
+        /// </summary>
+        /// <param name="licensefile">授权文件路径</param>
+        /// <returns></returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern bool ActivateLicense(string licensefile);
         #endregion
 
         #region 通用OCR识别PP-OCRV4/PP-OCRV5
