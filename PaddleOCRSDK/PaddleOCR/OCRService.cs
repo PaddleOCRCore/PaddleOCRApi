@@ -298,6 +298,47 @@ namespace PaddleOCRSDK
         }
 
         /// <summary>
+        /// 获取当前授权状态JSON
+        /// </summary>
+        /// <returns></returns>
+        public string GetLicenseStatus()
+        {
+            IntPtr ptrResult = IntPtr.Zero;
+            try
+            {
+                ptrResult = OCRSDK.GetLicenseStatus();
+                if (ptrResult == IntPtr.Zero)
+                {
+                    return string.Empty;
+                }
+
+                return MarshalUtf8.PtrToStringUTF8(ptrResult);
+            }
+            finally
+            {
+                if (ptrResult != IntPtr.Zero)
+                {
+                    OCRSDK.FreeResultBuffer(ptrResult);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取当前授权状态对象
+        /// </summary>
+        /// <returns></returns>
+        public LicenseStatus GetLicenseStatusInfo()
+        {
+            string json = GetLicenseStatus();
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<LicenseStatus>(json, JsonSettings);
+        }
+
+        /// <summary>
         /// 对图像文件进行文本识别
         /// </summary>
         /// <param name="imagefile">图像文件</param>

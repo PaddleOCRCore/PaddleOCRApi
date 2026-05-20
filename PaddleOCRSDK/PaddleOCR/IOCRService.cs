@@ -56,6 +56,18 @@ namespace PaddleOCRSDK
         bool ActivateLicense(string licenseFile);
 
         /// <summary>
+        /// 获取当前授权状态JSON
+        /// </summary>
+        /// <returns>授权状态JSON字符串</returns>
+        string GetLicenseStatus();
+
+        /// <summary>
+        /// 获取当前授权状态
+        /// </summary>
+        /// <returns>授权状态对象</returns>
+        LicenseStatus GetLicenseStatusInfo();
+
+        /// <summary>
         /// 对输入图片文件执行 OCR 检测并返回结果
         /// </summary>
         /// <param name="imagefile">输入图片文件路径</param>
