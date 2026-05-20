@@ -20,8 +20,8 @@ namespace PaddleOCRSDK.Models
         [JsonProperty("license_id")]
         public string LicenseId { get; set; }
 
-        [JsonProperty("library_version")]
-        public string LibraryVersion { get; set; }
+        [JsonProperty("version")]
+        public string Version { get; set; }
 
         [JsonProperty("platforms")]
         public List<string> Platforms { get; set; }
@@ -32,6 +32,15 @@ namespace PaddleOCRSDK.Models
         [JsonProperty("machine_bound")]
         public bool MachineBound { get; set; }
 
+        [JsonProperty("lic_machine_code")]
+        public string MachineCode { get; set; }
+
+        [JsonProperty("current_machine_code")]
+        public string CurrentMachineCode { get; set; }
+
+        [JsonProperty("machine_match")]
+        public bool MachineMatch { get; set; }
+
         [JsonProperty("bind_mode")]
         public string BindMode { get; set; }
 
@@ -40,12 +49,6 @@ namespace PaddleOCRSDK.Models
 
         [JsonProperty("expire_time")]
         public string ExpireTime { get; set; }
-
-        [JsonProperty("mac_address")]
-        public string MacAddress { get; set; }
-
-        [JsonProperty("mac_addresses")]
-        public List<string> MacAddresses { get; set; }
 
         [JsonProperty("reason")]
         public string Reason { get; set; }
