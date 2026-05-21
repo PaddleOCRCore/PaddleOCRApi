@@ -65,7 +65,6 @@
             buttonRecPDF = new Button();
             chkReturnWordBox = new CheckBox();
             buttonFreeEngine = new Button();
-            buttonCancelOCR = new Button();
             buttonPostFile = new Button();
             textBoxApiAddress = new TextBox();
             label8 = new Label();
@@ -83,6 +82,8 @@
             label2 = new Label();
             buttonGetBase64 = new Button();
             buttonInit = new Button();
+            buttonGetLicenseRequestCode = new Button();
+            buttonCheckLicense = new Button();
             buttonRecClipboard = new Button();
             buttonRec = new Button();
             tabControlMain = new TabControl();
@@ -471,7 +472,6 @@
             groupBox1.Controls.Add(buttonRecPDF);
             groupBox1.Controls.Add(chkReturnWordBox);
             groupBox1.Controls.Add(buttonFreeEngine);
-            groupBox1.Controls.Add(buttonCancelOCR);
             groupBox1.Controls.Add(buttonPostFile);
             groupBox1.Controls.Add(textBoxApiAddress);
             groupBox1.Controls.Add(label8);
@@ -489,6 +489,8 @@
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(buttonGetBase64);
             groupBox1.Controls.Add(buttonInit);
+            groupBox1.Controls.Add(buttonGetLicenseRequestCode);
+            groupBox1.Controls.Add(buttonCheckLicense);
             groupBox1.Controls.Add(buttonRecClipboard);
             groupBox1.Controls.Add(buttonRec);
             groupBox1.Location = new Point(6, 6);
@@ -564,17 +566,6 @@
             buttonFreeEngine.Text = "释放OCR";
             buttonFreeEngine.UseVisualStyleBackColor = true;
             buttonFreeEngine.Click += buttonFreeEngine_Click;
-            // 
-            // buttonCancelOCR
-            // 
-            buttonCancelOCR.Enabled = false;
-            buttonCancelOCR.Location = new Point(380, 89);
-            buttonCancelOCR.Name = "buttonCancelOCR";
-            buttonCancelOCR.Size = new Size(109, 25);
-            buttonCancelOCR.TabIndex = 30;
-            buttonCancelOCR.Text = "取消任务";
-            buttonCancelOCR.UseVisualStyleBackColor = true;
-            buttonCancelOCR.Click += buttonCancelOCR_Click;
             // 
             // buttonPostFile
             // 
@@ -745,6 +736,27 @@
             buttonInit.Text = "初始化OCR";
             buttonInit.UseVisualStyleBackColor = false;
             buttonInit.Click += buttonInit_Click;
+            // 
+            // buttonGetLicenseRequestCode
+            // 
+            buttonGetLicenseRequestCode.Location = new Point(220, 85);
+            buttonGetLicenseRequestCode.Name = "buttonGetLicenseRequestCode";
+            buttonGetLicenseRequestCode.Size = new Size(154, 27);
+            buttonGetLicenseRequestCode.TabIndex = 1;
+            buttonGetLicenseRequestCode.Text = "生成GPU授权申请码";
+            buttonGetLicenseRequestCode.UseVisualStyleBackColor = true;
+            buttonGetLicenseRequestCode.Click += buttonGetLicenseRequestCode_Click;
+            // 
+            // buttonCheckLicense
+            // 
+            buttonCheckLicense.Enabled = false;
+            buttonCheckLicense.Location = new Point(385, 85);
+            buttonCheckLicense.Name = "buttonCheckLicense";
+            buttonCheckLicense.Size = new Size(98, 27);
+            buttonCheckLicense.TabIndex = 1;
+            buttonCheckLicense.Text = "查看GPU授权";
+            buttonCheckLicense.UseVisualStyleBackColor = true;
+            buttonCheckLicense.Click += buttonCheckLicense_Click;
             // 
             // buttonRecClipboard
             // 
@@ -1079,7 +1091,6 @@
         private TabPage tabPageOCR;
         private GroupBox groupBox1;
         private Button buttonFreeEngine;
-        private Button buttonCancelOCR;
         private Button buttonPostFile;
         private TextBox textBoxApiAddress;
         private Label label8;
@@ -1129,5 +1140,7 @@
         private Label labelOCRVLStatus;
         private GroupBox groupBoxAI;
         private ComboBox comboBoxPrompt;
+        private Button buttonCheckLicense;
+        private Button buttonGetLicenseRequestCode;
     }
 }

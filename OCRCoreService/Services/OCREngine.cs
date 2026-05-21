@@ -51,7 +51,7 @@ namespace OCRCoreService.Services
                 return true;
             }
 
-            string licensePath = ResolvePath(_ocrConfig.GPULicense);
+            string licensePath = ResolvePath(_ocrConfig.OCRLicense);
             if (string.IsNullOrWhiteSpace(licensePath) || !File.Exists(licensePath))
             {
                 return false;

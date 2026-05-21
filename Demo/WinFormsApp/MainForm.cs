@@ -14,8 +14,10 @@
 // limitations under the License.
 
 using PaddleOCRSDK;
+using PaddleOCRSDK.Models;
 using SkiaSharp;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -100,6 +102,7 @@ namespace WinFormsApp
                 Directory.CreateDirectory(Path.Combine(Application.StartupPath, "uploads"));
 
                 buttonFreeEngine.Enabled = false;
+                buttonCheckLicense.Enabled = true;
                 InitializeOCRVLDefaults();
                 InitializeUVDocParameters();
                 LogMessage($"{DateTime.Now:HH:mm:ss.fff}:使用前请先点击【下载OCR模型】下载版面识别及AI大模型");
@@ -147,6 +150,75 @@ namespace WinFormsApp
 
             fullPath = Path.GetFullPath(fullPath);
             return File.Exists(fullPath) ? fullPath : null;
+        }
+
+        private static string BuildLicenseStatusText(LicenseStatus status, bool licenseFileActivated)
+        {
+            var sb = new StringBuilder();
+            string state = status.Activated ? "已授权" : "未授权";
+            string gpuState = status.AllowGpu ? "允许" : "不允许";
+            string machineState = status.MachineBound
+                ? (status.MachineMatch ? "已绑定并匹配当前设备" : "已绑定但不匹配当前设备")
+                : "未绑定设备";
+
+            sb.AppendLine($"{DateTime.Now:HH:mm:ss.fff}: GPU授权状态检查");
+            sb.AppendLine("===============================================");
+            sb.AppendLine($"授权文件自动激活: {(licenseFileActivated ? "成功" : "未激活或未找到默认授权文件")}");
+            sb.AppendLine($"授权状态: {state}");
+            sb.AppendLine($"产品名称: {DisplayValue(status.ProductName)}");
+            if (licenseFileActivated)
+            {
+                sb.AppendLine($"客户信息: {DisplayValue(status.Customer)}");
+                sb.AppendLine($"授权编号: {DisplayValue(status.LicenseId)}");
+                sb.AppendLine($"授权版本: {DisplayValue(status.Version)}");
+                sb.AppendLine($"授权平台: {DisplayValue(status.Platforms == null || status.Platforms.Count == 0 ? "" : string.Join(", ", status.Platforms))}");
+                sb.AppendLine($"GPU权限: {gpuState}");
+                sb.AppendLine($"设备绑定: {machineState}");
+                sb.AppendLine($"绑定模式: {DisplayValue(status.BindMode)}");
+                sb.AppendLine($"机器码匹配: {(status.MachineMatch ? "匹配" : "不匹配")}");
+                sb.AppendLine($"开始时间: {FormatLicenseTime(status.StartTime)}");
+                sb.AppendLine($"到期时间: {FormatLicenseTime(status.ExpireTime)}");
+
+                if (!string.IsNullOrWhiteSpace(status.CurrentMachineCode))
+                {
+                    sb.AppendLine($"当前机器码: {status.CurrentMachineCode}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(status.MachineCode))
+                {
+                    sb.AppendLine($"授权机器码: {status.MachineCode}");
+                }
+            }
+
+            sb.AppendLine("===============================================");
+            sb.AppendLine(status.Activated && status.AllowGpu
+                ? "当前授权可用于GPU初始化。"
+                : "当前授权不可用于GPU初始化，请确认授权文件、设备绑定、有效期和GPU权限。");
+            return sb.ToString();
+        }
+
+        private static string DisplayValue(string? value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? "-" : value.Trim();
+        }
+
+        private static string FormatLicenseTime(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return "-";
+            }
+
+            if (DateTimeOffset.TryParse(
+                value,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out var utcTime))
+            {
+                return $"{utcTime.ToLocalTime():yyyy-MM-dd HH:mm:ss}";
+            }
+
+            return value;
         }
 
         public void LogMessage(string infoValue)
@@ -230,7 +302,6 @@ namespace WinFormsApp
         private void SetOCRBusy(bool busy)
         {
             isOCRBusy = busy;
-            buttonCancelOCR.Enabled = busy;
             buttonInit.Enabled = !busy && !isInitSuccess;
             buttonFreeEngine.Enabled = !busy && isInitSuccess;
             buttonRec.Enabled = !busy && isOCRTextReady;
@@ -240,6 +311,7 @@ namespace WinFormsApp
             buttonPostFile.Enabled = !busy;
             buttonGetBase64.Enabled = !busy;
             buttonDownModels.Enabled = !busy;
+            buttonCheckLicense.Enabled = !busy;
             comboBoxModel.Enabled = !busy && !isInitSuccess;
             chkUseGpu.Enabled = !busy && !isInitSuccess;
             chkUseTensorRT.Enabled = !busy && !isInitSuccess && chkUseGpu.Checked;
@@ -251,6 +323,35 @@ namespace WinFormsApp
             numericUpDowncpu_mem.Enabled = !busy && !isInitSuccess;
         }
 
+        private void buttonCheckLicense_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                textBoxResult.Clear();
+                message = new StringBuilder();
+
+                bool licenseFileActivated = OCREngine.ActivateGpuLicenseIfExists();
+                LicenseStatus? status = ocrService.GetLicenseStatusInfo();
+
+                if (status == null)
+                {
+                    string error = ocrService.GetError();
+                    LogMessage($"{DateTime.Now:HH:mm:ss.fff}: 未获取到授权状态。{error}");
+                    return;
+                }
+
+                LogMessage(BuildLicenseStatusText(status, licenseFileActivated));
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"{DateTime.Now:HH:mm:ss.fff}: 获取授权状态失败: {ex.Message}");
+                string error = ocrService.GetError();
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    LogMessage($"DLL错误信息: {error}");
+                }
+            }
+        }
         private async void buttonInit_Click(object sender, EventArgs e)
         {
             CancellationToken cancellationToken = BeginOCROperation();
@@ -566,7 +667,7 @@ namespace WinFormsApp
                 string result = await RecOCRFromPDFAsync(filePath, cancellationToken);
                 if (!string.IsNullOrEmpty(result))
                 {
-                    
+
                     LayoutDetectResult layoutResult = ocrService.ParseLayoutResult(result);
                     string? resultPath = ResolveExistingImagePath(layoutResult.VisPath);
                     if (!string.IsNullOrEmpty(resultPath))
@@ -671,10 +772,36 @@ namespace WinFormsApp
             }
         }
 
+        private void buttonGetLicenseRequestCode_Click(object sender, EventArgs e)
+        {
+            string exeFileName = "PaddleOCRLicenseCode.exe";
+            string exePath = Path.Combine(AppContext.BaseDirectory, exeFileName);
+            try
+            {
+                if (!File.Exists(exePath))
+                {
+                    MessageBox.Show($"未找到生成GPU授权申请码程序：{exePath}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                ProcessStartInfo startInfo = new()
+                {
+                    FileName = exePath,
+                    WorkingDirectory = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory,
+                    UseShellExecute = true
+                };
+                Process.Start(startInfo);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"无法启动生成GPU授权申请码程序：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void buttonDownModels_Click(object sender, EventArgs e)
         {
             string urlV5 = "https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html";
-            string downloaderFileName = "DownOCRModels.exe";
+            string downloaderFileName = "PaddleOCRModelsDownloader.exe";
             string downloaderPath = Path.Combine(AppContext.BaseDirectory, downloaderFileName);
             try
             {
@@ -1131,7 +1258,7 @@ namespace WinFormsApp
         private void checkBoxOCRVLDocAnalysis_CheckedChanged(object? sender, EventArgs e)
         {
             UpdateOCRVLPromptState();
-            if(checkBoxOCRVLDocAnalysis.Checked)
+            if (checkBoxOCRVLDocAnalysis.Checked)
                 LogOCRVLMessage($"{DateTime.Now:HH:mm:ss.fff}:CPU模式不建议使用版面分析，可使用小图体验");
             UpdateOCRVLStatus(checkBoxOCRVLDocAnalysis.Checked
                 ? "已启用版面分析，识别后优先预览 output/xxx.png"

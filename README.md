@@ -189,7 +189,6 @@ OCRCoreService(WebAPI服务)及Winform项目运行环境为VS2026+.net10.0：
 | return_word_box              | false  | 是否返回单字坐标                                                                         |
 | ocr_instance_count           | false  | OCR引擎实例数量，默认1，最大10，适用于高并发时使用。                                     |
 | **版面结构识别参数 (LayoutParameter)** | -- | **PP-Structure专用** |
-| ---------------------------- | ------ | ---------------------------------------------------------------------------------------- |
 | use_gpu                      | false  | 是否使用GPU                                                                              |
 | gpu_id                       | 0      | GPU id，使用GPU时有效                                                                    |
 | gpu_mem                      | 4000    | 使用GPU时内存                                                                            |

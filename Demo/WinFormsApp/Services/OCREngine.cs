@@ -140,7 +140,7 @@ namespace WinFormsApp.Services
             string msg = "文本识别初始化成功";
             try
             {
-                ocrService.EnableLog(true);//关闭Log日志
+                ocrService.EnableLog(true);//是否关闭Log日志
                 ActivateGpuLicenseIfExists();
                 ocrService.Init(para);
             }

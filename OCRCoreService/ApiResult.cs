@@ -154,9 +154,9 @@ namespace OCRCoreService
         /// </summary>
         public string rec_infer { get; set; }
         /// <summary>
-        /// GPU授权文件路径，支持绝对路径或相对程序目录路径
+        /// 授权文件路径，支持绝对路径或相对程序目录路径
         /// </summary>
-        public string GPULicense { get; set; } = @"models\paddleocr.lic";
+        public string OCRLicense { get; set; } = @"models\paddleocr.lic";
         /// <summary>
         /// 是否使用GPU
         /// </summary>
