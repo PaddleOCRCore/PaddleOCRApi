@@ -152,7 +152,7 @@ namespace WinFormsApp
             return File.Exists(fullPath) ? fullPath : null;
         }
 
-        private static string BuildLicenseStatusText(LicenseStatus status, bool licenseFileActivated)
+        private static string BuildLicenseStatusText(LicenseStatus status, bool licenseFileActivated, string title = "PaddleOCR")
         {
             var sb = new StringBuilder();
             string state = status.Activated ? "已授权" : "未授权";
@@ -163,6 +163,7 @@ namespace WinFormsApp
 
             sb.AppendLine($"{DateTime.Now:HH:mm:ss.fff}: GPU授权状态检查");
             sb.AppendLine("===============================================");
+            sb.AppendLine($"授权模块: {title}");
             sb.AppendLine($"授权文件自动激活: {(licenseFileActivated ? "成功" : "未激活或未找到默认授权文件")}");
             sb.AppendLine($"授权状态: {state}");
             sb.AppendLine($"产品名称: {DisplayValue(status.ProductName)}");
@@ -170,7 +171,7 @@ namespace WinFormsApp
             {
                 sb.AppendLine($"客户信息: {DisplayValue(status.Customer)}");
                 sb.AppendLine($"授权编号: {DisplayValue(status.LicenseId)}");
-                sb.AppendLine($"授权版本: {DisplayValue(status.Version)}");
+                sb.AppendLine($"授权版本: {DisplayValue(status.ProductVersion)}");
                 sb.AppendLine($"授权平台: {DisplayValue(status.Platforms == null || status.Platforms.Count == 0 ? "" : string.Join(", ", status.Platforms))}");
                 sb.AppendLine($"GPU权限: {gpuState}");
                 sb.AppendLine($"设备绑定: {machineState}");
@@ -178,6 +179,8 @@ namespace WinFormsApp
                 sb.AppendLine($"机器码匹配: {(status.MachineMatch ? "匹配" : "不匹配")}");
                 sb.AppendLine($"开始时间: {FormatLicenseTime(status.StartTime)}");
                 sb.AppendLine($"到期时间: {FormatLicenseTime(status.ExpireTime)}");
+
+                sb.AppendLine($"授权产品: {DisplayValue(status.Products == null || status.Products.Count == 0 ? "" : string.Join(", ", status.Products))}");
 
                 if (!string.IsNullOrWhiteSpace(status.CurrentMachineCode))
                 {
@@ -330,7 +333,7 @@ namespace WinFormsApp
                 textBoxResult.Clear();
                 message = new StringBuilder();
 
-                bool licenseFileActivated = OCREngine.ActivateGpuLicenseIfExists();
+                bool licenseFileActivated = OCREngine.ActivateLicenseIfExists();
                 LicenseStatus? status = ocrService.GetLicenseStatusInfo();
 
                 if (status == null)
@@ -341,6 +344,7 @@ namespace WinFormsApp
                 }
 
                 LogMessage(BuildLicenseStatusText(status, licenseFileActivated));
+                LogOCRVLLicenseStatus();
             }
             catch (Exception ex)
             {
@@ -352,6 +356,22 @@ namespace WinFormsApp
                 }
             }
         }
+
+        private void LogOCRVLLicenseStatus()
+        {
+            string licensePath = OCREngine.ResolveLicensePath();
+            bool vlLicenseActivated = !string.IsNullOrWhiteSpace(licensePath)
+                && File.Exists(licensePath)
+                && ocrvlService.ActivateLicense(licensePath);
+            LicenseStatus? vlStatus = ocrvlService.GetLicenseStatusInfo();
+            if (vlStatus == null)
+            {
+                return;
+            }
+
+            LogMessage(BuildLicenseStatusText(vlStatus, vlLicenseActivated, "PaddleOCR-VL"));
+        }
+
         private async void buttonInit_Click(object sender, EventArgs e)
         {
             CancellationToken cancellationToken = BeginOCROperation();
@@ -1292,6 +1312,12 @@ namespace WinFormsApp
                 await Task.Run(() =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
+                    string licensePath = OCREngine.ResolveLicensePath();
+                    if (!string.IsNullOrWhiteSpace(licensePath) && File.Exists(licensePath))
+                    {
+                        ocrvlService.ActivateLicense(licensePath);
+                    }
+
                     if (isOCRVLLayoutAnalysis)
                     {
                         ocrvlService.InitDoc(configPath);

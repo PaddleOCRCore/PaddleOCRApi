@@ -41,8 +41,14 @@ namespace PaddleOCRSDK.Models
         /// <summary>
         /// 授权版本
         /// </summary>
-        [JsonProperty("version")]
-        public string Version { get; set; }
+        [JsonProperty("product_version")]
+        public string ProductVersion { get; set; }
+
+        /// <summary>
+        /// 授权文件包含的产品列表，例如 PaddleOCR、PaddleOCR-VL。
+        /// </summary>
+        [JsonProperty("products")]
+        public List<string> Products { get; set; }
 
         /// <summary>
         /// 授权平台

@@ -67,24 +67,29 @@ namespace WinFormsApp.Services
         }
 
         /// <summary>
-        /// 初始化前自动激活GPU授权文件
+        /// 自动激活授权文件，用于查看授权状态。
         /// </summary>
         /// <returns></returns>
-        public static bool ActivateGpuLicenseIfExists()
+        public static bool ActivateLicenseIfExists()
         {
-            if (gpuLicenseActivated)
-            {
-                return true;
-            }
-
             string licensePath = ResolvePath(gpu_license);
             if (string.IsNullOrWhiteSpace(licensePath) || !File.Exists(licensePath))
             {
+                gpuLicenseActivated = false;
                 return false;
             }
 
             gpuLicenseActivated = ActivateLicense(licensePath);
             return gpuLicenseActivated;
+        }
+
+        /// <summary>
+        /// GPU初始化前自动激活授权文件，CPU模式不强制授权。
+        /// </summary>
+        /// <returns></returns>
+        public static bool ActivateGpuLicenseIfExists()
+        {
+            return !use_gpu || ActivateLicenseIfExists();
         }
 
         private static string ResolvePath(string path)
@@ -97,6 +102,11 @@ namespace WinFormsApp.Services
             return Path.IsPathRooted(path)
                 ? path
                 : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+        }
+
+        public static string ResolveLicensePath()
+        {
+            return ResolvePath(gpu_license);
         }
 
         /// <summary>
@@ -141,7 +151,10 @@ namespace WinFormsApp.Services
             try
             {
                 ocrService.EnableLog(true);//是否关闭Log日志
-                ActivateGpuLicenseIfExists();
+                if (use_gpu && !ActivateGpuLicenseIfExists())
+                {
+                    return "授权文件未激活，无法初始化GPU模式";
+                }
                 ocrService.Init(para);
             }
             catch (Exception ex)
@@ -209,7 +222,10 @@ namespace WinFormsApp.Services
             string msg = "版面识别初始化成功";
             try
             {
-                ActivateGpuLicenseIfExists();
+                if (use_gpu && !ActivateGpuLicenseIfExists())
+                {
+                    return "授权文件未激活，无法初始化GPU模式";
+                }
                 ocrService.Init(para);
             }
             catch (Exception ex)

@@ -92,7 +92,23 @@ try
             builder.Services.AddSingleton<IOCRVLService>(sp =>
             {
                 var vlService = new OCRVLService();
+                var sharedOcrConfig = sp.GetService<OCRConfig>();
+                string licensePath = sharedOcrConfig == null || string.IsNullOrWhiteSpace(sharedOcrConfig.OCRLicense)
+                    ? string.Empty
                     : (Path.IsPathRooted(sharedOcrConfig.OCRLicense)
+                        ? sharedOcrConfig.OCRLicense
+                        : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, sharedOcrConfig.OCRLicense));
+                if (!string.IsNullOrWhiteSpace(licensePath) && File.Exists(licensePath))
+                {
+                    if (vlService.ActivateLicense(licensePath))
+                    {
+                        logger.Info($"OCR-VL授权激活成功: {licensePath}");
+                    }
+                    else
+                    {
+                        logger.Warn($"OCR-VL授权激活失败: {licensePath}");
+                    }
+                }
                 string yamlPath = Path.IsPathRooted(ocrvlConfig.yaml_path)
                     ? ocrvlConfig.yaml_path
                     : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ocrvlConfig.yaml_path);
