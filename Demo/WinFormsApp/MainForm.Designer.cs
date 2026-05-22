@@ -71,7 +71,6 @@
             label7 = new Label();
             comboBoxModel = new ComboBox();
             buttonRecStructure = new Button();
-            buttonDownModels = new Button();
             numericUpDowncpu_mem = new NumericUpDown();
             label6 = new Label();
             numericUpDownThread = new NumericUpDown();
@@ -82,8 +81,6 @@
             label2 = new Label();
             buttonGetBase64 = new Button();
             buttonInit = new Button();
-            buttonGetLicenseRequestCode = new Button();
-            buttonCheckLicense = new Button();
             buttonRecClipboard = new Button();
             buttonRec = new Button();
             tabControlMain = new TabControl();
@@ -106,6 +103,18 @@
             textBoxOCRVLConfigPath = new TextBox();
             labelOCRVLConfigPath = new Label();
             labelOCRVLStatus = new Label();
+            menuStripMain = new MenuStrip();
+            toolStripMenuItemModels = new ToolStripMenuItem();
+            toolStripMenuItemDownloadOcrModels = new ToolStripMenuItem();
+            toolStripMenuItemLicense = new ToolStripMenuItem();
+            toolStripMenuItemGetLicenseRequestCode = new ToolStripMenuItem();
+            toolStripMenuItemCheckLicense = new ToolStripMenuItem();
+            toolStripMenuItemHelp = new ToolStripMenuItem();
+            toolStripMenuItemVisitGitHub = new ToolStripMenuItem();
+            toolStripMenuItemVisitGitee = new ToolStripMenuItem();
+            toolStripMenuItemChangelog = new ToolStripMenuItem();
+            toolStripMenuItemCppInterface = new ToolStripMenuItem();
+            toolStripMenuItemFaq = new ToolStripMenuItem();
             tabPageImageCorrection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
             splitContainerUVDoc.Panel1.SuspendLayout();
@@ -141,6 +150,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxOCRVL).BeginInit();
             groupBoxOCRVLControl.SuspendLayout();
             groupBoxAI.SuspendLayout();
+            menuStripMain.SuspendLayout();
             SuspendLayout();
             // 
             // imageList1
@@ -157,7 +167,7 @@
             tabPageImageCorrection.Location = new Point(4, 26);
             tabPageImageCorrection.Name = "tabPageImageCorrection";
             tabPageImageCorrection.Padding = new Padding(3);
-            tabPageImageCorrection.Size = new Size(1084, 662);
+            tabPageImageCorrection.Size = new Size(1084, 637);
             tabPageImageCorrection.TabIndex = 1;
             tabPageImageCorrection.Text = "图像矫正";
             tabPageImageCorrection.UseVisualStyleBackColor = true;
@@ -407,7 +417,7 @@
             tabPageOCR.Location = new Point(4, 26);
             tabPageOCR.Name = "tabPageOCR";
             tabPageOCR.Padding = new Padding(3);
-            tabPageOCR.Size = new Size(1084, 662);
+            tabPageOCR.Size = new Size(1084, 637);
             tabPageOCR.TabIndex = 0;
             tabPageOCR.Text = "文本识别";
             tabPageOCR.UseVisualStyleBackColor = true;
@@ -425,7 +435,7 @@
             // splitContainerOCR.Panel2
             // 
             splitContainerOCR.Panel2.Controls.Add(textBoxResult);
-            splitContainerOCR.Size = new Size(1072, 519);
+            splitContainerOCR.Size = new Size(1072, 494);
             splitContainerOCR.SplitterDistance = 518;
             splitContainerOCR.TabIndex = 8;
             // 
@@ -435,7 +445,7 @@
             groupBoxOCRImage.Dock = DockStyle.Fill;
             groupBoxOCRImage.Location = new Point(0, 0);
             groupBoxOCRImage.Name = "groupBoxOCRImage";
-            groupBoxOCRImage.Size = new Size(518, 519);
+            groupBoxOCRImage.Size = new Size(518, 494);
             groupBoxOCRImage.TabIndex = 7;
             groupBoxOCRImage.TabStop = false;
             groupBoxOCRImage.Text = "图片";
@@ -460,7 +470,7 @@
             textBoxResult.Multiline = true;
             textBoxResult.Name = "textBoxResult";
             textBoxResult.ScrollBars = ScrollBars.Both;
-            textBoxResult.Size = new Size(550, 519);
+            textBoxResult.Size = new Size(550, 494);
             textBoxResult.TabIndex = 2;
             // 
             // groupBox1
@@ -478,7 +488,6 @@
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(comboBoxModel);
             groupBox1.Controls.Add(buttonRecStructure);
-            groupBox1.Controls.Add(buttonDownModels);
             groupBox1.Controls.Add(numericUpDowncpu_mem);
             groupBox1.Controls.Add(label6);
             groupBox1.Controls.Add(numericUpDownThread);
@@ -489,8 +498,6 @@
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(buttonGetBase64);
             groupBox1.Controls.Add(buttonInit);
-            groupBox1.Controls.Add(buttonGetLicenseRequestCode);
-            groupBox1.Controls.Add(buttonCheckLicense);
             groupBox1.Controls.Add(buttonRecClipboard);
             groupBox1.Controls.Add(buttonRec);
             groupBox1.Location = new Point(6, 6);
@@ -626,16 +633,6 @@
             buttonRecStructure.UseVisualStyleBackColor = true;
             buttonRecStructure.Click += buttonRecStructure_Click;
             // 
-            // buttonDownModels
-            // 
-            buttonDownModels.Location = new Point(946, 54);
-            buttonDownModels.Name = "buttonDownModels";
-            buttonDownModels.Size = new Size(120, 28);
-            buttonDownModels.TabIndex = 16;
-            buttonDownModels.Text = "下载OCR模型";
-            buttonDownModels.UseVisualStyleBackColor = true;
-            buttonDownModels.Click += buttonDownModels_Click;
-            // 
             // numericUpDowncpu_mem
             // 
             numericUpDowncpu_mem.Location = new Point(495, 59);
@@ -719,7 +716,7 @@
             // 
             buttonGetBase64.Location = new Point(946, 22);
             buttonGetBase64.Name = "buttonGetBase64";
-            buttonGetBase64.Size = new Size(120, 28);
+            buttonGetBase64.Size = new Size(120, 61);
             buttonGetBase64.TabIndex = 3;
             buttonGetBase64.Text = "获取图片Base64";
             buttonGetBase64.UseVisualStyleBackColor = true;
@@ -736,27 +733,6 @@
             buttonInit.Text = "初始化OCR";
             buttonInit.UseVisualStyleBackColor = false;
             buttonInit.Click += buttonInit_Click;
-            // 
-            // buttonGetLicenseRequestCode
-            // 
-            buttonGetLicenseRequestCode.Location = new Point(220, 85);
-            buttonGetLicenseRequestCode.Name = "buttonGetLicenseRequestCode";
-            buttonGetLicenseRequestCode.Size = new Size(154, 27);
-            buttonGetLicenseRequestCode.TabIndex = 1;
-            buttonGetLicenseRequestCode.Text = "生成GPU授权申请码";
-            buttonGetLicenseRequestCode.UseVisualStyleBackColor = true;
-            buttonGetLicenseRequestCode.Click += buttonGetLicenseRequestCode_Click;
-            // 
-            // buttonCheckLicense
-            // 
-            buttonCheckLicense.Enabled = false;
-            buttonCheckLicense.Location = new Point(385, 85);
-            buttonCheckLicense.Name = "buttonCheckLicense";
-            buttonCheckLicense.Size = new Size(98, 27);
-            buttonCheckLicense.TabIndex = 1;
-            buttonCheckLicense.Text = "查看GPU授权";
-            buttonCheckLicense.UseVisualStyleBackColor = true;
-            buttonCheckLicense.Click += buttonCheckLicense_Click;
             // 
             // buttonRecClipboard
             // 
@@ -786,10 +762,10 @@
             tabControlMain.Controls.Add(tabPageImageCorrection);
             tabControlMain.Controls.Add(tabPageOCRVL);
             tabControlMain.Dock = DockStyle.Fill;
-            tabControlMain.Location = new Point(0, 0);
+            tabControlMain.Location = new Point(0, 25);
             tabControlMain.Name = "tabControlMain";
             tabControlMain.SelectedIndex = 0;
-            tabControlMain.Size = new Size(1092, 692);
+            tabControlMain.Size = new Size(1092, 667);
             tabControlMain.TabIndex = 1;
             // 
             // tabPageOCRVL
@@ -800,7 +776,7 @@
             tabPageOCRVL.Location = new Point(4, 26);
             tabPageOCRVL.Name = "tabPageOCRVL";
             tabPageOCRVL.Padding = new Padding(3);
-            tabPageOCRVL.Size = new Size(1084, 662);
+            tabPageOCRVL.Size = new Size(1084, 637);
             tabPageOCRVL.TabIndex = 2;
             tabPageOCRVL.Text = "OCR-VL识别";
             tabPageOCRVL.UseVisualStyleBackColor = true;
@@ -1010,13 +986,101 @@
             labelOCRVLStatus.Text = "状态: 就绪";
             labelOCRVLStatus.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // menuStripMain
+            // 
+            menuStripMain.Items.AddRange(new ToolStripItem[] { toolStripMenuItemModels, toolStripMenuItemLicense, toolStripMenuItemHelp });
+            menuStripMain.Location = new Point(0, 0);
+            menuStripMain.Name = "menuStripMain";
+            menuStripMain.Size = new Size(1092, 25);
+            menuStripMain.TabIndex = 2;
+            menuStripMain.Text = "menuStrip1";
+            // 
+            // toolStripMenuItemModels
+            // 
+            toolStripMenuItemModels.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItemDownloadOcrModels });
+            toolStripMenuItemModels.Name = "toolStripMenuItemModels";
+            toolStripMenuItemModels.Size = new Size(44, 21);
+            toolStripMenuItemModels.Text = "模型";
+            // 
+            // toolStripMenuItemDownloadOcrModels
+            // 
+            toolStripMenuItemDownloadOcrModels.Name = "toolStripMenuItemDownloadOcrModels";
+            toolStripMenuItemDownloadOcrModels.Size = new Size(150, 22);
+            toolStripMenuItemDownloadOcrModels.Text = "下载OCR模型";
+            toolStripMenuItemDownloadOcrModels.Click += buttonDownModels_Click;
+            // 
+            // toolStripMenuItemLicense
+            // 
+            toolStripMenuItemLicense.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItemGetLicenseRequestCode, toolStripMenuItemCheckLicense });
+            toolStripMenuItemLicense.Name = "toolStripMenuItemLicense";
+            toolStripMenuItemLicense.Size = new Size(44, 21);
+            toolStripMenuItemLicense.Text = "授权";
+            // 
+            // toolStripMenuItemGetLicenseRequestCode
+            // 
+            toolStripMenuItemGetLicenseRequestCode.Name = "toolStripMenuItemGetLicenseRequestCode";
+            toolStripMenuItemGetLicenseRequestCode.Size = new Size(180, 22);
+            toolStripMenuItemGetLicenseRequestCode.Text = "生成授权申请码";
+            toolStripMenuItemGetLicenseRequestCode.Click += buttonGetLicenseRequestCode_Click;
+            // 
+            // toolStripMenuItemCheckLicense
+            // 
+            toolStripMenuItemCheckLicense.Name = "toolStripMenuItemCheckLicense";
+            toolStripMenuItemCheckLicense.Size = new Size(180, 22);
+            toolStripMenuItemCheckLicense.Text = "查看GPU授权";
+            toolStripMenuItemCheckLicense.Click += buttonCheckLicense_Click;
+            // 
+            // toolStripMenuItemHelp
+            // 
+            toolStripMenuItemHelp.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItemVisitGitHub, toolStripMenuItemVisitGitee, toolStripMenuItemChangelog, toolStripMenuItemCppInterface, toolStripMenuItemFaq });
+            toolStripMenuItemHelp.Name = "toolStripMenuItemHelp";
+            toolStripMenuItemHelp.Size = new Size(44, 21);
+            toolStripMenuItemHelp.Text = "帮助";
+            // 
+            // toolStripMenuItemVisitGitHub
+            // 
+            toolStripMenuItemVisitGitHub.Name = "toolStripMenuItemVisitGitHub";
+            toolStripMenuItemVisitGitHub.Size = new Size(180, 22);
+            toolStripMenuItemVisitGitHub.Text = "访问GitHub";
+            toolStripMenuItemVisitGitHub.Click += toolStripMenuItemVisitGitHub_Click;
+            // 
+            // toolStripMenuItemVisitGitee
+            // 
+            toolStripMenuItemVisitGitee.Name = "toolStripMenuItemVisitGitee";
+            toolStripMenuItemVisitGitee.Size = new Size(180, 22);
+            toolStripMenuItemVisitGitee.Text = "访问Gitee";
+            toolStripMenuItemVisitGitee.Click += toolStripMenuItemVisitGitee_Click;
+            // 
+            // toolStripMenuItemChangelog
+            // 
+            toolStripMenuItemChangelog.Name = "toolStripMenuItemChangelog";
+            toolStripMenuItemChangelog.Size = new Size(180, 22);
+            toolStripMenuItemChangelog.Text = "更新记录";
+            toolStripMenuItemChangelog.Click += toolStripMenuItemChangelog_Click;
+            // 
+            // toolStripMenuItemCppInterface
+            // 
+            toolStripMenuItemCppInterface.Name = "toolStripMenuItemCppInterface";
+            toolStripMenuItemCppInterface.Size = new Size(180, 22);
+            toolStripMenuItemCppInterface.Text = "C++接口";
+            toolStripMenuItemCppInterface.Click += toolStripMenuItemCppInterface_Click;
+            // 
+            // toolStripMenuItemFaq
+            // 
+            toolStripMenuItemFaq.Name = "toolStripMenuItemFaq";
+            toolStripMenuItemFaq.Size = new Size(180, 22);
+            toolStripMenuItemFaq.Text = "常见问题";
+            toolStripMenuItemFaq.Click += toolStripMenuItemFaq_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1092, 692);
             Controls.Add(tabControlMain);
+            Controls.Add(menuStripMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MainMenuStrip = menuStripMain;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "PaddleOCR识别Demo --QQ群：475159576 https://github.com/PaddleOCRCore/PaddleOCRApi";
@@ -1062,7 +1126,10 @@
             groupBoxOCRVLControl.PerformLayout();
             groupBoxAI.ResumeLayout(false);
             groupBoxAI.PerformLayout();
+            menuStripMain.ResumeLayout(false);
+            menuStripMain.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -1097,7 +1164,6 @@
         private Label label7;
         private ComboBox comboBoxModel;
         private Button buttonRecStructure;
-        private Button buttonDownModels;
         private NumericUpDown numericUpDowncpu_mem;
         private Label label6;
         private NumericUpDown numericUpDownThread;
@@ -1140,7 +1206,17 @@
         private Label labelOCRVLStatus;
         private GroupBox groupBoxAI;
         private ComboBox comboBoxPrompt;
-        private Button buttonCheckLicense;
-        private Button buttonGetLicenseRequestCode;
+        private MenuStrip menuStripMain;
+        private ToolStripMenuItem toolStripMenuItemModels;
+        private ToolStripMenuItem toolStripMenuItemDownloadOcrModels;
+        private ToolStripMenuItem toolStripMenuItemLicense;
+        private ToolStripMenuItem toolStripMenuItemGetLicenseRequestCode;
+        private ToolStripMenuItem toolStripMenuItemCheckLicense;
+        private ToolStripMenuItem toolStripMenuItemHelp;
+        private ToolStripMenuItem toolStripMenuItemVisitGitHub;
+        private ToolStripMenuItem toolStripMenuItemVisitGitee;
+        private ToolStripMenuItem toolStripMenuItemChangelog;
+        private ToolStripMenuItem toolStripMenuItemCppInterface;
+        private ToolStripMenuItem toolStripMenuItemFaq;
     }
 }

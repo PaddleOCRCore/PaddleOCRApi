@@ -102,7 +102,7 @@ namespace WinFormsApp
                 Directory.CreateDirectory(Path.Combine(Application.StartupPath, "uploads"));
 
                 buttonFreeEngine.Enabled = false;
-                buttonCheckLicense.Enabled = true;
+                toolStripMenuItemCheckLicense.Enabled = true;
                 InitializeOCRVLDefaults();
                 InitializeUVDocParameters();
                 LogMessage($"{DateTime.Now:HH:mm:ss.fff}:使用前请先点击【下载OCR模型】下载版面识别及AI大模型");
@@ -313,8 +313,8 @@ namespace WinFormsApp
             buttonRecStructure.Enabled = !busy && isOCRStructureReady;
             buttonPostFile.Enabled = !busy;
             buttonGetBase64.Enabled = !busy;
-            buttonDownModels.Enabled = !busy;
-            buttonCheckLicense.Enabled = !busy;
+            toolStripMenuItemDownloadOcrModels.Enabled = !busy;
+            toolStripMenuItemCheckLicense.Enabled = !busy;
             comboBoxModel.Enabled = !busy && !isInitSuccess;
             chkUseGpu.Enabled = !busy && !isInitSuccess;
             chkUseTensorRT.Enabled = !busy && !isInitSuccess && chkUseGpu.Checked;
@@ -794,28 +794,23 @@ namespace WinFormsApp
 
         private void buttonGetLicenseRequestCode_Click(object sender, EventArgs e)
         {
-            string exeFileName = "PaddleOCRLicenseCode.exe";
-            string exePath = Path.Combine(AppContext.BaseDirectory, exeFileName);
             try
             {
-                if (!File.Exists(exePath))
+                string requestCode = ocrService.GetLicenseRequestCode();
+                LogMessage($"{DateTime.Now:HH:mm:ss.fff}: GPU授权申请码");
+                LogMessage("===============================================");
+                if (string.IsNullOrWhiteSpace(requestCode))
                 {
-                    MessageBox.Show($"未找到生成GPU授权申请码程序：{exePath}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LogMessage("未获取到GPU授权申请码。");
                     return;
                 }
 
-                ProcessStartInfo startInfo = new()
-                {
-                    FileName = exePath,
-                    WorkingDirectory = Path.GetDirectoryName(exePath) ?? AppContext.BaseDirectory,
-                    UseShellExecute = true
-                };
-                Process.Start(startInfo);
-
+                LogMessage(requestCode);
+                LogMessage("===============================================");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"无法启动生成GPU授权申请码程序：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LogMessage($"{DateTime.Now:HH:mm:ss.fff}: 获取GPU授权申请码失败:{ex.Message}");
             }
         }
         private void buttonDownModels_Click(object sender, EventArgs e)
@@ -845,6 +840,47 @@ namespace WinFormsApp
             catch (Exception ex)
             {
                 MessageBox.Show($"无法启动模型下载程序：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void toolStripMenuItemVisitGitHub_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://github.com/PaddleOCRCore/PaddleOCRApi");
+        }
+
+        private void toolStripMenuItemVisitGitee_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://gitee.com/corallite/PaddleOCRApi");
+        }
+
+        private void toolStripMenuItemChangelog_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://gitee.com/corallite/PaddleOCRApi/blob/main/docs/CHANGELOG.md");
+        }
+
+        private void toolStripMenuItemCppInterface_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://gitee.com/corallite/PaddleOCRApi/blob/main/docs/PaddleOCR-Interface.md");
+        }
+
+        private void toolStripMenuItemFaq_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://gitee.com/corallite/PaddleOCRApi/blob/main/docs/FAQ.md");
+        }
+
+        private void OpenUrl(string url)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"无法打开链接：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

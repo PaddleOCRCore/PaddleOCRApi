@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{BB893EE8-0
 		docs\CHANGELOG_EN.md = docs\CHANGELOG_EN.md
 		docs\FAQ.md = docs\FAQ.md
 		docs\FAQ_EN.md = docs\FAQ_EN.md
-		docs\PaddleOCR.dll接口清单.md = docs\PaddleOCR.dll接口清单.md
+		docs\PaddleOCR-Interface.md = docs\PaddleOCR-Interface.md
 		README.md = README.md
 		README_EN.md = README_EN.md
 	EndProjectSection

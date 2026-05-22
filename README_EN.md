@@ -105,8 +105,8 @@ PaddleOCRWebApi/
 For paddle_inference 3.3+ version:
 
 ```xml
-<PackageReference Include="PaddleOCRSDK" Version="4.4.0" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.4.0" />
+<PackageReference Include="PaddleOCRSDK" Version="4.5.0" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.0" />
 ```
 
 For paddle_inference 2.6.2 version:

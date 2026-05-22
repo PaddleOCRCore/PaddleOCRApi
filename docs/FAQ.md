@@ -12,7 +12,7 @@
 - [性能优化](#性能优化)
 - [功能使用](#功能使用)
 - [开发集成](#开发集成)
-- [商业授权](#商业授权)
+- [GPU授权](#gpu授权)
 - [问题排查](#问题排查)
 
 ---
@@ -647,35 +647,33 @@ nssm start PaddleOCRApi
 
 ---
 
-## 商业授权
+## GPU授权
 
 <details>
-<summary><b>Q: 项目开源吗？商业使用是否免费？</b></summary>
+<summary><b>Q: 项目开源吗？CPU和GPU使用是否都免费？</b></summary>
 
 **A:** 
 
-### 开源版本（完全免费）：
-✅ **Windows CPU - PaddleInference版本**
+### CPU模式（Windows版本开源免费）
 - 许可证：Apache License 2.0
 - 使用期限：无限制
 - 商业用途：✅ 允许
-- 源码获取：GitHub完全公开
+- 适用范围：文本检测、文字识别、版面识别等 CPU 推理场景
 
-### 付费版本（高性能/跨平台）：
-💰 **GPU版本**
-- 支持CUDA加速
-- 速度提升3-10倍
-- 适合高并发场景
+### GPU模式（需要GPU授权）
+- GPU推理需要有效的 GPU 授权文件。
+- 授权文件默认路径：`models/paddleocr.lic`
+- 启用GPU时，程序会在初始化前自动尝试激活默认授权文件。
+- CPU模式不强制要求GPU授权文件。
+- 同一授权文件可包含多个产品权限，例如 `PaddleOCR`、`PaddleOCR-VL`。
 
-💰 **Linux版本**
-- 支持Ubuntu/CentOS等
-- 提供.so动态库
-
-### 付费版本优势：
-- 🚀 更好的性能优化
-- 🛠️ 专业技术支持
-- 📞 优先问题响应
-- 🔄 定期更新维护
+### 授权状态会检查哪些信息？
+- 授权是否已激活
+- 是否允许GPU
+- 授权产品列表
+- 授权平台
+- 设备绑定状态与机器码是否匹配
+- 授权开始时间与到期时间
 
 **联系方式：**
 - QQ：**2380243976**
@@ -683,26 +681,87 @@ nssm start PaddleOCRApi
 </details>
 
 <details>
-<summary><b>Q: 如何获取付费版本？</b></summary>
+<summary><b>Q: 如何申请和使用GPU授权？</b></summary>
 
 **A:** 
 
-### 获取流程：
+### 获取GPU授权申请码
 
-1. **联系开发者**
-   - QQ：**2380243976**
-   - 加入QQ群：**475159576** 咨询
+推荐使用 WinForms Demo：
 
-2. **说明需求**
-   - 使用场景（并发量、响应时间要求）
-   - 运行环境（Windows/Linux/GPU型号）
-   - 预算范围
+1. 打开 `Demo/WinFormsApp`。
+2. 点击顶部菜单 `授权` → `生成授权申请码`。
+3. 日志窗口会输出当前机器的 GPU 授权申请码。
+4. 将申请码发送给开发者生成授权文件。
 
-3. **获取试用**
-   - 提供测试版本
-   - 技术支持对接
+也可以在代码中调用：
 
-**注：** 具体价格请联系开发者咨询
+```csharp
+string requestCode = ocrService.GetLicenseRequestCode();
+```
+
+### 放置授权文件
+
+将生成的授权文件放到程序运行目录下：
+
+```text
+models/paddleocr.lic
+```
+
+如果需要自定义路径，可在调用初始化前自行调用：
+
+```csharp
+ocrService.ActivateLicense("your-license-file-path");
+```
+
+### 查看GPU授权状态
+
+推荐使用 WinForms Demo：
+
+1. 点击顶部菜单 `授权` → `查看GPU授权`。
+2. 日志窗口会显示 PaddleOCR 和 PaddleOCR-VL 的授权状态。
+
+也可以在代码中调用：
+
+```csharp
+LicenseStatus? status = ocrService.GetLicenseStatusInfo();
+```
+
+### 常见失败原因
+
+- 未找到 `models/paddleocr.lic`
+- 授权文件已过期
+- 授权文件不包含GPU权限
+- 授权产品不包含当前模块，例如只授权 `PaddleOCR`，但正在使用 `PaddleOCR-VL`
+- 授权文件绑定的机器码与当前设备不匹配
+- 系统时间异常导致授权有效期判断失败
+</details>
+
+<details>
+<summary><b>Q: Linux版本如何获取？</b></summary>
+
+**A:** 
+
+当前开源版本主要面向 **Windows x64**。如需 Linux 动态库、跨平台部署或定制支持，请联系开发者咨询。
+
+**联系方式：**
+- QQ：**2380243976**
+- QQ群：**475159576**
+</details>
+
+<details>
+<summary><b>Q: 项目是否允许商业使用？</b></summary>
+
+**A:** 
+
+CPU开源部分遵循 Apache License 2.0，可用于商业项目：
+
+- 许可证：Apache License 2.0
+- 使用期限：无限制
+- 商业用途：✅ 允许
+- 源码获取：GitHub完全公开
+
+GPU授权、Linux版本和定制服务属于独立授权/服务范围，请联系开发者确认授权方式和使用范围。
 </details>
 
 ---

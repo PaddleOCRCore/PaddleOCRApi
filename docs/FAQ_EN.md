@@ -12,7 +12,7 @@
 - [Performance Optimization](#performance-optimization)
 - [Feature Usage](#feature-usage)
 - [Development Integration](#development-integration)
-- [Commercial Licensing](#commercial-licensing)
+- [GPU License](#gpu-license)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -96,8 +96,8 @@ The current open-source version only supports **Windows x64** platform. For Linu
 
 ```xml
 <!-- paddle_inference 3.3.0 version -->
-<PackageReference Include="PaddleOCRSDK" Version="4.4.0" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.4.0" />
+<PackageReference Include="PaddleOCRSDK" Version="4.5.0" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.0" />
 
 <!-- or paddle_inference 2.6.2 version -->
 <PackageReference Include="PaddleOCRSDK" Version="1.0.5" />
@@ -624,8 +624,8 @@ For detailed configuration, refer to: [Scheduled Task Configuration Guide](../OC
 
 **Install NuGet Packages**
    ```xml
-   <PackageReference Include="PaddleOCRSDK" Version="4.4.0" />
-   <PackageReference Include="PaddleOCRRuntime_x64" Version="4.4.0" />
+   <PackageReference Include="PaddleOCRSDK" Version="4.5.0" />
+   <PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.0" />
    ```
 
 ### Complete Example:
@@ -647,35 +647,33 @@ Refer to `Demo/CPP/PaddleOCRCpp.cpp`
 
 ---
 
-## Commercial Licensing
+## GPU License
 
 <details>
-<summary><b>Q: Is the project open source? Is commercial use free?</b></summary>
+<summary><b>Q: Is the project open source? Are both CPU and GPU modes free?</b></summary>
 
 **A:** 
 
-### Open Source Version (Completely Free):
-✅ **Windows CPU - PaddleInference Version**
+### CPU Mode (Open Source and Free)
 - License: Apache License 2.0
 - Usage period: Unlimited
 - Commercial use: ✅ Allowed
-- Source code: Fully public on GitHub
+- Scope: CPU inference scenarios such as text detection, text recognition, and layout recognition
 
-### Paid Versions (High Performance/Cross-Platform):
-💰 **GPU Version**
-- Supports CUDA acceleration
-- 3-10x speed improvement
-- Suitable for high concurrency scenarios
+### GPU Mode (GPU License Required)
+- GPU inference requires a valid GPU license file.
+- Default license file path: `models/paddleocr.lic`
+- When GPU is enabled, the program automatically tries to activate the default license file before initialization.
+- CPU mode does not require a GPU license file.
+- One license file can include permissions for multiple products, such as `PaddleOCR` and `PaddleOCR-VL`.
 
-💰 **Linux Version**
-- Supports Ubuntu/CentOS, etc.
-- Provides .so dynamic library
-
-### Paid Version Advantages:
-- 🚀 Better performance optimization
-- 🛠️ Professional technical support
-- 📞 Priority response
-- 🔄 Regular updates and maintenance
+### What does the license status check include?
+- Whether the license is activated
+- Whether GPU is allowed
+- Licensed product list
+- Licensed platforms
+- Device binding status and whether the machine code matches
+- License start time and expiration time
 
 **Contact Information:**
 - QQ: **2380243976**
@@ -683,26 +681,87 @@ Refer to `Demo/CPP/PaddleOCRCpp.cpp`
 </details>
 
 <details>
-<summary><b>Q: How to get the paid version?</b></summary>
+<summary><b>Q: How do I request and use a GPU license?</b></summary>
 
 **A:** 
 
-### Acquisition Process:
+### Get the GPU License Request Code
 
-1. **Contact Developer**
-   - QQ: **2380243976**
-   - Join QQ group: **475159576** for consultation
+The recommended way is to use the WinForms Demo:
 
-2. **Describe Requirements**
-   - Use case (concurrency, response time requirements)
-   - Runtime environment (Windows/Linux/GPU model)
-   - Budget range
+1. Open `Demo/WinFormsApp`.
+2. Click the top menu `License` → `Generate License Request Code`.
+3. The log window will print the GPU license request code for the current machine.
+4. Send the request code to the developer to generate a license file.
 
-3. **Get Trial**
-   - Test version provided
-   - Technical support connection
+You can also call it in code:
 
-**Note:** Please contact developer for specific pricing
+```csharp
+string requestCode = ocrService.GetLicenseRequestCode();
+```
+
+### Place the License File
+
+Place the generated license file under the application runtime directory:
+
+```text
+models/paddleocr.lic
+```
+
+If you need a custom path, call this before initialization:
+
+```csharp
+ocrService.ActivateLicense("your-license-file-path");
+```
+
+### Check GPU License Status
+
+The recommended way is to use the WinForms Demo:
+
+1. Click the top menu `License` → `Check GPU License`.
+2. The log window will show the license status for PaddleOCR and PaddleOCR-VL.
+
+You can also call it in code:
+
+```csharp
+LicenseStatus? status = ocrService.GetLicenseStatusInfo();
+```
+
+### Common Failure Reasons
+
+- `models/paddleocr.lic` is missing
+- The license file has expired
+- The license file does not include GPU permission
+- The licensed product list does not include the module being used, for example only `PaddleOCR` is licensed but `PaddleOCR-VL` is running
+- The machine code bound in the license does not match the current device
+- System time is incorrect and causes validity-period checks to fail
+</details>
+
+<details>
+<summary><b>Q: How do I get the Linux version?</b></summary>
+
+**A:** 
+
+The current open-source version mainly targets **Windows x64**. For Linux dynamic libraries, cross-platform deployment, or custom support, contact the developer.
+
+**Contact Information:**
+- QQ: **2380243976**
+- QQ Group: **475159576**
+</details>
+
+<details>
+<summary><b>Q: Is commercial use allowed?</b></summary>
+
+**A:** 
+
+The CPU open-source part follows Apache License 2.0 and can be used in commercial projects:
+
+- License: Apache License 2.0
+- Usage period: Unlimited
+- Commercial use: ✅ Allowed
+- Source code: Fully public on GitHub
+
+GPU licenses, Linux versions, and custom services are separate license/service scopes. Contact the developer to confirm the license terms and usage scope.
 </details>
 
 ---
