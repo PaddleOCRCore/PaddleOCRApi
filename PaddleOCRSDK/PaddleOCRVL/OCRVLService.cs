@@ -1,5 +1,6 @@
 using System;
 using Newtonsoft.Json;
+using PaddleOCRSDK.Models;
 
 namespace PaddleOCRSDK
 {
@@ -55,6 +56,93 @@ namespace PaddleOCRSDK
                 _documentInitialized = true;
                 return true;
             }
+        }
+
+        /// <summary>
+        /// 获取 PaddleOCR-VL 当前机器的加密授权申请码。
+        /// </summary>
+        /// <returns>授权申请码</returns>
+        public string GetLicenseRequestCode()
+        {
+            EnsureNotDisposed();
+
+            IntPtr ptrResult = IntPtr.Zero;
+            try
+            {
+                ptrResult = OCRVLSDK.GetLicenseRequestCode();
+                if (ptrResult == IntPtr.Zero)
+                {
+                    return string.Empty;
+                }
+
+                return MarshalUtf8.PtrToStringUTF8(ptrResult);
+            }
+            finally
+            {
+                if (ptrResult != IntPtr.Zero)
+                {
+                    OCRVLSDK.FreeResultBuffer(ptrResult);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 激活 PaddleOCR-VL 授权文件。
+        /// </summary>
+        /// <param name="licenseFile">授权文件路径</param>
+        /// <returns>激活成功返回 true，失败返回 false</returns>
+        public bool ActivateLicense(string licenseFile)
+        {
+            EnsureNotDisposed();
+            if (string.IsNullOrWhiteSpace(licenseFile))
+            {
+                return false;
+            }
+
+            return OCRVLSDK.ActivateLicense(licenseFile);
+        }
+
+        /// <summary>
+        /// 获取 PaddleOCR-VL 当前授权状态 JSON。
+        /// </summary>
+        /// <returns>授权状态 JSON 字符串</returns>
+        public string GetLicenseStatus()
+        {
+            EnsureNotDisposed();
+
+            IntPtr ptrResult = IntPtr.Zero;
+            try
+            {
+                ptrResult = OCRVLSDK.GetLicenseStatus();
+                if (ptrResult == IntPtr.Zero)
+                {
+                    return string.Empty;
+                }
+
+                return MarshalUtf8.PtrToStringUTF8(ptrResult);
+            }
+            finally
+            {
+                if (ptrResult != IntPtr.Zero)
+                {
+                    OCRVLSDK.FreeResultBuffer(ptrResult);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取 PaddleOCR-VL 当前授权状态对象。
+        /// </summary>
+        /// <returns>授权状态对象</returns>
+        public LicenseStatus GetLicenseStatusInfo()
+        {
+            string json = GetLicenseStatus();
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<LicenseStatus>(json, JsonSettings);
         }
 
         public VLChatResult Chat(string prompt, string imagePath)

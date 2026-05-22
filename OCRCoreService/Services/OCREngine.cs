@@ -56,8 +56,16 @@ namespace OCRCoreService.Services
             {
                 return false;
             }
-
+            Console.WriteLine($"licensePath:{licensePath}");
             _gpuLicenseActivated = _ocrService.ActivateLicense(licensePath);
+            if (_gpuLicenseActivated)
+            {
+                Console.WriteLine($"License activated!");
+            }
+            else
+            {
+                Console.WriteLine($"License activation failed!");
+            }
             return _gpuLicenseActivated;
         }
 

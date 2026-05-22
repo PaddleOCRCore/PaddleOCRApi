@@ -1,4 +1,5 @@
 using System;
+using PaddleOCRSDK.Models;
 
 namespace PaddleOCRSDK
 {
@@ -7,6 +8,31 @@ namespace PaddleOCRSDK
         bool Init(string configPath);
 
         bool InitDoc(string configPath);
+
+        /// <summary>
+        /// 获取 PaddleOCR-VL 当前机器的加密授权申请码。
+        /// </summary>
+        /// <returns>授权申请码</returns>
+        string GetLicenseRequestCode();
+
+        /// <summary>
+        /// 激活 PaddleOCR-VL 授权文件。
+        /// </summary>
+        /// <param name="licenseFile">授权文件路径</param>
+        /// <returns>激活成功返回 true，失败返回 false</returns>
+        bool ActivateLicense(string licenseFile);
+
+        /// <summary>
+        /// 获取 PaddleOCR-VL 当前授权状态 JSON。
+        /// </summary>
+        /// <returns>授权状态 JSON 字符串</returns>
+        string GetLicenseStatus();
+
+        /// <summary>
+        /// 获取 PaddleOCR-VL 当前授权状态对象。
+        /// </summary>
+        /// <returns>授权状态对象</returns>
+        LicenseStatus GetLicenseStatusInfo();
 
         VLChatResult Chat(string prompt, string imagePath);
 

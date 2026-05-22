@@ -86,6 +86,34 @@ namespace PaddleOCRSDK
         [DllImport(DllFileName, EntryPoint = "GetError", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         internal static extern IntPtr GetError();
 
+        /// <summary>
+        /// 获取 PaddleOCR-VL 加密授权申请码，返回值需调用 FreeResultBuffer 释放。
+        /// </summary>
+        [DllImport(DllFileName, EntryPoint = "GetLicenseRequestCode", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        internal static extern IntPtr GetLicenseRequestCode();
+
+        /// <summary>
+        /// 激活 PaddleOCR-VL 授权文件。
+        /// </summary>
+        internal static bool ActivateLicense(string licenseFile)
+        {
+            IntPtr licenseFilePtr = Utf8StringHandle.Alloc(licenseFile);
+            try
+            {
+                return NativeActivateLicense(licenseFilePtr);
+            }
+            finally
+            {
+                Utf8StringHandle.Free(licenseFilePtr);
+            }
+        }
+
+        /// <summary>
+        /// 获取 PaddleOCR-VL 当前授权状态 JSON，返回值需调用 FreeResultBuffer 释放。
+        /// </summary>
+        [DllImport(DllFileName, EntryPoint = "GetLicenseStatus", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        internal static extern IntPtr GetLicenseStatus();
+
         internal static int InitDoc(string configPath)
         {
             IntPtr configPathPtr = Utf8StringHandle.Alloc(configPath);
@@ -151,6 +179,9 @@ namespace PaddleOCRSDK
 
         [DllImport(DllFileName, EntryPoint = "ChatMat", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         private static extern IntPtr NativeChatMat(IntPtr prompt, IntPtr cvMat);
+
+        [DllImport(DllFileName, EntryPoint = "ActivateLicense", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+        private static extern bool NativeActivateLicense(IntPtr licenseFile);
 
         [DllImport(DllFileName, EntryPoint = "InitDoc", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
         private static extern int NativeInitDoc(IntPtr configPath);
