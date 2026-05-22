@@ -92,6 +92,7 @@ try
             builder.Services.AddSingleton<IOCRVLService>(sp =>
             {
                 var vlService = new OCRVLService();
+                    : (Path.IsPathRooted(sharedOcrConfig.OCRLicense)
                 string yamlPath = Path.IsPathRooted(ocrvlConfig.yaml_path)
                     ? ocrvlConfig.yaml_path
                     : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ocrvlConfig.yaml_path);
