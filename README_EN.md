@@ -248,7 +248,7 @@ Configure `OCRVLConfig` in `appsettings.json`:
 
 ```json
 "OCRVLConfig": {
-  "enabled": false,
+  "enabled": true,
   "yaml_path": "configs/PaddleOCR-VL-1.5.yaml"
 }
 ```
