@@ -115,6 +115,7 @@
             toolStripMenuItemChangelog = new ToolStripMenuItem();
             toolStripMenuItemCppInterface = new ToolStripMenuItem();
             toolStripMenuItemFaq = new ToolStripMenuItem();
+            ToolStripMenuItemApplyGPUTrial = new ToolStripMenuItem();
             tabPageImageCorrection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
             splitContainerUVDoc.Panel1.SuspendLayout();
@@ -1011,10 +1012,10 @@
             // 
             // toolStripMenuItemLicense
             // 
-            toolStripMenuItemLicense.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItemGetLicenseRequestCode, toolStripMenuItemCheckLicense });
+            toolStripMenuItemLicense.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItemGetLicenseRequestCode, ToolStripMenuItemApplyGPUTrial, toolStripMenuItemCheckLicense });
             toolStripMenuItemLicense.Name = "toolStripMenuItemLicense";
-            toolStripMenuItemLicense.Size = new Size(44, 21);
-            toolStripMenuItemLicense.Text = "授权";
+            toolStripMenuItemLicense.Size = new Size(69, 21);
+            toolStripMenuItemLicense.Text = "GPU版本";
             // 
             // toolStripMenuItemGetLicenseRequestCode
             // 
@@ -1071,6 +1072,13 @@
             toolStripMenuItemFaq.Size = new Size(140, 22);
             toolStripMenuItemFaq.Text = "常见问题";
             toolStripMenuItemFaq.Click += toolStripMenuItemFaq_Click;
+            // 
+            // ToolStripMenuItemApplyGPUTrial
+            // 
+            ToolStripMenuItemApplyGPUTrial.Name = "ToolStripMenuItemApplyGPUTrial";
+            ToolStripMenuItemApplyGPUTrial.Size = new Size(180, 22);
+            ToolStripMenuItemApplyGPUTrial.Text = "免费试用GPU";
+            ToolStripMenuItemApplyGPUTrial.Click += ToolStripMenuItemApplyGPUTrial_Click;
             // 
             // MainForm
             // 
@@ -1218,5 +1226,6 @@
         private ToolStripMenuItem toolStripMenuItemChangelog;
         private ToolStripMenuItem toolStripMenuItemCppInterface;
         private ToolStripMenuItem toolStripMenuItemFaq;
+        private ToolStripMenuItem ToolStripMenuItemApplyGPUTrial;
     }
 }

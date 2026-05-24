@@ -815,6 +815,11 @@ namespace WinFormsApp
                 LogMessage($"{DateTime.Now:HH:mm:ss.fff}: 获取GPU授权申请码失败:{ex.Message}");
             }
         }
+
+        private void ToolStripMenuItemApplyGPUTrial_Click(object sender, EventArgs e)
+        {
+            OpenUrl("http://ocr.axinw.com");
+        }
         private void buttonDownModels_Click(object sender, EventArgs e)
         {
             string urlV5 = "https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html";
