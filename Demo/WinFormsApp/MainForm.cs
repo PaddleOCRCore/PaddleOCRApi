@@ -161,7 +161,7 @@ namespace WinFormsApp
                 ? (status.MachineMatch ? "已绑定并匹配当前设备" : "已绑定但不匹配当前设备")
                 : "未绑定设备";
 
-            sb.AppendLine($"{DateTime.Now:HH:mm:ss.fff}: GPU授权状态检查");
+            sb.AppendLine($"{DateTime.Now:HH:mm:ss.fff}: {title} GPU授权状态检查");
             sb.AppendLine("===============================================");
             sb.AppendLine($"授权模块: {title}");
             sb.AppendLine($"授权文件自动激活: {(licenseFileActivated ? "成功" : "未激活或未找到默认授权文件")}");
@@ -193,10 +193,10 @@ namespace WinFormsApp
                 }
             }
 
-            sb.AppendLine("===============================================");
             sb.AppendLine(status.Activated && status.AllowGpu
                 ? "当前授权可用于GPU初始化。"
                 : "当前授权不可用于GPU初始化，请确认授权文件、设备绑定、有效期和GPU权限。");
+            sb.AppendLine("===============================================");
             return sb.ToString();
         }
 
@@ -807,6 +807,8 @@ namespace WinFormsApp
 
                 LogMessage(requestCode);
                 LogMessage("===============================================");
+                Clipboard.SetText(requestCode);
+                LogMessage("GPU授权申请码已复制到剪贴板。");
             }
             catch (Exception ex)
             {

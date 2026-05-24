@@ -1000,12 +1000,12 @@
             toolStripMenuItemModels.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItemDownloadOcrModels });
             toolStripMenuItemModels.Name = "toolStripMenuItemModels";
             toolStripMenuItemModels.Size = new Size(44, 21);
-            toolStripMenuItemModels.Text = "模型";
+            toolStripMenuItemModels.Text = "工具";
             // 
             // toolStripMenuItemDownloadOcrModels
             // 
             toolStripMenuItemDownloadOcrModels.Name = "toolStripMenuItemDownloadOcrModels";
-            toolStripMenuItemDownloadOcrModels.Size = new Size(150, 22);
+            toolStripMenuItemDownloadOcrModels.Size = new Size(180, 22);
             toolStripMenuItemDownloadOcrModels.Text = "下载OCR模型";
             toolStripMenuItemDownloadOcrModels.Click += buttonDownModels_Click;
             // 
@@ -1040,35 +1040,35 @@
             // toolStripMenuItemVisitGitHub
             // 
             toolStripMenuItemVisitGitHub.Name = "toolStripMenuItemVisitGitHub";
-            toolStripMenuItemVisitGitHub.Size = new Size(180, 22);
+            toolStripMenuItemVisitGitHub.Size = new Size(140, 22);
             toolStripMenuItemVisitGitHub.Text = "访问GitHub";
             toolStripMenuItemVisitGitHub.Click += toolStripMenuItemVisitGitHub_Click;
             // 
             // toolStripMenuItemVisitGitee
             // 
             toolStripMenuItemVisitGitee.Name = "toolStripMenuItemVisitGitee";
-            toolStripMenuItemVisitGitee.Size = new Size(180, 22);
+            toolStripMenuItemVisitGitee.Size = new Size(140, 22);
             toolStripMenuItemVisitGitee.Text = "访问Gitee";
             toolStripMenuItemVisitGitee.Click += toolStripMenuItemVisitGitee_Click;
             // 
             // toolStripMenuItemChangelog
             // 
             toolStripMenuItemChangelog.Name = "toolStripMenuItemChangelog";
-            toolStripMenuItemChangelog.Size = new Size(180, 22);
+            toolStripMenuItemChangelog.Size = new Size(140, 22);
             toolStripMenuItemChangelog.Text = "更新记录";
             toolStripMenuItemChangelog.Click += toolStripMenuItemChangelog_Click;
             // 
             // toolStripMenuItemCppInterface
             // 
             toolStripMenuItemCppInterface.Name = "toolStripMenuItemCppInterface";
-            toolStripMenuItemCppInterface.Size = new Size(180, 22);
+            toolStripMenuItemCppInterface.Size = new Size(140, 22);
             toolStripMenuItemCppInterface.Text = "C++接口";
             toolStripMenuItemCppInterface.Click += toolStripMenuItemCppInterface_Click;
             // 
             // toolStripMenuItemFaq
             // 
             toolStripMenuItemFaq.Name = "toolStripMenuItemFaq";
-            toolStripMenuItemFaq.Size = new Size(180, 22);
+            toolStripMenuItemFaq.Size = new Size(140, 22);
             toolStripMenuItemFaq.Text = "常见问题";
             toolStripMenuItemFaq.Click += toolStripMenuItemFaq_Click;
             // 

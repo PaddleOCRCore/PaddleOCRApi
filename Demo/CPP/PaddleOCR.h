@@ -50,6 +50,26 @@ extern "C" {
     /// </summary>
     /// <param name="useANSI"></param>
     Paddle_API void CALL_CONV EnableJsonResult(bool enable);
+
+    /// <summary>
+    /// 获取授权注册申请码，注册机粘贴该字符串后解析机器信息并生成授权文件
+    /// </summary>
+    /// <returns>成功返回申请码字符串，失败返回错误信息字符串；调用方使用FreeResultBuffer释放</returns>
+    Paddle_API const char* CALL_CONV GetLicenseRequestCode();
+
+    /// <summary>
+    /// 激活授权文件。每次使用前由调用方传入授权文件路径完成进程内授权。
+    /// </summary>
+    /// <param name="licensefile">加密授权文件路径</param>
+    /// <returns>成功返回true，失败返回false</returns>
+    Paddle_API bool CALL_CONV ActivateLicense(const char* licensefile);
+
+    /// <summary>
+    /// 获取当前授权激活状态(JSON字符串)。返回内容包含程序名称、授权结果、客户信息、
+    /// 授权编号、授权版本、授权平台、设备绑定状态、有效日期等。
+    /// </summary>
+    /// <returns>授权状态JSON字符串；调用方使用FreeResultBuffer释放</returns>
+    Paddle_API const char* CALL_CONV GetLicenseStatus();
     /// <summary>
     /// 初始化OCR引擎并加载模型（传入结构体参数）
     /// </summary>
