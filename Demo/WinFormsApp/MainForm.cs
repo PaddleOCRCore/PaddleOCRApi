@@ -43,6 +43,7 @@ namespace WinFormsApp
         public static bool use_tensorrt = false;
         public static int recCount = 1;
         public static int model_type = 0;
+        public static int layout_type = 0;
 
         private bool isInitSuccess;
         private bool isOCRTextReady;
@@ -309,7 +310,7 @@ namespace WinFormsApp
             buttonFreeEngine.Enabled = !busy && isInitSuccess;
             buttonRec.Enabled = !busy && isOCRTextReady;
             buttonRecClipboard.Enabled = !busy && isOCRTextReady;
-            buttonRecPDF.Enabled = !busy && isOCRTextReady;
+            buttonRecPDF.Enabled = !busy && isOCRStructureReady;
             buttonRecStructure.Enabled = !busy && isOCRStructureReady;
             buttonPostFile.Enabled = !busy;
             buttonGetBase64.Enabled = !busy;
@@ -402,6 +403,21 @@ namespace WinFormsApp
                     OCREngine.det_infer = "PP-OCRv4_mobile_det_infer";
                     OCREngine.rec_infer = "PP-OCRv4_mobile_rec_infer";
                     OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                }
+                switch (layout_type)
+                {
+                    case 0:
+                        OCREngine.layout_model_dir = "PP-DocLayoutV2_infer";
+                        break;
+                    case 1:
+                        OCREngine.layout_model_dir = "PP-DocLayoutV3_infer";
+                        break;
+                    case 2:
+                        OCREngine.layout_model_dir = "PP-DocLayout_plus-L_infer";
+                        break;
+                    case 3:
+                        OCREngine.layout_model_dir = "PP-DocBlockLayout_infer";
+                        break;
                 }
 
                 string initmsg = await Task.Run(() =>
@@ -648,18 +664,18 @@ namespace WinFormsApp
                 cancellationToken.ThrowIfCancellationRequested();
 
                 LogMessage($"已保存转换后的图片到uploads: {uploadImagePath}");
-                OCRResult ocrResult = await Task.Run(() =>
+                string layoutJson = await Task.Run(() =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    return ocrService.Detect(uploadImagePath);
+                    return ocrService.DetectLayout(uploadImagePath);
                 }, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                string result = BuildOCRText(ocrResult);
                 LogMessage($"结束时间: {DateTime.Now:HH:mm:ss.fff}");
                 LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
-                LogOCRResult(result, ocrResult);
-                return result;
+                LogMessage("版面识别结果:");
+                LogMessage(FormatJsonSafe(layoutJson));
+                return layoutJson;
             }
             finally
             {
@@ -1036,6 +1052,11 @@ namespace WinFormsApp
         private void comboBoxModel_SelectedIndexChanged(object sender, EventArgs e)
         {
             model_type = comboBoxModel.SelectedIndex;
+        }
+
+        private void comboBoxLayoutModel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            layout_type = comboBoxLayoutModel.SelectedIndex;
         }
 
         private void buttonFreeEngine_Click(object sender, EventArgs e)

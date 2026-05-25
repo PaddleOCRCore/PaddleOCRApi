@@ -59,6 +59,7 @@
             pictureBoxImg = new WinFormsApp.UserControl.PictureView();
             textBoxResult = new TextBox();
             groupBox1 = new GroupBox();
+            comboBoxLayoutModel = new ComboBox();
             chkUseTensorRT = new CheckBox();
             chkJson = new CheckBox();
             chkUseGpu = new CheckBox();
@@ -68,6 +69,7 @@
             buttonPostFile = new Button();
             textBoxApiAddress = new TextBox();
             label8 = new Label();
+            label1 = new Label();
             label7 = new Label();
             comboBoxModel = new ComboBox();
             buttonRecStructure = new Button();
@@ -108,6 +110,7 @@
             toolStripMenuItemDownloadOcrModels = new ToolStripMenuItem();
             toolStripMenuItemLicense = new ToolStripMenuItem();
             toolStripMenuItemGetLicenseRequestCode = new ToolStripMenuItem();
+            ToolStripMenuItemApplyGPUTrial = new ToolStripMenuItem();
             toolStripMenuItemCheckLicense = new ToolStripMenuItem();
             toolStripMenuItemHelp = new ToolStripMenuItem();
             toolStripMenuItemVisitGitHub = new ToolStripMenuItem();
@@ -115,7 +118,6 @@
             toolStripMenuItemChangelog = new ToolStripMenuItem();
             toolStripMenuItemCppInterface = new ToolStripMenuItem();
             toolStripMenuItemFaq = new ToolStripMenuItem();
-            ToolStripMenuItemApplyGPUTrial = new ToolStripMenuItem();
             tabPageImageCorrection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainerUVDoc).BeginInit();
             splitContainerUVDoc.Panel1.SuspendLayout();
@@ -477,6 +479,7 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(comboBoxLayoutModel);
             groupBox1.Controls.Add(chkUseTensorRT);
             groupBox1.Controls.Add(chkJson);
             groupBox1.Controls.Add(chkUseGpu);
@@ -486,6 +489,7 @@
             groupBox1.Controls.Add(buttonPostFile);
             groupBox1.Controls.Add(textBoxApiAddress);
             groupBox1.Controls.Add(label8);
+            groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(comboBoxModel);
             groupBox1.Controls.Add(buttonRecStructure);
@@ -507,6 +511,16 @@
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "OCR文本识别功能选项";
+            // 
+            // comboBoxLayoutModel
+            // 
+            comboBoxLayoutModel.FormattingEnabled = true;
+            comboBoxLayoutModel.Items.AddRange(new object[] { "PP-DocLayoutV2_infer", "PP-DocLayoutV3_infer", "PP-DocLayout_plus-L_infer", "PP-DocBlockLayout_infer" });
+            comboBoxLayoutModel.Location = new Point(303, 87);
+            comboBoxLayoutModel.Name = "comboBoxLayoutModel";
+            comboBoxLayoutModel.Size = new Size(184, 25);
+            comboBoxLayoutModel.TabIndex = 30;
+            comboBoxLayoutModel.SelectedIndexChanged += comboBoxLayoutModel_SelectedIndexChanged;
             // 
             // chkUseTensorRT
             // 
@@ -545,11 +559,11 @@
             // buttonRecPDF
             // 
             buttonRecPDF.Enabled = false;
-            buttonRecPDF.Location = new Point(825, 24);
+            buttonRecPDF.Location = new Point(827, 57);
             buttonRecPDF.Name = "buttonRecPDF";
             buttonRecPDF.Size = new Size(109, 25);
             buttonRecPDF.TabIndex = 26;
-            buttonRecPDF.Text = "PDF识别";
+            buttonRecPDF.Text = "PDF版面识别";
             buttonRecPDF.UseVisualStyleBackColor = true;
             buttonRecPDF.Click += buttonRecPDF_Click;
             // 
@@ -604,6 +618,15 @@
             label8.TextAlign = ContentAlignment.TopRight;
             label8.UseWaitCursor = true;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(229, 92);
+            label1.Name = "label1";
+            label1.Size = new Size(68, 17);
+            label1.TabIndex = 19;
+            label1.Text = "版面检测：";
+            // 
             // label7
             // 
             label7.AutoSize = true;
@@ -611,7 +634,7 @@
             label7.Name = "label7";
             label7.Size = new Size(68, 17);
             label7.TabIndex = 19;
-            label7.Text = "模型方案：";
+            label7.Text = "识别方案：";
             // 
             // comboBoxModel
             // 
@@ -626,7 +649,7 @@
             // buttonRecStructure
             // 
             buttonRecStructure.Enabled = false;
-            buttonRecStructure.Location = new Point(825, 58);
+            buttonRecStructure.Location = new Point(827, 24);
             buttonRecStructure.Name = "buttonRecStructure";
             buttonRecStructure.Size = new Size(109, 25);
             buttonRecStructure.TabIndex = 17;
@@ -1006,7 +1029,7 @@
             // toolStripMenuItemDownloadOcrModels
             // 
             toolStripMenuItemDownloadOcrModels.Name = "toolStripMenuItemDownloadOcrModels";
-            toolStripMenuItemDownloadOcrModels.Size = new Size(180, 22);
+            toolStripMenuItemDownloadOcrModels.Size = new Size(150, 22);
             toolStripMenuItemDownloadOcrModels.Text = "下载OCR模型";
             toolStripMenuItemDownloadOcrModels.Click += buttonDownModels_Click;
             // 
@@ -1020,14 +1043,21 @@
             // toolStripMenuItemGetLicenseRequestCode
             // 
             toolStripMenuItemGetLicenseRequestCode.Name = "toolStripMenuItemGetLicenseRequestCode";
-            toolStripMenuItemGetLicenseRequestCode.Size = new Size(180, 22);
+            toolStripMenuItemGetLicenseRequestCode.Size = new Size(160, 22);
             toolStripMenuItemGetLicenseRequestCode.Text = "生成授权申请码";
             toolStripMenuItemGetLicenseRequestCode.Click += buttonGetLicenseRequestCode_Click;
+            // 
+            // ToolStripMenuItemApplyGPUTrial
+            // 
+            ToolStripMenuItemApplyGPUTrial.Name = "ToolStripMenuItemApplyGPUTrial";
+            ToolStripMenuItemApplyGPUTrial.Size = new Size(160, 22);
+            ToolStripMenuItemApplyGPUTrial.Text = "免费试用GPU";
+            ToolStripMenuItemApplyGPUTrial.Click += ToolStripMenuItemApplyGPUTrial_Click;
             // 
             // toolStripMenuItemCheckLicense
             // 
             toolStripMenuItemCheckLicense.Name = "toolStripMenuItemCheckLicense";
-            toolStripMenuItemCheckLicense.Size = new Size(180, 22);
+            toolStripMenuItemCheckLicense.Size = new Size(160, 22);
             toolStripMenuItemCheckLicense.Text = "查看GPU授权";
             toolStripMenuItemCheckLicense.Click += buttonCheckLicense_Click;
             // 
@@ -1072,13 +1102,6 @@
             toolStripMenuItemFaq.Size = new Size(140, 22);
             toolStripMenuItemFaq.Text = "常见问题";
             toolStripMenuItemFaq.Click += toolStripMenuItemFaq_Click;
-            // 
-            // ToolStripMenuItemApplyGPUTrial
-            // 
-            ToolStripMenuItemApplyGPUTrial.Name = "ToolStripMenuItemApplyGPUTrial";
-            ToolStripMenuItemApplyGPUTrial.Size = new Size(180, 22);
-            ToolStripMenuItemApplyGPUTrial.Text = "免费试用GPU";
-            ToolStripMenuItemApplyGPUTrial.Click += ToolStripMenuItemApplyGPUTrial_Click;
             // 
             // MainForm
             // 
@@ -1227,5 +1250,7 @@
         private ToolStripMenuItem toolStripMenuItemCppInterface;
         private ToolStripMenuItem toolStripMenuItemFaq;
         private ToolStripMenuItem ToolStripMenuItemApplyGPUTrial;
+        private ComboBox comboBoxLayoutModel;
+        private Label label1;
     }
 }
