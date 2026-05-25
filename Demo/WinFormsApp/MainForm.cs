@@ -902,6 +902,7 @@ namespace WinFormsApp
                 LogMessage("===============================================");
                 Clipboard.SetText(requestCode);
                 LogMessage("GPU授权申请码已复制到剪贴板。");
+                LogMessage("申请GPU授权文件paddleocr.lic请放到models目录。");
             }
             catch (Exception ex)
             {
@@ -1072,15 +1073,17 @@ namespace WinFormsApp
             chkUseTensorRT.Enabled = chkUseGpu.Checked && chkUseGpu.Enabled;
             if (use_gpu)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference解压" + Environment.NewLine);
-                sb.Append("解压后将以下dll文件复制到程序运行文件夹中：" + Environment.NewLine);
-                sb.Append("paddle\\lib目录下的common.dll和paddle_inference.dll" + Environment.NewLine);
-                sb.Append("third_party\\install\\mkldnn\\lib目录下的mkldnn.dll" + Environment.NewLine);
-                sb.Append("third_party\\install\\mklml\\lib目录下的libiomp5md.dll和mklml.dll" + Environment.NewLine);
-                sb.Append("安装指定版本的CUDA以及CUDNN" + Environment.NewLine);
-                sb.Append("复制对应的CUDA/CUDNN DLL到程序运行文件夹中" + Environment.NewLine);
-                LogMessage(sb.ToString());
+                LogMessage("使用GPU需要有GPU版本的Paddle推理库，请确认您已配置环境并已取得License授权");
+                LogMessage("申请GPU授权文件paddleocr.lic请放到models目录。");
+                //StringBuilder sb = new StringBuilder();
+                //sb.Append($"{DateTime.Now:HH:mm:ss.fff}:使用GPU时请下载对应的paddle_inference解压" + Environment.NewLine);
+                //sb.Append("解压后将以下dll文件复制到程序运行文件夹中：" + Environment.NewLine);
+                //sb.Append("paddle\\lib目录下的common.dll和paddle_inference.dll" + Environment.NewLine);
+                //sb.Append("third_party\\install\\mkldnn\\lib目录下的mkldnn.dll" + Environment.NewLine);
+                //sb.Append("third_party\\install\\mklml\\lib目录下的libiomp5md.dll和mklml.dll" + Environment.NewLine);
+                //sb.Append("安装指定版本的CUDA以及CUDNN" + Environment.NewLine);
+                //sb.Append("复制对应的CUDA/CUDNN DLL到程序运行文件夹中" + Environment.NewLine);
+                //LogMessage(sb.ToString());
             }
         }
 
