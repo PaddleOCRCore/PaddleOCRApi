@@ -170,7 +170,7 @@
             tabPageImageCorrection.Location = new Point(4, 26);
             tabPageImageCorrection.Name = "tabPageImageCorrection";
             tabPageImageCorrection.Padding = new Padding(3);
-            tabPageImageCorrection.Size = new Size(1084, 637);
+            tabPageImageCorrection.Size = new Size(1084, 604);
             tabPageImageCorrection.TabIndex = 1;
             tabPageImageCorrection.Text = "图像矫正";
             tabPageImageCorrection.UseVisualStyleBackColor = true;
@@ -420,7 +420,7 @@
             tabPageOCR.Location = new Point(4, 26);
             tabPageOCR.Name = "tabPageOCR";
             tabPageOCR.Padding = new Padding(3);
-            tabPageOCR.Size = new Size(1084, 637);
+            tabPageOCR.Size = new Size(1084, 604);
             tabPageOCR.TabIndex = 0;
             tabPageOCR.Text = "文本识别";
             tabPageOCR.UseVisualStyleBackColor = true;
@@ -438,7 +438,7 @@
             // splitContainerOCR.Panel2
             // 
             splitContainerOCR.Panel2.Controls.Add(textBoxResult);
-            splitContainerOCR.Size = new Size(1072, 494);
+            splitContainerOCR.Size = new Size(1072, 461);
             splitContainerOCR.SplitterDistance = 518;
             splitContainerOCR.TabIndex = 8;
             // 
@@ -448,7 +448,7 @@
             groupBoxOCRImage.Dock = DockStyle.Fill;
             groupBoxOCRImage.Location = new Point(0, 0);
             groupBoxOCRImage.Name = "groupBoxOCRImage";
-            groupBoxOCRImage.Size = new Size(518, 494);
+            groupBoxOCRImage.Size = new Size(518, 461);
             groupBoxOCRImage.TabIndex = 7;
             groupBoxOCRImage.TabStop = false;
             groupBoxOCRImage.Text = "图片";
@@ -473,7 +473,7 @@
             textBoxResult.Multiline = true;
             textBoxResult.Name = "textBoxResult";
             textBoxResult.ScrollBars = ScrollBars.Both;
-            textBoxResult.Size = new Size(550, 494);
+            textBoxResult.Size = new Size(550, 461);
             textBoxResult.TabIndex = 2;
             // 
             // groupBox1
@@ -515,7 +515,7 @@
             // comboBoxLayoutModel
             // 
             comboBoxLayoutModel.FormattingEnabled = true;
-            comboBoxLayoutModel.Items.AddRange(new object[] { "PP-DocLayoutV2_infer", "PP-DocLayoutV3_infer", "PP-DocLayout_plus-L_infer", "PP-DocBlockLayout_infer" });
+            comboBoxLayoutModel.Items.AddRange(new object[] { "PP-DocLayoutV3_infer", "PP-DocLayoutV2_infer", "PP-DocLayout_plus-L_infer", "PP-DocBlockLayout_infer" });
             comboBoxLayoutModel.Location = new Point(303, 87);
             comboBoxLayoutModel.Name = "comboBoxLayoutModel";
             comboBoxLayoutModel.Size = new Size(184, 25);
@@ -782,25 +782,24 @@
             // 
             // tabControlMain
             // 
+            tabControlMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tabControlMain.Controls.Add(tabPageOCR);
-            tabControlMain.Controls.Add(tabPageImageCorrection);
             tabControlMain.Controls.Add(tabPageOCRVL);
-            tabControlMain.Dock = DockStyle.Fill;
+            tabControlMain.Controls.Add(tabPageImageCorrection);
             tabControlMain.Location = new Point(0, 25);
             tabControlMain.Name = "tabControlMain";
             tabControlMain.SelectedIndex = 0;
-            tabControlMain.Size = new Size(1092, 667);
+            tabControlMain.Size = new Size(1092, 634);
             tabControlMain.TabIndex = 1;
             // 
             // tabPageOCRVL
             // 
             tabPageOCRVL.Controls.Add(splitContainerOCRVL);
             tabPageOCRVL.Controls.Add(groupBoxOCRVLControl);
-            tabPageOCRVL.Controls.Add(labelOCRVLStatus);
             tabPageOCRVL.Location = new Point(4, 26);
             tabPageOCRVL.Name = "tabPageOCRVL";
             tabPageOCRVL.Padding = new Padding(3);
-            tabPageOCRVL.Size = new Size(1084, 637);
+            tabPageOCRVL.Size = new Size(1084, 604);
             tabPageOCRVL.TabIndex = 2;
             tabPageOCRVL.Text = "OCR-VL识别";
             tabPageOCRVL.UseVisualStyleBackColor = true;
@@ -818,7 +817,7 @@
             // splitContainerOCRVL.Panel2
             // 
             splitContainerOCRVL.Panel2.Controls.Add(textBoxOCRVLResult);
-            splitContainerOCRVL.Size = new Size(1072, 493);
+            splitContainerOCRVL.Size = new Size(1072, 464);
             splitContainerOCRVL.SplitterDistance = 518;
             splitContainerOCRVL.TabIndex = 8;
             // 
@@ -828,7 +827,7 @@
             groupBoxOCRVLImage.Dock = DockStyle.Fill;
             groupBoxOCRVLImage.Location = new Point(0, 0);
             groupBoxOCRVLImage.Name = "groupBoxOCRVLImage";
-            groupBoxOCRVLImage.Size = new Size(518, 493);
+            groupBoxOCRVLImage.Size = new Size(518, 464);
             groupBoxOCRVLImage.TabIndex = 0;
             groupBoxOCRVLImage.TabStop = false;
             groupBoxOCRVLImage.Text = "图片预览";
@@ -851,7 +850,7 @@
             textBoxOCRVLResult.Multiline = true;
             textBoxOCRVLResult.Name = "textBoxOCRVLResult";
             textBoxOCRVLResult.ScrollBars = ScrollBars.Both;
-            textBoxOCRVLResult.Size = new Size(550, 493);
+            textBoxOCRVLResult.Size = new Size(550, 464);
             textBoxOCRVLResult.TabIndex = 0;
             // 
             // groupBoxOCRVLControl
@@ -1003,9 +1002,9 @@
             // labelOCRVLStatus
             // 
             labelOCRVLStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            labelOCRVLStatus.Location = new Point(6, 623);
+            labelOCRVLStatus.Location = new Point(4, 656);
             labelOCRVLStatus.Name = "labelOCRVLStatus";
-            labelOCRVLStatus.Size = new Size(1072, 35);
+            labelOCRVLStatus.Size = new Size(1084, 35);
             labelOCRVLStatus.TabIndex = 9;
             labelOCRVLStatus.Text = "状态: 就绪";
             labelOCRVLStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -1110,6 +1109,7 @@
             ClientSize = new Size(1092, 692);
             Controls.Add(tabControlMain);
             Controls.Add(menuStripMain);
+            Controls.Add(labelOCRVLStatus);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStripMain;
             Name = "MainForm";

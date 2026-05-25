@@ -96,8 +96,8 @@ namespace WinFormsApp
                     "Seal Recognition:"
                 });
                 comboBoxPrompt.SelectedIndex = 0;
-
                 comboBoxModel.SelectedIndex = 0;
+                comboBoxLayoutModel.SelectedIndex = 0;
                 RecFilepath = Path.Combine(Application.StartupPath, "output");
                 Directory.CreateDirectory(RecFilepath);
                 Directory.CreateDirectory(Path.Combine(Application.StartupPath, "uploads"));
@@ -136,6 +136,78 @@ namespace WinFormsApp
                     .Replace("\\n", Environment.NewLine)
                     .Replace("\\r", Environment.NewLine);
             }
+        }
+
+        private static string NormalizeEscapedDisplayText(string? text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return string.Empty;
+            }
+
+            string normalized = text;
+
+            for (int i = 0; i < 3; i++)
+            {
+                string replaced = normalized
+                    .Replace("\\u000D\\u000A", "\n")
+                    .Replace("\\u000d\\u000a", "\n")
+                    .Replace("\\u000A", "\n")
+                    .Replace("\\u000a", "\n")
+                    .Replace("\\u000D", "\n")
+                    .Replace("\\u000d", "\n")
+                    .Replace("\\r\\n", "\n")
+                    .Replace("\\n", "\n")
+                    .Replace("\\r", "\n")
+                    .Replace("\\t", "\t");
+
+                if (replaced == normalized)
+                {
+                    break;
+                }
+
+                normalized = replaced;
+            }
+
+            normalized = Regex.Replace(
+                normalized,
+                @"\\u([0-9a-fA-F]{4})",
+                match => ((char)Convert.ToInt32(match.Groups[1].Value, 16)).ToString());
+
+            return normalized
+                .Replace("\r\n", "\n")
+                .Replace("\r", "\n")
+                .Replace("\n", Environment.NewLine);
+        }
+
+        private static string ExtractLayoutMarkdown(string layoutJson)
+        {
+            try
+            {
+                using JsonDocument doc = JsonDocument.Parse(layoutJson);
+                if (doc.RootElement.ValueKind == JsonValueKind.Object
+                    && doc.RootElement.TryGetProperty("markdown", out JsonElement markdownElement)
+                    && markdownElement.ValueKind == JsonValueKind.String)
+                {
+                    return NormalizeEscapedDisplayText(markdownElement.GetString()).Trim();
+                }
+            }
+            catch
+            {
+            }
+
+            return string.Empty;
+        }
+
+        private void LogLayoutResult(string layoutJson)
+        {
+            if (!outPutJson)
+            {
+                string markdown = ExtractLayoutMarkdown(layoutJson);
+                LogMessage(string.IsNullOrWhiteSpace(markdown) ? "Markdown为空或不存在。" : markdown);
+                return;
+            }
+            LogMessage(FormatJsonSafe(layoutJson));
         }
 
         private static string? ResolveExistingImagePath(string? imagePath)
@@ -312,6 +384,7 @@ namespace WinFormsApp
             buttonRecClipboard.Enabled = !busy && isOCRTextReady;
             buttonRecPDF.Enabled = !busy && isOCRStructureReady;
             buttonRecStructure.Enabled = !busy && isOCRStructureReady;
+            comboBoxLayoutModel.Enabled = !busy && !isOCRStructureReady;
             buttonPostFile.Enabled = !busy;
             buttonGetBase64.Enabled = !busy;
             toolStripMenuItemDownloadOcrModels.Enabled = !busy;
@@ -407,10 +480,10 @@ namespace WinFormsApp
                 switch (layout_type)
                 {
                     case 0:
-                        OCREngine.layout_model_dir = "PP-DocLayoutV2_infer";
+                        OCREngine.layout_model_dir = "PP-DocLayoutV3_infer";
                         break;
                     case 1:
-                        OCREngine.layout_model_dir = "PP-DocLayoutV3_infer";
+                        OCREngine.layout_model_dir = "PP-DocLayoutV2_infer";
                         break;
                     case 2:
                         OCREngine.layout_model_dir = "PP-DocLayout_plus-L_infer";
@@ -418,6 +491,10 @@ namespace WinFormsApp
                     case 3:
                         OCREngine.layout_model_dir = "PP-DocBlockLayout_infer";
                         break;
+                    default:
+                        OCREngine.layout_model_dir = "PP-DocLayoutV3_infer";
+                        break;
+
                 }
 
                 string initmsg = await Task.Run(() =>
@@ -674,7 +751,7 @@ namespace WinFormsApp
                 LogMessage($"结束时间: {DateTime.Now:HH:mm:ss.fff}");
                 LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
                 LogMessage("版面识别结果:");
-                LogMessage(FormatJsonSafe(layoutJson));
+                LogLayoutResult(layoutJson);
                 return layoutJson;
             }
             finally
@@ -751,7 +828,7 @@ namespace WinFormsApp
             LogMessage($"结束时间: {DateTime.Now:HH:mm:ss.fff}");
             LogMessage($"总用时: {stopwatch.ElapsedMilliseconds} 毫秒");
             LogMessage("版面识别结果:");
-            LogMessage(FormatJsonSafe(layoutJson));
+            LogLayoutResult(layoutJson);
             return layoutJson;
         }
 
