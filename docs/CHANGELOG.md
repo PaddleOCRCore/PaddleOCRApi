@@ -1,5 +1,11 @@
 # 📝 更新日志
 
+## v4.5.0 `2026.5.26`
+- ✅ **PaddleOCR.dll**: 优化版面检测及识别，优化模型加载适配，增加GPU授权接口
+- ✅ **llamaocr-vl.dll**: 优化版面检测及识别，优化模型加载适配，增加GPU授权接口
+- ✅ **WinFormsApp**: 增加菜单栏，将部分功能移至菜单，PDF识别改为版面识别接口
+- ✅ **发布NuGet包**: PaddleOCRRuntime_x64 v4.5.0，包含 paddle 3.4.0 CPU 推理库、PaddleOCR.dll、llamaocr-vl.dll 及全部依赖。
+
 ## v4.4.0 `2026.5.11`
 - ✅ **PaddleOCR.dll**: 优化版面分析；优化GPU依赖检测，避免初始化弹窗。
 - ✅ **PaddleOCR.dll**: 公式识别新增支持 PP-FormulaNet 系列模型；新增文档图像版面子模块检测；修复版面子模块识别错误和版面分析结果排序问题。

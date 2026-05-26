@@ -901,8 +901,9 @@ namespace WinFormsApp
                 LogMessage(requestCode);
                 LogMessage("===============================================");
                 Clipboard.SetText(requestCode);
-                LogMessage("GPU授权申请码已复制到剪贴板。");
-                LogMessage("申请GPU授权文件paddleocr.lic请放到models目录。");
+                LogMessage("GPU授权申请码已复制到剪贴板");
+                LogMessage("点击菜单【GPU授权】-【免费试用GPU】申请授权文件");
+                LogMessage("授权文件paddleocr.lic请放到models目录，然后再初始化OCR");
             }
             catch (Exception ex)
             {
