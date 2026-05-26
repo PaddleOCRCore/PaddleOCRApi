@@ -5,8 +5,18 @@ namespace PaddleOCRSDK
 {
     public interface IOCRVLService
     {
+        /// <summary>
+        /// 初始化 VL OCR 引擎。
+        /// </summary>
+        /// <param name="configPath">VL OCR 配置文件路径。</param>
+        /// <returns>初始化成功返回 true。</returns>
         bool Init(string configPath);
 
+        /// <summary>
+        /// 初始化文档结构化分析引擎。
+        /// </summary>
+        /// <param name="configPath">文档结构化分析配置文件路径。</param>
+        /// <returns>初始化成功返回 true。</returns>
         bool InitDoc(string configPath);
 
         /// <summary>
@@ -34,12 +44,36 @@ namespace PaddleOCRSDK
         /// <returns>授权状态对象</returns>
         LicenseStatus GetLicenseStatusInfo();
 
+        /// <summary>
+        /// 根据提示词和图片路径执行 VL 对话识别。
+        /// </summary>
+        /// <param name="prompt">提示词。</param>
+        /// <param name="imagePath">图片文件路径。</param>
+        /// <returns>VL 对话识别结果。</returns>
         VLChatResult Chat(string prompt, string imagePath);
 
+        /// <summary>
+        /// 根据提示词和图片字节数据执行 VL 对话识别。
+        /// </summary>
+        /// <param name="imageData">图片字节数据。</param>
+        /// <param name="prompt">提示词。</param>
+        /// <returns>VL 对话识别结果。</returns>
         VLChatResult ChatData(byte[] imageData, string prompt);
 
+        /// <summary>
+        /// 根据提示词和 Base64 图片数据执行 VL 对话识别。
+        /// </summary>
+        /// <param name="prompt">提示词。</param>
+        /// <param name="base64Image">Base64 图片数据。</param>
+        /// <returns>VL 对话识别结果。</returns>
         VLChatResult ChatBase64(string prompt, string base64Image);
 
+        /// <summary>
+        /// 根据提示词和 OpenCV Mat 执行 VL 对话识别。
+        /// </summary>
+        /// <param name="prompt">提示词。</param>
+        /// <param name="cvMat">OpenCV Mat 指针。</param>
+        /// <returns>VL 对话识别结果。</returns>
         VLChatResult ChatMat(string prompt, IntPtr cvMat);
 
         /// <summary>
@@ -98,10 +132,20 @@ namespace PaddleOCRSDK
         /// <returns>结构化的版面识别结果</returns>
         LayoutDetectResult DetectLayoutBase64Parsed(string base64);
 
+        /// <summary>
+        /// 获取 PaddleOCR-VL 原生接口最后一次错误信息。
+        /// </summary>
+        /// <returns>错误信息。</returns>
         string GetLastError();
 
+        /// <summary>
+        /// 释放 VL OCR 引擎。
+        /// </summary>
         void FreeEngine();
 
+        /// <summary>
+        /// 释放文档结构化分析引擎。
+        /// </summary>
         void FreeDocAnalyser();
     }
 }

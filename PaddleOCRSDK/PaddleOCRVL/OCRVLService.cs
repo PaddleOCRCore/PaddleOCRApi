@@ -1,6 +1,7 @@
 using System;
-using Newtonsoft.Json;
 using PaddleOCRSDK.Models;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace PaddleOCRSDK
 {
@@ -9,19 +10,16 @@ namespace PaddleOCRSDK
     /// </summary>
     public class OCRVLService : IOCRVLService, IDisposable
     {
-        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.None,
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            MissingMemberHandling = MissingMemberHandling.Ignore,
-            NullValueHandling = NullValueHandling.Include
-        };
-
         private bool _ocrInitialized;
         private bool _documentInitialized;
         private readonly object _syncRoot = new object();
         private bool _disposed;
 
+        /// <summary>
+        /// 初始化 VL OCR 引擎。
+        /// </summary>
+        /// <param name="configPath">VL OCR 配置文件路径。</param>
+        /// <returns>初始化成功返回 true。</returns>
         public bool Init(string configPath)
         {
             EnsureNotDisposed();
@@ -29,7 +27,7 @@ namespace PaddleOCRSDK
 
             lock (_syncRoot)
             {
-                int result = OCRVLSDK.Init(configPath);
+                int result = InvokeWithUtf8(configPath, OCRVLSDK.Init);
                 if (result != 1)
                 {
                     throw new OCRVLException($"初始化 VL OCR 引擎失败: {GetLastError()}");
@@ -40,6 +38,11 @@ namespace PaddleOCRSDK
             }
         }
 
+        /// <summary>
+        /// 初始化文档结构化分析引擎。
+        /// </summary>
+        /// <param name="configPath">文档结构化分析配置文件路径。</param>
+        /// <returns>初始化成功返回 true。</returns>
         public bool InitDoc(string configPath)
         {
             EnsureNotDisposed();
@@ -47,7 +50,7 @@ namespace PaddleOCRSDK
 
             lock (_syncRoot)
             {
-                int result = OCRVLSDK.InitDoc(configPath);
+                int result = InvokeWithUtf8(configPath, OCRVLSDK.InitDoc);
                 if (result != 1)
                 {
                     throw new OCRVLException($"初始化文档分析引擎失败: {GetLastError()}");
@@ -65,25 +68,7 @@ namespace PaddleOCRSDK
         public string GetLicenseRequestCode()
         {
             EnsureNotDisposed();
-
-            IntPtr ptrResult = IntPtr.Zero;
-            try
-            {
-                ptrResult = OCRVLSDK.GetLicenseRequestCode();
-                if (ptrResult == IntPtr.Zero)
-                {
-                    return string.Empty;
-                }
-
-                return MarshalUtf8.PtrToStringUTF8(ptrResult);
-            }
-            finally
-            {
-                if (ptrResult != IntPtr.Zero)
-                {
-                    OCRVLSDK.FreeResultBuffer(ptrResult);
-                }
-            }
+            return OcrServiceHelper.ReadNativeString(OCRVLSDK.GetLicenseRequestCode, OCRVLSDK.FreeResultBuffer);
         }
 
         /// <summary>
@@ -99,7 +84,7 @@ namespace PaddleOCRSDK
                 return false;
             }
 
-            return OCRVLSDK.ActivateLicense(licenseFile);
+            return InvokeWithUtf8(licenseFile, OCRVLSDK.ActivateLicense);
         }
 
         /// <summary>
@@ -109,25 +94,7 @@ namespace PaddleOCRSDK
         public string GetLicenseStatus()
         {
             EnsureNotDisposed();
-
-            IntPtr ptrResult = IntPtr.Zero;
-            try
-            {
-                ptrResult = OCRVLSDK.GetLicenseStatus();
-                if (ptrResult == IntPtr.Zero)
-                {
-                    return string.Empty;
-                }
-
-                return MarshalUtf8.PtrToStringUTF8(ptrResult);
-            }
-            finally
-            {
-                if (ptrResult != IntPtr.Zero)
-                {
-                    OCRVLSDK.FreeResultBuffer(ptrResult);
-                }
-            }
+            return OcrServiceHelper.ReadNativeString(OCRVLSDK.GetLicenseStatus, OCRVLSDK.FreeResultBuffer);
         }
 
         /// <summary>
@@ -136,42 +103,60 @@ namespace PaddleOCRSDK
         /// <returns>授权状态对象</returns>
         public LicenseStatus GetLicenseStatusInfo()
         {
-            string json = GetLicenseStatus();
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                return null;
-            }
-
-            return JsonConvert.DeserializeObject<LicenseStatus>(json, JsonSettings);
+            return OcrServiceHelper.DeserializeLicenseStatus(GetLicenseStatus());
         }
 
+        /// <summary>
+        /// 根据提示词和图片路径执行 VL 对话识别。
+        /// </summary>
+        /// <param name="prompt">提示词。</param>
+        /// <param name="imagePath">图片文件路径。</param>
+        /// <returns>VL 对话识别结果。</returns>
         public VLChatResult Chat(string prompt, string imagePath)
         {
             EnsureOcrInitialized();
             ValidateRequiredString(prompt, nameof(prompt));
             ValidateRequiredString(imagePath, nameof(imagePath));
 
-            return ExecuteChat(() => OCRVLSDK.Chat(prompt, imagePath), "VL OCR 返回空结果");
+            return ExecuteChat(() => ChatNative(prompt, imagePath), "VL OCR 返回空结果");
         }
 
+        /// <summary>
+        /// 根据提示词和图片字节数据执行 VL 对话识别。
+        /// </summary>
+        /// <param name="imageData">图片字节数据。</param>
+        /// <param name="prompt">提示词。</param>
+        /// <returns>VL 对话识别结果。</returns>
         public VLChatResult ChatData(byte[] imageData, string prompt)
         {
             EnsureOcrInitialized();
             ValidateImageData(imageData, nameof(imageData));
             ValidateRequiredString(prompt, nameof(prompt));
 
-            return ExecuteChat(() => OCRVLSDK.ChatData(prompt, imageData, new UIntPtr((uint)imageData.LongLength)), "VL OCR 返回空结果");
+            return ExecuteChat(() => ChatDataNative(prompt, imageData, new UIntPtr((ulong)imageData.LongLength)), "VL OCR 返回空结果");
         }
 
+        /// <summary>
+        /// 根据提示词和 Base64 图片数据执行 VL 对话识别。
+        /// </summary>
+        /// <param name="prompt">提示词。</param>
+        /// <param name="base64Image">Base64 图片数据。</param>
+        /// <returns>VL 对话识别结果。</returns>
         public VLChatResult ChatBase64(string prompt, string base64Image)
         {
             EnsureOcrInitialized();
             ValidateRequiredString(prompt, nameof(prompt));
             ValidateRequiredString(base64Image, nameof(base64Image));
 
-            return ExecuteChat(() => OCRVLSDK.ChatBase64(prompt, base64Image), "VL OCR 返回空结果");
+            return ExecuteChat(() => ChatBase64Native(prompt, base64Image), "VL OCR 返回空结果");
         }
 
+        /// <summary>
+        /// 根据提示词和 OpenCV Mat 执行 VL 对话识别。
+        /// </summary>
+        /// <param name="prompt">提示词。</param>
+        /// <param name="cvMat">OpenCV Mat 指针。</param>
+        /// <returns>VL 对话识别结果。</returns>
         public VLChatResult ChatMat(string prompt, IntPtr cvMat)
         {
             EnsureOcrInitialized();
@@ -181,7 +166,7 @@ namespace PaddleOCRSDK
                 throw new ArgumentException("cvMat 不能为空", nameof(cvMat));
             }
 
-            return ExecuteChat(() => OCRVLSDK.ChatMat(prompt, cvMat), "VL OCR 返回空结果");
+            return ExecuteChat(() => ChatMatNative(prompt, cvMat), "VL OCR 返回空结果");
         }
 
         /// <summary>
@@ -194,7 +179,7 @@ namespace PaddleOCRSDK
             EnsureDocumentInitialized();
             ValidateRequiredString(imagefile, nameof(imagefile));
 
-            return ExecuteStructure(() => OCRVLSDK.DocChat(imagefile));
+            return ExecuteStructure(() => DocChatNative(imagefile));
         }
 
         /// <summary>
@@ -236,7 +221,7 @@ namespace PaddleOCRSDK
             EnsureDocumentInitialized();
             ValidateRequiredString(base64, nameof(base64));
 
-            return ExecuteStructure(() => OCRVLSDK.DocChatBase64(base64));
+            return ExecuteStructure(() => DocChatBase64Native(base64));
         }
 
         /// <summary>
@@ -280,51 +265,23 @@ namespace PaddleOCRSDK
         /// <returns>结构化的版面识别结果</returns>
         public LayoutDetectResult ParseLayoutResult(string json)
         {
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                throw new OCRVLException("OCR版面识别结果为空");
-            }
-
-            try
-            {
-                var result = JsonConvert.DeserializeObject<LayoutDetectResult>(json, JsonSettings);
-                if (result == null)
-                {
-                    throw new OCRVLException("OCR版面识别结果解析失败: JSON对象为空");
-                }
-                return result;
-            }
-            catch (JsonException ex)
-            {
-                throw new OCRVLException("OCR版面识别结果解析失败:" + ex.Message);
-            }
+            return OcrServiceHelper.ParseLayoutResult(json, message => new OCRVLException(message));
         }
 
+        /// <summary>
+        /// 获取 PaddleOCR-VL 原生接口最后一次错误信息。
+        /// </summary>
+        /// <returns>错误信息。</returns>
         public string GetLastError()
         {
             EnsureNotDisposed();
 
-            try
-            {
-                IntPtr errorPtr = OCRVLSDK.GetError();
-                try
-                {
-                    return MarshalUtf8.PtrToStringUTF8(errorPtr) ?? string.Empty;
-                }
-                finally
-                {
-                    if (errorPtr != IntPtr.Zero)
-                    {
-                        OCRVLSDK.FreeResultBuffer(errorPtr);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            return OcrServiceHelper.GetLastError(OCRVLSDK.GetError, OCRVLSDK.FreeResultBuffer);
         }
 
+        /// <summary>
+        /// 释放 VL OCR 引擎。
+        /// </summary>
         public void FreeEngine()
         {
             if (_disposed)
@@ -339,6 +296,9 @@ namespace PaddleOCRSDK
             }
         }
 
+        /// <summary>
+        /// 释放文档结构化分析引擎。
+        /// </summary>
         public void FreeDocAnalyser()
         {
             if (_disposed)
@@ -353,6 +313,9 @@ namespace PaddleOCRSDK
             }
         }
 
+        /// <summary>
+        /// 释放 VL OCR 和文档结构化分析引擎资源。
+        /// </summary>
         public void Dispose()
         {
             if (_disposed)
@@ -379,7 +342,7 @@ namespace PaddleOCRSDK
                         return CreateChatErrorResult(GetLastError(), "VL OCR 调用失败");
                     }
 
-                    string content = MarshalUtf8.PtrToStringUTF8(resultPtr);
+                    string content = OcrServiceHelper.PtrToString(resultPtr);
                     if (string.IsNullOrWhiteSpace(content))
                     {
                         return CreateChatErrorResult(GetLastError(), emptyResultMessage);
@@ -412,7 +375,12 @@ namespace PaddleOCRSDK
                 try
                 {
                     resultPtr = invoker();
-                    return GetStructureResult(resultPtr);
+                    return OcrServiceHelper.GetStructureResult(
+                        resultPtr,
+                        GetLastError,
+                        OCRVLSDK.FreeResultBuffer,
+                        ParseLayoutResult,
+                        message => new OCRVLException(message));
                 }
                 catch (OCRVLException)
                 {
@@ -423,41 +391,6 @@ namespace PaddleOCRSDK
                     throw new OCRVLException("OCR版面识别失败:" + ex.Message);
                 }
             }
-        }
-
-        private string GetStructureResult(IntPtr ptrResult)
-        {
-            string result = string.Empty;
-            if (ptrResult == IntPtr.Zero)
-            {
-                var lastErr = GetLastError();
-                if (!string.IsNullOrEmpty(lastErr))
-                {
-                    throw new OCRVLException("OCR内部错误：" + lastErr);
-                }
-                return result;
-            }
-            try
-            {
-                result = MarshalUtf8.PtrToStringUTF8(ptrResult);
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    // 与 OCRService 保持一致：版面结果至少应是可解析的JSON对象。
-                    ParseLayoutResult(result);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new OCRVLException("OCR版面识别失败:" + ex.Message);
-            }
-            finally
-            {
-                if (ptrResult != IntPtr.Zero)
-                {
-                    OCRVLSDK.FreeResultBuffer(ptrResult);
-                }
-            }
-            return result;
         }
 
         private static VLChatResult CreateChatErrorResult(string details, string message)
@@ -487,6 +420,85 @@ namespace PaddleOCRSDK
             if (imageData == null || imageData.Length == 0)
             {
                 throw new ArgumentException("图像数据不能为空", paramName);
+            }
+        }
+
+        private static IntPtr ChatNative(string prompt, string imagePath)
+        {
+            return InvokeWithUtf8(prompt, imagePath, OCRVLSDK.Chat);
+        }
+
+        private static IntPtr ChatDataNative(string prompt, byte[] imageData, UIntPtr imageSize)
+        {
+            return InvokeWithUtf8(prompt, promptPtr => OCRVLSDK.ChatData(promptPtr, imageData, imageSize));
+        }
+
+        private static IntPtr ChatBase64Native(string prompt, string base64Image)
+        {
+            return InvokeWithUtf8(prompt, base64Image, OCRVLSDK.ChatBase64);
+        }
+
+        private static IntPtr ChatMatNative(string prompt, IntPtr cvMat)
+        {
+            return InvokeWithUtf8(prompt, promptPtr => OCRVLSDK.ChatMat(promptPtr, cvMat));
+        }
+
+        private static IntPtr DocChatNative(string imagePath)
+        {
+            return InvokeWithUtf8(imagePath, OCRVLSDK.DocChat);
+        }
+
+        private static IntPtr DocChatBase64Native(string base64Image)
+        {
+            return InvokeWithUtf8(base64Image, OCRVLSDK.DocChatBase64);
+        }
+
+        private static T InvokeWithUtf8<T>(string value, Func<IntPtr, T> invoker)
+        {
+            IntPtr valuePtr = AllocUtf8(value);
+            try
+            {
+                return invoker(valuePtr);
+            }
+            finally
+            {
+                FreeUtf8(valuePtr);
+            }
+        }
+
+        private static T InvokeWithUtf8<T>(string first, string second, Func<IntPtr, IntPtr, T> invoker)
+        {
+            IntPtr firstPtr = AllocUtf8(first);
+            IntPtr secondPtr = AllocUtf8(second);
+            try
+            {
+                return invoker(firstPtr, secondPtr);
+            }
+            finally
+            {
+                FreeUtf8(firstPtr);
+                FreeUtf8(secondPtr);
+            }
+        }
+
+        private static IntPtr AllocUtf8(string value)
+        {
+            if (value == null)
+            {
+                return IntPtr.Zero;
+            }
+
+            byte[] bytes = Encoding.UTF8.GetBytes(value + "\0");
+            IntPtr ptr = Marshal.AllocHGlobal(bytes.Length);
+            Marshal.Copy(bytes, 0, ptr, bytes.Length);
+            return ptr;
+        }
+
+        private static void FreeUtf8(IntPtr ptr)
+        {
+            if (ptr != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(ptr);
             }
         }
 

@@ -30,14 +30,6 @@ namespace PaddleOCRSDK
     }
     public class OCRService : IOCRService
     {
-        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.None,
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            MissingMemberHandling = MissingMemberHandling.Ignore,
-            NullValueHandling = NullValueHandling.Include
-        };
-
         /// <summary>
         /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
         /// </summary>
@@ -262,24 +254,7 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         public string GetLicenseRequestCode()
         {
-            IntPtr ptrResult = IntPtr.Zero;
-            try
-            {
-                ptrResult = OCRSDK.GetLicenseRequestCode();
-                if (ptrResult == IntPtr.Zero)
-                {
-                    return string.Empty;
-                }
-
-                return MarshalUtf8.PtrToStringUTF8(ptrResult);
-            }
-            finally
-            {
-                if (ptrResult != IntPtr.Zero)
-                {
-                    OCRSDK.FreeResultBuffer(ptrResult);
-                }
-            }
+            return OcrServiceHelper.ReadNativeString(OCRSDK.GetLicenseRequestCode, OCRSDK.FreeResultBuffer);
         }
 
         /// <summary>
@@ -303,24 +278,7 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         public string GetLicenseStatus()
         {
-            IntPtr ptrResult = IntPtr.Zero;
-            try
-            {
-                ptrResult = OCRSDK.GetLicenseStatus();
-                if (ptrResult == IntPtr.Zero)
-                {
-                    return string.Empty;
-                }
-
-                return MarshalUtf8.PtrToStringUTF8(ptrResult);
-            }
-            finally
-            {
-                if (ptrResult != IntPtr.Zero)
-                {
-                    OCRSDK.FreeResultBuffer(ptrResult);
-                }
-            }
+            return OcrServiceHelper.ReadNativeString(OCRSDK.GetLicenseStatus, OCRSDK.FreeResultBuffer);
         }
 
         /// <summary>
@@ -329,13 +287,7 @@ namespace PaddleOCRSDK
         /// <returns></returns>
         public LicenseStatus GetLicenseStatusInfo()
         {
-            string json = GetLicenseStatus();
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                return null;
-            }
-
-            return JsonConvert.DeserializeObject<LicenseStatus>(json, JsonSettings);
+            return OcrServiceHelper.DeserializeLicenseStatus(GetLicenseStatus());
         }
 
         /// <summary>
@@ -421,7 +373,7 @@ namespace PaddleOCRSDK
                     try
                     {
                         result.JsonText = json;
-                        List<JsonResult> jonResult = DeObject<List<JsonResult>>(json);
+                        List<JsonResult> jonResult = OcrServiceHelper.DeserializeObject<List<JsonResult>>(json);
                         result.WordsResult = jonResult ?? new List<JsonResult>();
                     }
                     catch (Exception e)
@@ -455,7 +407,7 @@ namespace PaddleOCRSDK
         public string DetectLayout(string imagefile)
         {
             var ptrResult = OCRSDK.DetectLayout(imagefile);
-            return GetStructureResult(ptrResult);
+            return ReadStructureResult(ptrResult);
         }
         /// <summary>
         /// 执行文档版面分析（字节数组输入）
@@ -465,7 +417,7 @@ namespace PaddleOCRSDK
         public string DetectLayoutByte(byte[] imagebyte)
         {
             var ptrResult = OCRSDK.DetectLayoutByte(imagebyte, new UIntPtr((ulong)imagebyte.LongLength));
-            return GetStructureResult(ptrResult);
+            return ReadStructureResult(ptrResult);
         }
         /// <summary>
         /// 执行文档版面分析（OpenCV Mat 输入）
@@ -475,7 +427,7 @@ namespace PaddleOCRSDK
         public string DetectLayoutMat(IntPtr ptr_cvmat)
         {
             var ptrResult = OCRSDK.DetectLayoutMat(ptr_cvmat);
-            return GetStructureResult(ptrResult);
+            return ReadStructureResult(ptrResult);
         }
         /// <summary>
         /// 执行文档版面分析（Base64 编码输入）
@@ -485,7 +437,7 @@ namespace PaddleOCRSDK
         public string DetectLayoutBase64(string base64)
         {
             var ptrResult = OCRSDK.DetectLayoutBase64(base64);
-            return GetStructureResult(ptrResult);
+            return ReadStructureResult(ptrResult);
         }
 
         /// <summary>
@@ -529,60 +481,17 @@ namespace PaddleOCRSDK
         /// <returns>结构化的版面识别结果</returns>
         public LayoutDetectResult ParseLayoutResult(string json)
         {
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                throw new OCRException("OCR版面识别结果为空");
-            }
-
-            try
-            {
-                var result = LayoutJsonHelper.DeserializeLayoutResult(json, JsonSettings);
-                if (result == null)
-                {
-                    throw new OCRException("OCR版面识别结果解析失败: JSON对象为空");
-                }
-                return result;
-            }
-            catch (JsonException ex)
-            {
-                throw new OCRException("OCR版面识别结果解析失败:" + ex.Message);
-            }
+            return OcrServiceHelper.ParseLayoutResult(json, message => new OCRException(message));
         }
 
-        private string GetStructureResult(IntPtr ptrResult)
+        private string ReadStructureResult(IntPtr ptrResult)
         {
-            string result = string.Empty;
-            if (ptrResult == IntPtr.Zero)
-            {
-                var lastErr = GetError();
-                if (!string.IsNullOrEmpty(lastErr))
-                {
-                    throw new OCRException("OCR内部错误：" + lastErr);
-                }
-                return result;
-            }
-            try
-            {
-                result = MarshalUtf8.PtrToStringUTF8(ptrResult);
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    // 与C接口文档对齐：版面结果至少应是可解析的JSON对象。
-                    ParseLayoutResult(result);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new OCRException("OCR表格识别失败:" + ex.Message);
-            }
-            finally
-            {
-                if (ptrResult != IntPtr.Zero)
-                {
-                    //Marshal.FreeCoTaskMem(ptrResult);改为调用SDK的释放接口
-                    OCRSDK.FreeResultBuffer(ptrResult);
-                }
-            }
-            return result;
+            return OcrServiceHelper.GetStructureResult(
+                ptrResult,
+                GetError,
+                OCRSDK.FreeResultBuffer,
+                ParseLayoutResult,
+                message => new OCRException(message));
         }
 
         /// <summary>
@@ -640,8 +549,7 @@ namespace PaddleOCRSDK
         /// <returns>反序列化后的对象</returns>
         private static T DeObject<T>(string json)
         {
-            if (string.IsNullOrEmpty(json)) return default(T);
-            return (T)JsonConvert.DeserializeObject(json, typeof(T), JsonSettings);
+            return OcrServiceHelper.DeserializeObject<T>(json);
         }
         /// <summary>
         /// 释放OCR实例
