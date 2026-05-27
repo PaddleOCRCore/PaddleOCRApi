@@ -798,6 +798,9 @@
         <section class="workspace">
             <aside class="sidebar">
                 <button class="new-button" id="newButton" type="button">＋ 新解析</button>
+                <button class="new-button" id="licenseCodeButton" type="button">获取授权申请码</button>
+                <button class="new-button" id="uploadLicenseButton" type="button">上传授权文件</button>
+                <input id="licenseInput" type="file" accept=".lic" hidden>
                 <div class="side-section">
                     <div class="side-title">
                         <span>上传列表</span>
@@ -934,6 +937,9 @@
         const copyButton = document.getElementById("copyButton");
         const refreshButton = document.getElementById("refreshButton");
         const newButton = document.getElementById("newButton");
+        const licenseCodeButton = document.getElementById("licenseCodeButton");
+        const uploadLicenseButton = document.getElementById("uploadLicenseButton");
+        const licenseInput = document.getElementById("licenseInput");
         const statusPill = document.getElementById("statusPill");
         const toast = document.getElementById("toast");
         const placeholder = document.getElementById("placeholder");
@@ -985,6 +991,18 @@
 
         refreshButton.addEventListener("click", () => analyze());
         newButton.addEventListener("click", () => startNewAnalysis());
+        licenseCodeButton.addEventListener("click", () => getLicenseRequestCode());
+        uploadLicenseButton.addEventListener("click", () => {
+            if (!state.busy) {
+                licenseInput.click();
+            }
+        });
+        licenseInput.addEventListener("change", () => {
+            const file = licenseInput.files && licenseInput.files[0];
+            if (file) {
+                uploadLicense(file);
+            }
+        });
         prevPageButton.addEventListener("click", () => changePage(state.pageIndex - 1));
         nextPageButton.addEventListener("click", () => changePage(state.pageIndex + 1));
         pageInput.addEventListener("change", () => changePage(Number.parseInt(pageInput.value, 10)));
@@ -1122,6 +1140,83 @@
             } finally {
                 setBusy(false);
             }
+        }
+
+        async function getLicenseRequestCode() {
+            if (state.busy) {
+                return;
+            }
+
+            setBusy(true, "获取授权申请码中...");
+            try {
+                const payload = await fetchJson("/Home/GetLicenseRequestCode");
+                const requestCode = payload.data && payload.data.requestCode;
+                if (!requestCode) {
+                    throw new Error("未获取到GPU授权申请码。");
+                }
+
+                setResultText(requestCode);
+                jsonView.textContent = formatJson(payload.data);
+                setStatus("授权申请码已生成");
+                try {
+                    await navigator.clipboard.writeText(requestCode);
+                    showToast("授权申请码已复制");
+                } catch {
+                    showToast("授权申请码已生成");
+                }
+            } catch (error) {
+                setResultText(error.message || "获取授权申请码失败");
+                setStatus("获取授权申请码失败");
+                showToast(error.message || "获取授权申请码失败");
+            } finally {
+                setBusy(false);
+            }
+        }
+
+        async function uploadLicense(file) {
+            if (state.busy) {
+                return;
+            }
+
+            const validation = validateLicenseFile(file);
+            if (validation) {
+                licenseInput.value = "";
+                showToast(validation);
+                return;
+            }
+
+            setBusy(true, "上传授权文件中...");
+            const form = new FormData();
+            form.append("file", file);
+            try {
+                const payload = await fetchJson("/Home/UploadLicense", {
+                    method: "POST",
+                    body: form
+                });
+
+                const data = payload.data || {};
+                setResultText(data.statusText || "授权文件已保存到Models目录。");
+                jsonView.textContent = formatJson(data);
+                setStatus("授权文件有效");
+                showToast("授权文件已保存");
+            } catch (error) {
+                setResultText(error.message || "授权文件无效");
+                setStatus("授权文件无效");
+                showToast(error.message || "授权文件无效");
+            } finally {
+                licenseInput.value = "";
+                setBusy(false);
+            }
+        }
+
+        async function fetchJson(url, options) {
+            const response = await fetch(url, options);
+            const payload = await response.json();
+            if (String(payload.status) !== "200") {
+                throw new Error(payload.errorMessage || "请求失败");
+            }
+
+            return payload;
         }
 
         function applyResult(result) {
@@ -1797,11 +1892,11 @@
             return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
         }
 
-        function setBusy(busy) {
+        function setBusy(busy, text) {
             state.busy = busy;
             app.classList.toggle("busy", busy);
             updatePager();
-            setStatus(busy ? "解析中" : "就绪");
+            setStatus(busy ? (text || "解析中") : "就绪");
         }
 
         function setStatus(text) {
@@ -1822,6 +1917,18 @@
 
             if (!isPdf && file.size > 10 * 1024 * 1024) {
                 return "单张图片不能超过 10MB";
+            }
+
+            return "";
+        }
+
+        function validateLicenseFile(file) {
+            if (!file.name.toLowerCase().endsWith(".lic")) {
+                return "请上传.lic授权文件";
+            }
+
+            if (file.size > 1024 * 1024) {
+                return "授权文件不能超过1MB";
             }
 
             return "";
