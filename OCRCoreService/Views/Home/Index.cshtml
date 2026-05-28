@@ -98,8 +98,87 @@
             font-size: 16px;
         }
 
-        .status-pill {
+        .license-actions {
             margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            padding: 4px;
+            background: #f7f9fe;
+            border: 1px solid #e3eaf7;
+            border-radius: 8px;
+            box-shadow: 0 8px 18px rgba(42, 75, 130, .08);
+        }
+
+        .topbar-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 32px;
+            padding: 0 11px 0 8px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: #24314f;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(30, 48, 80, .05);
+            transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+        }
+
+        .topbar-button::before {
+            content: attr(data-icon);
+            display: grid;
+            place-items: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .topbar-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(39, 70, 125, .12);
+        }
+
+        .topbar-button:focus-visible {
+            outline: 2px solid rgba(61, 99, 255, .32);
+            outline-offset: 2px;
+        }
+
+        .topbar-button[data-tone="code"] {
+            border-color: #d8e3ff;
+            background: #f3f7ff;
+        }
+
+        .topbar-button[data-tone="code"]::before {
+            background: #3d63ff;
+        }
+
+        .topbar-button[data-tone="status"] {
+            border-color: #ccebdc;
+            background: #f0fbf6;
+        }
+
+        .topbar-button[data-tone="status"]::before {
+            background: #0f9f6e;
+        }
+
+        .topbar-button[data-tone="upload"] {
+            border-color: #f2ddb6;
+            background: #fff8ea;
+        }
+
+        .topbar-button[data-tone="upload"]::before {
+            background: #c27803;
+        }
+
+        .status-pill {
             display: inline-flex;
             align-items: center;
             gap: 7px;
@@ -751,6 +830,25 @@
                 display: none;
             }
 
+            .license-actions {
+                margin-left: auto;
+                gap: 4px;
+                padding: 3px;
+            }
+
+            .topbar-button {
+                width: 32px;
+                min-height: 30px;
+                padding: 0;
+                justify-content: center;
+                overflow: hidden;
+                color: transparent;
+            }
+
+            .topbar-button::before {
+                flex: 0 0 auto;
+            }
+
             .workspace {
                 display: block;
             }
@@ -792,15 +890,18 @@
                 <strong>飞桨</strong>
                 <span>PaddleOCRApi</span>
             </div>
+            <div class="license-actions">
+                <button class="topbar-button" id="licenseCodeButton" type="button" data-tone="code" data-icon="码" title="获取授权申请码">获取授权申请码</button>
+                <button class="topbar-button" id="licenseStatusButton" type="button" data-tone="status" data-icon="态" title="查看授权状态">查看授权状态</button>
+                <button class="topbar-button" id="uploadLicenseButton" type="button" data-tone="upload" data-icon="传" title="上传授权文件">上传授权文件</button>
+                <input id="licenseInput" type="file" accept=".lic" hidden>
+            </div>
             <div class="status-pill" id="statusPill">加群：475159576</div>
         </header>
 
         <section class="workspace">
             <aside class="sidebar">
                 <button class="new-button" id="newButton" type="button">＋ 新解析</button>
-                <button class="new-button" id="licenseCodeButton" type="button">获取授权申请码</button>
-                <button class="new-button" id="uploadLicenseButton" type="button">上传授权文件</button>
-                <input id="licenseInput" type="file" accept=".lic" hidden>
                 <div class="side-section">
                     <div class="side-title">
                         <span>上传列表</span>
@@ -938,6 +1039,7 @@
         const refreshButton = document.getElementById("refreshButton");
         const newButton = document.getElementById("newButton");
         const licenseCodeButton = document.getElementById("licenseCodeButton");
+        const licenseStatusButton = document.getElementById("licenseStatusButton");
         const uploadLicenseButton = document.getElementById("uploadLicenseButton");
         const licenseInput = document.getElementById("licenseInput");
         const statusPill = document.getElementById("statusPill");
@@ -992,6 +1094,7 @@
         refreshButton.addEventListener("click", () => analyze());
         newButton.addEventListener("click", () => startNewAnalysis());
         licenseCodeButton.addEventListener("click", () => getLicenseRequestCode());
+        licenseStatusButton.addEventListener("click", () => getLicenseStatus());
         uploadLicenseButton.addEventListener("click", () => {
             if (!state.busy) {
                 licenseInput.click();
@@ -1168,6 +1271,28 @@
                 setResultText(error.message || "获取授权申请码失败");
                 setStatus("获取授权申请码失败");
                 showToast(error.message || "获取授权申请码失败");
+            } finally {
+                setBusy(false);
+            }
+        }
+
+        async function getLicenseStatus() {
+            if (state.busy) {
+                return;
+            }
+
+            setBusy(true, "查看授权状态中...");
+            try {
+                const payload = await fetchJson("/Home/GetLicenseStatus");
+                const data = payload.data || {};
+                setResultText(data.statusText || "未获取到授权状态。");
+                jsonView.textContent = formatJson(data.modules || data.module || data);
+                setStatus("授权状态已更新");
+                showToast("授权状态已更新");
+            } catch (error) {
+                setResultText(error.message || "获取授权状态失败");
+                setStatus("获取授权状态失败");
+                showToast(error.message || "获取授权状态失败");
             } finally {
                 setBusy(false);
             }

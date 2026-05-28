@@ -88,50 +88,8 @@ try
         builder.Services.AddSingleton(ocrvlConfig);
         if (ocrvlConfig.enabled)
         {
-            logger.Info("OCR-VL服务已启用");
-            builder.Services.AddSingleton<IOCRVLService>(sp =>
-            {
-                var vlService = new OCRVLService();
-                var sharedOcrConfig = sp.GetService<OCRConfig>();
-                string licensePath = sharedOcrConfig == null || string.IsNullOrWhiteSpace(sharedOcrConfig.OCRLicense)
-                    ? string.Empty
-                    : (Path.IsPathRooted(sharedOcrConfig.OCRLicense)
-                        ? sharedOcrConfig.OCRLicense
-                        : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, sharedOcrConfig.OCRLicense));
-                if (!string.IsNullOrWhiteSpace(licensePath) && File.Exists(licensePath))
-                {
-                    if (vlService.ActivateLicense(licensePath))
-                    {
-                        logger.Info($"OCR-VL授权激活成功: {licensePath}");
-                    }
-                    else
-                    {
-                        logger.Warn($"OCR-VL授权激活失败: {licensePath}");
-                    }
-                }
-                string yamlPath = Path.IsPathRooted(ocrvlConfig.yaml_path)
-                    ? ocrvlConfig.yaml_path
-                    : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ocrvlConfig.yaml_path);
-                try
-                {
-                    vlService.Init(yamlPath);
-                    logger.Info("OCR-VL引擎初始化成功");
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, $"OCR-VL引擎初始化失败: {ex.Message}");
-                }
-                try
-                {
-                    vlService.InitDoc(yamlPath);
-                    logger.Info("OCR-VL版面分析引擎初始化成功");
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, $"OCR-VL版面分析引擎初始化失败: {ex.Message}");
-                }
-                return vlService;
-            });
+            builder.Services.AddSingleton<IOCRVLService, OCRVLService>();
+            builder.Services.AddSingleton<OCRVLEngine>();
         }
         else
         {

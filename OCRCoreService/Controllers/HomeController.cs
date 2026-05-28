@@ -15,15 +15,18 @@ namespace OCRCoreService.Controllers
     {
         private const long MaxLicenseSize = 1024 * 1024;
         private readonly ILogger<HomeController> logger;
+        private readonly OCREngine ocrEngine;
         private readonly IOCRService ocrService;
         private readonly IServiceProvider serviceProvider;
 
         public HomeController(
             ILogger<HomeController> logger,
+            OCREngine ocrEngine,
             IOCRService ocrService,
             IServiceProvider serviceProvider)
         {
             this.logger = logger;
+            this.ocrEngine = ocrEngine;
             this.ocrService = ocrService;
             this.serviceProvider = serviceProvider;
         }
@@ -62,6 +65,49 @@ namespace OCRCoreService.Controllers
             {
                 logger.LogError(ex, "获取GPU授权申请码失败");
                 return Json(BadApiResult("获取GPU授权申请码失败：" + ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// 查看当前GPU授权状态
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetLicenseStatus()
+        {
+            try
+            {
+                ocrEngine.ActivateLicenseIfExists();
+                LicenseStatus? status = ocrService.GetLicenseStatusInfo();
+                if (status == null)
+                {
+                    string error = ocrService.GetError();
+                    return Json(BadApiResult("未获取到授权状态。" + error));
+                }
+
+                LicenseValidationResult result = CreateValidationResult("PaddleOCR", status.Activated, status, ocrService.GetError());
+                List<LicenseValidationResult> results = new() { result };
+                OCRVLEngine? ocrvlEngine = serviceProvider.GetService<OCRVLEngine>();
+                if (ocrvlEngine != null)
+                {
+                    ocrvlEngine.ActivateLicenseIfExists();
+                    LicenseStatus? vlStatus = ocrvlEngine.OcrVlService.GetLicenseStatusInfo();
+                    if (vlStatus != null)
+                    {
+                        results.Add(CreateValidationResult("PaddleOCR-VL", vlStatus.Activated, vlStatus, ocrvlEngine.OcrVlService.GetLastError()));
+                    }
+                }
+
+                return Json(OkApiResult(new
+                {
+                    modules = results,
+                    statusText = BuildLicenseSummary(results, GetModelsLicensePath(), false)
+                }));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "获取GPU授权状态失败");
+                return Json(BadApiResult("获取GPU授权状态失败：" + ex.Message));
             }
         }
 
@@ -122,7 +168,7 @@ namespace OCRCoreService.Controllers
                     licenseSaved = true,
                     licensePath,
                     modules = new[] { ocrResult, vlResult },
-                    statusText = BuildLicenseSummary(new[] { ocrResult, vlResult }, licensePath)
+                    statusText = BuildLicenseSummary(new[] { ocrResult, vlResult }, licensePath, true)
                 }));
             }
             catch (Exception ex)
@@ -167,8 +213,8 @@ namespace OCRCoreService.Controllers
 
         private LicenseValidationResult ValidateOcrVlLicense(string licensePath)
         {
-            IOCRVLService? registeredService = serviceProvider.GetService<IOCRVLService>();
-            IOCRVLService ocrVlService = registeredService ?? new OCRVLService();
+            OCRVLEngine? ocrvlEngine = serviceProvider.GetService<OCRVLEngine>();
+            IOCRVLService ocrVlService = ocrvlEngine?.OcrVlService ?? new OCRVLService();
 
             try
             {
@@ -188,7 +234,7 @@ namespace OCRCoreService.Controllers
             }
             finally
             {
-                if (registeredService == null && ocrVlService is IDisposable disposable)
+                if (ocrvlEngine == null && ocrVlService is IDisposable disposable)
                 {
                     disposable.Dispose();
                 }
@@ -228,13 +274,16 @@ namespace OCRCoreService.Controllers
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "models", "paddleocr.lic");
         }
 
-        private static string BuildLicenseSummary(IEnumerable<LicenseValidationResult> results, string licensePath)
+        private static string BuildLicenseSummary(
+            IEnumerable<LicenseValidationResult> results,
+            string licensePath,
+            bool licenseSaved)
         {
             List<string> lines = new()
             {
-                $"{DateTime.Now:HH:mm:ss.fff}: GPU授权文件检查",
+                $"{DateTime.Now:HH:mm:ss.fff}: GPU授权状态检查",
                 "===============================================",
-                $"授权文件已保存: {licensePath}"
+                licenseSaved ? $"授权文件已保存: {licensePath}" : $"授权文件路径: {licensePath}"
             };
 
             foreach (LicenseValidationResult result in results)
@@ -242,26 +291,28 @@ namespace OCRCoreService.Controllers
                 lines.Add("");
                 lines.Add($"授权模块: {result.Module}");
                 lines.Add($"授权状态: {(result.Activated ? "已授权" : "未授权")}");
-                lines.Add($"产品名称: {DisplayValue(result.ProductName)}");
-                lines.Add($"客户信息: {DisplayValue(result.Customer)}");
-                lines.Add($"授权编号: {DisplayValue(result.LicenseId)}");
-                lines.Add($"授权版本: {DisplayValue(result.ProductVersion)}");
-                lines.Add($"授权平台: {DisplayValue(result.Platforms)}");
-                lines.Add($"授权产品: {DisplayValue(result.Products)}");
-                lines.Add($"GPU权限: {(result.AllowGpu ? "允许" : "不允许")}");
-                lines.Add($"机器码匹配: {(result.MachineMatch ? "匹配" : "不匹配")}");
-                lines.Add($"开始时间: {DisplayValue(result.StartTime)}");
-                lines.Add($"到期时间: {DisplayValue(result.ExpireTime)}");
-                if (!string.IsNullOrWhiteSpace(result.CurrentMachineCode))
+                if (result.Activated)
                 {
-                    lines.Add($"当前机器码: {result.CurrentMachineCode}");
-                }
+                    lines.Add($"产品名称: {DisplayValue(result.ProductName)}");
+                    lines.Add($"客户信息: {DisplayValue(result.Customer)}");
+                    lines.Add($"授权编号: {DisplayValue(result.LicenseId)}");
+                    lines.Add($"授权版本: {DisplayValue(result.ProductVersion)}");
+                    lines.Add($"授权平台: {DisplayValue(result.Platforms)}");
+                    lines.Add($"授权产品: {DisplayValue(result.Products)}");
+                    lines.Add($"GPU权限: {(result.AllowGpu ? "允许" : "不允许")}");
+                    lines.Add($"授权匹配: {(result.MachineMatch ? "匹配" : "不匹配")}");
+                    lines.Add($"开始时间: {DisplayValue(result.StartTime)}");
+                    lines.Add($"到期时间: {DisplayValue(result.ExpireTime)}");
+                    if (!string.IsNullOrWhiteSpace(result.CurrentMachineCode))
+                    {
+                        lines.Add($"当前机器码: {result.CurrentMachineCode}");
+                    }
 
-                if (!string.IsNullOrWhiteSpace(result.MachineCode))
-                {
-                    lines.Add($"授权机器码: {result.MachineCode}");
+                    if (!string.IsNullOrWhiteSpace(result.MachineCode))
+                    {
+                        lines.Add($"授权机器码: {result.MachineCode}");
+                    }
                 }
-
                 lines.Add($"说明: {DisplayValue(result.Message)}");
             }
 

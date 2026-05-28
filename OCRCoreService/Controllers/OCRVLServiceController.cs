@@ -15,6 +15,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using OCRCoreService.Services;
 using PaddleOCRSDK;
 
 namespace OCRCoreService.Controllers
@@ -35,12 +36,12 @@ namespace OCRCoreService.Controllers
         /// 构造函数
         /// </summary>
         /// <param name="_logger">日志</param>
-        /// <param name="_ocrvlService">OCR-VL服务</param>
+        /// <param name="_ocrvlEngine">OCR-VL引擎</param>
         /// <param name="_ocrvlConfig">OCR-VL配置</param>
-        public OCRVLServiceController(ILogger<OCRVLServiceController> _logger, IOCRVLService _ocrvlService, OCRVLConfig _ocrvlConfig)
+        public OCRVLServiceController(ILogger<OCRVLServiceController> _logger, OCRVLEngine _ocrvlEngine, OCRVLConfig _ocrvlConfig)
         {
             logger = _logger;
-            ocrvlService = _ocrvlService;
+            ocrvlService = _ocrvlEngine.OcrVlService;
             ocrvlConfig = _ocrvlConfig;
         }
 

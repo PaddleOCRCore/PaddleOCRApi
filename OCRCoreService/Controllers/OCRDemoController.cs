@@ -156,12 +156,13 @@ namespace OCRCoreService.Controllers
 
         private OCRDemoAnalyzeResult AnalyzeWithPaddleOCRVL(byte[] imageData, string fileName)
         {
-            IOCRVLService? ocrvlService = serviceProvider.GetService<IOCRVLService>();
-            if (ocrvlService == null)
+            OCRVLEngine? ocrvlEngine = serviceProvider.GetService<OCRVLEngine>();
+            if (ocrvlEngine == null)
             {
                 throw new InvalidOperationException("OCR-VL 服务未启用，请检查 OCRVLConfig.enabled 配置。");
             }
 
+            IOCRVLService ocrvlService = ocrvlEngine.OcrVlService;
             string layoutJson = ocrvlService.DetectLayoutByte(imageData);
             LayoutDetectResult layoutResult = ocrvlService.ParseLayoutResult(layoutJson);
             return CreateLayoutResponse("paddleocr-vl-1.5", "PaddleOCR-VL-1.5", fileName, layoutJson, layoutResult);

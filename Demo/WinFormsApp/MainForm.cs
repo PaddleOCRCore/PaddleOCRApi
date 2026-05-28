@@ -249,7 +249,7 @@ namespace WinFormsApp
                 sb.AppendLine($"GPU权限: {gpuState}");
                 sb.AppendLine($"设备绑定: {machineState}");
                 sb.AppendLine($"绑定模式: {DisplayValue(status.BindMode)}");
-                sb.AppendLine($"机器码匹配: {(status.MachineMatch ? "匹配" : "不匹配")}");
+                sb.AppendLine($"授权匹配: {(status.MachineMatch ? "匹配" : "不匹配")}");
                 sb.AppendLine($"开始时间: {FormatLicenseTime(status.StartTime)}");
                 sb.AppendLine($"到期时间: {FormatLicenseTime(status.ExpireTime)}");
 

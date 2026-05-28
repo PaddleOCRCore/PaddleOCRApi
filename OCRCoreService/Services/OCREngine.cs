@@ -41,10 +41,10 @@ namespace OCRCoreService.Services
         }
 
         /// <summary>
-        /// 初始化前自动激活GPU授权文件
+        /// 初始化前自动激活授权文件
         /// </summary>
         /// <returns></returns>
-        public bool ActivateGpuLicenseIfExists()
+        public bool ActivateLicenseIfExists()
         {
             if (_gpuLicenseActivated)
             {
@@ -123,7 +123,7 @@ namespace OCRCoreService.Services
             try
             {
                 _ocrService.EnableLog(_ocrConfig.enableLog);
-                ActivateGpuLicenseIfExists();
+                ActivateLicenseIfExists();
                 _ocrService.Init(para);
             }
             catch (Exception ex)
@@ -199,7 +199,7 @@ namespace OCRCoreService.Services
                 try
                 {
                     _ocrService.EnableLog(_ocrConfig.enableLog);
-                    ActivateGpuLicenseIfExists();
+                    ActivateLicenseIfExists();
                     _ocrService.Init(para);
                     _structureEngineInitialized = true;
                 }
