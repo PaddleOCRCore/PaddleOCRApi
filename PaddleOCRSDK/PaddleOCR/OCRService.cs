@@ -196,7 +196,8 @@ namespace PaddleOCRSDK
                 }
                 else if (para.paraType == EnumParaType.StructureClass)
                 {
-                    ret = OCRSDK.InitStructure(
+                    string json = JsonConvert.SerializeObject(para.layoutpara);
+                    ret = OCRSDK.InitStructurejson(
                         para.det_infer,
                         para.cls_infer,
                         para.rec_infer,
@@ -207,7 +208,7 @@ namespace PaddleOCRSDK
                         para.doc_cls_infer,
                         para.doc_unwarp_model,
                         para.region_model_dir,
-                        para.layoutpara);
+                        json);
                 }
                 else if (para.paraType == EnumParaType.StructureJson)
                 {

@@ -4,7 +4,7 @@ v4.5.0 2026.5.26
 ✅ PaddleOCR.dll: Optimized layout detection and recognition, improved model loading compatibility, and added GPU licensing APIs.
 ✅ llamaocr-vl.dll: Optimized layout detection and recognition, improved model loading compatibility, and added GPU licensing APIs.
 ✅ WinFormsApp: Added a menu bar, moved some features into the menu, and changed PDF recognition to use the layout recognition API.
-✅ NuGet Package Released: PaddleOCRRuntime_x64 v4.5.0, including Paddle 3.4.0 CPU inference libraries, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies.
+✅ NuGet Package Released: PaddleOCRRuntime_x64 v4.5.1, including Paddle 3.4.0 CPU inference libraries, PaddleOCR.dll, llamaocr-vl.dll, and all dependencies.
 
 ## v4.4.0 `2026.5.11`
 - ✅ **PaddleOCR.dll**: Optimized layout analysis; improved GPU dependency detection to avoid initialization pop-ups.
