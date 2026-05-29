@@ -32,7 +32,6 @@ try
     builder.Host.UseNLog();
     // Add services to the container.
     //builder.Services.AddControllers();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     var ocrConfig = builder.Configuration.GetSection("OCRConfig").Get<OCRConfig>();
     if (ocrConfig != null) builder.Services.AddSingleton(ocrConfig);
@@ -112,7 +111,7 @@ try
         //options.Filters.Add<WebApiActionAttribute>();//改为在接口中单独引用，上传文件接口无法使用此方法
         options.Filters.Add<ApiErrorHandleAttribute>();
     });
-    builder.Services.AddSwagger(builder.Configuration);
+    builder.Services.AddScalarOpenApi(builder.Configuration);
 
     var app = builder.Build();
 
@@ -125,17 +124,16 @@ try
     app.UseForwardedHeaders(fordwardedHeaderOptions);
 
     if (builder.Configuration.GetValue("UseHttps", true)) app.UseHttpsRedirection();
-    var pathBase = builder.Configuration["SwaggerPathBase"]?.TrimEnd('/') ?? "";
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
         app.UseExceptionHandler("/Home/Error");
-        app.UseSwaggerApp(pathBase);
+        app.MapScalarOpenApi();
     }
     else
     {
         app.UseDeveloperExceptionPage();
-        app.UseSwaggerApp(pathBase);
+        app.MapScalarOpenApi();
     }
 
     string outputPath = Path.Combine(AppContext.BaseDirectory, "output");

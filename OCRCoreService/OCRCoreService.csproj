@@ -8,6 +8,9 @@
 	<Platforms>AnyCPU;x64</Platforms>
 	<ApplicationIcon>OCR.ico</ApplicationIcon>
 	<BuildInParallel>false</BuildInParallel>
+	<InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="PDFtoImage" Version="5.2.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Scalar.AspNetCore.Microsoft" Version="2.14.14" />
     <PackageReference Include="SkiaSharp" Version="3.119.1" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
 	<PackageReference Include="NLog" Version="5.2.8" />

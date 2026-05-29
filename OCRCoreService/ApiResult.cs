@@ -440,4 +440,42 @@ namespace OCRCoreService
         /// </summary>
         public string api_key { get; set; } = "";
     }
+
+    /// <summary>
+    /// OCR-VL识别请求参数（Base64）
+    /// </summary>
+    public class RequestOCRVL
+    {
+        /// <summary>
+        /// 提示词
+        /// </summary>
+        public string Prompt { get; set; }
+
+        /// <summary>
+        /// 图片Base64字符串
+        /// </summary>
+        public string Base64String { get; set; }
+    }
+
+    /// <summary>
+    /// DOC-VL版面分析请求参数（Base64）
+    /// </summary>
+    public class RequestDocVL
+    {
+        /// <summary>
+        /// 图片Base64字符串
+        /// </summary>
+        public string Base64String { get; set; }
+    }
+
+    /// <summary>
+    /// UVDoc Base64请求参数
+    /// </summary>
+    public class RequestUVDocBase64
+    {
+        /// <summary>
+        /// 图片Base64编码
+        /// </summary>
+        public string Base64String { get; set; } = string.Empty;
+    }
 }

@@ -210,7 +210,7 @@ OCRCoreService/
 
 ## 测试建议
 
-1. 使用 Swagger UI 进行接口测试: `http://localhost:5000/swagger`
+1. 使用 Scalar UI 进行接口测试: `http://localhost:5000/scalar`
 2. 先调用 `/UVDocService/Get` 确认服务状态
 3. 使用小图片测试各个接口
 4. 监控性能指标（响应时间、内存使用）

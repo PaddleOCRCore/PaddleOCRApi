@@ -20,7 +20,7 @@ using PaddleOCRSDK;
 namespace OCRCoreService.Controllers
 {
     /// <summary>
-    /// UVDoc文本图像矫正服务控制器
+    /// UVDoc文本图像矫正接口
     /// </summary>
     [AllowAnonymous]
     [ApiController]
@@ -272,16 +272,5 @@ namespace OCRCoreService.Controllers
             }
         }
         #endregion
-    }
-
-    /// <summary>
-    /// UVDoc Base64请求参数
-    /// </summary>
-    public class RequestUVDocBase64
-    {
-        /// <summary>
-        /// 图片Base64编码
-        /// </summary>
-        public string Base64String { get; set; } = string.Empty;
     }
 }

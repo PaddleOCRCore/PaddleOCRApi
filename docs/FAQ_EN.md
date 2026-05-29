@@ -589,9 +589,9 @@ After correction → Text horizontal, layout regular
    dotnet OCRCoreService.dll --urls http://*:5000
    ```
 
-4. **Access Swagger Documentation**
+4. **Access Scalar Documentation**
    ```
-   http://localhost:5000/swagger/index.html
+   http://localhost:5000/scalar
    ```
 
 ### Production Environment Deployment:

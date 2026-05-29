@@ -589,9 +589,9 @@
    dotnet OCRCoreService.dll --urls http://*:5000
    ```
 
-4. **访问Swagger文档**
+4. **访问Salar文档**
    ```
-   http://localhost:5000/swagger/index.html
+   http://localhost:5000/scalar
    ```
 
 ### 生产环境部署：

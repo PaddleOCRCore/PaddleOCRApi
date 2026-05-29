@@ -30,6 +30,7 @@
     <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     
     <!-- NuGet Health Settings -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

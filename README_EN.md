@@ -123,8 +123,8 @@ For paddle_inference 2.6.2 version:
 cd OCRCoreService
 dotnet run --urls http://*:5000
 
-# Access Swagger documentation
-http://localhost:5000/swagger/index.html
+# Access scalar documentation
+http://localhost:5000/scalar
 ```
 
 For detailed WebAPI documentation, please refer to: [WebApi Documentation](./OCRCoreService/README.md)
@@ -301,7 +301,7 @@ Configure `OCRVLConfig` in `appsettings.json`:
 
 For detailed WebAPI documentation, please refer to: [WebApi Documentation](./OCRCoreService/README.md)
 
-**Swagger Documentation**: `http://localhost:5000/swagger/index.html`
+**Scalar Documentation**: `http://localhost:5000/scalar`
 
 ## 💬 Community
 

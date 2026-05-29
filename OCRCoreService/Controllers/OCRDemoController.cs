@@ -25,7 +25,7 @@ using System.Text;
 namespace OCRCoreService.Controllers
 {
     /// <summary>
-    /// PaddleOCR demo workspace endpoints.
+    /// PaddleOCR 在线 demo支持PaddleOCRv5、PP-Structure、PaddleOCR-VL1.5
     /// </summary>
     [AllowAnonymous]
     [ApiController]
@@ -64,7 +64,7 @@ namespace OCRCoreService.Controllers
         }
 
         /// <summary>
-        /// Analyze one uploaded image or PDF page with the selected demo model.
+        /// WebApi首页Demo调用专用接口
         /// </summary>
         [HttpPost]
         public async Task<ActionResult> Analyze(IFormFile file, [FromForm] string model, [FromForm] int pageIndex = 1)

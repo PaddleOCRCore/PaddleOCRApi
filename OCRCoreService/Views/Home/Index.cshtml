@@ -213,13 +213,21 @@
             border-right: 1px solid var(--line);
         }
 
-        .new-button {
+        .new-button,
+        .api-button {
             width: 100%;
             min-height: 38px;
             border: 1px solid #cfd9ec;
             border-radius: 5px;
             color: #1f2a44;
             background: #fff;
+        }
+
+        .api-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
         }
 
         .settings-button {
@@ -902,6 +910,7 @@
         <section class="workspace">
             <aside class="sidebar">
                 <button class="new-button" id="newButton" type="button">＋ 新解析</button>
+                <a class="api-button" href="/scalar">API接口</a>
                 <div class="side-section">
                     <div class="side-title">
                         <span>上传列表</span>

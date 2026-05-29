@@ -21,7 +21,7 @@ using PaddleOCRSDK;
 namespace OCRCoreService.Controllers
 {
     /// <summary>
-    /// OCR-VL 视觉语言识别服务控制器
+    /// PaddleOCR-VL1.5接口，含版面分析
     /// </summary>
     [AllowAnonymous]
     [ApiController]
@@ -225,32 +225,5 @@ namespace OCRCoreService.Controllers
             }
         }
         #endregion
-    }
-
-    /// <summary>
-    /// OCR-VL识别请求参数（Base64）
-    /// </summary>
-    public class RequestOCRVL
-    {
-        /// <summary>
-        /// 提示词
-        /// </summary>
-        public string Prompt { get; set; }
-
-        /// <summary>
-        /// 图片Base64字符串
-        /// </summary>
-        public string Base64String { get; set; }
-    }
-
-    /// <summary>
-    /// DOC-VL版面分析请求参数（Base64）
-    /// </summary>
-    public class RequestDocVL
-    {
-        /// <summary>
-        /// 图片Base64字符串
-        /// </summary>
-        public string Base64String { get; set; }
     }
 }

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace OCRCoreService.Controllers
 {
     /// <summary>
-    /// 
+    /// PaddleOCR、PP-Structure通用接口
     /// </summary>
     [AllowAnonymous]
     [ApiController]
@@ -201,6 +201,7 @@ namespace OCRCoreService.Controllers
         /// <summary>
         /// 通用文字识别，上传图片Base64编码
         /// </summary>
+        /// <param name="request">RequestOcrByte.Base64String：Base64编码</param>
         /// <returns></returns>
         [HttpPost]
         //[TypeFilter(typeof(WebApiActionAttribute))]
@@ -237,8 +238,9 @@ namespace OCRCoreService.Controllers
         }
 
         /// <summary>
-        /// 通用文字识别，上传图片byte[]字节码
+        /// 通用文字识别，上传图片字节码
         /// </summary>
+        /// <param name="request">RequestOcrByte.ImageByte：byte[]字节码</param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult GetOCRByte([FromBody] RequestOcrByte request)
@@ -279,6 +281,7 @@ namespace OCRCoreService.Controllers
         /// <summary>
         /// 通用文字识别，直接上传图片即可，无需保存图片
         /// </summary>
+        /// <param name="request">上传文件</param>
         /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> GetOCRFile(IFormFile request)
@@ -314,6 +317,7 @@ namespace OCRCoreService.Controllers
         /// <summary>
         /// 通用文字识别，直接上传图片即可，无需保存图片，返回json
         /// </summary>
+        /// <param name="request">上传文件</param>
         /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> GetOCRJsonFile(IFormFile request)
