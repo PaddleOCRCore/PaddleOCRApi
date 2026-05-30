@@ -18,17 +18,20 @@ namespace OCRCoreService.Controllers
         private readonly OCREngine ocrEngine;
         private readonly IOCRService ocrService;
         private readonly IServiceProvider serviceProvider;
+        private readonly OCRVLConfig? ocrvlConfig;
 
         public HomeController(
             ILogger<HomeController> logger,
             OCREngine ocrEngine,
             IOCRService ocrService,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            OCRVLConfig? ocrvlConfig = null)
         {
             this.logger = logger;
             this.ocrEngine = ocrEngine;
             this.ocrService = ocrService;
             this.serviceProvider = serviceProvider;
+            this.ocrvlConfig = ocrvlConfig;
         }
 
         /// <summary>
@@ -87,14 +90,17 @@ namespace OCRCoreService.Controllers
 
                 LicenseValidationResult result = CreateValidationResult("PaddleOCR", status.Activated, status, ocrService.GetError());
                 List<LicenseValidationResult> results = new() { result };
-                OCRVLEngine? ocrvlEngine = serviceProvider.GetService<OCRVLEngine>();
-                if (ocrvlEngine != null)
+                if (IsOcrVlEnabled)
                 {
-                    ocrvlEngine.ActivateLicenseIfExists();
-                    LicenseStatus? vlStatus = ocrvlEngine.OcrVlService.GetLicenseStatusInfo();
-                    if (vlStatus != null)
+                    OCRVLEngine? ocrvlEngine = serviceProvider.GetService<OCRVLEngine>();
+                    if (ocrvlEngine != null)
                     {
-                        results.Add(CreateValidationResult("PaddleOCR-VL", vlStatus.Activated, vlStatus, ocrvlEngine.OcrVlService.GetLastError()));
+                        ocrvlEngine.ActivateLicenseIfExists();
+                        LicenseStatus? vlStatus = ocrvlEngine.OcrVlService.GetLicenseStatusInfo();
+                        if (vlStatus != null)
+                        {
+                            results.Add(CreateValidationResult("PaddleOCR-VL", vlStatus.Activated, vlStatus, ocrvlEngine.OcrVlService.GetLastError()));
+                        }
                     }
                 }
 
@@ -148,14 +154,19 @@ namespace OCRCoreService.Controllers
                 }
 
                 LicenseValidationResult ocrResult = ValidateOcrLicense(tempPath);
-                LicenseValidationResult vlResult = ValidateOcrVlLicense(tempPath);
-                bool canSave = ocrResult.Activated || vlResult.Activated;
+                List<LicenseValidationResult> results = new() { ocrResult };
+                if (IsOcrVlEnabled)
+                {
+                    results.Add(ValidateOcrVlLicense(tempPath));
+                }
+
+                bool canSave = results.Any(result => result.Activated);
                 if (!canSave)
                 {
                     return Json(BadApiResult("授权文件无效，未保存到Models目录。", new
                     {
                         licenseSaved = false,
-                        modules = new[] { ocrResult, vlResult }
+                        modules = results
                     }));
                 }
 
@@ -167,8 +178,8 @@ namespace OCRCoreService.Controllers
                 {
                     licenseSaved = true,
                     licensePath,
-                    modules = new[] { ocrResult, vlResult },
-                    statusText = BuildLicenseSummary(new[] { ocrResult, vlResult }, licensePath, true)
+                    modules = results,
+                    statusText = BuildLicenseSummary(results, licensePath, true)
                 }));
             }
             catch (Exception ex)
@@ -190,6 +201,8 @@ namespace OCRCoreService.Controllers
         {
             return View();
         }
+
+        private bool IsOcrVlEnabled => ocrvlConfig?.enabled == true;
 
         private LicenseValidationResult ValidateOcrLicense(string licensePath)
         {
