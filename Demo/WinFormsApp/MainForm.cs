@@ -1167,8 +1167,7 @@ namespace WinFormsApp
         }
         private void InitializeOCRVLDefaults()
         {
-            string defaultConfigPath = Path.Combine(Application.StartupPath, "configs", "PaddleOCR-VL-1.5.yaml");
-            textBoxOCRVLConfigPath.Text = defaultConfigPath;
+            comboBoxVLConfig.SelectedIndex = 0;
             textBoxOCRVLPrompt.Text = "OCR:";
             checkBoxOCRVLDocAnalysis.Checked = false;
             UpdateOCRVLPromptState();
@@ -1428,6 +1427,35 @@ namespace WinFormsApp
             UpdateOCRVLStatus(checkBoxOCRVLDocAnalysis.Checked
                 ? "已启用版面分析，识别后优先预览 output/xxx.png"
                 : "已切换为普通 OCR-VL 模式");
+        }
+
+        private void comboBoxVLConfig_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string ConfigPath = string.Empty;
+            switch (comboBoxVLConfig.SelectedIndex)
+            {
+                case 0:
+                    ConfigPath = Path.Combine(Application.StartupPath, "configs", "PaddleOCR-VL-1.5.yaml");
+                    break;
+                case 1:
+                    ConfigPath = Path.Combine(Application.StartupPath, "configs", "PaddleOCR-VL-1.6.yaml");
+                    break;
+                case 2:
+                    ConfigPath = Path.Combine(Application.StartupPath, "configs", "Qwen3VL-4B.yaml");
+                    break;
+                case 3:
+                    ConfigPath = Path.Combine(Application.StartupPath, "configs", "FireRed-OCR.yaml");
+                    break;
+                default:
+                    ConfigPath = Path.Combine(Application.StartupPath, "configs", "PaddleOCR-VL-1.5.yaml");
+                    break;
+            }
+            if (!File.Exists(ConfigPath))
+            {
+                LogOCRVLMessage($"配置文件不存在,请先下载：{ConfigPath}");
+                return;
+            }
+            textBoxOCRVLConfigPath.Text = ConfigPath;
         }
 
         private async void buttonOCRVLInit_Click(object? sender, EventArgs e)

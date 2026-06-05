@@ -92,6 +92,8 @@
             pictureBoxOCRVL = new WinFormsApp.UserControl.PictureView();
             textBoxOCRVLResult = new TextBox();
             groupBoxOCRVLControl = new GroupBox();
+            label4 = new Label();
+            comboBoxVLConfig = new ComboBox();
             groupBoxAI = new GroupBox();
             comboBoxPrompt = new ComboBox();
             textBoxOCRVLPrompt = new TextBox();
@@ -103,7 +105,6 @@
             buttonOCRVLCancel = new Button();
             buttonOCRVLBrowseConfig = new Button();
             textBoxOCRVLConfigPath = new TextBox();
-            labelOCRVLConfigPath = new Label();
             labelOCRVLStatus = new Label();
             menuStripMain = new MenuStrip();
             toolStripMenuItemModels = new ToolStripMenuItem();
@@ -856,6 +857,8 @@
             // groupBoxOCRVLControl
             // 
             groupBoxOCRVLControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBoxOCRVLControl.Controls.Add(label4);
+            groupBoxOCRVLControl.Controls.Add(comboBoxVLConfig);
             groupBoxOCRVLControl.Controls.Add(groupBoxAI);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLFreeEngine);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLInit);
@@ -863,13 +866,31 @@
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLCancel);
             groupBoxOCRVLControl.Controls.Add(buttonOCRVLBrowseConfig);
             groupBoxOCRVLControl.Controls.Add(textBoxOCRVLConfigPath);
-            groupBoxOCRVLControl.Controls.Add(labelOCRVLConfigPath);
             groupBoxOCRVLControl.Location = new Point(6, 6);
             groupBoxOCRVLControl.Name = "groupBoxOCRVLControl";
             groupBoxOCRVLControl.Size = new Size(1072, 115);
             groupBoxOCRVLControl.TabIndex = 0;
             groupBoxOCRVLControl.TabStop = false;
             groupBoxOCRVLControl.Text = "OCR-VL功能选项";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(2, 31);
+            label4.Name = "label4";
+            label4.Size = new Size(58, 17);
+            label4.TabIndex = 22;
+            label4.Text = "VL配置：";
+            // 
+            // comboBoxVLConfig
+            // 
+            comboBoxVLConfig.FormattingEnabled = true;
+            comboBoxVLConfig.Items.AddRange(new object[] { "PaddleOCR-VL-1.5", "PaddleOCR-VL-1.6", "Qwen3VL-4B", "FireRed-OCR" });
+            comboBoxVLConfig.Location = new Point(76, 28);
+            comboBoxVLConfig.Name = "comboBoxVLConfig";
+            comboBoxVLConfig.Size = new Size(147, 25);
+            comboBoxVLConfig.TabIndex = 21;
+            comboBoxVLConfig.SelectedIndexChanged += comboBoxVLConfig_SelectedIndexChanged;
             // 
             // groupBoxAI
             // 
@@ -931,7 +952,7 @@
             // buttonOCRVLFreeEngine
             // 
             buttonOCRVLFreeEngine.Enabled = false;
-            buttonOCRVLFreeEngine.Location = new Point(352, 64);
+            buttonOCRVLFreeEngine.Location = new Point(333, 64);
             buttonOCRVLFreeEngine.Name = "buttonOCRVLFreeEngine";
             buttonOCRVLFreeEngine.Size = new Size(80, 32);
             buttonOCRVLFreeEngine.TabIndex = 10;
@@ -943,7 +964,7 @@
             // 
             buttonOCRVLInit.BackColor = Color.FromArgb(0, 192, 0);
             buttonOCRVLInit.ForeColor = Color.Transparent;
-            buttonOCRVLInit.Location = new Point(266, 65);
+            buttonOCRVLInit.Location = new Point(229, 65);
             buttonOCRVLInit.Name = "buttonOCRVLInit";
             buttonOCRVLInit.Size = new Size(80, 33);
             buttonOCRVLInit.TabIndex = 7;
@@ -954,7 +975,7 @@
             // checkBoxOCRVLDocAnalysis
             // 
             checkBoxOCRVLDocAnalysis.AutoSize = true;
-            checkBoxOCRVLDocAnalysis.Location = new Point(8, 64);
+            checkBoxOCRVLDocAnalysis.Location = new Point(76, 71);
             checkBoxOCRVLDocAnalysis.Name = "checkBoxOCRVLDocAnalysis";
             checkBoxOCRVLDocAnalysis.Size = new Size(99, 21);
             checkBoxOCRVLDocAnalysis.TabIndex = 3;
@@ -979,25 +1000,16 @@
             buttonOCRVLBrowseConfig.Name = "buttonOCRVLBrowseConfig";
             buttonOCRVLBrowseConfig.Size = new Size(80, 27);
             buttonOCRVLBrowseConfig.TabIndex = 2;
-            buttonOCRVLBrowseConfig.Text = "选择配置";
+            buttonOCRVLBrowseConfig.Text = "手动选择";
             buttonOCRVLBrowseConfig.UseVisualStyleBackColor = true;
             buttonOCRVLBrowseConfig.Click += buttonOCRVLBrowseConfig_Click;
             // 
             // textBoxOCRVLConfigPath
             // 
-            textBoxOCRVLConfigPath.Location = new Point(82, 28);
+            textBoxOCRVLConfigPath.Location = new Point(229, 28);
             textBoxOCRVLConfigPath.Name = "textBoxOCRVLConfigPath";
-            textBoxOCRVLConfigPath.Size = new Size(350, 23);
+            textBoxOCRVLConfigPath.Size = new Size(203, 23);
             textBoxOCRVLConfigPath.TabIndex = 1;
-            // 
-            // labelOCRVLConfigPath
-            // 
-            labelOCRVLConfigPath.AutoSize = true;
-            labelOCRVLConfigPath.Location = new Point(8, 31);
-            labelOCRVLConfigPath.Name = "labelOCRVLConfigPath";
-            labelOCRVLConfigPath.Size = new Size(68, 17);
-            labelOCRVLConfigPath.TabIndex = 0;
-            labelOCRVLConfigPath.Text = "配置文件：";
             // 
             // labelOCRVLStatus
             // 
@@ -1233,7 +1245,6 @@
         private CheckBox checkBoxOCRVLDocAnalysis;
         private Button buttonOCRVLBrowseConfig;
         private TextBox textBoxOCRVLConfigPath;
-        private Label labelOCRVLConfigPath;
         private Label labelOCRVLStatus;
         private GroupBox groupBoxAI;
         private ComboBox comboBoxPrompt;
@@ -1252,5 +1263,7 @@
         private ToolStripMenuItem ToolStripMenuItemApplyGPUTrial;
         private ComboBox comboBoxLayoutModel;
         private Label label1;
+        private Label label4;
+        private ComboBox comboBoxVLConfig;
     }
 }
