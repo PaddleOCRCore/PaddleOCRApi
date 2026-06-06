@@ -1,5 +1,7 @@
 @{
     ViewData["Title"] = "PaddleOCRApi Demo";
+    string ocrVlModelName = ViewData["OcrVlModelName"] as string ?? "PaddleOCR-VL-1.6";
+    string ocrVlModelValue = ViewData["OcrVlModelValue"] as string ?? "paddleocr-vl-1.6";
 }
 
 <!doctype html>
@@ -966,7 +968,7 @@
                     <select class="model-select" id="modelSelect">
                         <option value="pp-structure">PP-StructureV3</option>
                         <option value="pp-ocrv5">PP-OCRv5</option>
-                        <option value="paddleocr-vl-1.5">PaddleOCR-VL-1.5</option>
+                        <option value="@ocrVlModelValue">@ocrVlModelName</option>
                     </select>
                 </div>
 

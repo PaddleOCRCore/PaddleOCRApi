@@ -14,6 +14,7 @@ namespace OCRCoreService.Controllers
     public class HomeController : Controller
     {
         private const long MaxLicenseSize = 1024 * 1024;
+        private const string DefaultOcrVlModelName = "PaddleOCR-VL-1.6";
         private readonly ILogger<HomeController> logger;
         private readonly OCREngine ocrEngine;
         private readonly IOCRService ocrService;
@@ -40,7 +41,17 @@ namespace OCRCoreService.Controllers
         /// <returns></returns>
         public IActionResult Index()
         {
+            string ocrVlModelName = GetOcrVlModelName();
+            ViewData["OcrVlModelName"] = ocrVlModelName;
+            ViewData["OcrVlModelValue"] = ocrVlModelName.ToLowerInvariant();
             return View();
+        }
+
+        private string GetOcrVlModelName()
+        {
+            string yamlPath = ocrvlConfig?.yaml_path ?? string.Empty;
+            string modelName = Path.GetFileNameWithoutExtension(yamlPath);
+            return string.IsNullOrWhiteSpace(modelName) ? DefaultOcrVlModelName : modelName;
         }
 
         /// <summary>

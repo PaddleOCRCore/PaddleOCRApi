@@ -133,6 +133,7 @@ namespace OCRCoreService.Controllers
                 OCRDemoAnalyzeResult result = modelKey switch
                 {
                     "paddleocr-vl-1.5" => AnalyzeWithPaddleOCRVL(imageData, file.FileName),
+                    "paddleocr-vl-1.6" => AnalyzeWithPaddleOCRVL(imageData, file.FileName),
                     "pp-ocrv5" => AnalyzeWithPPOCRv5(imageData, file.FileName),
                     "pp-structure" => AnalyzeWithPPStructure(imageData, file.FileName),
                     _ => throw new InvalidOperationException("不支持的解析模型。")
@@ -165,7 +166,7 @@ namespace OCRCoreService.Controllers
             IOCRVLService ocrvlService = ocrvlEngine.OcrVlService;
             string layoutJson = ocrvlService.DetectLayoutByte(imageData);
             LayoutDetectResult layoutResult = ocrvlService.ParseLayoutResult(layoutJson);
-            return CreateLayoutResponse("paddleocr-vl-1.5", "PaddleOCR-VL-1.5", fileName, layoutJson, layoutResult);
+            return CreateLayoutResponse("paddleocr-vl-1.6", "PaddleOCR-VL-1.6", fileName, layoutJson, layoutResult);
         }
 
         private OCRDemoAnalyzeResult AnalyzeWithPPOCRv5(byte[] imageData, string fileName)
@@ -265,6 +266,7 @@ namespace OCRCoreService.Controllers
             return (model ?? string.Empty).Trim().ToLowerInvariant() switch
             {
                 "paddleocr-vl-1.5" or "paddleocr-vl" or "vl" => "paddleocr-vl-1.5",
+                "paddleocr-vl-1.6" or "paddleocr-vl" or "vl" => "paddleocr-vl-1.6",
                 "pp-ocrv5" or "ppocrv5" or "ocr" => "pp-ocrv5",
                 "pp-structure" or "ppstructure" or "structure" => "pp-structure",
                 _ => string.Empty

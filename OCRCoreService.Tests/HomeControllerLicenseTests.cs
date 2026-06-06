@@ -17,6 +17,30 @@ namespace OCRCoreService.Tests;
 public class HomeControllerLicenseTests
 {
     [Fact]
+    public void Index_UsesOcrVlYamlFileNameForModelOption()
+    {
+        FakeOcrService ocrService = new();
+        OCREngine ocrEngine = new(
+            ocrService,
+            new OCRConfig { OCRLicense = "missing.lic", det_infer = "", rec_infer = "", cls_infer = "" },
+            new LayoutConfig());
+        ServiceProvider serviceProvider = new ServiceCollection()
+            .AddSingleton(new OCRVLConfig { enabled = true, yaml_path = "configs/PaddleOCR-VL-1.5.yaml" })
+            .BuildServiceProvider();
+        HomeController controller = new(
+            NullLogger<HomeController>.Instance,
+            ocrEngine,
+            ocrService,
+            serviceProvider,
+            new OCRVLConfig { enabled = true, yaml_path = "configs/PaddleOCR-VL-1.5.yaml" });
+
+        Assert.IsType<ViewResult>(controller.Index());
+
+        Assert.Equal("PaddleOCR-VL-1.5", controller.ViewData["OcrVlModelName"]);
+        Assert.Equal("paddleocr-vl-1.5", controller.ViewData["OcrVlModelValue"]);
+    }
+
+    [Fact]
     public void GetLicenseStatus_WhenOcrVlDisabled_DoesNotReportOcrVl()
     {
         FakeOcrService ocrService = new();
