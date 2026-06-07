@@ -309,13 +309,13 @@ Welcome to join QQ group **475159576** for discussion, or add QQ for custom proj
 
 If you like this project, please give us a free **Star ⭐**
 
-<img src="./PaddleOCRSDK/Images/qq.png" width="200px;" />
+<img src="./PaddleOCRSDK/Images/qq.png" width="150px;" />
 
 ## ☕ Donation
 
 If this project helps you, please scan the QR code below to buy us a coffee.
 
-<img src="./PaddleOCRSDK/Images/donate.jpg" width="200px;" />
+<img src="./PaddleOCRSDK/Images/donate.jpg" width="150px;" />
 
 ## 🎯 Technical Architecture
 
