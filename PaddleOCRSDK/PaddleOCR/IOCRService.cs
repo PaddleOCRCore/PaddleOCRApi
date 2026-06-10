@@ -162,6 +162,28 @@ namespace PaddleOCRSDK
         FindImageResult FindImage(string bigImagePath, string smallImagePath, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false);
 
         /// <summary>
+        /// 在大图中查找小图（图片字节输入）
+        /// </summary>
+        /// <param name="bigImageBytes">大图压缩图片字节</param>
+        /// <param name="smallImageBytes">小图压缩图片字节</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认 0.8（滑块找图建议 0.2）</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认 true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认 false</param>
+        /// <returns>FindImageResult 对象，包含匹配结果和位置信息</returns>
+        FindImageResult FindImage(byte[] bigImageBytes, byte[] smallImageBytes, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false);
+
+        /// <summary>
+        /// 在大图中查找小图（OpenCV Mat 指针输入）
+        /// </summary>
+        /// <param name="bigImageMat">大图 OpenCV Mat 指针</param>
+        /// <param name="smallImageMat">小图 OpenCV Mat 指针</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认 0.8（滑块找图建议 0.2）</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认 true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认 false</param>
+        /// <returns>FindImageResult 对象，包含匹配结果和位置信息</returns>
+        FindImageResult FindImageMat(IntPtr bigImageMat, IntPtr smallImageMat, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false);
+
+        /// <summary>
         /// 解析文档版面识别 JSON 结果为结构化对象（对应最新版 DLL 返回格式）
         /// </summary>
         /// <param name="json">DetectLayout 返回的 JSON 字符串</param>

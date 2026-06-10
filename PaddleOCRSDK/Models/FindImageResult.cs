@@ -16,80 +16,85 @@
 namespace PaddleOCRSDK.Models
 {
     /// <summary>
-    /// 以图找图结果
+    /// 以图找图结果。
     /// </summary>
     public class FindImageResult
     {
         /// <summary>
-        /// 操作是否成功
+        /// 操作是否成功。
         /// </summary>
         public bool Success { get; set; }
 
         /// <summary>
-        /// 消息
+        /// 结果消息。
         /// </summary>
         public string Message { get; set; }
 
         /// <summary>
-        /// 结果数据
+        /// 匹配数量。
         /// </summary>
-        public FindImageData Data { get; set; }
+        public int MatchCount { get; set; }
+
+        /// <summary>
+        /// 匹配结果数组。
+        /// </summary>
+        public FindImageMatch[] Data { get; set; }
     }
 
     /// <summary>
-    /// 以图找图数据
+    /// 单个以图找图匹配结果。
     /// </summary>
-    public class FindImageData
+    public class FindImageMatch
     {
         /// <summary>
-        /// 是否找到
+        /// 是否找到。
         /// </summary>
         public bool Found { get; set; }
 
         /// <summary>
-        /// 匹配置信度 [0, 1]
+        /// 匹配置信度 [0, 1]。
         /// </summary>
         public double Confidence { get; set; }
 
         /// <summary>
-        /// 位置坐标（四个角点）
+        /// 位置坐标，按左上、右上、右下、左下排序。
         /// </summary>
         public PointLocation[] Location { get; set; }
 
         /// <summary>
-        /// 图像尺寸
+        /// 模板图像尺寸。
         /// </summary>
         public ImageSize ImageSize { get; set; }
     }
 
     /// <summary>
-    /// 点坐标
+    /// 点坐标。
     /// </summary>
     public class PointLocation
     {
         /// <summary>
-        /// X坐标
+        /// X 坐标。
         /// </summary>
         public int X { get; set; }
 
         /// <summary>
-        /// Y坐标
+        /// Y 坐标。
         /// </summary>
         public int Y { get; set; }
     }
 
     /// <summary>
-    /// 图像尺寸
+    /// 图像尺寸。
     /// </summary>
     public class ImageSize
     {
         /// <summary>
-        /// 宽度
+        /// 宽度。
         /// </summary>
         public int Width { get; set; }
 
         /// <summary>
-        /// 高度
+        /// 高度。
         /// </summary>
         public int Height { get; set; }
     }

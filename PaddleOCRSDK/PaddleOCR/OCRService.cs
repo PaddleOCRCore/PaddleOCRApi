@@ -578,10 +578,70 @@ namespace PaddleOCRSDK
         /// <returns>返回FindImageResult对象，包含匹配结果和位置信息</returns>
         public FindImageResult FindImage(string bigImagePath, string smallImagePath, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false)
         {
+            return ReadFindImageResult(() => OCRSDK.FindImage(bigImagePath, smallImagePath, threshold, toGray, useSlideMatch));
+        }
+
+        /// <summary>
+        /// 以图找图：传入图片字节，在大图中查找小图
+        /// </summary>
+        /// <param name="bigImageBytes">大图压缩图片字节</param>
+        /// <param name="smallImageBytes">小图压缩图片字节</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认0.8。滑块找图建议0.2左右</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false</param>
+        /// <returns>返回FindImageResult对象，包含匹配结果和位置信息</returns>
+        public FindImageResult FindImage(byte[] bigImageBytes, byte[] smallImageBytes, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false)
+        {
+            if (bigImageBytes == null || bigImageBytes.Length == 0 || smallImageBytes == null || smallImageBytes.Length == 0)
+            {
+                return new FindImageResult
+                {
+                    Success = false,
+                    Message = "以图找图失败：图片字节不能为空",
+                    Data = null
+                };
+            }
+
+            return ReadFindImageResult(() => OCRSDK.FindImageByte(
+                bigImageBytes,
+                new UIntPtr((ulong)bigImageBytes.LongLength),
+                smallImageBytes,
+                new UIntPtr((ulong)smallImageBytes.LongLength),
+                threshold,
+                toGray,
+                useSlideMatch));
+        }
+
+        /// <summary>
+        /// 以图找图：传入OpenCV Mat指针，在大图中查找小图
+        /// </summary>
+        /// <param name="bigImageMat">大图OpenCV Mat指针</param>
+        /// <param name="smallImageMat">小图OpenCV Mat指针</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认0.8。滑块找图建议0.2左右</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false</param>
+        /// <returns>返回FindImageResult对象，包含匹配结果和位置信息</returns>
+        public FindImageResult FindImageMat(IntPtr bigImageMat, IntPtr smallImageMat, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false)
+        {
+            if (bigImageMat == IntPtr.Zero || smallImageMat == IntPtr.Zero)
+            {
+                return new FindImageResult
+                {
+                    Success = false,
+                    Message = "以图找图失败：Mat指针不能为空",
+                    Data = null
+                };
+            }
+
+            return ReadFindImageResult(() => OCRSDK.FindImageMat(bigImageMat, smallImageMat, threshold, toGray, useSlideMatch));
+        }
+
+        private FindImageResult ReadFindImageResult(Func<IntPtr> findImageInvoker)
+        {
             IntPtr result = IntPtr.Zero;
             try
             {
-                result = OCRSDK.FindImage(bigImagePath, smallImagePath, threshold, toGray, useSlideMatch);
+                result = findImageInvoker();
                 
                 if (result == IntPtr.Zero)
                 {

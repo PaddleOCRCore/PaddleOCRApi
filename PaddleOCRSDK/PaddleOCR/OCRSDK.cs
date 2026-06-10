@@ -284,6 +284,39 @@ namespace PaddleOCRSDK
         /// <returns>返回JSON格式的匹配结果</returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern IntPtr FindImage(string bigImagePath, string smallImagePath, double threshold, bool toGray, bool useSlideMatch);
+
+        /// <summary>
+        /// 以图找图：传入图片字节，在大图中查找小图，返回JSON字符串
+        /// </summary>
+        /// <param name="bigImageBytes">大图压缩图片字节</param>
+        /// <param name="bigImageSize">大图字节长度</param>
+        /// <param name="smallImageBytes">小图压缩图片字节</param>
+        /// <param name="smallImageSize">小图字节长度</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认0.8</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false，滑块找图请将threshold改为0.2左右</param>
+        /// <returns>返回JSON格式的匹配结果</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr FindImageByte(
+            byte[] bigImageBytes,
+            UIntPtr bigImageSize,
+            byte[] smallImageBytes,
+            UIntPtr smallImageSize,
+            double threshold,
+            bool toGray,
+            bool useSlideMatch);
+
+        /// <summary>
+        /// 以图找图：传入OpenCV Mat指针，在大图中查找小图，返回JSON字符串
+        /// </summary>
+        /// <param name="bigImageMat">大图OpenCV Mat指针</param>
+        /// <param name="smallImageMat">小图OpenCV Mat指针</param>
+        /// <param name="threshold">匹配阈值 [0, 1]，默认0.8</param>
+        /// <param name="toGray">是否转换为灰度图进行匹配，默认true</param>
+        /// <param name="useSlideMatch">是否使用滑块验证匹配（边缘检测），默认false，滑块找图请将threshold改为0.2左右</param>
+        /// <returns>返回JSON格式的匹配结果</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr FindImageMat(IntPtr bigImageMat, IntPtr smallImageMat, double threshold, bool toGray, bool useSlideMatch);
         #endregion
     }
 }
