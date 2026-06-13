@@ -459,23 +459,33 @@ namespace WinFormsApp
                 OCREngine.use_tensorrt = use_tensorrt;
                 OCREngine.return_word_box = chkReturnWordBox.Checked;
 
-                if (model_type == 0)
+                switch (model_type)
                 {
-                    OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";
-                    OCREngine.rec_infer = "PP-OCRv5_mobile_rec_infer";
-                    OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
-                }
-                else if (model_type == 1)
-                {
-                    OCREngine.det_infer = "PP-OCRv5_server_det_infer";
-                    OCREngine.rec_infer = "PP-OCRv5_server_rec_infer";
-                    OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
-                }
-                else
-                {
-                    OCREngine.det_infer = "PP-OCRv4_mobile_det_infer";
-                    OCREngine.rec_infer = "PP-OCRv4_mobile_rec_infer";
-                    OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                    case 0:
+                        OCREngine.det_infer = "PP-OCRv6_small_det_infer";
+                        OCREngine.rec_infer = "PP-OCRv6_small_rec_infer";
+                        OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                        break;
+                    case 1:
+                        OCREngine.det_infer = "PP-OCRv6_medium_det_infer";
+                        OCREngine.rec_infer = "PP-OCRv6_medium_rec_infer";
+                        OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                        break;
+                    case 2:
+                        OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";
+                        OCREngine.rec_infer = "PP-OCRv5_mobile_rec_infer";
+                        OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                        break;
+                    case 3:
+                        OCREngine.det_infer = "PP-OCRv5_server_det_infer";
+                        OCREngine.rec_infer = "PP-OCRv5_server_rec_infer";
+                        OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                        break;
+                    case 4:
+                        OCREngine.det_infer = "PP-OCRv4_mobile_det_infer";
+                        OCREngine.rec_infer = "PP-OCRv4_mobile_rec_infer";
+                        OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                        break;
                 }
                 switch (layout_type)
                 {

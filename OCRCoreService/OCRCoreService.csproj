@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Version>4.5.0</Version>
+	<Version>4.5.1</Version>
 	<Platforms>AnyCPU;x64</Platforms>
 	<ApplicationIcon>OCR.ico</ApplicationIcon>
 	<BuildInParallel>false</BuildInParallel>
