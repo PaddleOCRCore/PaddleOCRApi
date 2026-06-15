@@ -111,7 +111,7 @@ namespace OCRCoreService.Services
             oCRParameter.rec_img_w = 320;
             oCRParameter.det_db_thresh = 0.3f;
             oCRParameter.det_db_box_thresh = 0.618f;
-            oCRParameter.visualize = false;
+            oCRParameter.visualize = _ocrConfig.visualize;
             oCRParameter.return_word_box = _ocrConfig.return_word_box;
             oCRParameter.ocr_instance_count = _ocrConfig.ocr_instance_count;
 
@@ -136,7 +136,6 @@ namespace OCRCoreService.Services
         /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
         /// Api接口未使用，若使用可将此加到OCREngine中
         /// </summary>
-        /// <param name="modelsPath"></param>
         /// <returns></returns>
         public string GetOCRTableEngine()
         {
@@ -168,8 +167,7 @@ namespace OCRCoreService.Services
                 oCRParameter.cpu_mem = _layoutConfig.cpu_mem;
                 oCRParameter.cpu_threads = _layoutConfig.cpu_threads;
                 oCRParameter.enable_mkldnn = _layoutConfig.enable_mkldnn;
-                oCRParameter.visualize = _layoutConfig.visualize;
-
+               
                 oCRParameter.use_doc_preprocessor = _layoutConfig.use_doc_preprocessor;
                 oCRParameter.use_doc_orientation_classify = _layoutConfig.use_doc_orientation_classify;
                 oCRParameter.use_doc_unwarping = _layoutConfig.use_doc_unwarping;
@@ -192,13 +190,14 @@ namespace OCRCoreService.Services
 
                 oCRParameter.format_block_content = _layoutConfig.format_block_content;
                 oCRParameter.output_markdown = _layoutConfig.output_markdown;
+                oCRParameter.visualize = _layoutConfig.visualize;
 
                 para.layoutpara = oCRParameter;
                 para.paraType = EnumParaType.StructureClass;
                 string msg = "初始化成功";
                 try
                 {
-                    _ocrService.EnableLog(_ocrConfig.enableLog);
+                    _ocrService.EnableLog(_layoutConfig.enableLog);
                     ActivateLicenseIfExists();
                     _ocrService.Init(para);
                     _structureEngineInitialized = true;

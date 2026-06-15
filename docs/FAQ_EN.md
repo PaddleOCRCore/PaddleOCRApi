@@ -95,13 +95,9 @@ The current open-source version only supports **Windows x64** platform. For Linu
 ### Option 1: NuGet Package Installation (Recommended)
 
 ```xml
-<!-- paddle_inference 3.3.0 version -->
+<!-- paddle_inference 3.4.0 version -->
 <PackageReference Include="PaddleOCRSDK" Version="4.5.1 />
 <PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.1" />
-
-<!-- or paddle_inference 2.6.2 version -->
-<PackageReference Include="PaddleOCRSDK" Version="1.0.5" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
 ```
 
 ### Option 2: Manual Reference
@@ -124,6 +120,8 @@ The current open-source version only supports **Windows x64** platform. For Linu
 **A:** 
 
 ### Standard OCR Models:
+- ✅ **PP-OCRv6_medium** (Recommended, highest accuracy)
+- ✅ **PP-OCRv6_small** (Recommended, fastest speed)
 - ✅ **PP-OCRv5_server** (Recommended, highest accuracy)
 - ✅ **PP-OCRv5_mobile** (Recommended, fastest speed)
 - ✅ **PP-OCRv4_server/mobile** (Backward compatible)
@@ -137,13 +135,14 @@ The current open-source version only supports **Windows x64** platform. For Linu
 - 📈 **Chart-to-table model**
 
 ### OCR-VL Vision-Language Models (v4.3.0+):
+- 🤖 **PaddleOCR-VL-1.6-GGUF**
 - 🤖 **PaddleOCR-VL-1.5-GGUF**
 - 🤖 **DeepSeek-OCR-GGUF**
 - 🤖 **Qwen2-VL-OCR-GGUF**
 - 🤖 **FireRed-OCR-GGUF**
 
 **Model Downloads:**
-- Official models: [PaddleOCR Official Website](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html)
+- Official models: [PaddleOCR Official Website](https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11)
 - GGUF models: [ModelScope](https://www.modelscope.cn/models?name=OCR%20GGUF)
 </details>
 

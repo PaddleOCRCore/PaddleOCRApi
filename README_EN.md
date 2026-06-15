@@ -29,7 +29,7 @@ A completely offline Chinese character recognition component based on Baidu's Pa
 
 **If you like this project, please give us a free Star ⭐**
 
-Supports the latest PP-OCRv5_mobile/PP-OCRv5_server models, backward compatible with V4/V3 models and custom trained models.
+Supports the latest PP-OCRv6 models, backward compatible with V5/V4 models and custom trained models.
 
 > 💡 **Note**: The open-source version is suitable for learning and research. For commercial projects, paid versions are recommended for better performance and technical support. For paid version details, contact developer QQ: **2380243976**
 
@@ -109,13 +109,6 @@ For paddle_inference 3.3+ version:
 <PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.1" />
 ```
 
-For paddle_inference 2.6.2 version:
-
-```xml
-<PackageReference Include="PaddleOCRSDK" Version="1.0.5" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
-```
-
 ### 2. WebAPI Service Startup
 
 ```bash
@@ -139,11 +132,7 @@ OCRCoreService (WebAPI) and WinForms project require VS2026 + .NET10.0
 
 1. **Default paddle_inference 3.3.0 CPU version**, other versions can be downloaded manually or compiled
 
-2. **paddle_inference 2.6.2 version** download Release V1.0.5
-   - CPU version (included in PaddleOCRRuntime_x64):
-   - https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/CPU/x86-64_avx-mkl-vs2019/paddle_inference.zip
-
-3. **Core file PaddleOCR.dll** is a C++ dynamic library, supports CPU/GPU mode (GPU requires environment setup)
+2. **Core file PaddleOCR.dll** is a C++ dynamic library, supports CPU/GPU mode (GPU requires environment setup)
 
 ### .NET Platform Support
 
@@ -260,21 +249,6 @@ Configure `OCRVLConfig` in `appsettings.json`:
 
 ## 🖥️ GPU Configuration
 
-### paddle_inference 2.6.2 GPU Version
-
-**Download Link**: [paddle_inference2.6.2](https://www.paddlepaddle.org.cn/inference/v2.6/guides/install/download_lib.html#windows)
-- https://paddle-inference-lib.bj.bcebos.com/2.6.2/cxx_c/Windows/GPU/x86-64_cuda12.0_cudnn8.9.1_trt8.6.1.6_mkl_avx_vs2019/paddle_inference.zip
-
-**Configuration Steps**:
-
-1. Extract and copy the following DLL files to the program running folder:
-   - `paddle\lib\` directory: `common.dll`, `paddle_inference.dll`
-   - `third_party\install\mkldnn\lib\` directory: `mkldnn.dll`
-   - `third_party\install\mklml\lib\` directory: `libiomp5md.dll`, `mklml.dll`
-
-2. Install CUDA and CUDNN, copy the corresponding cublas64_12.dll、cublasLt64_12.dll、cudnn_cnn64_9.dll、cudnn_engines_precompiled64_9.dll、cudnn_engines_runtime_compiled64_9.dll、cudnn_graph64_9.dll、cudnn_heuristic64_9.dll、cudnn_ops64_9.dll、cudnn64_9.dll
-   - Located at: `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.x\bin`
-
 ### paddle_inference 3.x GPU Version
 
 **Configuration Steps**:
@@ -294,7 +268,7 @@ Configure `OCRVLConfig` in `appsettings.json`:
 | CUDA | [https://developer.nvidia.com/cuda-toolkit-archive](https://developer.nvidia.com/cuda-toolkit-archive) |
 | CUDNN | [https://developer.nvidia.com/cudnn-archive](https://developer.nvidia.com/cudnn-archive) |
 | TensorRT | [https://developer.nvidia.com/nvidia-tensorrt-download](https://developer.nvidia.com/nvidia-tensorrt-download) |
-| PP-OCRv4/v5 Models | [https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html) |
+| PP-OCRv4/v5 Models | [https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11](https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11) |
 | Other Models | [https://gitee.com/paddlepaddle/PaddleOCR/blob/main/docs/version3.x/model_list.md) |
 
 ## 🔗 WebAPI Interface

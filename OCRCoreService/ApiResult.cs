@@ -198,6 +198,10 @@ namespace OCRCoreService
         /// </summary>
         public bool enableLog { get; set; } = false;
         /// <summary>
+        /// 是否对结果进行可视化
+        /// </summary>
+        public bool visualize { get; set; } = false;
+        /// <summary>
         /// 是否启用单字坐标
         /// </summary>
         public bool return_word_box { get; set; } = false;
@@ -281,10 +285,6 @@ namespace OCRCoreService
         /// </summary>
         public bool enable_mkldnn { get; set; } = true;
         /// <summary>
-        /// 是否对结果进行可视化
-        /// </summary>
-        public bool visualize { get; set; } = false;
-        /// <summary>
         /// 是否启用文档预处理
         /// </summary>
         public bool use_doc_preprocessor { get; set; } = true;
@@ -356,6 +356,14 @@ namespace OCRCoreService
         /// 是否输出markdown
         /// </summary>
         public bool output_markdown { get; set; } = true;
+        /// <summary>
+        /// 是否用启日志
+        /// </summary>
+        public bool enableLog { get; set; } = false;
+        /// <summary>
+        /// 是否对结果进行可视化
+        /// </summary>
+        public bool visualize { get; set; } = false;
     }
 
     /// <summary>

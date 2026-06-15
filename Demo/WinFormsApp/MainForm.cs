@@ -467,8 +467,8 @@ namespace WinFormsApp
                         OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
                         break;
                     case 1:
-                        OCREngine.det_infer = "PP-OCRv6_medium_det_infer";
-                        OCREngine.rec_infer = "PP-OCRv6_medium_rec_infer";
+                        OCREngine.det_infer = "PP-OCRv6_tiny_det_infer";
+                        OCREngine.rec_infer = "PP-OCRv6_tiny_rec_infer";
                         OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
                         break;
                     case 2:

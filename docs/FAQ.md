@@ -95,13 +95,9 @@
 ### 方式一：NuGet包安装（推荐）
 
 ```xml
-<!-- paddle_inference 3.3.0 版本 -->
-<PackageReference Include="PaddleOCRSDK" Version="4.3.0" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.3.1" />
-
-<!-- 或 paddle_inference 2.6.2 版本 -->
-<PackageReference Include="PaddleOCRSDK" Version="1.0.5" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="1.0.0" />
+<!-- paddle_inference 3.4.0 版本 -->
+<PackageReference Include="PaddleOCRSDK" Version="4.5.1" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.1" />
 ```
 
 ### 方式二：手动引用
@@ -124,6 +120,8 @@
 **A:** 
 
 ### 标准OCR模型：
+- ✅ **PP-OCRv6_medium**（推荐，精度最高）
+- ✅ **PP-OCRv6_small**（推荐，速度最快）
 - ✅ **PP-OCRv5_server**（推荐，精度最高）
 - ✅ **PP-OCRv5_mobile**（推荐，速度最快）
 - ✅ **PP-OCRv4_server/mobile**（向下兼容）
@@ -137,13 +135,14 @@
 - 📈 **图表转表模型**
 
 ### OCR-VL视觉语言模型（v4.3.0+）：
+- 🤖 **PaddleOCR-VL-1.6-GGUF**
 - 🤖 **PaddleOCR-VL-1.5-GGUF**
 - 🤖 **DeepSeek-OCR-GGUF**
 - 🤖 **Qwen2-VL-OCR-GGUF**
 - 🤖 **FireRed-OCR-GGUF**
 
 **模型下载：**
-- 官方模型：[PaddleOCR官网](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/OCR.html)
+- 官方模型：[PaddleOCR官网](https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11)
 - GGUF模型：[ModelScope](https://www.modelscope.cn/models?name=OCR%20GGUF)
 </details>
 
