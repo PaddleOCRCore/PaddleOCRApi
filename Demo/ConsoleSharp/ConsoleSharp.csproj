@@ -11,7 +11,7 @@
 
   <ItemGroup>
 	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.2" />
-    <PackageReference Include="PaddleOCRSDK" Version="4.5.1" />
+    <PackageReference Include="PaddleOCRSDK" Version="4.5.2" />
   </ItemGroup>
 
 </Project>

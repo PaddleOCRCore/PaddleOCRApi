@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<!-- <PackageReference Include="PaddleOCRSDK" Version="4.5.2" /> -->
     <ProjectReference Include="..\..\PaddleOCRSDK\PaddleOCRSDK.csproj" />
   </ItemGroup>
 </Project>

@@ -135,6 +135,7 @@ namespace OCRCoreService.Controllers
                     "paddleocr-vl-1.5" => AnalyzeWithPaddleOCRVL(imageData, file.FileName),
                     "paddleocr-vl-1.6" => AnalyzeWithPaddleOCRVL(imageData, file.FileName),
                     "pp-ocrv5" => AnalyzeWithPPOCRv5(imageData, file.FileName),
+                    "pp-ocrv6" => AnalyzeWithPPOCRv6(imageData, file.FileName),
                     "pp-structure" => AnalyzeWithPPStructure(imageData, file.FileName),
                     _ => throw new InvalidOperationException("不支持的解析模型。")
                 };
@@ -182,6 +183,28 @@ namespace OCRCoreService.Controllers
             {
                 Model = "pp-ocrv5",
                 ModelName = "PP-OCRv5",
+                FileName = fileName,
+                Content = text,
+                Markdown = text,
+                JsonText = ocrResult.JsonText ?? string.Empty,
+                Raw = ocrResult,
+                Boxes = BuildOcrBoxes(ocrResult)
+            };
+        }
+
+        private OCRDemoAnalyzeResult AnalyzeWithPPOCRv6(byte[] imageData, string fileName)
+        {
+            OCRResult ocrResult = ocrEngine.OcrService.Detect(imageData);
+            if (ocrResult.Code != 1)
+            {
+                throw new InvalidOperationException(ocrResult.ErrorMsg);
+            }
+
+            string text = BuildOcrText(ocrResult);
+            return new OCRDemoAnalyzeResult
+            {
+                Model = "pp-ocrv6",
+                ModelName = "PP-OCRv6",
                 FileName = fileName,
                 Content = text,
                 Markdown = text,
@@ -268,6 +291,7 @@ namespace OCRCoreService.Controllers
                 "paddleocr-vl-1.5" or "paddleocr-vl" or "vl" => "paddleocr-vl-1.5",
                 "paddleocr-vl-1.6" or "paddleocr-vl" or "vl" => "paddleocr-vl-1.6",
                 "pp-ocrv5" or "ppocrv5" or "ocr" => "pp-ocrv5",
+                "pp-ocrv6" or "ppocrv6" => "pp-ocrv6",
                 "pp-structure" or "ppstructure" or "structure" => "pp-structure",
                 _ => string.Empty
             };

@@ -17,11 +17,42 @@ using Newtonsoft.Json.Linq;
 using PaddleOCRSDK.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace PaddleOCRSDK
 {
+
+    /// <summary>
+    /// 初始化模型分类
+    /// </summary>
+    public enum EnumModelType
+    {
+        /// <summary>
+        /// PP-OCRv6_tiny
+        /// </summary>
+        [Description("PP-OCRv6_tiny")]
+        PPOCRv6_tiny,
+
+        /// <summary>
+        /// PP-OCRv6_small
+        /// </summary>
+        [Description("PP-OCRv6_small")]
+        PPOCRv6_small,
+
+        /// <summary>
+        /// PP-OCRv5_mobile
+        /// </summary>
+        [Description("PP-OCRv5_mobile")]
+        PPOCRv5_mobile,
+
+        /// <summary>
+        /// PP-OCRv4_mobile
+        /// </summary>
+        [Description("PP-OCRv4_mobile")]
+        PPOCRv4_mobile
+    }
     public class OCRException : Exception
     {
         public OCRException(string message) : base(message)
@@ -34,19 +65,37 @@ namespace PaddleOCRSDK
         /// 初始化OCR引擎默认V4模型，使用CPU及mkldnn
         /// </summary>
         /// <param name="modelsPath">模型所在目录，如models</param>
-        /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
+        /// <param name="modelType">模型枚举EnumModelType</param>
         /// <returns></returns>
-        public string InitDefaultOCREngine(string modelsPath="models",bool useV5 = true)
+        public string InitDefaultOCREngine(string modelsPath="models", EnumModelType modelType = EnumModelType.PPOCRv6_tiny)
         {
-            string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
-            string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
-
-            if (!useV5)
-            {
-                det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
-                rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
-            }
+            string det_infer = "PP-OCRv6_tiny_det_infer";//OCR检测模型
+            string rec_infer = "PP-OCRv6_tiny_rec_infer";//OCR识别模型
             string cls_infer = "PP-LCNet_x1_0_textline_ori";
+
+            switch (modelType)
+            {
+                case EnumModelType.PPOCRv6_tiny:
+                    det_infer = "PP-OCRv6_tiny_det_infer";
+                    rec_infer = "PP-OCRv6_tiny_rec_infer";
+                    break;
+                case EnumModelType.PPOCRv6_small:
+                    det_infer = "PP-OCRv6_small_det_infer";
+                    rec_infer = "PP-OCRv6_small_rec_infer";
+                    break;
+                case EnumModelType.PPOCRv5_mobile:
+                    det_infer = "PP-OCRv5_mobile_det_infer";
+                    rec_infer = "PP-OCRv5_mobile_rec_infer";
+                    break;
+                case EnumModelType.PPOCRv4_mobile:
+                    det_infer = "PP-OCRv4_mobile_det_infer";
+                    rec_infer = "PP-OCRv4_mobile_rec_infer";
+                    break;
+                default:
+                    det_infer = "PP-OCRv6_tiny_det_infer";
+                    rec_infer = "PP-OCRv6_tiny_rec_infer";
+                    break;
+            }
             bool use_gpu = false;//是否使用GPU
             int cpu_mem = 0;//CPU内存占用上限，单位MB。-1表示不限制，达到上限将自动回收
             int gpu_id = 0;//GPUId
@@ -92,17 +141,37 @@ namespace PaddleOCRSDK
         /// 初始化表格识别引擎默认V5模型，使用CPU及mkldnn
         /// </summary>
         /// <param name="modelsPath">模型所在目录，如models</param>
-        /// <param name="useV5">是否使用v5_mobile模型，为False使用v4_mobile</param>
+        /// <param name="modelType">模型枚举EnumModelType</param>
         /// <returns></returns>
-        public string InitDefaultStructureEngine(string modelsPath = "models", bool useV5 = true)
+        public string InitDefaultStructureEngine(string modelsPath = "models", EnumModelType modelType = EnumModelType.PPOCRv6_tiny)
         {
             string det_infer = "PP-OCRv5_mobile_det_infer";//OCR检测模型
             string rec_infer = "PP-OCRv5_mobile_rec_infer";//OCR识别模型
-            if (!useV5)
+
+            switch (modelType)
             {
-                det_infer = "PP-OCRv4_mobile_det_infer";//OCR检测模型
-                rec_infer = "PP-OCRv4_mobile_rec_infer";//OCR识别模型
+                case EnumModelType.PPOCRv6_tiny:
+                    det_infer = "PP-OCRv6_tiny_det_infer";
+                    rec_infer = "PP-OCRv6_tiny_rec_infer";
+                    break;
+                case EnumModelType.PPOCRv6_small:
+                    det_infer = "PP-OCRv6_small_det_infer";
+                    rec_infer = "PP-OCRv6_small_rec_infer";
+                    break;
+                case EnumModelType.PPOCRv5_mobile:
+                    det_infer = "PP-OCRv5_mobile_det_infer";
+                    rec_infer = "PP-OCRv5_mobile_rec_infer";
+                    break;
+                case EnumModelType.PPOCRv4_mobile:
+                    det_infer = "PP-OCRv4_mobile_det_infer";
+                    rec_infer = "PP-OCRv4_mobile_rec_infer";
+                    break;
+                default:
+                    det_infer = "PP-OCRv6_tiny_det_infer";
+                    rec_infer = "PP-OCRv6_tiny_rec_infer";
+                    break;
             }
+
             string cls_infer = "PP-LCNet_x1_0_textline_ori";
             string layout_model_dir = "PP-DocLayoutV3_infer";
             string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型
