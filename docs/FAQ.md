@@ -96,8 +96,8 @@
 
 ```xml
 <!-- paddle_inference 3.4.0 版本 -->
-<PackageReference Include="PaddleOCRSDK" Version="4.5.1" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.1" />
+<PackageReference Include="PaddleOCRSDK" Version="4.5.2" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.2" />
 ```
 
 ### 方式二：手动引用

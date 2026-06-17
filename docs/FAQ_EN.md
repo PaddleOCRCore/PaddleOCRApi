@@ -96,8 +96,8 @@ The current open-source version only supports **Windows x64** platform. For Linu
 
 ```xml
 <!-- paddle_inference 3.4.0 version -->
-<PackageReference Include="PaddleOCRSDK" Version="4.5.1 />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.1" />
+<PackageReference Include="PaddleOCRSDK" Version="4.5.2 />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.2" />
 ```
 
 ### Option 2: Manual Reference

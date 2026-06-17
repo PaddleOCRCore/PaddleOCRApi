@@ -42,7 +42,7 @@ Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOC
 - ✅ **Easy Integration**: WebAPI service for online calling
 - ✅ **Multi-Threading**: Concurrent processing with automatic memory management
 - ✅ **Offline Operation**: No internet required, secure data processing
-- ✅ **Rich Models**: Support for PP-OCRv5/v4 series models
+- ✅ **Rich Models**: Support for PP-OCRv6/v5/v4 series models
 - ✅ **Comprehensive Features**: Text detection, recognition, orientation classification, table recognition
 - ✅ **Image Correction**: Document image geometric transformation, correcting distortion, tilt, and perspective deformation to improve recognition accuracy
 - ✅ **Vision-Language Model**: Integrated PaddleOCR-VL vision-language model supporting general OCR with prompts and document layout analysis
@@ -105,8 +105,8 @@ PaddleOCRWebApi/
 For paddle_inference 3.3+ version:
 
 ```xml
-<PackageReference Include="PaddleOCRSDK" Version="4.5.1" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.1" />
+<PackageReference Include="PaddleOCRSDK" Version="4.5.2" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.2" />
 ```
 
 ### 2. WebAPI Service Startup
@@ -268,7 +268,7 @@ Configure `OCRVLConfig` in `appsettings.json`:
 | CUDA | [https://developer.nvidia.com/cuda-toolkit-archive](https://developer.nvidia.com/cuda-toolkit-archive) |
 | CUDNN | [https://developer.nvidia.com/cudnn-archive](https://developer.nvidia.com/cudnn-archive) |
 | TensorRT | [https://developer.nvidia.com/nvidia-tensorrt-download](https://developer.nvidia.com/nvidia-tensorrt-download) |
-| PP-OCRv4/v5 Models | [https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11](https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11) |
+| PP-OCRv6/v45/v4 Models | [https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11](https://paddlepaddle.github.io/PaddleX/latest/pipeline_usage/tutorials/ocr_pipelines/OCR.html#11) |
 | Other Models | [https://gitee.com/paddlepaddle/PaddleOCR/blob/main/docs/version3.x/model_list.md) |
 
 ## 🔗 WebAPI Interface
