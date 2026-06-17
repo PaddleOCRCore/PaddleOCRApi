@@ -1,5 +1,11 @@
 # 📝 更新日志
 
+## v4.5.2 `2026.6.17`
+- ✅ **PaddleOCR.dll**: 优化多实例多线程机制，以图找图接口支持Byte及Mat，支持PP-OCRv6模型。
+- ✅ **WinFormsApp**: 增加支持PP-OCRv6模型及PaddleOCR-VL1.6模型。
+- ✅ **发布NuGet包**: PaddleOCRRuntime_x64发布v4.5.2，默认包含PP-OCRv6模型，其它模型点击PaddleOCRModelsDownloader.exe下载。
+- ✅ **发布NuGet包**: PaddleOCRSDK发布v4.5.2,适配PP-OCRv6及以图找图接口。
+
 ## v4.5.0 `2026.5.26`
 - ✅ **PaddleOCR.dll**: 优化版面检测及识别，优化模型加载适配，增加GPU授权接口
 - ✅ **llamaocr-vl.dll**: 优化版面检测及识别，优化模型加载适配，增加GPU授权接口
