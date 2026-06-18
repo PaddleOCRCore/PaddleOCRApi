@@ -62,6 +62,7 @@
             comboBoxLayoutModel = new ComboBox();
             chkUseTensorRT = new CheckBox();
             chkJson = new CheckBox();
+            checkBoxUsePPStructure = new CheckBox();
             chkUseGpu = new CheckBox();
             buttonRecPDF = new Button();
             chkReturnWordBox = new CheckBox();
@@ -483,6 +484,7 @@
             groupBox1.Controls.Add(comboBoxLayoutModel);
             groupBox1.Controls.Add(chkUseTensorRT);
             groupBox1.Controls.Add(chkJson);
+            groupBox1.Controls.Add(checkBoxUsePPStructure);
             groupBox1.Controls.Add(chkUseGpu);
             groupBox1.Controls.Add(buttonRecPDF);
             groupBox1.Controls.Add(chkReturnWordBox);
@@ -527,7 +529,7 @@
             // 
             chkUseTensorRT.AutoSize = true;
             chkUseTensorRT.Enabled = false;
-            chkUseTensorRT.Location = new Point(119, 30);
+            chkUseTensorRT.Location = new Point(99, 30);
             chkUseTensorRT.Name = "chkUseTensorRT";
             chkUseTensorRT.Size = new Size(82, 21);
             chkUseTensorRT.TabIndex = 29;
@@ -538,13 +540,24 @@
             // chkJson
             // 
             chkJson.AutoSize = true;
-            chkJson.Location = new Point(10, 59);
+            chkJson.Location = new Point(10, 58);
             chkJson.Name = "chkJson";
             chkJson.Size = new Size(83, 21);
             chkJson.TabIndex = 28;
             chkJson.Text = "输出JSON";
             chkJson.UseVisualStyleBackColor = true;
             chkJson.CheckedChanged += chkJson_CheckedChanged;
+            // 
+            // checkBoxUsePPStructure
+            // 
+            checkBoxUsePPStructure.AutoSize = true;
+            checkBoxUsePPStructure.Location = new Point(501, 30);
+            checkBoxUsePPStructure.Name = "checkBoxUsePPStructure";
+            checkBoxUsePPStructure.Size = new Size(99, 21);
+            checkBoxUsePPStructure.TabIndex = 27;
+            checkBoxUsePPStructure.Text = "启用版面识别";
+            checkBoxUsePPStructure.UseVisualStyleBackColor = true;
+            checkBoxUsePPStructure.CheckedChanged += checkBoxUsePPStructure_CheckedChanged;
             // 
             // chkUseGpu
             // 
@@ -571,7 +584,7 @@
             // chkReturnWordBox
             // 
             chkReturnWordBox.AutoSize = true;
-            chkReturnWordBox.Location = new Point(119, 58);
+            chkReturnWordBox.Location = new Point(99, 58);
             chkReturnWordBox.Name = "chkReturnWordBox";
             chkReturnWordBox.RightToLeft = RightToLeft.No;
             chkReturnWordBox.Size = new Size(99, 21);
@@ -640,7 +653,7 @@
             // comboBoxModel
             // 
             comboBoxModel.FormattingEnabled = true;
-            comboBoxModel.Items.AddRange(new object[] { "PP-OCRv6_tiny", "PP-OCRv6_small",  "PP-OCRv5_mobile", "PP-OCRv5_server", "PP-OCRv4_mobile" });
+            comboBoxModel.Items.AddRange(new object[] { "PP-OCRv6_tiny", "PP-OCRv6_small", "PP-OCRv5_mobile", "PP-OCRv5_server", "PP-OCRv4_mobile" });
             comboBoxModel.Location = new Point(82, 87);
             comboBoxModel.Name = "comboBoxModel";
             comboBoxModel.Size = new Size(129, 25);
@@ -660,7 +673,7 @@
             // 
             // numericUpDowncpu_mem
             // 
-            numericUpDowncpu_mem.Location = new Point(495, 59);
+            numericUpDowncpu_mem.Location = new Point(432, 57);
             numericUpDowncpu_mem.Maximum = new decimal(new int[] { 8000, 0, 0, 0 });
             numericUpDowncpu_mem.Name = "numericUpDowncpu_mem";
             numericUpDowncpu_mem.Size = new Size(55, 23);
@@ -670,17 +683,17 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(369, 61);
+            label6.Location = new Point(341, 60);
             label6.Name = "label6";
-            label6.Size = new Size(120, 17);
+            label6.Size = new Size(96, 17);
             label6.TabIndex = 14;
-            label6.Text = "内存占用上限(MB)：";
+            label6.Text = "内存上限(MB)：";
             label6.TextAlign = ContentAlignment.TopRight;
             label6.UseWaitCursor = true;
             // 
             // numericUpDownThread
             // 
-            numericUpDownThread.Location = new Point(495, 30);
+            numericUpDownThread.Location = new Point(432, 29);
             numericUpDownThread.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericUpDownThread.Name = "numericUpDownThread";
             numericUpDownThread.Size = new Size(55, 23);
@@ -691,7 +704,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(397, 33);
+            label5.Location = new Point(341, 32);
             label5.Name = "label5";
             label5.Size = new Size(92, 17);
             label5.TabIndex = 12;
@@ -701,7 +714,7 @@
             // 
             // numDowncpu_threads
             // 
-            numDowncpu_threads.Location = new Point(303, 27);
+            numDowncpu_threads.Location = new Point(274, 29);
             numDowncpu_threads.Name = "numDowncpu_threads";
             numDowncpu_threads.Size = new Size(60, 23);
             numDowncpu_threads.TabIndex = 9;
@@ -711,7 +724,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(229, 30);
+            label3.Location = new Point(200, 32);
             label3.Name = "label3";
             label3.Size = new Size(80, 17);
             label3.TabIndex = 8;
@@ -721,7 +734,7 @@
             // 
             // numDowngpu_id
             // 
-            numDowngpu_id.Location = new Point(303, 58);
+            numDowngpu_id.Location = new Point(274, 57);
             numDowngpu_id.Name = "numDowngpu_id";
             numDowngpu_id.Size = new Size(60, 23);
             numDowngpu_id.TabIndex = 7;
@@ -730,7 +743,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(235, 61);
+            label2.Location = new Point(206, 60);
             label2.Name = "label2";
             label2.Size = new Size(63, 17);
             label2.TabIndex = 6;
@@ -1265,5 +1278,6 @@
         private Label label1;
         private Label label4;
         private ComboBox comboBoxVLConfig;
+        private CheckBox checkBoxUsePPStructure;
     }
 }

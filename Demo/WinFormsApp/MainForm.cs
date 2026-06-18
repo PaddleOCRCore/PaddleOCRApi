@@ -35,6 +35,7 @@ namespace WinFormsApp
         private readonly IOCRVLService ocrvlService;
 
         public static bool use_gpu = false;
+        public static bool usePPStructure = false;
         public static int gpu_id = 0;
         public static int cpu_threads = Environment.ProcessorCount;
         public static int cpu_mem = 4000;
@@ -518,20 +519,31 @@ namespace WinFormsApp
                     : $"{DateTime.Now:HH:mm:ss.fff}:{initmsg}");
 
                 bool textReady = initmsg.IndexOf("初始化成功", StringComparison.Ordinal) >= 0;
-
-                initmsg = await Task.Run(() =>
+                bool structureReady = false;
+                if (usePPStructure)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    return OCREngine.GetOCRStructureEngine();
-                }, cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
-                LogMessage(string.IsNullOrEmpty(initmsg)
-                    ? $"{DateTime.Now:HH:mm:ss.fff}:版面识别初始化成功！"
-                    : $"{DateTime.Now:HH:mm:ss.fff}:{initmsg}");
+                    try
+                    {
+                        initmsg = await Task.Run(() =>
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        return OCREngine.GetOCRStructureEngine();
+                    }, cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
+                        LogMessage(string.IsNullOrEmpty(initmsg)
+                            ? $"{DateTime.Now:HH:mm:ss.fff}:版面识别初始化成功！"
+                            : $"{DateTime.Now:HH:mm:ss.fff}:{initmsg}");
 
-                bool structureReady = initmsg.IndexOf("初始化成功", StringComparison.Ordinal) >= 0;
+                        structureReady = initmsg.IndexOf("初始化成功", StringComparison.Ordinal) >= 0;
+                        isOCRStructureReady = structureReady;
+                    }
+                    catch (Exception ex)
+                    {
+                        isOCRStructureReady = false;
+                        LogMessage($"{DateTime.Now:HH:mm:ss.fff}:版面识别初始化失败:{ex.Message}");
+                    }
+                }
                 isOCRTextReady = textReady;
-                isOCRStructureReady = structureReady;
                 isInitSuccess = textReady || structureReady;
             }
             catch (OperationCanceledException)
@@ -1101,6 +1113,11 @@ namespace WinFormsApp
         private void chkJson_CheckedChanged(object sender, EventArgs e)
         {
             outPutJson = chkJson.Checked;
+        }
+
+        private void checkBoxUsePPStructure_CheckedChanged(object sender, EventArgs e)
+        {
+            usePPStructure = checkBoxUsePPStructure.Checked;
         }
 
         private void chkUseTensorRT_CheckedChanged(object sender, EventArgs e)
