@@ -17,6 +17,7 @@
 - [调用参数说明](#-调用参数说明)
 - [GPU环境配置](#-gpu环境配置)
 - [开发交流](#开发交流群)
+- [软件声明](./docs/SOFTWARE_NOTICE.md "查看软件声明")
 - [更新日志](./docs/CHANGELOG.md "查看更新日志")
 - [常见问题](./docs/FAQ.md "查看常见问题")
 
@@ -37,6 +38,7 @@
 ## 📁 相关文档
 - 核心C++动态链接库PaddleOCR.dll接口文档： [PaddleOCR.dll接口清单.md](docs/PaddleOCR.dll接口清单.md)
 - OCRCoreService WebAPI接口文档：[WebApi接口文档](./OCRCoreService/README.md)
+- 软件声明：[开源协议声明与免责声明](./docs/SOFTWARE_NOTICE.md)
 
 ## ✨ 项目特性
 

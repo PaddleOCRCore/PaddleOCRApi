@@ -17,6 +17,7 @@
 - [Parameter Description](#-parameter-description)
 - [GPU Configuration](#-gpu-configuration)
 - [Community](#-community)
+- [Software Notice](./docs/SOFTWARE_NOTICE.md "View software notice")
 - [Changelog](#-changelog)
 
 ### WinFormDemo Preview
@@ -34,6 +35,8 @@ Supports the latest PP-OCRv6 models, backward compatible with V5/V4 models and c
 > 💡 **Note**: The open-source version is suitable for learning and research. For commercial projects, paid versions are recommended for better performance and technical support. For paid version details, contact developer QQ: **2380243976**
 
 Core C++ Dynamic Link Library PaddleOCR.dll Interface Documentation： [PaddleOCR.dll接口清单.md](docs/PaddleOCR.dll接口清单.md)
+
+Software notice: [Open source license notice and disclaimer](./docs/SOFTWARE_NOTICE.md)
 
 ## ✨ Features
 
