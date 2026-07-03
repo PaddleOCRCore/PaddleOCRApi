@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3-beta02" />
-    <PackageReference Include="PaddleOCRSDK" Version="4.5.3-beta02" />
+	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3-beta03" />
+    <PackageReference Include="PaddleOCRSDK" Version="4.5.3-beta03" />
   </ItemGroup>
 
 </Project>

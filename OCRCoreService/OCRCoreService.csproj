@@ -26,7 +26,7 @@
 	<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64' Or ('$(RuntimeIdentifier)' == '' And '$(OS)' == 'Windows_NT')">
-	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3-beta02" />
+	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3-beta03" />
   </ItemGroup>
   <ItemGroup>
 	<!-- <PackageReference Include="PaddleOCRSDK" Version="4.5.2" /> -->
