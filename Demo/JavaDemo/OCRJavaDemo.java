@@ -1,84 +1,187 @@
+import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
-import java.io.File;
-import java.util.Scanner;
+import com.sun.jna.win32.W32APIOptions;
 
-/**
- * PaddleOCR Java 调用示例
- * 需要引入 JNA 库 (jna-jpms.jar 和 jna-platform-jpms.jar)
- */
+import java.io.File;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Scanner;
+import java.util.Set;
+
 public class OCRJavaDemo {
 
-    // 定义 DLL 接口，对应 PaddleOCR.dll 中的导出函数
-    public interface PaddleOCR extends StdCallLibrary {
-        // 加载 PaddleOCR.dll
-        PaddleOCR INSTANCE = Native.load("PaddleOCR.dll", PaddleOCR.class);
+    private interface Kernel32 extends StdCallLibrary {
+        Kernel32 INSTANCE = Native.load("kernel32", Kernel32.class, W32APIOptions.UNICODE);
 
-        // 开启/关闭日志
+        boolean SetDllDirectory(String path);
+    }
+
+    public interface PaddleOCR extends Library {
+        PaddleOCR INSTANCE = Native.load(configureNativeRuntime(), PaddleOCR.class);
+
         void EnableLog(boolean useLog);
-        
-        // 设置返回结果格式 (true: JSON, false: String)
+
         void EnableJsonResult(boolean enable);
-        
-        // 初始化引擎 (JSON 配置方式)
-        boolean Initjson(String det_infer, String cls_infer, String rec_infer, String parameterjson);
-        
-        // 识别图片
+
+        boolean Initjson(String detInfer, String clsInfer, String recInfer, String parameterJson);
+
         Pointer Detect(String imageFile);
 
-        // 释放 Detect 返回的结果缓冲区
         void FreeResultBuffer(Pointer resultPtr);
-        
-        // 释放引擎
+
         void FreeEngine();
+    }
+
+    private static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
+    }
+
+    private static boolean isLinux() {
+        return System.getProperty("os.name").toLowerCase().contains("linux");
+    }
+
+    private static String currentRid() {
+        String arch = System.getProperty("os.arch").toLowerCase();
+        boolean x64 = arch.equals("amd64") || arch.equals("x86_64");
+        if (isWindows() && x64) {
+            return "win-x64";
+        }
+        if (isLinux() && x64) {
+            return "linux-x64";
+        }
+        return System.getProperty("os.name").toLowerCase().replaceAll("[^a-z0-9]+", "-") + "-" + arch;
+    }
+
+    private static String nativeLibraryFileName() {
+        return isWindows() ? "PaddleOCR.dll" : "PaddleOCR.so";
+    }
+
+    private static File executableDirectory() {
+        try {
+            return new File(OCRJavaDemo.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+        } catch (Exception ignored) {
+            return new File(System.getProperty("user.dir"));
+        }
+    }
+
+    private static String configureNativeRuntime() {
+        String rootDir = System.getProperty("user.dir");
+        String rid = currentRid();
+        String fileName = nativeLibraryFileName();
+        File exeDir = executableDirectory();
+
+        File[] candidates = new File[] {
+                new File(rootDir, "runtimes" + File.separator + rid + File.separator + "native" + File.separator + fileName),
+                new File(exeDir, "runtimes" + File.separator + rid + File.separator + "native" + File.separator + fileName),
+                new File(rootDir, fileName),
+                new File(exeDir, fileName),
+                new File(rootDir, "lib" + File.separator + fileName)
+        };
+
+        for (File candidate : candidates) {
+            if (candidate.exists()) {
+                File nativeDir = candidate.getParentFile();
+                String nativeDirPath = nativeDir.getAbsolutePath();
+
+                NativeLibrary.addSearchPath("PaddleOCR", nativeDirPath);
+                String oldJnaPath = System.getProperty("jna.library.path", "");
+                if (!oldJnaPath.contains(nativeDirPath)) {
+                    System.setProperty("jna.library.path",
+                            nativeDirPath + File.pathSeparator + oldJnaPath);
+                }
+
+                if (isWindows()) {
+                    try {
+                        Kernel32.INSTANCE.SetDllDirectory(nativeDirPath);
+                    } catch (Throwable ignored) {
+                        // Absolute loading still works for PaddleOCR.dll; SetDllDirectory helps its dependencies.
+                    }
+                } else if (isLinux()) {
+                    preloadLinuxDependencies(nativeDir, candidate.getName());
+                }
+
+                return candidate.getAbsolutePath();
+            }
+        }
+
+        throw new UnsatisfiedLinkError(
+                "Cannot find " + fileName + " under current directory, executable directory, or runtimes/"
+                        + rid + "/native");
+    }
+
+    private static void preloadLinuxDependencies(File nativeDir, String entryLibraryName) {
+        File[] libraries = nativeDir.listFiles((dir, name) -> !name.equals(entryLibraryName) && name.contains(".so"));
+        if (libraries == null || libraries.length == 0) {
+            return;
+        }
+
+        Arrays.sort(libraries, (left, right) -> left.getName().compareToIgnoreCase(right.getName()));
+        Set<File> pending = new LinkedHashSet<>(Arrays.asList(libraries));
+        while (!pending.isEmpty()) {
+            boolean progress = false;
+            Iterator<File> iterator = pending.iterator();
+            while (iterator.hasNext()) {
+                File library = iterator.next();
+                try {
+                    System.load(library.getAbsolutePath());
+                    iterator.remove();
+                    progress = true;
+                } catch (UnsatisfiedLinkError ignored) {
+                    // Some libraries depend on others in this directory; retry after more preloads succeed.
+                }
+            }
+            if (!progress) {
+                return;
+            }
+        }
+    }
+
+    private static String modelPath(String rootDir, String name) {
+        return new File(new File(rootDir, "models"), name).getAbsolutePath();
     }
 
     public static void main(String[] args) {
         try {
-            // 获取当前工作目录
             String rootDir = System.getProperty("user.dir");
-            
-            // 模型路径 (请根据实际存放位置修改)
-            String detModel = rootDir + "\\models\\PP-OCRv5_mobile_det_infer";
-            String clsModel = rootDir + "\\models\\PP-LCNet_x1_0_textline_ori";
-            String recModel = rootDir + "\\models\\PP-OCRv5_mobile_rec_infer";
-            
-            // 初始化参数 JSON
-            String configJson = "{" +
-                    "\"use_gpu\": false," +
-                    "\"return_word_box\": false," +
-                    "\"cpu_math_library_num_threads\": 10," +
-                    "\"gpu_id\": 0," +
-                    "\"gpu_mem\": 4000," +
-                    "\"cpu_mem\": 4000," +
-                    "\"enable_mkldnn\": true," +
-                    "\"rec_img_h\": 48," +
-                    "\"rec_img_w\": 320," +
-                    "\"cls\": false," +
-                    "\"det\": true," +
-                    "\"use_angle_cls\": false," +
-                    "\"visualize\": true" +
-                    "}";
+
+            String detModel = modelPath(rootDir, "PP-OCRv6_tiny_det_infer");
+            String clsModel = modelPath(rootDir, "PP-LCNet_x1_0_textline_ori");
+            String recModel = modelPath(rootDir, "PP-OCRv6_tiny_rec_infer");
+
+            String configJson = "{"
+                    + "\"use_gpu\": false,"
+                    + "\"return_word_box\": false,"
+                    + "\"cpu_math_library_num_threads\": 10,"
+                    + "\"gpu_id\": 0,"
+                    + "\"gpu_mem\": 4000,"
+                    + "\"cpu_mem\": 4000,"
+                    + "\"enable_mkldnn\": true,"
+                    + "\"rec_img_h\": 48,"
+                    + "\"rec_img_w\": 320,"
+                    + "\"cls\": false,"
+                    + "\"det\": true,"
+                    + "\"use_angle_cls\": false,"
+                    + "\"visualize\": true"
+                    + "}";
 
             System.out.println("=== PaddleOCR Java Demo ===");
-            System.out.println("正在初始化 OCR 引擎...");
-            
-            // 初始化
+            System.out.println("Initializing OCR engine...");
+
             boolean inited = PaddleOCR.INSTANCE.Initjson(detModel, clsModel, recModel, configJson);
-            
             if (!inited) {
-                System.err.println("OCR 初始化失败！请确认以下事项：");
-                System.err.println("1. PaddleOCR.dll 及其依赖项在系统路径或当前目录下");
-                System.err.println("2. 模型路径正确: " + detModel);
+                System.err.println("OCR initialization failed.");
+                System.err.println("1. Check native dependencies under runtimes/" + currentRid() + "/native");
+                System.err.println("2. Check model path: " + detModel);
                 return;
             }
 
-            // 设置返回格式为纯文本
             PaddleOCR.INSTANCE.EnableJsonResult(false);
 
-            // 遍历 images 目录下的图片
-            File imageDir = new File(rootDir + "\\images");
+            File imageDir = new File(rootDir, "images");
             if (imageDir.exists() && imageDir.isDirectory()) {
                 File[] images = imageDir.listFiles((dir, name) -> {
                     String lower = name.toLowerCase();
@@ -86,42 +189,37 @@ public class OCRJavaDemo {
                 });
 
                 if (images != null && images.length > 0) {
-                    for (File img : images) {
-                        System.out.println("\n处理图片: " + img.getName());
+                    for (File image : images) {
+                        System.out.println("\nImage: " + image.getName());
                         long startTime = System.currentTimeMillis();
-                        
-                        // 执行 OCR 识别
-                        Pointer resultPtr = PaddleOCR.INSTANCE.Detect(img.getAbsolutePath());
+
+                        Pointer resultPtr = PaddleOCR.INSTANCE.Detect(image.getAbsolutePath());
                         String result = "";
                         if (resultPtr != null) {
                             result = resultPtr.getString(0, "UTF-8");
                             PaddleOCR.INSTANCE.FreeResultBuffer(resultPtr);
                         }
-                        
+
                         long endTime = System.currentTimeMillis();
-                        System.out.println("OCR 耗时: " + (endTime - startTime) + "ms");
+                        System.out.println("OCR time: " + (endTime - startTime) + "ms");
                         if (!result.isEmpty()) {
-                            System.out.println("识别内容: \n" + result);
+                            System.out.println("Result:\n" + result);
                         } else {
-                            System.out.println("识别失败，返回空指针。");
+                            System.out.println("Detect failed: empty result pointer.");
                         }
                     }
                 } else {
-                    System.out.println("在 images 目录下未找到图片文件。");
+                    System.out.println("No image files found under: " + imageDir.getAbsolutePath());
                 }
             } else {
-                System.err.println("未找到图片目录: " + imageDir.getAbsolutePath());
+                System.err.println("Image directory not found: " + imageDir.getAbsolutePath());
             }
 
-            System.out.println("\n程序运行完毕，按回车键退出...");
+            System.out.println("\nPress Enter to exit...");
             new Scanner(System.in).nextLine();
-
-            // 释放引擎
-            // PaddleOCR.INSTANCE.FreeEngine();
-
         } catch (UnsatisfiedLinkError e) {
-            System.err.println("无法加载 DLL: " + e.getMessage());
-            System.err.println("请确保 PaddleOCR.dll 及其依赖库在当前目录或 PATH 中。");
+            System.err.println("Cannot load native library: " + e.getMessage());
+            System.err.println("Expected path: runtimes/" + currentRid() + "/native/" + nativeLibraryFileName());
         } catch (Exception e) {
             e.printStackTrace();
         }

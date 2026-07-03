@@ -117,6 +117,8 @@ public class HomeControllerLicenseTests
     {
         public string InitDefaultOCREngine(string modelsPath, bool useV5) => "";
         public string InitDefaultStructureEngine(string modelsPath, bool useV5) => "";
+        public string InitDefaultOCREngine(string modelsPath, EnumModelType modelType = EnumModelType.PPOCRv6_tiny) => "";
+        public string InitDefaultStructureEngine(string modelsPath, EnumModelType modelType = EnumModelType.PPOCRv6_tiny) => "";
         public bool Init(InitParamater para) => true;
         public string GetLicenseRequestCode() => "request-code";
         public bool ActivateLicense(string licenseFile) => true;
@@ -138,6 +140,8 @@ public class HomeControllerLicenseTests
         public void FreeEngine() { }
         public void FreeStructureEngine() { }
         public FindImageResult FindImage(string bigImagePath, string smallImagePath, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false) => new();
+        public FindImageResult FindImage(byte[] bigImageBytes, byte[] smallImageBytes, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false) => new();
+        public FindImageResult FindImageMat(IntPtr bigImageMat, IntPtr smallImageMat, double threshold = 0.8, bool toGray = true, bool useSlideMatch = false) => new();
         public LayoutDetectResult ParseLayoutResult(string json) => new();
         public LayoutDetectResult DetectLayoutParsed(string imagefile) => new();
         public LayoutDetectResult DetectLayoutByteParsed(byte[] imagebyte) => new();

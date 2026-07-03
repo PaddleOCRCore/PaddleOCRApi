@@ -4,6 +4,8 @@
     <NuGetApiKey Condition=" '$(NuGetApiKey)' == '' ">$(NUGET_API_KEY)</NuGetApiKey>
     <NuGetSource Condition=" '$(NuGetSource)' == '' ">https://api.nuget.org/v3/index.json</NuGetSource>
     <NuGetOutputDir>$(MSBuildProjectDirectory)\nupkgs</NuGetOutputDir>
+    <PaddleOCRPackRestoreSources Condition=" '$(PaddleOCRPackRestoreSources)' == '' And '$(RestoreAdditionalProjectSources)' != '' ">$(RestoreAdditionalProjectSources)</PaddleOCRPackRestoreSources>
+    <PaddleOCRPackRestoreArgs Condition=" '$(PaddleOCRPackRestoreSources)' != '' ">/p:RestoreAdditionalProjectSources=&quot;$(PaddleOCRPackRestoreSources)&quot;</PaddleOCRPackRestoreArgs>
   </PropertyGroup>
 
   <Target Name="PackAndPushToNuGet" DependsOnTargets="_PackProjectIfNeeded">
@@ -11,7 +13,7 @@
     <MakeDir Directories="$(NuGetOutputDir)" />
 
     <!-- dotnet pack the project (use project file path) -->
-    <Exec Command="dotnet pack &quot;$(MSBuildProjectFullPath)&quot; -c $(Configuration) -o &quot;$(NuGetOutputDir)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <Exec Command="dotnet pack &quot;$(MSBuildProjectFullPath)&quot; -c $(Configuration) -o &quot;$(NuGetOutputDir)&quot; $(PaddleOCRPackRestoreArgs)" WorkingDirectory="$(MSBuildProjectDirectory)" />
 
     <Message Text="Pushing nupkgs from $(NuGetOutputDir) to $(NuGetSource)" Importance="high" />
 

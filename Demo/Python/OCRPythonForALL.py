@@ -13,6 +13,26 @@ except ImportError:
 def get_current_directory():
     return os.getcwd()
 
+def resolve_dll_path(root_dir, dll_name):
+    candidates = [
+        os.path.join(root_dir, dll_name),
+        os.path.join(root_dir, "runtimes", "win-x64", "native", dll_name),
+    ]
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            return candidate
+    raise FileNotFoundError("DLL not found: " + " or ".join(candidates))
+
+def register_native_dll_directory(dll_dir):
+    os.environ["PATH"] = dll_dir + os.pathsep + os.environ.get("PATH", "")
+    if hasattr(os, "add_dll_directory"):
+        os.add_dll_directory(dll_dir)
+    if os.name == "nt":
+        try:
+            ctypes.windll.kernel32.SetDllDirectoryW(dll_dir)
+        except Exception:
+            pass
+
 # 安全的Detect函数调用，自动处理内存释放
 def call_detect_function(func, free_result_func, *args):
     """
@@ -51,7 +71,8 @@ def call_detect_function(func, free_result_func, *args):
 
 # 加载DLL文件
 root_dir = get_current_directory()
-dll_path = os.path.join(root_dir, "PaddleOCR.dll")
+dll_path = resolve_dll_path(root_dir, "PaddleOCR.dll")
+register_native_dll_directory(os.path.dirname(dll_path))
 ocr_dll = ctypes.CDLL(dll_path)
 
 # 定义DLL中的函数
@@ -60,22 +81,43 @@ detect_func = ocr_dll.Detect
 detect_mat_func = ocr_dll.DetectMat if HAS_CV2 else None
 detect_byte_func = ocr_dll.DetectByte
 detect_base64_func = ocr_dll.DetectBase64
-detect_table_func = ocr_dll.DetectTable
-detect_table_byte_func = ocr_dll.DetectTableByte
-detect_table_base64_func = ocr_dll.DetectTableBase64
-init_table_func = ocr_dll.InitTablejson
 enable_json_func = ocr_dll.EnableJsonResult
 enable_log_func = ocr_dll.EnableLog
 free_engine_func = ocr_dll.FreeEngine
-freetable_engine_func = ocr_dll.FreeTableEngine
+activate_license_func = ocr_dll.ActivateLicense
+activate_license_func.argtypes = [ctypes.c_char_p]
+activate_license_func.restype = ctypes.c_bool
+get_license_status_func = ocr_dll.GetLicenseStatus
+get_license_status_func.argtypes = []
+get_license_status_func.restype = ctypes.c_void_p
 
 # 跨平台内存释放函数（替代Windows特有的CoTaskMemFree）
 free_result_buffer_func = ocr_dll.FreeResultBuffer
 free_result_buffer_func.argtypes = [ctypes.c_void_p]
 free_result_buffer_func.restype = None
 
+def activate_license(license_file="paddleocr.lic"):
+    license_path = license_file if os.path.isabs(license_file) else os.path.join(root_dir, license_file)
+    if not os.path.exists(license_path):
+        print("License file not found, skip activation:", license_path)
+        return False
+    ok = activate_license_func(ctypes.c_char_p(license_path.encode("utf-8")))
+    print("License activation success:" if ok else "License activation failed:", license_path)
+    return ok
+
+def print_license_status():
+    result_ptr = get_license_status_func()
+    if not result_ptr:
+        print("GetLicenseStatus returned null")
+        return
+    try:
+        status = ctypes.string_at(result_ptr).decode("utf-8", errors="replace")
+    finally:
+        free_result_buffer_func(result_ptr)
+    print("License Status:")
+    print(status)
+
 free_engine_func()
-freetable_engine_func()
 
 # 设置返回结果格式
 enable_json_func(0)  # 0: 返回纯字符串结果, 1: 返回JSON字符串结果
@@ -83,19 +125,13 @@ enable_log_func(1)  # 0: 不输出日志, 1: 输出日志
 
 # 初始化OCR
 root_dir = get_current_directory()
+activate_license()
+print_license_status()
 init_func(
-    ctypes.c_char_p(("models\\PP-OCRv5_mobile_det_infer").encode('utf-8')),
+    ctypes.c_char_p(("models\\PP-OCRv6_tiny_det_infer").encode('utf-8')),
     ctypes.c_char_p(("models\\PP-LCNet_x1_0_textline_ori").encode('utf-8')),
-    ctypes.c_char_p(("models\\PP-OCRv5_mobile_rec_infer").encode('utf-8')),
-    ctypes.c_char_p(b'{"use_gpu": false,"return_word_box":false,"cpu_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 0,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":true,"det":true,"use_angle_cls":true}')
-)
-# 初始化Table OCR
-init_table_func(
-    ctypes.c_char_p(("models\\PP-OCRv5_mobile_det_infer").encode('utf-8')),
-    ctypes.c_char_p(("models\\PP-LCNet_x1_0_textline_ori").encode('utf-8')),
-    ctypes.c_char_p(("models\\PP-OCRv5_mobile_rec_infer").encode('utf-8')),
-    ctypes.c_char_p(("models\\PP-SLANet_plus_infer").encode('utf-8')),
-    ctypes.c_char_p(b'{"use_gpu": false,"ocr_instance_count":3,"cpu_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 0,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":true,"det":true,"use_angle_cls":true}')
+    ctypes.c_char_p(("models\\PP-OCRv6_tiny_rec_infer").encode('utf-8')),
+    ctypes.c_char_p(b'{"use_gpu": false,"ocr_instance_count":3,"return_word_box":false,"cpu_threads": 30,"gpu_id": 0,"gpu_mem": 4000,"cpu_mem": 0,"enable_mkldnn": true,"rec_img_h": 48,"rec_img_w": 320,"cls":true,"det":true,"use_angle_cls":true}')
 )
 
 # 读取图片目录
@@ -120,9 +156,6 @@ if images:
         ("Detect", detect_func, lambda: ctypes.c_char_p(image_path.encode('utf-8'))),
         ("DetectByte", detect_byte_func, lambda: (ctypes.c_char_p(image_bytes), ctypes.c_size_t(image_size))),
         ("DetectBase64", detect_base64_func, lambda: ctypes.c_char_p(image_base64.encode('utf-8'))),
-        ("DetectTable", detect_table_func, lambda: ctypes.c_char_p(image_path.encode('utf-8'))),
-        ("DetectTableByte", detect_table_byte_func, lambda: (ctypes.c_char_p(image_bytes), ctypes.c_size_t(image_size))),
-        ("DetectTableBase64", detect_table_base64_func, lambda: ctypes.c_char_p(image_base64.encode('utf-8'))),
     ]
     totaltimes=10
     for func_name, func, arg_func in functions_to_test:
@@ -145,5 +178,4 @@ if images:
 else:
     print("没有找到图片文件")
 free_engine_func()
-freetable_engine_func()
 input("按回车键退出...")

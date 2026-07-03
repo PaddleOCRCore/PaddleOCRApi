@@ -2,7 +2,8 @@
   <PropertyGroup>
     <!-- Package Identity -->
     <PackageId>PaddleOCRSDK</PackageId>
-    <Version>4.5.2</Version>
+    <Version>4.5.3-beta02</Version>
+    <PaddleOCRRuntimePackageVersion Condition="'$(PaddleOCRRuntimePackageVersion)' == ''">$(Version)</PaddleOCRRuntimePackageVersion>
     <Authors>PaddleOCRCore</Authors>
     <Company>PaddleOCRCore</Company>
     
@@ -60,6 +61,7 @@
 	  </None>
 	</ItemGroup>
 	<ItemGroup>
+	  <PackageReference Include="PaddleOCRRuntime_x64" Version="$(PaddleOCRRuntimePackageVersion)" Condition="'$(RuntimeIdentifier)' == 'win-x64'" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 	<ItemGroup>

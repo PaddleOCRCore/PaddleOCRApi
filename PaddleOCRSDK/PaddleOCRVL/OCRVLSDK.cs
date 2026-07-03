@@ -13,6 +13,11 @@ namespace PaddleOCRSDK
         /// </summary>
         internal const string DllFileName = "llamaocr-vl";
 
+        static OCRVLSDK()
+        {
+            NativeRuntimeLoader.EnsureLoaded();
+        }
+
         /// <summary>
         /// 初始化 VL OCR 引擎。
         /// </summary>

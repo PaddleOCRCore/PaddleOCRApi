@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Version>4.5.2</Version>
+	<Version>4.5.3</Version>
 	<Platforms>AnyCPU;x64</Platforms>
 	<ApplicationIcon>OCR.ico</ApplicationIcon>
 	<BuildInParallel>false</BuildInParallel>
@@ -21,12 +21,12 @@
     <PackageReference Include="PDFtoImage" Version="5.2.0" />
     <PackageReference Include="Scalar.AspNetCore.Microsoft" Version="2.14.14" />
     <PackageReference Include="SkiaSharp" Version="3.119.1" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.9" />
 	<PackageReference Include="NLog" Version="5.2.8" />
 	<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64' Or ('$(RuntimeIdentifier)' == '' And '$(OS)' == 'Windows_NT')">
-	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.2" />
+	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3-beta02" />
   </ItemGroup>
   <ItemGroup>
 	<!-- <PackageReference Include="PaddleOCRSDK" Version="4.5.2" /> -->

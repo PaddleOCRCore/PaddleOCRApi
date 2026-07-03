@@ -54,14 +54,86 @@ static string GetLastErrorAndFree() {
     return text;
 }
 
+static bool DirectoryExists(const string& path) {
+    DWORD attributes = GetFileAttributesA(path.c_str());
+    return attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+}
+
+static string CombinePath(const string& left, const string& right) {
+    if (left.empty()) {
+        return right;
+    }
+
+    char last = left[left.size() - 1];
+    if (last == '\\' || last == '/') {
+        return left + right;
+    }
+
+    return left + "\\" + right;
+}
+
+static string GetExecutableDirectory() {
+    char path[MAX_PATH] = { 0 };
+    DWORD length = GetModuleFileNameA(nullptr, path, MAX_PATH);
+    if (length == 0 || length == MAX_PATH) {
+        return "";
+    }
+
+    string fullPath(path);
+    size_t slash = fullPath.find_last_of("\\/");
+    if (slash == string::npos) {
+        return "";
+    }
+
+    return fullPath.substr(0, slash);
+}
+
+static bool PrependPathEnvironment(const string& directory) {
+    DWORD length = GetEnvironmentVariableA("PATH", nullptr, 0);
+    string oldPath;
+    if (length > 0) {
+        oldPath.resize(length);
+        DWORD written = GetEnvironmentVariableA("PATH", &oldPath[0], length);
+        oldPath.resize(written);
+    }
+
+    if (oldPath.find(directory) != string::npos) {
+        return true;
+    }
+
+    string newPath = directory + ";" + oldPath;
+    return SetEnvironmentVariableA("PATH", newPath.c_str()) != 0;
+}
+
+static void ConfigureNativeDllDirectory(const string& currentDirectory) {
+    vector<string> candidates;
+    candidates.push_back(CombinePath(currentDirectory, "runtimes\\win-x64\\native"));
+    candidates.push_back(CombinePath(GetExecutableDirectory(), "runtimes\\win-x64\\native"));
+    candidates.push_back(currentDirectory);
+    candidates.push_back(GetExecutableDirectory());
+    candidates.push_back(CombinePath(currentDirectory, "lib"));
+
+    for (const auto& candidate : candidates) {
+        if (!candidate.empty() && DirectoryExists(candidate)) {
+            SetDllDirectoryA(candidate.c_str());
+            PrependPathEnvironment(candidate);
+            cout << "Native DLL directory: " << candidate << endl;
+            return;
+        }
+    }
+
+    cerr << "Warning: native DLL directory was not found. Expected runtimes\\win-x64\\native." << endl;
+}
+
 int main() {
     SetConsoleOutputCP(CP_UTF8);
 
     char cwd[MAX_PATH] = { 0 };
     GetCurrentDirectoryA(MAX_PATH, cwd);
+    ConfigureNativeDllDirectory(cwd);
 
-    string det_infer = "models/PP-OCRv5_mobile_det_infer";
-    string rec_infer = "models/PP-OCRv5_mobile_rec_infer";
+    string det_infer = "models/PP-OCRv6_tiny_det_infer";
+    string rec_infer = "models/PP-OCRv6_tiny_rec_infer";
     string cls_infer = "models/PP-LCNet_x1_0_textline_ori";
 
     string layout_model_dir = "models/PP-DocLayoutV3_infer";

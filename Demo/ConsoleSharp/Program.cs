@@ -89,7 +89,7 @@ namespace ConsoleSharp
                 // 初始化
                 IOCRService ocrService = new OCRService();
                 ocrService.EnableLog(false);
-                ocrService.InitDefaultOCREngine("models",true);
+                ocrService.InitDefaultOCREngine("models", EnumModelType.PPOCRv6_tiny);
 
                 Console.WriteLine("OCR引擎初始化成功！\n");
             }

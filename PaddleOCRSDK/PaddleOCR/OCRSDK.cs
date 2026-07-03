@@ -24,6 +24,11 @@ namespace PaddleOCRSDK
     {
         internal const string dllFileName = "PaddleOCR";
 
+        static OCRSDK()
+        {
+            NativeRuntimeLoader.EnsureLoaded();
+        }
+
         #region OCR识别全局公共方法
         /// <summary>
         /// 是否生成日志
