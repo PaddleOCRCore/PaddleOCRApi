@@ -154,7 +154,11 @@ namespace OCRCoreService.Services
                 para.doc_cls_infer = $"models/{_layoutConfig.doc_cls_infer}";
                 para.rec_infer = $"models/{_layoutConfig.rec_infer}";
                 para.layout_model_dir = $"models/{_layoutConfig.layout_model_dir}";
-                para.table_model_dir = $"models/{_layoutConfig.table_model_dir}";
+                para.table_cls_model_dir = $"models/{_layoutConfig.table_cls_model_dir}";
+                para.wired_table_model_dir = $"models/{_layoutConfig.wired_table_model_dir}";
+                para.wireless_table_model_dir = $"models/{_layoutConfig.wireless_table_model_dir}";
+                para.wired_table_cell_det_model_dir = $"models/{_layoutConfig.wired_table_cell_det_model_dir}";
+                para.wireless_table_cell_det_model_dir = $"models/{_layoutConfig.wireless_table_cell_det_model_dir}";
                 para.formula_model_dir = $"models/{_layoutConfig.formula_model_dir}";
                 para.doc_unwarp_model = $"models/{_layoutConfig.doc_unwarp_model}";
                 para.region_model_dir = $"models/{_layoutConfig.region_model_dir}";
@@ -185,6 +189,7 @@ namespace OCRCoreService.Services
                 oCRParameter.max_side_len = _layoutConfig.max_side_len;
 
                 oCRParameter.use_table_recognition = _layoutConfig.use_table_recognition;
+                oCRParameter.use_table_cells_detection = _layoutConfig.use_table_cells_detection;
                 oCRParameter.use_seal_recognition = _layoutConfig.use_seal_recognition;
                 oCRParameter.use_formula_recognition = _layoutConfig.use_formula_recognition;
 

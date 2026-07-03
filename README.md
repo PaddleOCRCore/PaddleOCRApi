@@ -159,7 +159,11 @@ https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 | det_model_dir                | -      | 检测模型inference model地址                                                              |
 | cls_model_dir                | -      | 方向分类器inference model地址                                                            |
 | rec_infer                    | -      | 文字识别模型inference model地址                                                          |
-| table_model_dir              | -      | 表格识别模型inference model地址                                                          |
+| table_cls_model_dir          | -      | Table wired/wireless classification model directory                                           |
+| wired_table_model_dir        | -      | Wired table structure recognition model directory                                             |
+| wireless_table_model_dir     | -      | Wireless table structure recognition model directory                                          |
+| wired_table_cell_det_model_dir | -     | Wired table cell detection model directory                                                    |
+| wireless_table_cell_det_model_dir | -  | Wireless table cell detection model directory                                                 |
 | 通用参数                      | --     | -- |
 | det                          | true   | 是否执行文字检测                                                                         |
 | rec                          | true   | 是否执行文字识别                                                                         |
@@ -217,6 +221,7 @@ https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 | max_side_len                 | 960    | 输入图像最长边限制                                                                       |
 | **条件识别参数**             | --     | -- |
 | use_table_recognition        | true   | 是否使用表格识别                                                                         |
+| use_table_cells_detection    | false  | Whether to use table cell detection                                                           |
 | use_seal_recognition         | false  | 是否使用印章识别                                                                         |
 | use_formula_recognition      | true   | 是否使用公式识别                                                                         |
 | use_chart_recognition        | false  | 是否使用图表转表识别                                                                     |

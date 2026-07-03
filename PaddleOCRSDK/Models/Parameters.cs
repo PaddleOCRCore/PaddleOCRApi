@@ -63,7 +63,26 @@ namespace PaddleOCRSDK
         /// <summary>
         /// 表格识别模型inference model地址
         /// </summary>
-        public string table_model_dir { get; set; }
+        /// <summary>
+        /// 表格有线/无线分类模型路径（可选）
+        /// </summary>
+        public string table_cls_model_dir { get; set; }
+        /// <summary>
+        /// 有线表格结构识别模型路径（可选）
+        /// </summary>
+        public string wired_table_model_dir { get; set; }
+        /// <summary>
+        /// 无线表格结构识别模型路径（可选）
+        /// </summary>
+        public string wireless_table_model_dir { get; set; }
+        /// <summary>
+        /// 有线表格单元格检测模型路径（可选）
+        /// </summary>
+        public string wired_table_cell_det_model_dir { get; set; }
+        /// <summary>
+        /// 无线表格单元格检测模型路径（可选）
+        /// </summary>
+        public string wireless_table_cell_det_model_dir { get; set; }
         /// <summary>
         /// 公式识别模型路径（可选）
         /// </summary>
@@ -243,6 +262,7 @@ namespace PaddleOCRSDK
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class LayoutParameter
     {
+
         #region 基础运行参数
         /// <summary>
         /// 是否使用GPU推理；false时使用CPU。
@@ -361,6 +381,11 @@ namespace PaddleOCRSDK
         /// </summary>
         [field: MarshalAs(UnmanagedType.I1)]
         public bool use_table_recognition { get; set; } = true;
+        /// <summary>
+        /// 是否启用表格单元格检测和按单元格OCR。
+        /// </summary>
+        [field: MarshalAs(UnmanagedType.I1)]
+        public bool use_table_cells_detection { get; set; } = false;
         /// <summary>
         /// 是否启用印章识别，run_ocr_after_layout为true时生效。
         /// </summary>

@@ -65,7 +65,11 @@ int main() {
     string cls_infer = "models/PP-LCNet_x1_0_textline_ori";
 
     string layout_model_dir = "models/PP-DocLayoutV3_infer";
-    string table_model_dir = "models/PP-SLANet_plus_infer";
+    string table_cls_model_dir = "models/PP-LCNet_x1_0_table_cls_infer";
+    string wired_table_model_dir = "models/SLANeXt_wired_infer";
+    string wireless_table_model_dir = "models/SLANeXt_wireless_infer";
+    string wired_table_cell_det_model_dir = "models/RT-DETR-L_wired_table_cell_det_infer";
+    string wireless_table_cell_det_model_dir = "models/RT-DETR-L_wireless_table_cell_det_infer";
     string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";//文档图像方向分类模块
     string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
     string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
@@ -88,6 +92,7 @@ int main() {
     layout_param.cpu_threads = 8;
     layout_param.enable_mkldnn = true;
     layout_param.use_table_recognition = true;
+    layout_param.use_table_cells_detection = false;
     layout_param.use_formula_recognition = true;
     layout_param.use_seal_recognition = false;
     layout_param.output_markdown = true;
@@ -144,7 +149,11 @@ int main() {
         cls_infer.c_str(),
         rec_infer.c_str(),
         layout_model_dir.c_str(),
-        table_model_dir.c_str(),
+        table_cls_model_dir.c_str(),
+        wired_table_model_dir.c_str(),
+        wireless_table_model_dir.c_str(),
+        wired_table_cell_det_model_dir.c_str(),
+        wireless_table_cell_det_model_dir.c_str(),
         formula_model_dir.c_str(),  // formula_model_dir
         seal_model_dir.c_str(),  // seal_model_dir
         doc_cls_infer.c_str(),  // doc_cls_infer

@@ -174,7 +174,11 @@ namespace PaddleOCRSDK
 
             string cls_infer = "PP-LCNet_x1_0_textline_ori";
             string layout_model_dir = "PP-DocLayoutV3_infer";
-            string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型
+            string table_cls_model_dir = "PP-LCNet_x1_0_table_cls_infer";
+            string wired_table_model_dir = "SLANeXt_wired_infer";
+            string wireless_table_model_dir = "SLANeXt_wireless_infer";
+            string wired_table_cell_det_model_dir = "RT-DETR-L_wired_table_cell_det_infer";
+            string wireless_table_cell_det_model_dir = "RT-DETR-L_wireless_table_cell_det_infer";
             string formula_model_dir = "LaTeX_OCR_rec_infer";
             string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";
             string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";
@@ -192,7 +196,11 @@ namespace PaddleOCRSDK
             para.rec_infer = $"{modelsPath}/{rec_infer}";
 
             para.layout_model_dir = $"{modelsPath}/{layout_model_dir}";
-            para.table_model_dir = $"{modelsPath}/{table_model_dir}";
+            para.table_cls_model_dir = $"{modelsPath}/{table_cls_model_dir}";
+            para.wired_table_model_dir = $"{modelsPath}/{wired_table_model_dir}";
+            para.wireless_table_model_dir = $"{modelsPath}/{wireless_table_model_dir}";
+            para.wired_table_cell_det_model_dir = $"{modelsPath}/{wired_table_cell_det_model_dir}";
+            para.wireless_table_cell_det_model_dir = $"{modelsPath}/{wireless_table_cell_det_model_dir}";
             para.formula_model_dir = $"{modelsPath}/{formula_model_dir}";
             para.seal_model_dir = $"{modelsPath}/{seal_model_dir}";
             para.doc_cls_infer = $"{modelsPath}/{doc_cls_infer}";
@@ -226,6 +234,7 @@ namespace PaddleOCRSDK
             oCRParameter.max_side_len = 960;
 
             oCRParameter.use_table_recognition = true;
+            oCRParameter.use_table_cells_detection = false;
             oCRParameter.use_seal_recognition = false;
             oCRParameter.use_formula_recognition = true;
 
@@ -271,7 +280,11 @@ namespace PaddleOCRSDK
                         para.cls_infer,
                         para.rec_infer,
                         para.layout_model_dir,
-                        para.table_model_dir,
+                        para.table_cls_model_dir,
+                        para.wired_table_model_dir,
+                        para.wireless_table_model_dir,
+                        para.wired_table_cell_det_model_dir,
+                        para.wireless_table_cell_det_model_dir,
                         para.formula_model_dir,
                         para.seal_model_dir,
                         para.doc_cls_infer,
@@ -286,7 +299,11 @@ namespace PaddleOCRSDK
                         para.cls_infer,
                         para.rec_infer,
                         para.layout_model_dir,
-                        para.table_model_dir,
+                        para.table_cls_model_dir,
+                        para.wired_table_model_dir,
+                        para.wireless_table_model_dir,
+                        para.wired_table_cell_det_model_dir,
+                        para.wireless_table_cell_det_model_dir,
                         para.formula_model_dir,
                         para.seal_model_dir,
                         para.doc_cls_infer,

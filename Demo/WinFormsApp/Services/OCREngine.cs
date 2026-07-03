@@ -30,7 +30,11 @@ namespace WinFormsApp.Services
         public static string cls_infer = "PP-LCNet_x1_0_textline_ori";//文本方向分类模块
         public static string doc_cls_infer = "PP-LCNet_x1_0_doc_ori_infer";//文档图像方向分类模块
         public static string layout_model_dir = "PP-DocLayoutV3_infer";//版面识别模型inference
-        public static string table_model_dir = "PP-SLANet_plus_infer";//表格识别模型inference
+        public static string table_cls_model_dir = "PP-LCNet_x1_0_table_cls_infer";//表格有线/无线分类模型
+        public static string wired_table_model_dir = "SLANeXt_wired_infer";//有线表格结构识别模型
+        public static string wireless_table_model_dir = "SLANeXt_wireless_infer";//无线表格结构识别模型
+        public static string wired_table_cell_det_model_dir = "RT-DETR-L_wired_table_cell_det_infer";//有线表格单元格检测模型
+        public static string wireless_table_cell_det_model_dir = "RT-DETR-L_wireless_table_cell_det_infer";//无线表格单元格检测模型
         public static string formula_model_dir = "LaTeX_OCR_rec_infer";//公式识别模型
         public static string seal_model_dir = "PP-OCRv4_mobile_seal_det_infer";//印章检测模型  
         public static string doc_unwarp_model = "UVDoc_infer";//文档矫正模型
@@ -179,7 +183,11 @@ namespace WinFormsApp.Services
             para.doc_cls_infer = $"models/{doc_cls_infer}";
             para.rec_infer = $"models/{rec_infer}";
             para.layout_model_dir = $"models/{layout_model_dir}";
-            para.table_model_dir = $"models/{table_model_dir}";
+            para.table_cls_model_dir = $"models/{table_cls_model_dir}";
+            para.wired_table_model_dir = $"models/{wired_table_model_dir}";
+            para.wireless_table_model_dir = $"models/{wireless_table_model_dir}";
+            para.wired_table_cell_det_model_dir = $"models/{wired_table_cell_det_model_dir}";
+            para.wireless_table_cell_det_model_dir = $"models/{wireless_table_cell_det_model_dir}";
             para.formula_model_dir = $"models/{formula_model_dir}";
             para.doc_unwarp_model = $"models/{doc_unwarp_model}";
             para.region_model_dir = $"models/{region_model_dir}";
@@ -212,6 +220,7 @@ namespace WinFormsApp.Services
             oCRParameter.max_side_len = 960;
 
             oCRParameter.use_table_recognition = true;
+            oCRParameter.use_table_cells_detection = false;
             oCRParameter.use_seal_recognition = true;
             oCRParameter.use_formula_recognition = true;
 

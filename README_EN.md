@@ -148,7 +148,11 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | det_model_dir                | -       | Detection model inference model path                                                          |
 | cls_model_dir                | -       | Direction classifier inference model path                                                     |
 | rec_infer                    | -       | Text recognition model inference model path                                                   |
-| table_model_dir              | -       | Table recognition model inference model path                                                  |
+| table_cls_model_dir          | -       | Table wired/wireless classification model directory                                           |
+| wired_table_model_dir        | -       | Wired table structure recognition model directory                                             |
+| wireless_table_model_dir     | -       | Wireless table structure recognition model directory                                          |
+| wired_table_cell_det_model_dir | -     | Wired table cell detection model directory                                                    |
+| wireless_table_cell_det_model_dir | -  | Wireless table cell detection model directory                                                 |
 | **General Parameters**       | --      | --                                                                                            |
 | det                          | true    | Whether to execute text detection                                                             |
 | rec                          | true    | Whether to execute text recognition                                                           |
@@ -206,6 +210,7 @@ Supported frameworks: netstandard2.0; net45; net461; net47; net48; net6.0; net7.
 | max_side_len                 | 960     | Input image longest side limit                                                                |
 | **Conditional Recognition**  | --      | --                                                                                            |
 | use_table_recognition        | true    | Whether to use table recognition                                                              |
+| use_table_cells_detection    | false   | Whether to use table cell detection                                                           |
 | use_seal_recognition         | false   | Whether to use seal recognition                                                               |
 | use_formula_recognition      | true    | Whether to use formula recognition                                                            |
 | use_chart_recognition        | false   | Whether to use chart-to-table recognition                                                     |

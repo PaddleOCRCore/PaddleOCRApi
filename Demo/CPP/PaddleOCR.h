@@ -219,7 +219,11 @@ extern "C" {
     /// <param name="cls_infer">文本行方向分类模型路径(可选，NULL表示不使用)</param>
     /// <param name="rec_infer">文本识别模型路径</param>
     /// <param name="layout_model_dir">版面分析模型目录路径</param>
-    /// <param name="table_model_dir">表格识别模型目录路径</param>
+    /// <param name="table_cls_model_dir">表格有线/无线分类模型路径(可选)</param>
+    /// <param name="wired_table_model_dir">有线表格结构识别模型路径(可选)</param>
+    /// <param name="wireless_table_model_dir">无线表格结构识别模型路径(可选)</param>
+    /// <param name="wired_table_cell_det_model_dir">有线表格单元格检测模型路径(可选)</param>
+    /// <param name="wireless_table_cell_det_model_dir">无线表格单元格检测模型路径(可选)</param>
     /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
     /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
     /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
@@ -232,7 +236,11 @@ extern "C" {
         const char* cls_infer,
         const char* rec_infer,
         const char* layout_model_dir,
-        const char* table_model_dir,
+        const char* table_cls_model_dir,
+        const char* wired_table_model_dir,
+        const char* wireless_table_model_dir,
+        const char* wired_table_cell_det_model_dir,
+        const char* wireless_table_cell_det_model_dir,
         const char* formula_model_dir,
         const char* seal_model_dir,
         const char* doc_cls_infer,
@@ -249,7 +257,11 @@ extern "C" {
         const char* cls_infer,
         const char* rec_infer,
         const char* layout_model_dir,
-        const char* table_model_dir,
+        const char* table_cls_model_dir,
+        const char* wired_table_model_dir,
+        const char* wireless_table_model_dir,
+        const char* wired_table_cell_det_model_dir,
+        const char* wireless_table_cell_det_model_dir,
         const char* formula_model_dir,
         const char* seal_model_dir,
         const char* doc_cls_infer,

@@ -177,7 +177,11 @@ namespace PaddleOCRSDK
         /// <param name="cls_infer">文本行方向分类模型路径(可选，NULL表示不使用)</param>
         /// <param name="rec_infer">文本识别模型路径</param>
         /// <param name="layout_model_dir">版面分析模型目录路径</param>
-        /// <param name="table_model_dir">表格识别模型目录路径</param>
+        /// <param name="table_cls_model_dir">表格有线/无线分类模型路径(可选)</param>
+        /// <param name="wired_table_model_dir">有线表格结构识别模型路径(可选)</param>
+        /// <param name="wireless_table_model_dir">无线表格结构识别模型路径(可选)</param>
+        /// <param name="wired_table_cell_det_model_dir">有线表格单元格检测模型路径(可选)</param>
+        /// <param name="wireless_table_cell_det_model_dir">无线表格单元格检测模型路径(可选)</param>
         /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
         /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
@@ -191,7 +195,11 @@ namespace PaddleOCRSDK
             string cls_infer,
             string rec_infer,
             string layout_model_dir,
-            string table_model_dir,
+            string table_cls_model_dir,
+            string wired_table_model_dir,
+            string wireless_table_model_dir,
+            string wired_table_cell_det_model_dir,
+            string wireless_table_cell_det_model_dir,
             string formula_model_dir,
             string seal_model_dir,
             string doc_cls_infer,
@@ -209,7 +217,11 @@ namespace PaddleOCRSDK
         /// <param name="cls_infer">文本行方向分类模型路径(可选，NULL表示不使用)</param>
         /// <param name="rec_infer">文本识别模型路径</param>
         /// <param name="layout_model_dir">版面分析模型目录路径</param>
-        /// <param name="table_model_dir">表格识别模型目录路径</param>
+        /// <param name="table_cls_model_dir">表格有线/无线分类模型路径(可选)</param>
+        /// <param name="wired_table_model_dir">有线表格结构识别模型路径(可选)</param>
+        /// <param name="wireless_table_model_dir">无线表格结构识别模型路径(可选)</param>
+        /// <param name="wired_table_cell_det_model_dir">有线表格单元格检测模型路径(可选)</param>
+        /// <param name="wireless_table_cell_det_model_dir">无线表格单元格检测模型路径(可选)</param>
         /// <param name="formula_model_dir">公式识别模型路径(可选，NULL表示不使用)</param>
         /// <param name="seal_model_dir">印章识别模型路径(可选，NULL表示不使用)</param>
         /// <param name="doc_cls_infer">文档方向分类模型路径(可选，NULL表示不使用)</param>
@@ -223,7 +235,11 @@ namespace PaddleOCRSDK
             string cls_infer,
             string rec_infer,
             string layout_model_dir,
-            string table_model_dir,
+            string table_cls_model_dir,
+            string wired_table_model_dir,
+            string wireless_table_model_dir,
+            string wired_table_cell_det_model_dir,
+            string wireless_table_cell_det_model_dir,
             string formula_model_dir,
             string seal_model_dir,
             string doc_cls_infer,

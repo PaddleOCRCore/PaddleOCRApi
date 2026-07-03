@@ -64,6 +64,7 @@ struct OCRParameter
 /// </summary>
 struct LayoutParameter
 {
+
 	// 基础运行参数（与 Init/Initjson 保持一致）
 	bool use_gpu = false;                    // 是否使用GPU推理；false时走CPU
 	int gpu_id = 0;                          // GPU设备编号（use_gpu=true时生效）
@@ -81,6 +82,7 @@ struct LayoutParameter
 
 	// 版面检测参数
 	bool use_layout_detection = true;        // 是否执行版面检测；false时不产出版面框
+	bool use_region_detection = false;       // 是否执行PaddleX RegionDetection大区块检测
 	float layout_threshold = 0.5f;           // 版面检测全局阈值（初始化可传入）
 	bool layout_nms = true;                  // 版面框后处理NMS开关
 	float layout_unclip_ratio_w = 1.0f;      // 版面框宽度扩张系数
@@ -94,7 +96,8 @@ struct LayoutParameter
 	int max_side_len = 960;                  // OCR检测缩放最大长边限制
 
 	// 条件识别参数,run_ocr_after_layout=true时才生效
-	bool use_table_recognition = true;       // 是否启用表格结构识别    
+	bool use_table_recognition = true;       // 是否启用表格结构识别
+	bool use_table_cells_detection = false;  // 是否启用表格单元格检测和按单元格OCR    
 	bool use_seal_recognition = false;       // 是否启用印章识别    
 	bool use_formula_recognition = true;     // 是否启用公式识别（输出LaTeX）    
 	int seal_det_limit_side_len = 736;       // 印章检测限边长
