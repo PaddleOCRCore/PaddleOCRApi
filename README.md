@@ -159,11 +159,11 @@ https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 | det_model_dir                | -      | 检测模型inference model地址                                                              |
 | cls_model_dir                | -      | 方向分类器inference model地址                                                            |
 | rec_infer                    | -      | 文字识别模型inference model地址                                                          |
-| table_cls_model_dir          | -      | Table wired/wireless classification model directory                                           |
-| wired_table_model_dir        | -      | Wired table structure recognition model directory                                             |
-| wireless_table_model_dir     | -      | Wireless table structure recognition model directory                                          |
-| wired_table_cell_det_model_dir | -     | Wired table cell detection model directory                                                    |
-| wireless_table_cell_det_model_dir | -  | Wireless table cell detection model directory                                                 |
+| table_cls_model_dir          | -      | 表格有线/无线分类模型路径                                                                 |
+| wired_table_model_dir        | -      | 有线表格结构识别模型路径                                                                  |
+| wireless_table_model_dir     | -      | 无线表格结构识别模型路径                                                                  |
+| wired_table_cell_det_model_dir | -     | 有线表格单元格检测模型路径                                                               |
+| wireless_table_cell_det_model_dir | -  | 无线表格单元格检测模型路径                                                               |
 | 通用参数                      | --     | -- |
 | det                          | true   | 是否执行文字检测                                                                         |
 | rec                          | true   | 是否执行文字识别                                                                         |
@@ -192,7 +192,7 @@ https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 | rec_img_h                    | 48     | 文字识别模型输入图像高度                                                                 |
 | rec_img_w                    | 320    | 文字识别模型输入图像宽度                                                                 |
 | return_word_box              | false  | 是否返回单字坐标                                                                         |
-| ocr_instance_count           | false  | OCR引擎实例数量，默认1，最大10，适用于高并发时使用。                                     |
+| ocr_instance_count           | false  | OCR引擎实例数量，默认1，最大10，适用于高并发时使用。                                       |
 | **版面结构识别参数 (LayoutParameter)** | -- | **PP-Structure专用** |
 | use_gpu                      | false  | 是否使用GPU                                                                              |
 | gpu_id                       | 0      | GPU id，使用GPU时有效                                                                    |
@@ -221,7 +221,7 @@ https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 | max_side_len                 | 960    | 输入图像最长边限制                                                                       |
 | **条件识别参数**             | --     | -- |
 | use_table_recognition        | true   | 是否使用表格识别                                                                         |
-| use_table_cells_detection    | false  | Whether to use table cell detection                                                           |
+| use_table_cells_detection    | false  | 是否启用表格单元格检测和按单元格OCR                                                        |
 | use_seal_recognition         | false  | 是否使用印章识别                                                                         |
 | use_formula_recognition      | true   | 是否使用公式识别                                                                         |
 | use_chart_recognition        | false  | 是否使用图表转表识别                                                                     |
