@@ -1,4 +1,10 @@
 # 📝 Changelog
+v4.5.3 2026.7.6
+✅ ‌PaddleOCR.dll‌: Optimized the accuracy of layout recognition and table recognition, and adjusted the C++ interface for layout recognition initialization.
+✅ ‌WinFormsApp‌: Added the option to enable or disable layout recognition, and optimized the model download program.
+✅ ‌OCRCoreService‌: Optimized the style of the online Demo, and separated JavaScript and CSS files.
+✅ ‌NuGet Package Release‌: PaddleOCRRuntime_x64 v4.5.3 is released, with C++ dependencies moved to runtimes\win-x64\native.
+✅ ‌NuGet Package Release‌: PaddleOCRSDK v4.5.3 is released, which updates the C++ interface methods and adds the NativeRuntimeLoader for loading native dependencies.
 
 v4.5.2 2026.6.17
 - ✅ ‌PaddleOCR.dll‌: Optimized the multi-instance multi-threading mechanism. The image-to-image search interface now supports Byte and Mat formats, and is compatible with the PP-OCRv6 model.

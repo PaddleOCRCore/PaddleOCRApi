@@ -1,5 +1,12 @@
 # 📝 更新日志
 
+## v4.5.3 `2026.7.6`
+- ✅ **PaddleOCR.dll**: 优化版面识别-表格识别精度，C++接口版面识别初始化接口调整。
+- ✅ **WinFormsApp**: 增加是否启用版面识别选择，优化模型下载程序。
+- ✅ **OCRCoreService**: 优化在线Demo样式，分离js及css。
+- ✅ **发布NuGet包**: PaddleOCRRuntime_x64发布v4.5.3，将C++依赖移至runtimes\win-x64\native。
+- ✅ **发布NuGet包**: PaddleOCRSDK发布v4.5.3,更新C++接口方法，同时增加NativeRuntimeLoader，用于加载native依赖。
+
 ## v4.5.2 `2026.6.17`
 - ✅ **PaddleOCR.dll**: 优化多实例多线程机制，以图找图接口支持Byte及Mat，支持PP-OCRv6模型。
 - ✅ **WinFormsApp**: 增加支持PP-OCRv6模型及PaddleOCR-VL1.6模型。
