@@ -35,6 +35,11 @@ namespace OCRCoreService.Controllers
         private const long MaxImageSize = 10L * 1024 * 1024;
         private const long MaxPdfSize = 200L * 1024 * 1024;
         private const int MaxPdfPages = 1000;
+        private static readonly Lazy<Encoding> GbkEncoding = new(() =>
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            return Encoding.GetEncoding("GBK");
+        });
         private static readonly HashSet<string> SupportedImageExtensions = new(StringComparer.OrdinalIgnoreCase)
         {
             ".png",
@@ -270,7 +275,7 @@ namespace OCRCoreService.Controllers
             string layoutJson,
             LayoutDetectResult layoutResult)
         {
-            string markdown = ExtractLayoutText(layoutResult);
+            string markdown = FixDisplayEncoding(ExtractLayoutText(layoutResult));
             return new OCRDemoAnalyzeResult
             {
                 Model = model,
@@ -280,8 +285,52 @@ namespace OCRCoreService.Controllers
                 Markdown = markdown,
                 JsonText = layoutJson,
                 Raw = layoutResult,
-                Boxes = BuildLayoutBoxes(layoutResult)
+                Boxes = FixDisplayEncoding(BuildLayoutBoxes(layoutResult))
             };
+        }
+
+        private static List<OCRDemoBox> FixDisplayEncoding(List<OCRDemoBox> boxes)
+        {
+            foreach (OCRDemoBox box in boxes)
+            {
+                box.Text = FixDisplayEncoding(box.Text);
+            }
+
+            return boxes;
+        }
+
+        private static string FixDisplayEncoding(string text)
+        {
+            int originalScore = CountUtf8DecodedAsGbkMarkers(text);
+            if (string.IsNullOrEmpty(text) || originalScore < 2)
+            {
+                return text;
+            }
+
+            try
+            {
+                byte[] bytes = GbkEncoding.Value.GetBytes(text);
+                string decoded = Encoding.UTF8.GetString(bytes);
+                return CountUtf8DecodedAsGbkMarkers(decoded) < originalScore ? decoded : text;
+            }
+            catch
+            {
+                return text;
+            }
+        }
+
+        private static int CountUtf8DecodedAsGbkMarkers(string text)
+        {
+            int score = 0;
+            foreach (char ch in text)
+            {
+                if (ch is '鑼' or '榛' or '锛' or '鐜' or '鍊' or '涓' or '绠' or '姣' or '缁' or '骞' or '€')
+                {
+                    score++;
+                }
+            }
+
+            return score;
         }
 
         private static string NormalizeModel(string model)
@@ -413,16 +462,13 @@ namespace OCRCoreService.Controllers
 
         private static string ExtractLayoutText(LayoutDetectResult layoutResult)
         {
-            if (!string.IsNullOrWhiteSpace(layoutResult.Markdown))
-            {
-                return layoutResult.Markdown.Trim();
-            }
-
             StringBuilder builder = new();
             if (layoutResult.ParsingResList != null)
             {
                 foreach (LayoutBlockResult block in layoutResult.ParsingResList
-                    .OrderBy(block => block.BlockOrder ?? block.BlockId ?? int.MaxValue))
+                    .OrderBy(GetBlockTop)
+                    .ThenBy(GetBlockLeft)
+                    .ThenBy(block => block.BlockOrder ?? block.BlockId ?? int.MaxValue))
                 {
                     if (string.IsNullOrWhiteSpace(block.BlockContent))
                     {
@@ -436,6 +482,16 @@ namespace OCRCoreService.Controllers
 
                     builder.Append(block.BlockContent.Trim());
                 }
+            }
+
+            if (builder.Length > 0)
+            {
+                return builder.ToString();
+            }
+
+            if (!string.IsNullOrWhiteSpace(layoutResult.Markdown))
+            {
+                return layoutResult.Markdown.Trim();
             }
 
             if (builder.Length == 0 && layoutResult.OverallOcrRes?.RecTexts != null)
@@ -457,6 +513,16 @@ namespace OCRCoreService.Controllers
             }
 
             return builder.ToString();
+        }
+
+        private static double GetBlockTop(LayoutBlockResult block)
+        {
+            return block.BlockBbox?.Count >= 4 ? Math.Min(block.BlockBbox[1], block.BlockBbox[3]) : double.MaxValue;
+        }
+
+        private static double GetBlockLeft(LayoutBlockResult block)
+        {
+            return block.BlockBbox?.Count >= 4 ? Math.Min(block.BlockBbox[0], block.BlockBbox[2]) : double.MaxValue;
         }
     }
 

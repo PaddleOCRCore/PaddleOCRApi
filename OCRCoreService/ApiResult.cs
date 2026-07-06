@@ -142,6 +142,10 @@ namespace OCRCoreService
     public class OCRConfig
     {
         /// <summary>
+        /// 模型根目录，支持绝对路径或相对程序目录路径
+        /// </summary>
+        public string models_root { get; set; } = "models";
+        /// <summary>
         /// det_infer模型路径
         /// </summary>
         public string det_infer { get; set; }
@@ -217,6 +221,10 @@ namespace OCRCoreService
     public class LayoutConfig
     {
         /// <summary>
+        /// 模型根目录，支持绝对路径或相对程序目录路径
+        /// </summary>
+        public string models_root { get; set; } = "models";
+        /// <summary>
         /// det_infer模型路径
         /// </summary>
         public string det_infer { get; set; } = "PP-OCRv5_mobile_det_infer";
@@ -274,7 +282,7 @@ namespace OCRCoreService
         /// <summary>
         /// 文档图像版面子模块检测模型路径
         /// </summary>
-        public string region_model_dir { get; set; } = "PP-DocBlockLayout";
+        public string region_model_dir { get; set; } = "PP-DocBlockLayout_infer";
         /// <summary>
         /// 是否使用GPU
         /// </summary>

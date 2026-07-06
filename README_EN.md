@@ -108,8 +108,8 @@ PaddleOCRWebApi/
 For paddle_inference 3.3+ version:
 
 ```xml
-<PackageReference Include="PaddleOCRSDK" Version="4.5.2" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.2" />
+<PackageReference Include="PaddleOCRSDK" Version="4.5.3" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3" />
 ```
 
 ### 2. WebAPI Service Startup

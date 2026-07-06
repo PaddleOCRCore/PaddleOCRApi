@@ -429,6 +429,6 @@
 
 ## 版本信息
 
-- **SDK 版本**:4.5.2 (paddle_inference 3.4+)
+- **SDK 版本**:4.5.3 (paddle_inference 3.4+)
 - **支持平台**:Windows x64
 - **更新日期**:2026-05-22

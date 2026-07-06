@@ -111,8 +111,8 @@ PaddleOCRWebApi/
 使用paddle_inference3.3+版本推理库：
 
 ```xml
-<PackageReference Include="PaddleOCRSDK" Version="4.5.2" />
-<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.2" />
+<PackageReference Include="PaddleOCRSDK" Version="4.5.3" />
+<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3" />
 ```
 
 ### 2. WebAPI服务启动

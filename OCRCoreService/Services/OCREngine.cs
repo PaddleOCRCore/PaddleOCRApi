@@ -81,6 +81,12 @@ namespace OCRCoreService.Services
                 : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
         }
 
+            private static string ResolveModelPath(string modelsRoot, string modelDirectory)
+            {
+                string root = ResolvePath(string.IsNullOrWhiteSpace(modelsRoot) ? "models" : modelsRoot);
+                return Path.Combine(root, modelDirectory ?? string.Empty);
+            }
+
         /// <summary>
         /// 初始化OCR引擎
         /// </summary>
@@ -90,9 +96,9 @@ namespace OCRCoreService.Services
             //自带轻量版中英文模型V5模型
             InitParamater para=new InitParamater();
             //改为相对路径，避免中文路径问题
-            para.det_infer = $"models/{_ocrConfig.det_infer}";
-            para.cls_infer = $"models/{_ocrConfig.cls_infer}";
-            para.rec_infer = $"models/{_ocrConfig.rec_infer}";
+            para.det_infer = ResolveModelPath(_ocrConfig.models_root, _ocrConfig.det_infer);
+            para.cls_infer = ResolveModelPath(_ocrConfig.models_root, _ocrConfig.cls_infer);
+            para.rec_infer = ResolveModelPath(_ocrConfig.models_root, _ocrConfig.rec_infer);
             OCRParameter oCRParameter = new OCRParameter();
             oCRParameter.use_gpu = _ocrConfig.use_gpu;
             oCRParameter.use_tensorrt = false;
@@ -149,20 +155,20 @@ namespace OCRCoreService.Services
                 InitParamater para = new InitParamater();
 
                 //改为相对路径，避免中文路径问题
-                para.det_infer = $"models/{_layoutConfig.det_infer}";
-                para.cls_infer = $"models/{_layoutConfig.cls_infer}";
-                para.doc_cls_infer = $"models/{_layoutConfig.doc_cls_infer}";
-                para.rec_infer = $"models/{_layoutConfig.rec_infer}";
-                para.layout_model_dir = $"models/{_layoutConfig.layout_model_dir}";
-                para.table_cls_model_dir = $"models/{_layoutConfig.table_cls_model_dir}";
-                para.wired_table_model_dir = $"models/{_layoutConfig.wired_table_model_dir}";
-                para.wireless_table_model_dir = $"models/{_layoutConfig.wireless_table_model_dir}";
-                para.wired_table_cell_det_model_dir = $"models/{_layoutConfig.wired_table_cell_det_model_dir}";
-                para.wireless_table_cell_det_model_dir = $"models/{_layoutConfig.wireless_table_cell_det_model_dir}";
-                para.formula_model_dir = $"models/{_layoutConfig.formula_model_dir}";
-                para.doc_unwarp_model = $"models/{_layoutConfig.doc_unwarp_model}";
-                para.region_model_dir = $"models/{_layoutConfig.region_model_dir}";
-                para.seal_model_dir = $"models/{_layoutConfig.seal_model_dir}";
+                para.det_infer = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.det_infer);
+                para.cls_infer = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.cls_infer);
+                para.doc_cls_infer = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.doc_cls_infer);
+                para.rec_infer = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.rec_infer);
+                para.layout_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.layout_model_dir);
+                para.table_cls_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.table_cls_model_dir);
+                para.wired_table_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.wired_table_model_dir);
+                para.wireless_table_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.wireless_table_model_dir);
+                para.wired_table_cell_det_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.wired_table_cell_det_model_dir);
+                para.wireless_table_cell_det_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.wireless_table_cell_det_model_dir);
+                para.formula_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.formula_model_dir);
+                para.doc_unwarp_model = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.doc_unwarp_model);
+                para.region_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.region_model_dir);
+                para.seal_model_dir = ResolveModelPath(_layoutConfig.models_root, _layoutConfig.seal_model_dir);
                 LayoutParameter oCRParameter = new LayoutParameter();
                 oCRParameter.use_gpu = _layoutConfig.use_gpu;
                 oCRParameter.use_tensorrt = _layoutConfig.use_tensorrt;

@@ -22,6 +22,7 @@
     <PackageReference Include="Scalar.AspNetCore.Microsoft" Version="2.14.14" />
     <PackageReference Include="SkiaSharp" Version="3.119.1" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.9" />
+	<PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
 	<PackageReference Include="NLog" Version="5.2.8" />
 	<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
   </ItemGroup>
@@ -29,7 +30,7 @@
 	<PackageReference Include="PaddleOCRRuntime_x64" Version="4.5.3-beta03" />
   </ItemGroup>
   <ItemGroup>
-	<!-- <PackageReference Include="PaddleOCRSDK" Version="4.5.2" /> -->
+	<!-- <PackageReference Include="PaddleOCRSDK" Version="4.5.3" /> -->
 	<ProjectReference Include="..\PaddleOCRSDK\PaddleOCRSDK.csproj" />
   </ItemGroup>
   <ItemGroup>

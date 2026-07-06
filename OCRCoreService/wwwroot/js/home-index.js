@@ -8,8 +8,14 @@ const state = {
     markdownText: "",
     tab: "doc",
     busy: false,
-    activeBlockId: null
+    activeBlockId: null,
+    previewZoom: 1
 };
+
+const previewZoomStep = 0.2;
+const minPreviewZoom = 0.5;
+const maxPreviewZoom = 2.5;
+const defaultPreviewWidth = 560;
 
 const app = document.getElementById("app");
 const fileInput = document.getElementById("fileInput");
@@ -40,6 +46,9 @@ const prevPageButton = document.getElementById("prevPageButton");
 const nextPageButton = document.getElementById("nextPageButton");
 const pageInput = document.getElementById("pageInput");
 const pageCount = document.getElementById("pageCount");
+const zoomOutButton = document.getElementById("zoomOutButton");
+const zoomInButton = document.getElementById("zoomInButton");
+const zoomResetButton = document.getElementById("zoomResetButton");
 const placeholderMark = placeholder.querySelector(".placeholder-mark");
 const initialSourceName = sourceName.textContent;
 const initialFileListHtml = fileList.innerHTML;
@@ -95,6 +104,9 @@ licenseInput.addEventListener("change", () => {
 });
 prevPageButton.addEventListener("click", () => changePage(state.pageIndex - 1));
 nextPageButton.addEventListener("click", () => changePage(state.pageIndex + 1));
+zoomOutButton.addEventListener("click", () => setPreviewZoom(state.previewZoom - previewZoomStep));
+zoomInButton.addEventListener("click", () => setPreviewZoom(state.previewZoom + previewZoomStep));
+zoomResetButton.addEventListener("click", () => resetPreviewZoom());
 pageInput.addEventListener("change", () => changePage(Number.parseInt(pageInput.value, 10)));
 pageInput.addEventListener("keydown", event => {
     if (event.key === "Enter") {
@@ -119,6 +131,7 @@ copyButton.addEventListener("click", async () => {
 
 previewImage.addEventListener("load", () => {
     previewImage.dataset.fallbackUsed = "";
+    applyPreviewZoom();
     renderBoxes();
 });
 previewImage.addEventListener("error", () => {
@@ -135,7 +148,10 @@ previewImage.addEventListener("error", () => {
     imageWrap.hidden = true;
     placeholder.hidden = false;
 });
-window.addEventListener("resize", () => renderBoxes());
+window.addEventListener("resize", () => {
+    applyPreviewZoom();
+    renderBoxes();
+});
 
 function setFile(file) {
     const validation = validateFile(file);
@@ -150,6 +166,7 @@ function setFile(file) {
     state.pageCount = 1;
     state.isPdf = isPdfFile(file);
     state.markdownText = "";
+    resetPreviewZoom(false);
     dropzone.hidden = true;
     updateFileSummary(file);
     renderLocalPreview(file);
@@ -168,6 +185,7 @@ function startNewAnalysis() {
     state.pageCount = 1;
     state.isPdf = false;
     state.markdownText = "";
+    resetPreviewZoom(false);
     fileInput.value = "";
     dropzone.hidden = false;
     dropzone.classList.remove("dragging");
@@ -403,6 +421,7 @@ function renderLocalPreview(file) {
     pager.hidden = true;
     pageInput.value = "1";
     pageCount.textContent = "1";
+    resetPreviewZoom(false);
 
     if (state.objectUrl) {
         URL.revokeObjectURL(state.objectUrl);
@@ -459,6 +478,38 @@ function renderBoxes() {
         overlay.appendChild(box);
     }
     updateActiveBlock();
+}
+
+function setPreviewZoom(zoom, resetScroll = false) {
+    state.previewZoom = Math.min(maxPreviewZoom, Math.max(minPreviewZoom, Number(zoom) || 1));
+    applyPreviewZoom(resetScroll);
+    renderBoxes();
+    updatePager();
+}
+
+function resetPreviewZoom(resetScroll = true) {
+    state.previewZoom = 1;
+    applyPreviewZoom(resetScroll);
+    renderBoxes();
+    updatePager();
+}
+
+function applyPreviewZoom(resetScroll = false) {
+    const baseWidth = getPreviewBaseWidth();
+    imageWrap.style.width = `${Math.round(baseWidth * state.previewZoom)}px`;
+    if (resetScroll) {
+        const previewScroller = imageWrap.closest(".image-shell");
+        if (previewScroller) {
+            previewScroller.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+        }
+    }
+}
+
+function getPreviewBaseWidth() {
+    const shellStyle = window.getComputedStyle(imageWrap.parentElement);
+    const horizontalPadding = Number.parseFloat(shellStyle.paddingLeft) + Number.parseFloat(shellStyle.paddingRight);
+    const availableWidth = Math.max(240, imageWrap.parentElement.clientWidth - horizontalPadding);
+    return Math.min(defaultPreviewWidth, availableWidth);
 }
 
 function getBlockId(item, fallbackIndex) {
@@ -986,11 +1037,11 @@ function updatePager() {
     const total = state.pageCount || 1;
     const current = clampPage(state.pageIndex || 1);
     state.pageIndex = current;
-    pager.hidden = !state.isPdf || total <= 1;
+    pager.hidden = !state.file;
     pageInput.value = String(current);
     pageCount.textContent = String(total);
-    prevPageButton.disabled = state.busy || current <= 1;
-    nextPageButton.disabled = state.busy || current >= total;
+    prevPageButton.disabled = state.busy || !state.isPdf || current <= 1;
+    nextPageButton.disabled = state.busy || !state.isPdf || current >= total;
     pageInput.disabled = state.busy;
 }
 

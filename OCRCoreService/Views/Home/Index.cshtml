@@ -31,11 +31,16 @@
 
         <section class="workspace">
             <aside class="sidebar">
-                <button class="new-button" id="newButton" type="button">＋ 新解析</button>
-                <a class="api-button" href="/scalar">API接口</a>
+                <div class="side-actions">
+                    <button class="new-button" id="newButton" type="button">＋ 新解析</button>
+                    <a class="api-button" href="/scalar">API接口</a>
+                </div>
                 <div class="side-section">
                     <div class="side-title">
-                        <span>上传列表</span>
+                        <span>上传记录</span>
+                    </div>
+                    <div class="side-tabs" aria-label="文件列表视图">
+                        <span class="side-tab active">最近上传</span>
                     </div>
                     <div class="file-list" id="fileList">
                         <div class="empty-list">没有更多啦</div>
@@ -50,14 +55,17 @@
                         <span class="drop-content">
                             <span class="upload-icon">↑</span>
                             <span class="drop-title">点击上传或拖入文件开始解析</span>
-                            <span class="drop-note">支持PDF/PNG/JPG/BMP/TIF等各种图片格式<br>单文件≤200MB&1000页，单图片≤10MB</span>
+                            <span class="drop-note">支持PDF/PNG/JPG/BMP/TIF/PDF等各种图片格式<br>单文件≤200MB&1000页，单图片≤10MB</span>
                         </span>
                     </label>
 
                     <div class="source-bar">
                         <div class="source-tab">源文件</div>
-                        <div class="source-file" id="sourceName">未选择文件</div>
-                        <div class="source-size" id="sourceSize"></div>
+                        <div class="source-meta">
+                            <span class="source-file-icon" aria-hidden="true">▣</span>
+                            <div class="source-file" id="sourceName">未选择文件</div>
+                            <div class="source-size" id="sourceSize"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -78,6 +86,11 @@
                         <span>/</span>
                         <span id="pageCount">1</span>
                         <button type="button" id="nextPageButton" title="下一页">›</button>
+                        <span class="pager-divider" aria-hidden="true"></span>
+                        <button type="button" class="preview-tool" id="zoomOutButton" title="缩小">⌖</button>
+                        <button type="button" class="preview-tool" id="zoomInButton" title="放大">⌕</button>
+                        <span class="pager-divider" aria-hidden="true"></span>
+                        <button type="button" class="preview-tool" id="zoomResetButton" title="重置预览">↻</button>
                     </div>
                 </div>
             </section>
@@ -85,11 +98,13 @@
             <section class="result-pane">
                 <div class="model-row">
                     <label class="model-label" for="modelSelect">解析模型</label>
-                    <select class="model-select" id="modelSelect">
-                        <option value="pp-structure">PP-StructureV3</option>
-                        <option value="pp-ocrv6">PP-OCRv6</option>
-                        <option value="@ocrVlModelValue">@ocrVlModelName</option>
-                    </select>
+                    <div class="model-field">
+                        <select class="model-select" id="modelSelect">
+                            <option value="pp-structure">PP-StructureV3</option>
+                            <option value="pp-ocrv6">PP-OCRv6</option>
+                            <option value="@ocrVlModelValue">@ocrVlModelName</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="tabbar">
