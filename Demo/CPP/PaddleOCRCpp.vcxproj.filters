@@ -15,15 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PaddleOCRCpp.cpp">
+    <ClCompile Include="src\LayoutRecognition.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PaddleOCRCommon.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PaddleOCRCpp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextRecognition.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\LayoutRecognition.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="include\AI_Parameter.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PaddleOCR.h">
+    <ClInclude Include="include\PaddleOCRCommon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PaddleOCR.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TextRecognition.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
