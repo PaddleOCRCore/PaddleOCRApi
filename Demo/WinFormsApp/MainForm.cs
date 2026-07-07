@@ -473,16 +473,21 @@ namespace WinFormsApp
                         OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
                         break;
                     case 2:
+                        OCREngine.det_infer = "PP-OCRv6_medium_det_infer";
+                        OCREngine.rec_infer = "PP-OCRv6_medium_rec_infer";
+                        OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
+                        break;
+                    case 3:
                         OCREngine.det_infer = "PP-OCRv5_mobile_det_infer";
                         OCREngine.rec_infer = "PP-OCRv5_mobile_rec_infer";
                         OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
                         break;
-                    case 3:
+                    case 4:
                         OCREngine.det_infer = "PP-OCRv5_server_det_infer";
                         OCREngine.rec_infer = "PP-OCRv5_server_rec_infer";
                         OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";
                         break;
-                    case 4:
+                    case 5:
                         OCREngine.det_infer = "PP-OCRv4_mobile_det_infer";
                         OCREngine.rec_infer = "PP-OCRv4_mobile_rec_infer";
                         OCREngine.cls_infer = "PP-LCNet_x1_0_textline_ori";

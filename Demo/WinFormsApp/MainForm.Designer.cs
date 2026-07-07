@@ -653,7 +653,7 @@
             // comboBoxModel
             // 
             comboBoxModel.FormattingEnabled = true;
-            comboBoxModel.Items.AddRange(new object[] { "PP-OCRv6_tiny", "PP-OCRv6_small", "PP-OCRv5_mobile", "PP-OCRv5_server", "PP-OCRv4_mobile" });
+            comboBoxModel.Items.AddRange(new object[] { "PP-OCRv6_tiny", "PP-OCRv6_small", "PP-OCRv6_medium", "PP-OCRv5_mobile", "PP-OCRv5_server", "PP-OCRv4_mobile" });
             comboBoxModel.Location = new Point(82, 87);
             comboBoxModel.Name = "comboBoxModel";
             comboBoxModel.Size = new Size(129, 25);
