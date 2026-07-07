@@ -16,6 +16,7 @@
 #pragma once
 #include <string>
 #include <opencv2/opencv.hpp>  // 使用OpenCV，若不使用DetectMat/DetectLayoutMat可不依赖OpenCV
+//使用OPENCV_ROOT环境变量指定OpenCV安装目录，OpenCV版本4.10
 #include <include/AI_Parameter.h>
 #pragma comment(lib, "PaddleOCR.lib")
 
