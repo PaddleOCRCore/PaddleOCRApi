@@ -153,13 +153,13 @@ namespace PaddleOCRSDK
         internal static extern IntPtr DetectBase64(string base64);
 
         /// <summary>
-        /// OCR文字识别（内存截图）
+        /// OCR文字识别（内存图片字节流地址）
         /// </summary>
         /// <param name="data">PNG/JPG/BMP等压缩图片字节流的内存地址，不是裸像素地址</param>
         /// <param name="size">压缩图片字节流长度</param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectScreenShot(IntPtr data, int size);
+        internal static extern IntPtr DetectPtr(IntPtr data, int size);
 
         /// <summary>
         /// 释放OCR实例
@@ -276,6 +276,15 @@ namespace PaddleOCRSDK
         /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern IntPtr DetectLayoutByte(byte[] imagebyte, UIntPtr size);
+
+        /// <summary>
+        /// 执行文档版面分析 - 内存图片字节流地址输入
+        /// </summary>
+        /// <param name="data">PNG/JPG/BMP等压缩图片字节流的内存地址，不是裸像素地址</param>
+        /// <param name="size">压缩图片字节流长度</param>
+        /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+        [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static extern IntPtr DetectLayoutPtr(IntPtr data, int size);
 
         /// <summary>
         /// 执行文档版面分析 - Base64编码输入

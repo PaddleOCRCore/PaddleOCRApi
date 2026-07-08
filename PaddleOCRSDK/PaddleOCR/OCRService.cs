@@ -412,18 +412,18 @@ namespace PaddleOCRSDK
             var ptrResult = OCRSDK.DetectBase64(base64);
             return GetResult(ptrResult);
         }
-        public OCRResult DetectScreenShot(IntPtr screenshotData, int size)
+        public OCRResult DetectPtr(IntPtr imageData, int size)
         {
-            if (screenshotData == IntPtr.Zero || size <= 0)
+            if (imageData == IntPtr.Zero || size <= 0)
             {
                 return new OCRResult
                 {
                     Code = 0,
-                    ErrorMsg = "截图数据地址为空或长度无效"
+                    ErrorMsg = "图片数据地址为空或长度无效"
                 };
             }
 
-            var ptrResult = OCRSDK.DetectScreenShot(screenshotData, size);
+            var ptrResult = OCRSDK.DetectPtr(imageData, size);
             return GetResult(ptrResult);
         }
         private OCRResult GetResult(IntPtr ptrResult)
@@ -502,6 +502,22 @@ namespace PaddleOCRSDK
             return ReadStructureResult(ptrResult);
         }
         /// <summary>
+        /// 执行文档版面分析（内存图片字节流地址输入）
+        /// </summary>
+        /// <param name="imageData">PNG/JPG/BMP等压缩图片字节流内存地址，不是裸像素地址</param>
+        /// <param name="size">压缩图片字节流长度</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        public string DetectLayoutPtr(IntPtr imageData, int size)
+        {
+            if (imageData == IntPtr.Zero || size <= 0)
+            {
+                return "{\"error\":\"图片数据地址为空或长度无效\"}";
+            }
+
+            var ptrResult = OCRSDK.DetectLayoutPtr(imageData, size);
+            return ReadStructureResult(ptrResult);
+        }
+        /// <summary>
         /// 执行文档版面分析（OpenCV Mat 输入）
         /// </summary>
         /// <param name="ptr_cvmat">OpenCV Mat 指针</param>
@@ -541,6 +557,18 @@ namespace PaddleOCRSDK
         public LayoutDetectResult DetectLayoutByteParsed(byte[] imagebyte)
         {
             var json = DetectLayoutByte(imagebyte);
+            return ParseLayoutResult(json);
+        }
+
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（内存图片字节流地址输入）
+        /// </summary>
+        /// <param name="imageData">PNG/JPG/BMP等压缩图片字节流内存地址，不是裸像素地址</param>
+        /// <param name="size">压缩图片字节流长度</param>
+        /// <returns>结构化的版面识别结果</returns>
+        public LayoutDetectResult DetectLayoutPtrParsed(IntPtr imageData, int size)
+        {
+            var json = DetectLayoutPtr(imageData, size);
             return ParseLayoutResult(json);
         }
 

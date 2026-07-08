@@ -3,6 +3,7 @@
 本文件基于PaddleOCR.dll导出函数清单,按功能分组列出接口签名、参数说明与返回值说明。
 
 > 注意:所有返回"指向字符串的指针(UTF-8)"均为库内部分配的缓冲区,调用者应使用 `FreeResultBuffer` 释放(除非接口文档另有说明)。
+> 注意:`DetectPtr` / `DetectLayoutPtr` 的输入是 PNG/JPG/BMP 等压缩图片字节流的内存地址和长度,不是 BGRA/RGBA 等裸像素地址;调用方需保证指针在函数调用期间有效。
 
 ---
 
@@ -77,11 +78,11 @@
   - 参数:`imagebase64` — Base64 编码的图片字符串。
   - 返回:指向结果字符串的指针(UTF-8),调用者需使用 `FreeResultBuffer` 释放;失败时可能返回 NULL。
 
-- `const char* DetectScreenShot(const unsigned char* data, int size)`
-  - 描述:对内存截图数据执行 OCR 检测(适用于屏幕截图等场景)。
+- `const char* DetectPtr(const unsigned char* data, int size)`
+  - 描述:对内存图片字节流地址执行 OCR 检测,适合跨语言通过指针传入 PNG/JPG/BMP 等压缩图片数据。
   - 参数:
-    - `data`:截图字节数据指针
-    - `size`:截图字节长度
+    - `data`:PNG/JPG/BMP 等压缩图片字节流地址,不是裸像素地址
+    - `size`:压缩图片字节流长度
   - 返回:指向结果字符串的指针(UTF-8),调用者需使用 `FreeResultBuffer` 释放;失败时可能返回 NULL。
 
 ### 资源释放
@@ -140,6 +141,13 @@
   - 参数:
     - `imagebytedata`:图片字节数组指针
     - `size`:字节数组长度(字节数)
+  - 返回:完整分析结果 JSON 字符串(需使用 `FreeResultBuffer` 释放);失败时可能返回 NULL。
+
+- `const char* DetectLayoutPtr(const unsigned char* data, int size)`
+  - 描述:执行文档版面分析 - 内存图片字节流地址输入,适合跨语言通过指针传入 PNG/JPG/BMP 等压缩图片数据。
+  - 参数:
+    - `data`:PNG/JPG/BMP 等压缩图片字节流地址,不是裸像素地址
+    - `size`:压缩图片字节流长度
   - 返回:完整分析结果 JSON 字符串(需使用 `FreeResultBuffer` 释放);失败时可能返回 NULL。
 
 - `const char* DetectLayoutBase64(const char* imagebase64)`

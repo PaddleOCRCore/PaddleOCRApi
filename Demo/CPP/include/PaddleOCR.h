@@ -130,14 +130,13 @@ extern "C" {
     /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
     Paddle_API const char* CALL_CONV DetectBase64(const char* imagebase64);
 
-
     /// <summary>
-    /// 对内存截图执行OCR检测并返回结果字符串
+    /// 对内存图片字节流地址执行OCR检测并返回结果字符串
     /// </summary>
-    /// <param name="data">内存截图数据指针</param>
-    /// <param name="size">内存截图数据长度（字节数）</param>
-    /// <returns>返回指向结果字符串的指针（内部分配，使用FreeResultBuffer释放）</returns>
-    Paddle_API const char* CALL_CONV DetectScreenShot(unsigned char* data, int size);
+    /// <param name="data">PNG/JPG/BMP等压缩图片字节流地址，不是裸像素地址</param>
+    /// <param name="size">压缩图片字节流长度（字节数）</param>
+    /// <returns>返回指向结果字符串的指针（内部分配，由库托管，FreeResultBuffer为兼容可选调用）</returns>
+    Paddle_API const char* CALL_CONV DetectPtr(const unsigned char* data, int size);
 
     /// <summary>
     /// 释放并关闭OCR引擎，释放所有相关资源
@@ -296,6 +295,17 @@ extern "C" {
     Paddle_API const char* CALL_CONV DetectLayoutByte(
         const unsigned char* imagebytedata,
         size_t size
+    );
+
+    /// <summary>
+    /// 执行文档版面分析 - 内存图片字节流地址输入
+    /// </summary>
+    /// <param name="data">PNG/JPG/BMP等压缩图片字节流地址，不是裸像素地址</param>
+    /// <param name="size">压缩图片字节流长度(字节数)</param>
+    /// <returns>完整分析结果JSON字符串(需使用FreeResultBuffer释放)</returns>
+    Paddle_API const char* CALL_CONV DetectLayoutPtr(
+        const unsigned char* data,
+        int size
     );
 
     /// <summary>

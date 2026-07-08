@@ -93,12 +93,12 @@ namespace PaddleOCRSDK
         /// <returns>OCR识别结果，包含文本框和置信度</returns>
         OCRResult DetectBase64(string base64);
         /// <summary>
-        /// 对内存截图数据地址执行 OCR 检测并返回结果
+        /// 对内存图片字节流地址执行 OCR 检测并返回结果
         /// </summary>
-        /// <param name="screenshotData">PNG/JPG/BMP等压缩图片字节流内存地址，不是裸像素地址</param>
+        /// <param name="imageData">PNG/JPG/BMP等压缩图片字节流内存地址，不是裸像素地址</param>
         /// <param name="size">压缩图片字节流长度</param>
         /// <returns>OCR识别结果，包含文本框和置信度</returns>
-        OCRResult DetectScreenShot(IntPtr screenshotData, int size);
+        OCRResult DetectPtr(IntPtr imageData, int size);
         /// <summary>
         /// 获取上一次操作的错误信息
         /// </summary>
@@ -131,6 +131,13 @@ namespace PaddleOCRSDK
         /// <param name="imagebyte">图片字节数组</param>
         /// <returns>包含版面分析结果的 JSON 字符串</returns>
         string DetectLayoutByte(byte[] imagebyte);
+        /// <summary>
+        /// 执行文档版面分析（内存图片字节流地址输入）
+        /// </summary>
+        /// <param name="imageData">PNG/JPG/BMP等压缩图片字节流内存地址，不是裸像素地址</param>
+        /// <param name="size">压缩图片字节流长度</param>
+        /// <returns>包含版面分析结果的 JSON 字符串</returns>
+        string DetectLayoutPtr(IntPtr imageData, int size);
         /// <summary>
         /// 执行文档版面分析（Base64 编码输入）
         /// </summary>
@@ -204,6 +211,14 @@ namespace PaddleOCRSDK
         /// <param name="imagebyte">图片字节数组</param>
         /// <returns>结构化的版面识别结果</returns>
         LayoutDetectResult DetectLayoutByteParsed(byte[] imagebyte);
+
+        /// <summary>
+        /// 执行文档版面分析并返回结构化对象（内存图片字节流地址输入）
+        /// </summary>
+        /// <param name="imageData">PNG/JPG/BMP等压缩图片字节流内存地址，不是裸像素地址</param>
+        /// <param name="size">压缩图片字节流长度</param>
+        /// <returns>结构化的版面识别结果</returns>
+        LayoutDetectResult DetectLayoutPtrParsed(IntPtr imageData, int size);
 
         /// <summary>
         /// 执行文档版面分析并返回结构化对象（Base64 输入）

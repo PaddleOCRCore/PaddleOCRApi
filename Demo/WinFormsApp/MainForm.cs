@@ -722,7 +722,7 @@ namespace WinFormsApp
                     try
                     {
                         handle = GCHandle.Alloc(clipboardImageBuffer.Array, GCHandleType.Pinned);
-                        return ocrService.DetectScreenShot(
+                        return ocrService.DetectPtr(
                             IntPtr.Add(handle.AddrOfPinnedObject(), clipboardImageBuffer.Offset),
                             clipboardImageSize);
                     }

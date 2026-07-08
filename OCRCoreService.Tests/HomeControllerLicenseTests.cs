@@ -128,13 +128,14 @@ public class HomeControllerLicenseTests
         public OCRResult Detect(byte[] imagebyte) => new();
         public OCRResult DetectMat(IntPtr ptr_cvmat) => new();
         public OCRResult DetectBase64(string base64) => new();
-        public OCRResult DetectScreenShot(IntPtr screenshotData, int size) => new();
+        public OCRResult DetectPtr(IntPtr imageData, int size) => new();
         public string GetError() => "";
         public void EnableLog(bool useLog) { }
         public void EnableASCIIResult(bool useANSI) { }
         public void EnableJsonResult(bool enableJson) { }
         public string DetectLayout(string imagefile) => "";
         public string DetectLayoutByte(byte[] imagebyte) => "";
+        public string DetectLayoutPtr(IntPtr imageData, int size) => "";
         public string DetectLayoutBase64(string base64) => "";
         public string DetectLayoutMat(IntPtr ptr_cvmat) => "";
         public void FreeEngine() { }
@@ -145,6 +146,7 @@ public class HomeControllerLicenseTests
         public LayoutDetectResult ParseLayoutResult(string json) => new();
         public LayoutDetectResult DetectLayoutParsed(string imagefile) => new();
         public LayoutDetectResult DetectLayoutByteParsed(byte[] imagebyte) => new();
+        public LayoutDetectResult DetectLayoutPtrParsed(IntPtr imageData, int size) => new();
         public LayoutDetectResult DetectLayoutBase64Parsed(string base64) => new();
         public LayoutDetectResult DetectLayoutMatParsed(IntPtr ptr_cvmat) => new();
     }
