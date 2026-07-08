@@ -40,8 +40,9 @@ bool RunLayoutRecognitionDemo(const vector<string>& images, const string& baseDi
     layout_param.use_seal_recognition = false;
     layout_param.output_markdown = true;
     layout_param.format_block_content = false;
-    layout_param.visualize = true;
+    layout_param.visualize = false;
 
+    EnableLog(false);
     EnableJsonResult(true);
     ActivateLicenseIfExists(baseDirectory);
 
