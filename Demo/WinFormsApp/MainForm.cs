@@ -18,6 +18,7 @@ using PaddleOCRSDK.Models;
 using SkiaSharp;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -695,35 +696,48 @@ namespace WinFormsApp
                 textBoxResult.Text = "";
                 message = new StringBuilder();
 
-                string uploadsPath = Path.Combine(Application.StartupPath, "uploads");
-                Directory.CreateDirectory(uploadsPath);
-                string clipboardImagePath = Path.Combine(uploadsPath, $"clipboard_{DateTime.Now:yyyyMMddHHmmss}.png");
+                ArraySegment<byte> clipboardImageBuffer;
+                int clipboardImageSize;
                 using (clipboardImage)
                 {
-                    await Task.Run(() =>
+                    using MemoryStream imageStream = new MemoryStream();
+                    clipboardImage.Save(imageStream, System.Drawing.Imaging.ImageFormat.Png);
+                    if (!imageStream.TryGetBuffer(out clipboardImageBuffer) || clipboardImageBuffer.Array == null)
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        clipboardImage.Save(clipboardImagePath, System.Drawing.Imaging.ImageFormat.Png);
-                    }, cancellationToken);
+                        byte[] fallbackBuffer = imageStream.ToArray();
+                        clipboardImageBuffer = new ArraySegment<byte>(fallbackBuffer, 0, fallbackBuffer.Length);
+                    }
+                    clipboardImageSize = (int)imageStream.Length;
+
+                    Image? oldImage = pictureBoxImg.Image;
+                    pictureBoxImg.Image = new Bitmap(clipboardImage);
+                    oldImage?.Dispose();
                 }
 
-                LogMessage($"剪贴板图片已保存到: {clipboardImagePath}");
                 LogMessage("Image: 剪贴板图片");
                 OCRResult ocrResult = await Task.Run(() =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    return ocrService.Detect(clipboardImagePath);
+                    GCHandle handle = default;
+                    try
+                    {
+                        handle = GCHandle.Alloc(clipboardImageBuffer.Array, GCHandleType.Pinned);
+                        return ocrService.DetectScreenShot(
+                            IntPtr.Add(handle.AddrOfPinnedObject(), clipboardImageBuffer.Offset),
+                            clipboardImageSize);
+                    }
+                    finally
+                    {
+                        if (handle.IsAllocated)
+                        {
+                            handle.Free();
+                        }
+                    }
                 }, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 string result = BuildOCRText(ocrResult);
                 LogOCRResult(result, ocrResult);
-
-                string resultImagePath = Path.Combine(RecFilepath, Path.GetFileName(clipboardImagePath));
-                if (File.Exists(resultImagePath))
-                {
-                    pictureBoxImg.ImgPath = resultImagePath;
-                }
             }
             catch (OperationCanceledException)
             {

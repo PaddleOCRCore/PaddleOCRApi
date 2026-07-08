@@ -93,11 +93,12 @@ namespace PaddleOCRSDK
         /// <returns>OCR识别结果，包含文本框和置信度</returns>
         OCRResult DetectBase64(string base64);
         /// <summary>
-        /// 对内存截图数据执行 OCR 检测并返回结果
+        /// 对内存截图数据地址执行 OCR 检测并返回结果
         /// </summary>
-        /// <param name="screenshotData">截图字节数组</param>
+        /// <param name="screenshotData">PNG/JPG/BMP等压缩图片字节流内存地址，不是裸像素地址</param>
+        /// <param name="size">压缩图片字节流长度</param>
         /// <returns>OCR识别结果，包含文本框和置信度</returns>
-        OCRResult DetectScreenShot(byte[] screenshotData);
+        OCRResult DetectScreenShot(IntPtr screenshotData, int size);
         /// <summary>
         /// 获取上一次操作的错误信息
         /// </summary>

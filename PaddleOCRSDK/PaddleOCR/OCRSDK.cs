@@ -155,11 +155,11 @@ namespace PaddleOCRSDK
         /// <summary>
         /// OCR文字识别（内存截图）
         /// </summary>
-        /// <param name="data">截图字节数据</param>
-        /// <param name="size">截图字节长度</param>
+        /// <param name="data">PNG/JPG/BMP等压缩图片字节流的内存地址，不是裸像素地址</param>
+        /// <param name="size">压缩图片字节流长度</param>
         /// <returns></returns>
         [DllImport(dllFileName, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        internal static extern IntPtr DetectScreenShot(byte[] data, int size);
+        internal static extern IntPtr DetectScreenShot(IntPtr data, int size);
 
         /// <summary>
         /// 释放OCR实例

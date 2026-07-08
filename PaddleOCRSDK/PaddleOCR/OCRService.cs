@@ -412,23 +412,18 @@ namespace PaddleOCRSDK
             var ptrResult = OCRSDK.DetectBase64(base64);
             return GetResult(ptrResult);
         }
-        /// <summary>
-        /// 对内存截图数据进行文本识别
-        /// </summary>
-        /// <param name="screenshotData">截图字节数组</param>
-        /// <returns>OCR识别结果</returns>
-        public OCRResult DetectScreenShot(byte[] screenshotData)
+        public OCRResult DetectScreenShot(IntPtr screenshotData, int size)
         {
-            if (screenshotData == null || screenshotData.Length == 0)
+            if (screenshotData == IntPtr.Zero || size <= 0)
             {
                 return new OCRResult
                 {
                     Code = 0,
-                    ErrorMsg = "截图数据为空"
+                    ErrorMsg = "截图数据地址为空或长度无效"
                 };
             }
 
-            var ptrResult = OCRSDK.DetectScreenShot(screenshotData, screenshotData.Length);
+            var ptrResult = OCRSDK.DetectScreenShot(screenshotData, size);
             return GetResult(ptrResult);
         }
         private OCRResult GetResult(IntPtr ptrResult)

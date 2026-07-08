@@ -128,7 +128,7 @@ public class HomeControllerLicenseTests
         public OCRResult Detect(byte[] imagebyte) => new();
         public OCRResult DetectMat(IntPtr ptr_cvmat) => new();
         public OCRResult DetectBase64(string base64) => new();
-        public OCRResult DetectScreenShot(byte[] screenshotData) => new();
+        public OCRResult DetectScreenShot(IntPtr screenshotData, int size) => new();
         public string GetError() => "";
         public void EnableLog(bool useLog) { }
         public void EnableASCIIResult(bool useANSI) { }
