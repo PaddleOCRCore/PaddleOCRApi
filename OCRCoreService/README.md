@@ -16,7 +16,7 @@ https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-
 安装ASP.NET Core 运行时 10.0.5：
 https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-10.0.5-windows-x64-installer
 
-安装.NET 桌面运行时 8.0.14：
+安装.NET 桌面运行时 10.0.5：
 https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-10.0.5-windows-x64-installer
 
 创建一个批处理文件：StartOCRApi.bat，输入以下内容：

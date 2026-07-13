@@ -22,7 +22,6 @@
     <PackageReference Include="Scalar.AspNetCore.Microsoft" Version="2.14.14" />
     <PackageReference Include="SkiaSharp" Version="3.119.1" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.9" />
-	<PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
 	<PackageReference Include="NLog" Version="5.2.8" />
 	<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
   </ItemGroup>
