@@ -814,8 +814,7 @@ button {
 
 .coordinate-stage {
     position: relative;
-    max-width: 100%;
-    margin: 0 auto;
+    margin: 0;
     background: #fff;
     border: 1px solid #d9e0ea;
     box-shadow: 0 8px 24px rgba(22, 34, 51, .12);
@@ -861,6 +860,22 @@ button {
     min-width: 0;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+}
+
+.coordinate-text-vertical .coordinate-text-content {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: max-content;
+    height: 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: normal;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    transform: translateX(-50%);
+    transform-origin: 50% 50%;
 }
 
 .coordinate-text-table .coordinate-text-content {

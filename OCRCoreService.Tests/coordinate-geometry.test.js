@@ -28,6 +28,10 @@ assert.equal(context.getCoordinateBlockLineHeight("vision_footnote", "脚注"), 
 assert.equal(context.getCoordinateBlockLineHeight("text", "一\n二\n三"), "1.35");
 assert.equal(context.getCoordinateBlockLineHeight("text", "普通文字"), "1.2");
 assert.equal(context.getCoordinateTableHtml("text", "<table><tr><td>内容</td></tr></table>"), "");
+assert.ok(Math.abs(context.getCoordinateVerticalFontSize(
+    { width: 188, height: 547 },
+    "否极泰来如覆手陶步自此凌烟霄"
+) - 70.32857142857144) < 0.0001);
 
 const verticalOcr = context.createCoordinateGeometry({
     text: "ODM OEM",
@@ -40,8 +44,16 @@ const verticalOcr = context.createCoordinateGeometry({
     ]
 }, 0);
 assert.deepEqual(
-    [verticalOcr.x, verticalOcr.y, verticalOcr.width, verticalOcr.height, verticalOcr.angle, verticalOcr.isVertical],
-    [418, 224, 68, 15, 90, true]
+    [
+        verticalOcr.x,
+        verticalOcr.y,
+        verticalOcr.width,
+        verticalOcr.height,
+        verticalOcr.angle,
+        verticalOcr.isVertical,
+        verticalOcr.isVerticalWriting
+    ],
+    [403, 224, 15, 68, 0, false, true]
 );
 
 const horizontalOcr = context.createCoordinateGeometry({
@@ -68,5 +80,27 @@ const verticalStructureBlock = context.createCoordinateGeometry({
 }, 2);
 assert.equal(verticalStructureBlock.isVertical, true);
 assert.equal(verticalStructureBlock.angle, 90);
+
+const verticalWritingBlock = context.createCoordinateGeometry({
+    text: "否极泰来如覆手陶步自此凌烟霄",
+    label: "vertical_text",
+    isTextLine: false,
+    x: 12,
+    y: 17,
+    width: 188,
+    height: 547
+}, 3);
+assert.deepEqual(
+    [
+        verticalWritingBlock.x,
+        verticalWritingBlock.y,
+        verticalWritingBlock.width,
+        verticalWritingBlock.height,
+        verticalWritingBlock.angle,
+        verticalWritingBlock.isVertical,
+        verticalWritingBlock.isVerticalWriting
+    ],
+    [12, 17, 188, 547, 0, false, true]
+);
 
 console.log("coordinate geometry tests passed");

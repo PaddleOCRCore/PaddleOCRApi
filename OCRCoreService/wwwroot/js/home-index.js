@@ -720,7 +720,8 @@ function createCoordinateGeometry(box, index) {
     if (points.length >= 4) {
         const topEdge = Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y);
         const sideEdge = Math.hypot(points[2].x - points[1].x, points[2].y - points[1].y);
-        const isVertical = shouldRenderVerticalText(box, topEdge, sideEdge);
+        const isVerticalWriting = shouldUseVerticalWriting(box, topEdge, sideEdge);
+        const isVertical = !isVerticalWriting && shouldRenderVerticalText(box, topEdge, sideEdge);
         const width = isVertical ? sideEdge : topEdge;
         const height = isVertical ? topEdge : sideEdge;
         if (width > 0 && height > 0) {
@@ -736,7 +737,8 @@ function createCoordinateGeometry(box, index) {
                 width,
                 height,
                 angle: Math.atan2(direction.y, direction.x) * 180 / Math.PI,
-                isVertical
+                isVertical,
+                isVerticalWriting
             };
         }
     }
@@ -749,10 +751,20 @@ function createCoordinateGeometry(box, index) {
         return null;
     }
 
-    const isVertical = shouldRenderVerticalText(box, width, height);
+    const isVerticalWriting = shouldUseVerticalWriting(box, width, height);
+    const isVertical = !isVerticalWriting && shouldRenderVerticalText(box, width, height);
     return isVertical
-        ? { source: box, index, x: x + width, y, width: height, height: width, angle: 90, isVertical }
-        : { source: box, index, x, y, width, height, angle: 0, isVertical };
+        ? { source: box, index, x: x + width, y, width: height, height: width, angle: 90, isVertical, isVerticalWriting }
+        : { source: box, index, x, y, width, height, angle: 0, isVertical, isVerticalWriting };
+}
+
+function shouldUseVerticalWriting(box, width, height) {
+    if (getBlockLabel(box).toLowerCase() === "vertical_text") {
+        return true;
+    }
+
+    const isTextLine = (box.isTextLine ?? box.IsTextLine) === true;
+    return isTextLine && height > width * 1.5;
 }
 
 function shouldRenderVerticalText(box, width, height) {
@@ -785,9 +797,10 @@ function createCoordinateText(geometry) {
     const tableHtml = getCoordinateTableHtml(label, text);
     const blockId = getBlockId(box, geometry.index);
     const isTextLine = (box.isTextLine ?? box.IsTextLine) === true;
-    const useSingleLineLayout = isTextLine || geometry.isVertical;
+    const useVerticalWriting = geometry.isVerticalWriting === true;
+    const useSingleLineLayout = !useVerticalWriting && (isTextLine || geometry.isVertical);
     const wrapper = document.createElement("div");
-    wrapper.className = `coordinate-text${useSingleLineLayout ? "" : " coordinate-text-block"}${tableHtml ? " coordinate-text-table" : ""}`;
+    wrapper.className = `coordinate-text${useSingleLineLayout ? "" : " coordinate-text-block"}${useVerticalWriting ? " coordinate-text-vertical" : ""}${tableHtml ? " coordinate-text-table" : ""}`;
     wrapper.dataset.blockId = blockId;
     wrapper.style.left = `${geometry.x}px`;
     wrapper.style.top = `${geometry.y}px`;
@@ -803,7 +816,10 @@ function createCoordinateText(geometry) {
     } else {
         content.textContent = text;
     }
-    if (useSingleLineLayout) {
+    if (useVerticalWriting) {
+        content.style.fontSize = `${getCoordinateVerticalFontSize(geometry, text)}px`;
+        content.style.lineHeight = "1.15";
+    } else if (useSingleLineLayout) {
         content.style.fontSize = `${Math.max(1, geometry.height * 0.9)}px`;
         content.style.lineHeight = `${geometry.height}px`;
     } else {
@@ -830,6 +846,23 @@ function createCoordinateText(geometry) {
     }
 
     return wrapper;
+}
+
+function getCoordinateVerticalFontSize(geometry, text) {
+    const lines = String(text || "")
+        .split(/\r?\n/)
+        .map(line => Array.from(line.replace(/\s/g, "")))
+        .filter(line => line.length > 0);
+    const characterCount = Math.max(1, lines.reduce((total, line) => total + line.length, 0));
+    const columnCount = lines.length > 1
+        ? lines.length
+        : Math.max(1, Math.round(Math.sqrt(characterCount * geometry.width / geometry.height)));
+    const charactersPerColumn = lines.length > 1
+        ? Math.max(...lines.map(line => line.length))
+        : Math.ceil(characterCount / columnCount);
+    const fontByHeight = geometry.height / charactersPerColumn;
+    const fontByWidth = geometry.width / (columnCount * 1.15);
+    return Math.max(8, Math.min(fontByHeight, fontByWidth) * 0.9);
 }
 
 function getCoordinateTableHtml(label, text) {
@@ -899,15 +932,13 @@ function updateCoordinateCanvasScale() {
         + Number.parseFloat(stageStyle.borderRightWidth);
     const verticalBorderWidth = Number.parseFloat(stageStyle.borderTopWidth)
         + Number.parseFloat(stageStyle.borderBottomWidth);
-    const availableWidth = Math.max(0, docView.clientWidth - horizontalBorderWidth);
-    if (!(imageWidth > 0) || !(imageHeight > 0) || !(availableWidth > 0)) {
+    if (!(imageWidth > 0) || !(imageHeight > 0)) {
         return;
     }
 
-    const scale = availableWidth / imageWidth;
-    stage.style.width = `${imageWidth * scale + horizontalBorderWidth}px`;
-    stage.style.height = `${imageHeight * scale + verticalBorderWidth}px`;
-    canvas.style.transform = `scale(${scale})`;
+    stage.style.width = `${imageWidth + horizontalBorderWidth}px`;
+    stage.style.height = `${imageHeight + verticalBorderWidth}px`;
+    canvas.style.transform = "none";
 }
 
 function renderMarkdownResult(markdown) {
