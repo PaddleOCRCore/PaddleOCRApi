@@ -882,10 +882,10 @@ function getCoordinateBlockFontSize(geometry, label, text) {
 
     const lineCount = String(text || "").split(/\r?\n/).length;
     if (lineCount > 1) {
-        return Math.min(18, geometry.height / (lineCount * 1.2));
+        return Math.min(64, geometry.height / (lineCount * 1.2));
     }
 
-    return Math.min(20, Math.max(12, geometry.height * 0.75));
+    return Math.min(64, Math.max(12, geometry.height * 0.75));
 }
 
 function getCoordinateBlockLineHeight(label, text) {
@@ -918,6 +918,15 @@ function fitCoordinateBlockText(content, geometry) {
     }
 }
 
+function getCoordinateCanvasScale(imageWidth, previewWidth, horizontalBorderWidth = 0) {
+    const contentWidth = Number(previewWidth) - Number(horizontalBorderWidth);
+    if (!(imageWidth > 0) || !(contentWidth > 0)) {
+        return 1;
+    }
+
+    return contentWidth / imageWidth;
+}
+
 function updateCoordinateCanvasScale() {
     const stage = docView.querySelector(".coordinate-stage");
     const canvas = stage && stage.querySelector(".coordinate-canvas");
@@ -936,9 +945,11 @@ function updateCoordinateCanvasScale() {
         return;
     }
 
-    stage.style.width = `${imageWidth + horizontalBorderWidth}px`;
-    stage.style.height = `${imageHeight + verticalBorderWidth}px`;
-    canvas.style.transform = "none";
+    const previewWidth = getPreviewBaseWidth();
+    const scale = getCoordinateCanvasScale(imageWidth, previewWidth, horizontalBorderWidth);
+    stage.style.width = `${previewWidth}px`;
+    stage.style.height = `${imageHeight * scale + verticalBorderWidth}px`;
+    canvas.style.transform = `scale(${scale})`;
 }
 
 function renderMarkdownResult(markdown) {
