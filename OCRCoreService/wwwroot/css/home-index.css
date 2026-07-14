@@ -809,6 +809,14 @@ button {
     border-color: #dbe4f2;
 }
 
+.icon-button[hidden] {
+    display: none;
+}
+
+.origin-image-toggle.inactive {
+    color: #140e35;
+}
+
 .result-body {
     min-height: 0;
     overflow: auto;
@@ -851,6 +859,22 @@ button {
     overflow: hidden;
     transform-origin: 0 0;
     user-select: text;
+}
+
+.parse-render-right .origin-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .3;
+    filter: grayscale(100%);
+    pointer-events: none;
+    user-select: none;
+}
+
+.parse-render-right img {
+    vertical-align: middle;
+    border-style: none;
 }
 
 .coordinate-text {

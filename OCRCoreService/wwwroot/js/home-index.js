@@ -9,7 +9,8 @@ const state = {
     tab: "doc",
     busy: false,
     activeBlockId: null,
-    previewZoom: 1
+    previewZoom: 1,
+    showOriginImage: true
 };
 
 const previewZoomStep = 0.2;
@@ -30,6 +31,7 @@ const jsonView = document.getElementById("jsonView");
 const docTab = document.getElementById("docTab");
 const jsonTab = document.getElementById("jsonTab");
 const copyButton = document.getElementById("copyButton");
+const originImageToggleButton = document.getElementById("originImageToggleButton");
 const refreshButton = document.getElementById("refreshButton");
 const newButton = document.getElementById("newButton");
 const licenseCodeButton = document.getElementById("licenseCodeButton");
@@ -128,6 +130,10 @@ copyButton.addEventListener("click", async () => {
 
     await navigator.clipboard.writeText(text);
     showToast("已复制");
+});
+
+originImageToggleButton.addEventListener("click", () => {
+    setOriginImageVisible(!state.showOriginImage);
 });
 
 previewImage.addEventListener("load", () => {
@@ -672,6 +678,7 @@ function setResultText(text) {
     docView.classList.remove("markdown-body", "coordinate-view");
     docView.textContent = text;
     jsonView.textContent = "{}";
+    updateOriginImageToggle();
 }
 
 function renderCoordinateResult(result) {
@@ -690,7 +697,7 @@ function renderCoordinateResult(result) {
     docView.classList.add("coordinate-view");
 
     const stage = document.createElement("div");
-    stage.className = "coordinate-stage";
+    stage.className = "coordinate-stage parse-render-right";
     stage.dataset.imageWidth = String(imageWidth);
     stage.dataset.imageHeight = String(imageHeight);
 
@@ -700,15 +707,47 @@ function renderCoordinateResult(result) {
     canvas.style.height = `${imageHeight}px`;
     canvas.setAttribute("aria-label", `OCR 文字复刻画布，${imageWidth} × ${imageHeight} 像素`);
 
+    const imageSource = normalizeImageSource(getPreviewImageSource(result));
+    if (imageSource) {
+        const originImage = document.createElement("img");
+        originImage.className = "origin-image";
+        originImage.src = imageSource;
+        originImage.alt = "";
+        originImage.draggable = false;
+        originImage.setAttribute("aria-hidden", "true");
+        canvas.appendChild(originImage);
+    }
+
     for (const geometry of renderableBoxes) {
         canvas.appendChild(createCoordinateText(geometry));
     }
 
     stage.appendChild(canvas);
     docView.replaceChildren(stage);
+    setOriginImageVisible(state.showOriginImage);
     updateCoordinateCanvasScale();
     requestAnimationFrame(() => updateCoordinateCanvasScale());
     return true;
+}
+
+function setOriginImageVisible(visible) {
+    state.showOriginImage = Boolean(visible);
+    const originImage = docView.querySelector(".origin-image");
+    if (originImage) {
+        originImage.hidden = !state.showOriginImage;
+    }
+    updateOriginImageToggle();
+}
+
+function updateOriginImageToggle() {
+    const hasOriginImage = Boolean(docView.querySelector(".origin-image"));
+    const isAvailable = hasOriginImage && state.tab === "doc";
+    originImageToggleButton.hidden = !isAvailable;
+    originImageToggleButton.setAttribute("aria-pressed", String(state.showOriginImage));
+    const label = state.showOriginImage ? "隐藏底图" : "显示底图";
+    originImageToggleButton.title = label;
+    originImageToggleButton.setAttribute("aria-label", label);
+    originImageToggleButton.classList.toggle("inactive", !state.showOriginImage);
 }
 
 function createCoordinateGeometry(box, index) {
@@ -962,6 +1001,7 @@ function renderMarkdownResult(markdown) {
     } else {
         docView.innerHTML = sanitizeMarkdownHtml(parseMarkdown(markdown));
     }
+    updateOriginImageToggle();
     renderMath(docView);
 }
 
@@ -1302,6 +1342,7 @@ function setTab(tab) {
     jsonTab.classList.toggle("active", tab === "json");
     docView.style.display = tab === "doc" ? "block" : "none";
     jsonView.style.display = tab === "json" ? "block" : "none";
+    updateOriginImageToggle();
     if (tab === "doc") {
         requestAnimationFrame(() => updateCoordinateCanvasScale());
     }
