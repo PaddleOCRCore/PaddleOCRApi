@@ -806,6 +806,89 @@ button {
     white-space: pre-wrap;
 }
 
+.result-content.coordinate-view {
+    width: 100%;
+    min-width: 0;
+    line-height: normal;
+}
+
+.coordinate-stage {
+    position: relative;
+    max-width: 100%;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #d9e0ea;
+    box-shadow: 0 8px 24px rgba(22, 34, 51, .12);
+    overflow: hidden;
+}
+
+.coordinate-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #101828;
+    background: #fff;
+    overflow: hidden;
+    transform-origin: 0 0;
+    user-select: text;
+}
+
+.coordinate-text {
+    position: absolute;
+    overflow: hidden;
+    transform-origin: 0 0;
+    color: #101010;
+    cursor: text;
+    transition: background-color .12s ease, outline-color .12s ease;
+}
+
+.coordinate-text:hover,
+.coordinate-text.active {
+    background: rgba(61, 99, 255, .08);
+    outline: 1px solid rgba(61, 99, 255, .45);
+}
+
+.coordinate-text-content {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+    white-space: nowrap;
+    transform-origin: 0 50%;
+}
+
+.coordinate-text-block .coordinate-text-content {
+    width: 100%;
+    min-width: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.coordinate-text-table .coordinate-text-content {
+    height: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.coordinate-text-table table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: inherit;
+    line-height: 1.15;
+}
+
+.coordinate-text-table th,
+.coordinate-text-table td {
+    padding: 2px 3px;
+    border: 1px solid #667085;
+    vertical-align: top;
+}
+
+.coordinate-text-table th {
+    font-weight: 700;
+    background: #f2f4f7;
+}
+
 .markdown-body {
     color: #172033;
     line-height: 1.75;

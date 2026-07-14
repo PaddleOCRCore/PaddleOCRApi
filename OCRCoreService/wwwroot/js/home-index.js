@@ -25,6 +25,7 @@ const sourceName = document.getElementById("sourceName");
 const sourceSize = document.getElementById("sourceSize");
 const modelSelect = document.getElementById("modelSelect");
 const docView = document.getElementById("docView");
+const resultBody = docView.parentElement;
 const jsonView = document.getElementById("jsonView");
 const docTab = document.getElementById("docTab");
 const jsonTab = document.getElementById("jsonTab");
@@ -151,7 +152,12 @@ previewImage.addEventListener("error", () => {
 window.addEventListener("resize", () => {
     applyPreviewZoom();
     renderBoxes();
+    updateCoordinateCanvasScale();
 });
+
+if (typeof ResizeObserver === "function" && resultBody) {
+    new ResizeObserver(() => updateCoordinateCanvasScale()).observe(resultBody);
+}
 
 function setFile(file) {
     const validation = validateFile(file);
@@ -352,7 +358,9 @@ async function fetchJson(url, options) {
 function applyResult(result) {
     const markdown = result.markdown || result.content || "未识别到内容";
     state.markdownText = markdown;
-    renderMarkdownResult(markdown);
+    if (!renderCoordinateResult(result)) {
+        renderMarkdownResult(markdown);
+    }
     jsonView.textContent = formatJson(result.jsonText || result.raw || result);
 
     const previewSource = getPreviewImageSource(result);
@@ -629,6 +637,9 @@ function updateActiveBlock() {
     for (const block of docView.querySelectorAll(".markdown-block")) {
         block.classList.toggle("active", !!activeId && block.dataset.blockId === activeId);
     }
+    for (const block of docView.querySelectorAll(".coordinate-text")) {
+        block.classList.toggle("active", !!activeId && block.dataset.blockId === activeId);
+    }
 }
 
 function cssEscape(value) {
@@ -658,14 +669,250 @@ function setResultText(text) {
     state.markdownText = "";
     clearMath(docView);
     docView.classList.add("plain-text");
-    docView.classList.remove("markdown-body");
+    docView.classList.remove("markdown-body", "coordinate-view");
     docView.textContent = text;
     jsonView.textContent = "{}";
 }
 
+function renderCoordinateResult(result) {
+    const imageWidth = Number(result && result.imageWidth);
+    const imageHeight = Number(result && result.imageHeight);
+    const boxes = Array.isArray(result && result.boxes) ? result.boxes : [];
+    const renderableBoxes = boxes
+        .map((box, index) => createCoordinateGeometry(box, index))
+        .filter(Boolean);
+    if (!(imageWidth > 0) || !(imageHeight > 0) || !renderableBoxes.length) {
+        return false;
+    }
+
+    clearMath(docView);
+    docView.classList.remove("plain-text", "markdown-body");
+    docView.classList.add("coordinate-view");
+
+    const stage = document.createElement("div");
+    stage.className = "coordinate-stage";
+    stage.dataset.imageWidth = String(imageWidth);
+    stage.dataset.imageHeight = String(imageHeight);
+
+    const canvas = document.createElement("div");
+    canvas.className = "coordinate-canvas";
+    canvas.style.width = `${imageWidth}px`;
+    canvas.style.height = `${imageHeight}px`;
+    canvas.setAttribute("aria-label", `OCR 文字复刻画布，${imageWidth} × ${imageHeight} 像素`);
+
+    for (const geometry of renderableBoxes) {
+        canvas.appendChild(createCoordinateText(geometry));
+    }
+
+    stage.appendChild(canvas);
+    docView.replaceChildren(stage);
+    updateCoordinateCanvasScale();
+    requestAnimationFrame(() => updateCoordinateCanvasScale());
+    return true;
+}
+
+function createCoordinateGeometry(box, index) {
+    if (!box || !getBlockText(box).trim()) {
+        return null;
+    }
+
+    const points = getCoordinatePoints(box.points || box.Points);
+    if (points.length >= 4) {
+        const topEdge = Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y);
+        const sideEdge = Math.hypot(points[2].x - points[1].x, points[2].y - points[1].y);
+        const isVertical = shouldRenderVerticalText(box, topEdge, sideEdge);
+        const width = isVertical ? sideEdge : topEdge;
+        const height = isVertical ? topEdge : sideEdge;
+        if (width > 0 && height > 0) {
+            const origin = isVertical ? points[1] : points[0];
+            const direction = isVertical
+                ? { x: points[2].x - points[1].x, y: points[2].y - points[1].y }
+                : { x: points[1].x - points[0].x, y: points[1].y - points[0].y };
+            return {
+                source: box,
+                index,
+                x: origin.x,
+                y: origin.y,
+                width,
+                height,
+                angle: Math.atan2(direction.y, direction.x) * 180 / Math.PI,
+                isVertical
+            };
+        }
+    }
+
+    const x = Number(box.x ?? box.X);
+    const y = Number(box.y ?? box.Y);
+    const width = Number(box.width ?? box.Width);
+    const height = Number(box.height ?? box.Height);
+    if (![x, y, width, height].every(Number.isFinite) || width <= 0 || height <= 0) {
+        return null;
+    }
+
+    const isVertical = shouldRenderVerticalText(box, width, height);
+    return isVertical
+        ? { source: box, index, x: x + width, y, width: height, height: width, angle: 90, isVertical }
+        : { source: box, index, x, y, width, height, angle: 0, isVertical };
+}
+
+function shouldRenderVerticalText(box, width, height) {
+    if (!(height > width * 1.5)) {
+        return false;
+    }
+
+    const isTextLine = (box.isTextLine ?? box.IsTextLine) === true;
+    return isTextLine || getBlockLabel(box).toLowerCase() === "image";
+}
+
+function getCoordinatePoints(points) {
+    if (!Array.isArray(points)) {
+        return [];
+    }
+
+    return points
+        .map(point => ({
+            x: Number(point && (point.x ?? point.X)),
+            y: Number(point && (point.y ?? point.Y))
+        }))
+        .filter(point => Number.isFinite(point.x) && Number.isFinite(point.y))
+        .slice(0, 4);
+}
+
+function createCoordinateText(geometry) {
+    const box = geometry.source;
+    const label = getBlockLabel(box);
+    const text = getBlockText(box);
+    const tableHtml = getCoordinateTableHtml(label, text);
+    const blockId = getBlockId(box, geometry.index);
+    const isTextLine = (box.isTextLine ?? box.IsTextLine) === true;
+    const useSingleLineLayout = isTextLine || geometry.isVertical;
+    const wrapper = document.createElement("div");
+    wrapper.className = `coordinate-text${useSingleLineLayout ? "" : " coordinate-text-block"}${tableHtml ? " coordinate-text-table" : ""}`;
+    wrapper.dataset.blockId = blockId;
+    wrapper.style.left = `${geometry.x}px`;
+    wrapper.style.top = `${geometry.y}px`;
+    wrapper.style.width = `${geometry.width}px`;
+    wrapper.style.height = `${geometry.height}px`;
+    wrapper.style.transform = `rotate(${geometry.angle}deg)`;
+    wrapper.title = `${label} #${blockId}`;
+
+    const content = document.createElement("span");
+    content.className = "coordinate-text-content";
+    if (tableHtml) {
+        content.innerHTML = tableHtml;
+    } else {
+        content.textContent = text;
+    }
+    if (useSingleLineLayout) {
+        content.style.fontSize = `${Math.max(1, geometry.height * 0.9)}px`;
+        content.style.lineHeight = `${geometry.height}px`;
+    } else {
+        content.style.fontSize = `${getCoordinateBlockFontSize(geometry, label, text)}px`;
+        content.style.lineHeight = getCoordinateBlockLineHeight(label, text);
+    }
+
+    wrapper.appendChild(content);
+    wrapper.addEventListener("mouseenter", () => setActiveBlock(blockId, true));
+    wrapper.addEventListener("mouseleave", () => setActiveBlock(null));
+
+    if (useSingleLineLayout) {
+        requestAnimationFrame(() => {
+            if (!content.isConnected) {
+                return;
+            }
+            const contentWidth = content.scrollWidth;
+            if (contentWidth > geometry.width) {
+                content.style.transform = `scaleX(${geometry.width / contentWidth})`;
+            }
+        });
+    } else {
+        requestAnimationFrame(() => fitCoordinateBlockText(content, geometry));
+    }
+
+    return wrapper;
+}
+
+function getCoordinateTableHtml(label, text) {
+    if (String(label || "").toLowerCase() !== "table") {
+        return "";
+    }
+
+    const decoded = decodeHtmlEntities(String(text || "").trim());
+    return /<table\b/i.test(decoded) ? sanitizeMarkdownHtml(decoded) : "";
+}
+
+function getCoordinateBlockFontSize(geometry, label, text) {
+    const normalizedLabel = String(label || "").toLowerCase();
+    if (isCoordinateHeightScaledLabel(normalizedLabel)) {
+        return Math.max(1, geometry.height * 0.9);
+    }
+
+    const lineCount = String(text || "").split(/\r?\n/).length;
+    if (lineCount > 1) {
+        return Math.min(18, geometry.height / (lineCount * 1.2));
+    }
+
+    return Math.min(20, Math.max(12, geometry.height * 0.75));
+}
+
+function getCoordinateBlockLineHeight(label, text) {
+    const normalizedLabel = String(label || "").toLowerCase();
+    if (isCoordinateHeightScaledLabel(normalizedLabel)) {
+        return "1";
+    }
+
+    return /\r?\n/.test(String(text || "")) ? "1.35" : "1.2";
+}
+
+function isCoordinateHeightScaledLabel(label) {
+    return label === "paragraph_title"
+        || label === "doc_title"
+        || label === "vision_footnote"
+        || label === "header"
+        || label === "figure_title";
+}
+
+function fitCoordinateBlockText(content, geometry) {
+    if (!content.isConnected) {
+        return;
+    }
+
+    let fontSize = Number.parseFloat(content.style.fontSize);
+    while (fontSize > 8
+        && (content.scrollWidth > geometry.width + 0.5 || content.scrollHeight > geometry.height + 0.5)) {
+        fontSize -= 0.5;
+        content.style.fontSize = `${fontSize}px`;
+    }
+}
+
+function updateCoordinateCanvasScale() {
+    const stage = docView.querySelector(".coordinate-stage");
+    const canvas = stage && stage.querySelector(".coordinate-canvas");
+    if (!stage || !canvas || docView.style.display === "none") {
+        return;
+    }
+
+    const imageWidth = Number(stage.dataset.imageWidth);
+    const imageHeight = Number(stage.dataset.imageHeight);
+    const stageStyle = window.getComputedStyle(stage);
+    const horizontalBorderWidth = Number.parseFloat(stageStyle.borderLeftWidth)
+        + Number.parseFloat(stageStyle.borderRightWidth);
+    const verticalBorderWidth = Number.parseFloat(stageStyle.borderTopWidth)
+        + Number.parseFloat(stageStyle.borderBottomWidth);
+    const availableWidth = Math.max(0, docView.clientWidth - horizontalBorderWidth);
+    if (!(imageWidth > 0) || !(imageHeight > 0) || !(availableWidth > 0)) {
+        return;
+    }
+
+    const scale = availableWidth / imageWidth;
+    stage.style.width = `${imageWidth * scale + horizontalBorderWidth}px`;
+    stage.style.height = `${imageHeight * scale + verticalBorderWidth}px`;
+    canvas.style.transform = `scale(${scale})`;
+}
+
 function renderMarkdownResult(markdown) {
     clearMath(docView);
-    docView.classList.remove("plain-text");
+    docView.classList.remove("plain-text", "coordinate-view");
     docView.classList.add("markdown-body");
     const blocks = getOrderedResultBlocks();
     if (blocks.length) {
@@ -1013,6 +1260,9 @@ function setTab(tab) {
     jsonTab.classList.toggle("active", tab === "json");
     docView.style.display = tab === "doc" ? "block" : "none";
     jsonView.style.display = tab === "json" ? "block" : "none";
+    if (tab === "doc") {
+        requestAnimationFrame(() => updateCoordinateCanvasScale());
+    }
 }
 
 function changePage(pageIndex) {

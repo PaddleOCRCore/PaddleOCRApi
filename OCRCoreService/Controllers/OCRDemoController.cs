@@ -145,6 +145,8 @@ namespace OCRCoreService.Controllers
                     _ => throw new InvalidOperationException("不支持的解析模型。")
                 };
 
+                (result.ImageWidth, result.ImageHeight) = GetImageSize(imageData);
+
                 if (isPdf)
                 {
                     result.PageIndex = currentPageIndex;
@@ -268,6 +270,17 @@ namespace OCRCoreService.Controllers
             return data.ToArray();
         }
 
+        private static (int Width, int Height) GetImageSize(byte[] imageData)
+        {
+            using SKBitmap? inputBitmap = SKBitmap.Decode(imageData);
+            if (inputBitmap == null || inputBitmap.Width <= 0 || inputBitmap.Height <= 0)
+            {
+                throw new InvalidOperationException("无法读取 OCR 输入图像尺寸。");
+            }
+
+            return (inputBitmap.Width, inputBitmap.Height);
+        }
+
         private static OCRDemoAnalyzeResult CreateLayoutResponse(
             string model,
             string modelName,
@@ -372,27 +385,34 @@ namespace OCRCoreService.Controllers
             List<OCRDemoBox> boxes = new();
             foreach (PaddleOCRSDK.JsonResult item in ocrResult.WordsResult)
             {
-                var points = item.Location
+                List<OCRDemoPoint> points = item.Location
                     .Where(point => point.x.HasValue && point.y.HasValue)
+                    .Select(point => new OCRDemoPoint
+                    {
+                        X = point.x!.Value,
+                        Y = point.y!.Value
+                    })
                     .ToList();
                 if (points.Count == 0)
                 {
                     continue;
                 }
 
-                int left = points.Min(point => point.x!.Value);
-                int top = points.Min(point => point.y!.Value);
-                int right = points.Max(point => point.x!.Value);
-                int bottom = points.Max(point => point.y!.Value);
+                double left = points.Min(point => point.X);
+                double top = points.Min(point => point.Y);
+                double right = points.Max(point => point.X);
+                double bottom = points.Max(point => point.Y);
                 boxes.Add(new OCRDemoBox
                 {
                     Label = "text",
                     Text = item.Words ?? string.Empty,
+                    IsTextLine = true,
                     X = left,
                     Y = top,
                     Width = Math.Max(0, right - left),
                     Height = Math.Max(0, bottom - top),
-                    Score = item.Score
+                    Score = item.Score,
+                    Points = points.Count >= 4 ? points.Take(4).ToList() : new List<OCRDemoPoint>()
                 });
             }
 
@@ -402,11 +422,61 @@ namespace OCRCoreService.Controllers
         private static List<OCRDemoBox> BuildLayoutBoxes(LayoutDetectResult layoutResult)
         {
             List<OCRDemoBox> boxes = new();
+            LayoutOverallOcrResult? overallOcr = layoutResult.OverallOcrRes;
+            if (overallOcr?.RecTexts != null)
+            {
+                for (int index = 0; index < overallOcr.RecTexts.Count; index++)
+                {
+                    string text = overallOcr.RecTexts[index] ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        continue;
+                    }
+
+                    OCRDemoBox? box = null;
+                    if (overallOcr.DtPolys != null && index < overallOcr.DtPolys.Count)
+                    {
+                        box = CreateBoxFromPolygon(overallOcr.DtPolys[index]);
+                    }
+
+                    if (box == null && overallOcr.RecBoxes != null && index < overallOcr.RecBoxes.Count)
+                    {
+                        box = CreateBoxFromBbox(overallOcr.RecBoxes[index]);
+                    }
+
+                    if (box == null || box.Width <= 0 || box.Height <= 0)
+                    {
+                        continue;
+                    }
+
+                    box.Label = "text";
+                    box.Text = text;
+                    box.IsTextLine = true;
+                    if (overallOcr.RecScores != null && index < overallOcr.RecScores.Count)
+                    {
+                        box.Score = overallOcr.RecScores[index];
+                    }
+
+                    boxes.Add(box);
+                }
+            }
+
+            if (boxes.Count > 0)
+            {
+                return boxes;
+            }
+
             if (layoutResult.ParsingResList != null)
             {
                 foreach (LayoutBlockResult block in layoutResult.ParsingResList)
                 {
-                    OCRDemoBox? box = CreateBoxFromBbox(block.BlockBbox);
+                    if (string.IsNullOrWhiteSpace(block.BlockContent))
+                    {
+                        continue;
+                    }
+
+                    OCRDemoBox? box = CreateBoxFromLayoutPoints(block.PolygonPoints)
+                        ?? CreateBoxFromBbox(block.BlockBbox);
                     if (box == null)
                     {
                         continue;
@@ -416,6 +486,7 @@ namespace OCRCoreService.Controllers
                     box.BlockOrder = block.BlockOrder;
                     box.Label = block.BlockLabel ?? "block";
                     box.Text = block.BlockContent ?? string.Empty;
+                    box.IsTextLine = false;
                     box.Score = block.Score;
                     boxes.Add(box);
                 }
@@ -440,6 +511,64 @@ namespace OCRCoreService.Controllers
             return boxes;
         }
 
+        private static OCRDemoBox? CreateBoxFromPolygon(IReadOnlyList<IReadOnlyList<double>>? polygon)
+        {
+            if (polygon == null)
+            {
+                return null;
+            }
+
+            List<OCRDemoPoint> points = polygon
+                .Where(point => point != null && point.Count >= 2
+                    && double.IsFinite(point[0]) && double.IsFinite(point[1]))
+                .Select(point => new OCRDemoPoint { X = point[0], Y = point[1] })
+                .Take(4)
+                .ToList();
+            return CreateBoxFromPoints(points);
+        }
+
+        private static OCRDemoBox? CreateBoxFromLayoutPoints(IReadOnlyList<LayoutPoint>? polygon)
+        {
+            if (polygon == null)
+            {
+                return null;
+            }
+
+            List<OCRDemoPoint> points = polygon
+                .Where(point => point.X.HasValue && point.Y.HasValue
+                    && double.IsFinite(point.X.Value) && double.IsFinite(point.Y.Value))
+                .Select(point => new OCRDemoPoint { X = point.X!.Value, Y = point.Y!.Value })
+                .Take(4)
+                .ToList();
+            return CreateBoxFromPoints(points);
+        }
+
+        private static OCRDemoBox? CreateBoxFromPoints(List<OCRDemoPoint> points)
+        {
+            if (points.Count < 4)
+            {
+                return null;
+            }
+
+            double left = points.Min(point => point.X);
+            double top = points.Min(point => point.Y);
+            double right = points.Max(point => point.X);
+            double bottom = points.Max(point => point.Y);
+            if (right <= left || bottom <= top)
+            {
+                return null;
+            }
+
+            return new OCRDemoBox
+            {
+                X = left,
+                Y = top,
+                Width = right - left,
+                Height = bottom - top,
+                Points = points
+            };
+        }
+
         private static OCRDemoBox? CreateBoxFromBbox(IReadOnlyList<double>? bbox)
         {
             if (bbox == null || bbox.Count < 4)
@@ -451,12 +580,26 @@ namespace OCRCoreService.Controllers
             double top = Math.Min(bbox[1], bbox[3]);
             double right = Math.Max(bbox[0], bbox[2]);
             double bottom = Math.Max(bbox[1], bbox[3]);
+            if (!double.IsFinite(left) || !double.IsFinite(top)
+                || !double.IsFinite(right) || !double.IsFinite(bottom)
+                || right <= left || bottom <= top)
+            {
+                return null;
+            }
+
             return new OCRDemoBox
             {
                 X = left,
                 Y = top,
                 Width = Math.Max(0, right - left),
-                Height = Math.Max(0, bottom - top)
+                Height = Math.Max(0, bottom - top),
+                Points = new List<OCRDemoPoint>
+                {
+                    new() { X = left, Y = top },
+                    new() { X = right, Y = top },
+                    new() { X = right, Y = bottom },
+                    new() { X = left, Y = bottom }
+                }
             };
         }
 
@@ -546,6 +689,10 @@ namespace OCRCoreService.Controllers
 
         public int? PageCount { get; set; }
 
+        public int ImageWidth { get; set; }
+
+        public int ImageHeight { get; set; }
+
         public object? Raw { get; set; }
 
         public List<OCRDemoBox> Boxes { get; set; } = new();
@@ -556,6 +703,8 @@ namespace OCRCoreService.Controllers
         public string Label { get; set; } = string.Empty;
 
         public string Text { get; set; } = string.Empty;
+
+        public bool IsTextLine { get; set; }
 
         public int? BlockId { get; set; }
 
@@ -570,5 +719,14 @@ namespace OCRCoreService.Controllers
         public double Height { get; set; }
 
         public double? Score { get; set; }
+
+        public List<OCRDemoPoint> Points { get; set; } = new();
+    }
+
+    public class OCRDemoPoint
+    {
+        public double X { get; set; }
+
+        public double Y { get; set; }
     }
 }
