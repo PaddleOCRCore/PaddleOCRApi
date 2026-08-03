@@ -52,6 +52,7 @@ namespace WinFormsApp.Services
         public static bool use_angle_cls = true;//是否使用方向分类器
         public static bool return_word_box = false;//是否返回单字坐标
         public static bool use_tensorrt = false;//使用GPU预测时，是否启动tensorrt
+        public static int ocr_instance_count = 0;//OCR引擎实例数量，默认1，最大10，适用于高并发时使用。
         public static string gpu_license = @"models\paddleocr.lic";//GPU授权文件
         private static bool gpuLicenseActivated;
 
@@ -145,6 +146,7 @@ namespace WinFormsApp.Services
             oCRParameter.det_db_box_thresh = 0.5f;//DB后处理过滤box的阈值，如果检测存在漏框情况，可酌情减小
             oCRParameter.det_db_unclip_ratio = 1.6f;//表示文本框的紧致程度，越小则文本框更靠近文本
             oCRParameter.visualize = visualize;
+            oCRParameter.ocr_instance_count = ocr_instance_count;
             oCRParameter.return_word_box = return_word_box;
 
             para.ocrpara = oCRParameter;

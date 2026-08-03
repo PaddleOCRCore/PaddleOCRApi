@@ -44,6 +44,7 @@ namespace WinFormsApp
         public static bool outPutJson = false;
         public static bool use_tensorrt = false;
         public static int recCount = 1;
+        public static int ocr_instance_count = 1;
         public static int model_type = 0;
         public static int layout_type = 0;
 
@@ -397,6 +398,7 @@ namespace WinFormsApp
             chkJson.Enabled = !busy;
             chkReturnWordBox.Enabled = !busy && !isInitSuccess;
             numericUpDownThread.Enabled = !busy;
+            numericocr_instance_count.Enabled = !busy;
             numDowncpu_threads.Enabled = !busy && !isInitSuccess;
             numDowngpu_id.Enabled = !busy && !isInitSuccess;
             numericUpDowncpu_mem.Enabled = !busy && !isInitSuccess;
@@ -458,6 +460,7 @@ namespace WinFormsApp
                 OCREngine.gpu_id = gpu_id;
                 OCREngine.cpu_threads = cpu_threads;
                 OCREngine.cpu_mem = cpu_mem;
+                OCREngine.ocr_instance_count = ocr_instance_count;
                 OCREngine.use_tensorrt = use_tensorrt;
                 OCREngine.return_word_box = chkReturnWordBox.Checked;
 
@@ -1173,6 +1176,14 @@ namespace WinFormsApp
             if (numericUpDownThread.Value > 0)
             {
                 recCount = Convert.ToInt32(numericUpDownThread.Value);
+            }
+        }
+
+        private void numericocr_instance_count_ValueChanged(object sender, EventArgs e)
+        {
+            if (numericocr_instance_count.Value > 0)
+            {
+                ocr_instance_count = Convert.ToInt32(numericocr_instance_count.Value);
             }
         }
 

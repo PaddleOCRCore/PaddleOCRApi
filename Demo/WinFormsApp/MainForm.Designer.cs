@@ -76,6 +76,8 @@
             buttonRecStructure = new Button();
             numericUpDowncpu_mem = new NumericUpDown();
             label6 = new Label();
+            numericocr_instance_count = new NumericUpDown();
+            label9 = new Label();
             numericUpDownThread = new NumericUpDown();
             label5 = new Label();
             numDowncpu_threads = new NumericUpDown();
@@ -142,6 +144,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxImg).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericocr_instance_count).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).BeginInit();
@@ -498,6 +501,8 @@
             groupBox1.Controls.Add(buttonRecStructure);
             groupBox1.Controls.Add(numericUpDowncpu_mem);
             groupBox1.Controls.Add(label6);
+            groupBox1.Controls.Add(numericocr_instance_count);
+            groupBox1.Controls.Add(label9);
             groupBox1.Controls.Add(numericUpDownThread);
             groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(numDowncpu_threads);
@@ -551,7 +556,7 @@
             // checkBoxUsePPStructure
             // 
             checkBoxUsePPStructure.AutoSize = true;
-            checkBoxUsePPStructure.Location = new Point(501, 30);
+            checkBoxUsePPStructure.Location = new Point(493, 60);
             checkBoxUsePPStructure.Name = "checkBoxUsePPStructure";
             checkBoxUsePPStructure.Size = new Size(99, 21);
             checkBoxUsePPStructure.TabIndex = 27;
@@ -573,9 +578,9 @@
             // buttonRecPDF
             // 
             buttonRecPDF.Enabled = false;
-            buttonRecPDF.Location = new Point(827, 57);
+            buttonRecPDF.Location = new Point(895, 55);
             buttonRecPDF.Name = "buttonRecPDF";
-            buttonRecPDF.Size = new Size(109, 25);
+            buttonRecPDF.Size = new Size(95, 25);
             buttonRecPDF.TabIndex = 26;
             buttonRecPDF.Text = "PDF版面识别";
             buttonRecPDF.UseVisualStyleBackColor = true;
@@ -595,7 +600,7 @@
             // buttonFreeEngine
             // 
             buttonFreeEngine.Enabled = false;
-            buttonFreeEngine.Location = new Point(613, 57);
+            buttonFreeEngine.Location = new Point(667, 55);
             buttonFreeEngine.Name = "buttonFreeEngine";
             buttonFreeEngine.Size = new Size(80, 27);
             buttonFreeEngine.TabIndex = 24;
@@ -663,9 +668,9 @@
             // buttonRecStructure
             // 
             buttonRecStructure.Enabled = false;
-            buttonRecStructure.Location = new Point(827, 24);
+            buttonRecStructure.Location = new Point(895, 27);
             buttonRecStructure.Name = "buttonRecStructure";
-            buttonRecStructure.Size = new Size(109, 25);
+            buttonRecStructure.Size = new Size(95, 25);
             buttonRecStructure.TabIndex = 17;
             buttonRecStructure.Text = "OCR版面识别";
             buttonRecStructure.UseVisualStyleBackColor = true;
@@ -690,6 +695,28 @@
             label6.Text = "内存上限(MB)：";
             label6.TextAlign = ContentAlignment.TopRight;
             label6.UseWaitCursor = true;
+            // 
+            // numericocr_instance_count
+            // 
+            numericocr_instance_count.Location = new Point(579, 29);
+            numericocr_instance_count.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numericocr_instance_count.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numericocr_instance_count.Name = "numericocr_instance_count";
+            numericocr_instance_count.Size = new Size(55, 23);
+            numericocr_instance_count.TabIndex = 13;
+            numericocr_instance_count.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericocr_instance_count.ValueChanged += numericocr_instance_count_ValueChanged;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(491, 32);
+            label9.Name = "label9";
+            label9.Size = new Size(82, 17);
+            label9.TabIndex = 12;
+            label9.Text = "OCR实例数：";
+            label9.TextAlign = ContentAlignment.TopRight;
+            label9.UseWaitCursor = true;
             // 
             // numericUpDownThread
             // 
@@ -752,9 +779,9 @@
             // 
             // buttonGetBase64
             // 
-            buttonGetBase64.Location = new Point(946, 22);
+            buttonGetBase64.Location = new Point(997, 27);
             buttonGetBase64.Name = "buttonGetBase64";
-            buttonGetBase64.Size = new Size(120, 61);
+            buttonGetBase64.Size = new Size(69, 53);
             buttonGetBase64.TabIndex = 3;
             buttonGetBase64.Text = "获取图片Base64";
             buttonGetBase64.UseVisualStyleBackColor = true;
@@ -764,7 +791,7 @@
             // 
             buttonInit.BackColor = Color.FromArgb(0, 192, 0);
             buttonInit.ForeColor = Color.Transparent;
-            buttonInit.Location = new Point(613, 24);
+            buttonInit.Location = new Point(667, 27);
             buttonInit.Name = "buttonInit";
             buttonInit.Size = new Size(80, 27);
             buttonInit.TabIndex = 0;
@@ -775,9 +802,9 @@
             // buttonRecClipboard
             // 
             buttonRecClipboard.Enabled = false;
-            buttonRecClipboard.Location = new Point(706, 56);
+            buttonRecClipboard.Location = new Point(775, 55);
             buttonRecClipboard.Name = "buttonRecClipboard";
-            buttonRecClipboard.Size = new Size(110, 27);
+            buttonRecClipboard.Size = new Size(92, 27);
             buttonRecClipboard.TabIndex = 1;
             buttonRecClipboard.Text = "剪贴板识别";
             buttonRecClipboard.UseVisualStyleBackColor = true;
@@ -786,9 +813,9 @@
             // buttonRec
             // 
             buttonRec.Enabled = false;
-            buttonRec.Location = new Point(706, 23);
+            buttonRec.Location = new Point(775, 27);
             buttonRec.Name = "buttonRec";
-            buttonRec.Size = new Size(110, 27);
+            buttonRec.Size = new Size(92, 27);
             buttonRec.TabIndex = 1;
             buttonRec.Text = "OCR文本识别";
             buttonRec.UseVisualStyleBackColor = true;
@@ -1166,6 +1193,7 @@
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDowncpu_mem).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericocr_instance_count).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownThread).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowncpu_threads).EndInit();
             ((System.ComponentModel.ISupportInitialize)numDowngpu_id).EndInit();
@@ -1279,5 +1307,7 @@
         private Label label4;
         private ComboBox comboBoxVLConfig;
         private CheckBox checkBoxUsePPStructure;
+        private NumericUpDown numericocr_instance_count;
+        private Label label9;
     }
 }
