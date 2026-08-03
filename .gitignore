@@ -72,3 +72,9 @@ paddle_inference.dll
 /Demo/nuget
 /Demo/ConsoleSharp/bin/Release/net10.0
 /Demo/ConsoleSharp/obj
+/Demo/Python/PaddleOCRDesktop/paddleocr_desktop/__pycache__
+/Demo/Python/PaddleOCRDesktop/build
+/Demo/Python/PaddleOCRDesktop/dist
+/Demo/Python/PaddleOCRDesktop/tests
+/Demo/Python/PaddleOCRDesktop/output
+/Demo/Python/PaddleOCRDesktop/.pytest_cache
