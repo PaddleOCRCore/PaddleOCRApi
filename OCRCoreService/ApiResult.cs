@@ -28,13 +28,15 @@ namespace OCRCoreService
         /// 
         /// </summary>
         /// <param name="OResult"></param>
+        /// <param name="elapsedTime">调用耗时，单位毫秒</param>
         /// <returns></returns>
-        protected ObjectResult OKResult(object OResult)
+        protected ObjectResult OKResult(object OResult, string elapsedTime = "")
         {
             ApiResult result = new ApiResult();
             result.Status = HttpStatusCode.OK;
             result.Data = OResult;
             result.ErrorMessage = "";
+            result.ElapsedTime = elapsedTime;
             return Ok(result);
         }
         /// <summary>
@@ -68,6 +70,10 @@ namespace OCRCoreService
         /// 
         /// </summary>
         public string ErrorMessage { get; set; }
+        /// <summary>
+        /// 调用耗时，单位毫秒，例如：300ms
+        /// </summary>
+        public string ElapsedTime { get; set; } = string.Empty;
     }
     /// <summary>
     /// 

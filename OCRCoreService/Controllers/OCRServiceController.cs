@@ -20,6 +20,7 @@ using System.Text;
 using PaddleOCRSDK;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace OCRCoreService.Controllers
 {
@@ -43,6 +44,16 @@ namespace OCRCoreService.Controllers
             logger = _logger;
             ocrEngine = _ocrEngine;
         }
+
+        private static OCRResult DetectWithElapsedTime(Func<OCRResult> detect, out string elapsedTime)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            OCRResult result = detect();
+            stopwatch.Stop();
+            elapsedTime = $"{stopwatch.ElapsedMilliseconds}ms";
+            return result;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -76,7 +87,9 @@ namespace OCRCoreService.Controllers
                 System.IO.Directory.CreateDirectory(fileDir);
             }
             //OCRResult ocrResult = engine.ocrEngine.DetectText(ImageBeauty.Base64StringToImage(request.Base64String));
-            OCRResult ocrResult = ocrEngine.OcrService.DetectBase64(request.Base64String);            
+            OCRResult ocrResult = DetectWithElapsedTime(
+                () => ocrEngine.OcrService.DetectBase64(request.Base64String),
+                out string elapsedTime);
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var item in ocrResult.WordsResult)
             {
@@ -163,7 +176,7 @@ namespace OCRCoreService.Controllers
                         text = result
                     };
                 }
-                return OKResult(jsonResult);
+                return OKResult(jsonResult, elapsedTime);
             }
             else
             {
@@ -192,7 +205,7 @@ namespace OCRCoreService.Controllers
                     };
                     logger.LogTrace($"身份证国徽面匹配成功:{jsonResult.ToString()}");
                 }
-                return OKResult(jsonResult);
+                return OKResult(jsonResult, elapsedTime);
             }
         }
         #endregion
@@ -212,7 +225,9 @@ namespace OCRCoreService.Controllers
             {
                 return (BadResult("识别失败:图片不存在！"));
             }
-            OCRResult ocrResult = ocrEngine.OcrService.DetectBase64(request.Base64String);
+            OCRResult ocrResult = DetectWithElapsedTime(
+                () => ocrEngine.OcrService.DetectBase64(request.Base64String),
+                out string elapsedTime);
             logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
             if (string.Equals(request.ResultType, "text", StringComparison.OrdinalIgnoreCase))
             {
@@ -234,7 +249,7 @@ namespace OCRCoreService.Controllers
             {
                 result = ocrResult.JsonText;
             }
-            return OKResult(result);
+            return OKResult(result, elapsedTime);
         }
 
         /// <summary>
@@ -251,7 +266,9 @@ namespace OCRCoreService.Controllers
                 return (BadResult("识别失败:图片不存在！"));
             }
 
-            OCRResult ocrResult = ocrEngine.OcrService.Detect(request.ImageByte);
+            OCRResult ocrResult = DetectWithElapsedTime(
+                () => ocrEngine.OcrService.Detect(request.ImageByte),
+                out string elapsedTime);
             logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
             if (string.Equals(request.ResultType, "text", StringComparison.OrdinalIgnoreCase))
             {
@@ -273,7 +290,7 @@ namespace OCRCoreService.Controllers
             {
                 result = ocrResult.JsonText;
             }
-            return OKResult(result);
+            return OKResult(result, elapsedTime);
         }
         #endregion
 
@@ -287,6 +304,7 @@ namespace OCRCoreService.Controllers
         public async Task<ActionResult> GetOCRFile(IFormFile request)
         {
             string result = "";
+            string elapsedTime = "";
             if (request.Length==0)
             {
                 return (BadResult("识别失败:图片不存在！"));
@@ -296,7 +314,9 @@ namespace OCRCoreService.Controllers
                 await request.CopyToAsync(ms);
                 var imageByte = ms.ToArray();
                 logger.LogTrace($"获取到图片:{imageByte.ToString()}");
-                OCRResult ocrResult = ocrEngine.OcrService.Detect(imageByte);
+                OCRResult ocrResult = DetectWithElapsedTime(
+                    () => ocrEngine.OcrService.Detect(imageByte),
+                    out elapsedTime);
                 logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
                 StringBuilder stringBuilder = new StringBuilder();
                 foreach (var item in ocrResult.WordsResult)
@@ -312,7 +332,7 @@ namespace OCRCoreService.Controllers
                 }
                 result = stringBuilder.ToString();
             }
-            return OKResult(result);
+            return OKResult(result, elapsedTime);
         }
         /// <summary>
         /// 通用文字识别，直接上传图片即可，无需保存图片，返回json
@@ -323,6 +343,7 @@ namespace OCRCoreService.Controllers
         public async Task<ActionResult> GetOCRJsonFile(IFormFile request)
         {
             string result = "";
+            string elapsedTime = "";
             if (request.Length == 0)
             {
                 return (BadResult("识别失败:图片不存在！"));
@@ -332,11 +353,13 @@ namespace OCRCoreService.Controllers
                 await request.CopyToAsync(ms);
                 var imageByte = ms.ToArray();
                 logger.LogTrace($"获取到图片:{imageByte.ToString()}");
-                OCRResult ocrResult = ocrEngine.OcrService.Detect(imageByte);
+                OCRResult ocrResult = DetectWithElapsedTime(
+                    () => ocrEngine.OcrService.Detect(imageByte),
+                    out elapsedTime);
                 logger.LogTrace($"OCR识别成功:{ocrResult.JsonText}");
                 result = ocrResult.JsonText;
             }
-            return OKResult(result);
+            return OKResult(result, elapsedTime);
         }
         #endregion
 
