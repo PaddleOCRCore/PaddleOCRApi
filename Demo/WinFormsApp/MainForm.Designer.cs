@@ -725,7 +725,7 @@
             numericUpDownThread.Name = "numericUpDownThread";
             numericUpDownThread.Size = new Size(55, 23);
             numericUpDownThread.TabIndex = 13;
-            numericUpDownThread.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDownThread.Value = new decimal(new int[] { 2, 0, 0, 0 });
             numericUpDownThread.ValueChanged += numericUpDownThread_ValueChanged;
             // 
             // label5

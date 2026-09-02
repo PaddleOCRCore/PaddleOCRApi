@@ -717,30 +717,34 @@ namespace WinFormsApp
                     oldImage?.Dispose();
                 }
 
-                LogMessage("Image: 剪贴板图片");
-                OCRResult ocrResult = await Task.Run(() =>
+                for (int i = 0; i < recCount; i++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    GCHandle handle = default;
-                    try
+                    LogMessage("Image: 剪贴板图片");
+                    OCRResult ocrResult = await Task.Run(() =>
                     {
-                        handle = GCHandle.Alloc(clipboardImageBuffer.Array, GCHandleType.Pinned);
-                        return ocrService.DetectPtr(
-                            IntPtr.Add(handle.AddrOfPinnedObject(), clipboardImageBuffer.Offset),
-                            clipboardImageSize);
-                    }
-                    finally
-                    {
-                        if (handle.IsAllocated)
+                        cancellationToken.ThrowIfCancellationRequested();
+                        GCHandle handle = default;
+                        try
                         {
-                            handle.Free();
+                            handle = GCHandle.Alloc(clipboardImageBuffer.Array, GCHandleType.Pinned);
+                            return ocrService.DetectPtr(
+                                IntPtr.Add(handle.AddrOfPinnedObject(), clipboardImageBuffer.Offset),
+                                clipboardImageSize);
                         }
-                    }
-                }, cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
+                        finally
+                        {
+                            if (handle.IsAllocated)
+                            {
+                                handle.Free();
+                            }
+                        }
+                    }, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                string result = BuildOCRText(ocrResult);
-                LogOCRResult(result, ocrResult);
+                    string result = BuildOCRText(ocrResult);
+                    LogOCRResult(result, ocrResult);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -821,9 +825,14 @@ namespace WinFormsApp
                 message = new StringBuilder();
                 string filePath = Path.GetFullPath(openFileDialog.FileName);
                 LogMessage($"正在处理PDF文件: {filePath}");
-                string result = await RecOCRFromPDFAsync(filePath, cancellationToken);
-                if (!string.IsNullOrEmpty(result))
+                for (int i = 0; i < recCount; i++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    string result = await RecOCRFromPDFAsync(filePath, cancellationToken);
+                    if (string.IsNullOrEmpty(result))
+                    {
+                        continue;
+                    }
 
                     LayoutDetectResult layoutResult = ocrService.ParseLayoutResult(result);
                     string? resultPath = ResolveExistingImagePath(layoutResult.VisPath);
@@ -891,27 +900,30 @@ namespace WinFormsApp
             {
                 textBoxResult.Text = "";
                 message = new StringBuilder();
-                foreach (var regfile in openFileDialog.FileNames)
+                for (int i = 0; i < recCount; i++)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    string filePath = Path.GetFullPath(regfile);
-                    string result = await RecOCRStructureAsync(filePath, cancellationToken);
-                    try
+                    foreach (var regfile in openFileDialog.FileNames)
                     {
-                        LayoutDetectResult layoutResult = ocrService.ParseLayoutResult(result);
-                        string? resultPath = ResolveExistingImagePath(layoutResult.VisPath);
-                        if (!string.IsNullOrEmpty(resultPath))
+                        cancellationToken.ThrowIfCancellationRequested();
+                        string filePath = Path.GetFullPath(regfile);
+                        string result = await RecOCRStructureAsync(filePath, cancellationToken);
+                        try
                         {
-                            pictureBoxImg.ImgPath = resultPath;
+                            LayoutDetectResult layoutResult = ocrService.ParseLayoutResult(result);
+                            string? resultPath = ResolveExistingImagePath(layoutResult.VisPath);
+                            if (!string.IsNullOrEmpty(resultPath))
+                            {
+                                pictureBoxImg.ImgPath = resultPath;
+                            }
+                            else if (File.Exists(filePath))
+                            {
+                                pictureBoxImg.ImgPath = filePath;
+                            }
                         }
-                        else if (File.Exists(filePath))
+                        catch (Exception ex)
                         {
-                            pictureBoxImg.ImgPath = filePath;
+                            LogMessage($"版面识别结果解析失败:{ex.Message}");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogMessage($"版面识别结果解析失败:{ex.Message}");
                     }
                 }
             }
