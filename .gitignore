@@ -79,3 +79,4 @@ paddle_inference.dll
 /Demo/Python/PaddleOCRDesktop/output
 /Demo/Python/PaddleOCRDesktop/.pytest_cache
 /OCRCoreService.Tests
+/WebApiLite/tests
